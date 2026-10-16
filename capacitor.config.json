@@ -1,8 +1,7 @@
 {
   "appId": "com.goalie.app",
   "appName": "Goalie",
-  "webDir": ".",
-  "bundledWebRuntime": false,
+  "webDir": "dist",
   "server": {
     "androidScheme": "https",
     "cleartext": true
