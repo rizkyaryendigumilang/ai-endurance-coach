@@ -1,0 +1,126 @@
+name: Deploy Goalie API to VPS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'public/**'
+      - '*.py'
+      - '*.html'
+      - '*.json'
+      - 'Dockerfile'
+      - 'requirements.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: goalie-api-production
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Build and validate Goalie API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Compile API modules
+        run: python -m compileall -q app
+      - name: Build PWA bundle
+        run: |
+          npm ci
+          npm run build
+          test -s dist/index.html
+          test -s dist/manifest.json
+          test -s dist/sw.js
+      - name: Build container
+        run: docker build -t goalie-engine:ci .
+
+  deploy:
+    name: Deploy API container to production
+    needs: validate
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package app source (exclude local runtime secrets)
+        run: |
+          set -euo pipefail
+          tar --exclude='.git' --exclude='node_modules' --exclude='android' --exclude='ios' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' -czf goalie-source.tar.gz .
+      - name: Configure verified SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USERNAME }}
+          VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_SSH_KNOWN_HOSTS: ${{ secrets.VPS_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$VPS_HOST" && test -n "$VPS_USER" && test -n "$VPS_KEY" && test -n "$VPS_SSH_KNOWN_HOSTS" || { echo "Configure VPS_HOST, VPS_USERNAME, VPS_SSH_KEY and verified VPS_SSH_KNOWN_HOSTS"; exit 1; }
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$VPS_KEY" | tr -d '\r' > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$VPS_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+      - name: Upload release source
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USERNAME }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: scp -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -P "$VPS_PORT" goalie-source.tar.gz "$VPS_USER@$VPS_HOST:goalie-source-${GITHUB_SHA}.tar.gz"
+      - name: Stage and restart container with safety checks
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USERNAME }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          set -euo pipefail
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" "bash -s -- '${GITHUB_SHA}'" <<'REMOTE'
+          set -Eeuo pipefail
+          release="$1"
+          [[ "$release" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          env_source="/home/ubuntu/platform-repos/ai-endurance-coach/.env"
+          test -s "$env_source" || { echo "Existing Goalie .env not found; refusing deployment."; exit 1; }
+          command -v docker >/dev/null
+          docker compose version >/dev/null
+          # The public Caddy route for Goalie currently targets host port 8001.
+          if ss -lntp | grep -qE 'LISTEN[[:space:]].*:8001[[:space:]]'; then
+            if ! docker ps --format '{{.Names}} {{.Ports}}' | grep -qE 'goalie-engine .*127\.0\.0\.1:8001->8000/tcp|goalie-engine .*0\.0\.0\.0:8001->8000/tcp'; then
+              echo "Port 8001 is already used by a process other than the expected Goalie container. Refusing to stop or replace it."
+              exit 1
+            fi
+          fi
+          root="/opt/goalie"
+          releases="$root/releases"
+          stage="$releases/$release"
+          mkdir -p "$releases"
+          test ! -e "$stage"
+          mkdir "$stage"
+          trap 'status=$?; rm -rf "$stage"; rm -f "$HOME/goalie-source-'"$release"'.tar.gz"; exit "$status"' ERR
+          tar -xzf "$HOME/goalie-source-$release.tar.gz" -C "$stage"
+          ln -s "$env_source" "$stage/.env"
+          test -s "$stage/Dockerfile" && test -s "$stage/docker-compose.yml"
+          docker compose -p goalie -f "$stage/docker-compose.yml" -f "$stage/docker-compose.production.yml" up -d --build
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8001/api/v1/health >/dev/null; then
+              rm -f "$HOME/goalie-source-$release.tar.gz"
+              trap - ERR
+              echo "Go alie API health check passed."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Health check failed. Deployment requires manual rollback; previous image/container was not deliberately stopped by this workflow."
+          exit 1
+          REMOTE
