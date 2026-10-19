@@ -119,28 +119,34 @@ jobs:
             exit 1
           fi
           tar --exclude='./.git' --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./.env.*' --exclude='./node_modules' --exclude='./__pycache__' --exclude='./.runtime' -czf "$backup" -C "$live" .
+          rollback() {
+            status="${1:-$?}"
+            if [ -s "$backup" ]; then
+              restore="$backup_root/restore-$release"
+              rm -rf "$restore"
+              mkdir -p "$restore"
+              tar -xzf "$backup" -C "$restore"
+              rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$restore/" "$live/"
+              sudo -n systemctl restart "$service" || true
+              rm -rf "$restore"
+            fi
+            rm -rf "$stage"
+            rm -f "$archive"
+            exit "$status"
+          }
+          trap 'rollback $?' ERR
           rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
-          if ! sudo -n systemctl restart "$service"; then
-            echo "Service restart failed; restoring previous application files."
-            tar -xzf "$backup" -C "$stage"
-            rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
-            sudo -n systemctl restart "$service" || true
-            exit 1
-          fi
+          sudo -n systemctl restart "$service"
           healthy=false
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:8001/api/v1/health >/dev/null; then healthy=true; break; fi
             sleep 2
           done
           if [ "$healthy" != true ]; then
-            echo "Health check failed; restoring previous application files and restarting service."
-            rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
-            # The stage is replaced with the saved copy for rollback below.
-            tar -xzf "$backup" -C "$stage"
-            rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
-            sudo -n systemctl restart "$service" || true
-            exit 1
+            echo "Health check failed; rolling back."
+            rollback 1
           fi
+          trap - ERR
           rm -rf "$stage"
           rm -f "$archive"
           echo "Deployment successful; health endpoint returned HTTP 200. Backup retained at $backup"
