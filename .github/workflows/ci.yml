@@ -1,0 +1,67 @@
+name: CI - Goalie AI Endurance Coach
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'public/**'
+      - '*.py'
+      - '*.html'
+      - '*.json'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'requirements.txt'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/deploy-vps.yml'
+      - 'docker-compose.production.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'public/**'
+      - '*.py'
+      - '*.html'
+      - '*.json'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'requirements.txt'
+      - '.github/workflows/ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: goalie-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Python API and web assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Compile Python modules
+        run: python -m compileall -q app
+      - name: Build static PWA assets
+        run: |
+          npm ci
+          npm run build
+          test -s dist/index.html
+          test -s dist/login.html
+          test -s dist/manifest.json
+          test -s dist/sw.js
+      - name: Build production container
+        run: docker build --tag goalie-engine:ci .
