@@ -34,7 +34,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
       - name: Compile API modules
         run: python -m compileall -q app
       - name: Build PWA bundle
@@ -44,20 +44,22 @@ jobs:
           test -s dist/index.html
           test -s dist/manifest.json
           test -s dist/sw.js
-      - name: Build container
+      - name: Build production container as an additional packaging check
         run: docker build -t goalie-engine:ci .
 
   deploy:
-    name: Deploy API container to production
+    name: Deploy to existing systemd service with rollback
     needs: validate
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Package app source (exclude local runtime secrets)
+      - name: Package source without VPS runtime files
         run: |
           set -euo pipefail
-          tar --exclude='.git' --exclude='node_modules' --exclude='android' --exclude='ios' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' -czf goalie-source.tar.gz .
+          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --exclude='dist' -czf goalie-source.tar.gz .
+          tar -tzf goalie-source.tar.gz | grep -q '^app/main.py$'
+          tar -tzf goalie-source.tar.gz | grep -q '^requirements.txt$'
       - name: Configure verified SSH
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
@@ -68,6 +70,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$VPS_HOST" && test -n "$VPS_USER" && test -n "$VPS_KEY" && test -n "$VPS_SSH_KNOWN_HOSTS" || { echo "Configure VPS_HOST, VPS_USERNAME, VPS_SSH_KEY and verified VPS_SSH_KNOWN_HOSTS"; exit 1; }
+          [[ "$VPS_PORT" =~ ^[0-9]+$ ]] && ((VPS_PORT > 0 && VPS_PORT < 65536)) || { echo "Invalid VPS_PORT"; exit 1; }
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$VPS_KEY" | tr -d '\r' > "$HOME/.ssh/id_ed25519"
           chmod 600 "$HOME/.ssh/id_ed25519"
@@ -79,7 +82,7 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USERNAME }}
           VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
         run: scp -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -P "$VPS_PORT" goalie-source.tar.gz "$VPS_USER@$VPS_HOST:goalie-source-${GITHUB_SHA}.tar.gz"
-      - name: Stage and restart container with safety checks
+      - name: Deploy and health-check existing service
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
@@ -90,37 +93,55 @@ jobs:
           set -Eeuo pipefail
           release="$1"
           [[ "$release" =~ ^[0-9a-f]{40}$ ]] || exit 1
-          env_source="/home/ubuntu/platform-repos/ai-endurance-coach/.env"
-          test -s "$env_source" || { echo "Existing Goalie .env not found; refusing deployment."; exit 1; }
-          command -v docker >/dev/null
-          docker compose version >/dev/null
-          # The public Caddy route for Goalie currently targets host port 8001.
-          if ss -lntp | grep -qE 'LISTEN[[:space:]].*:8001[[:space:]]'; then
-            if ! docker ps --format '{{.Names}} {{.Ports}}' | grep -qE 'goalie-engine .*127\.0\.0\.1:8001->8000/tcp|goalie-engine .*0\.0\.0\.0:8001->8000/tcp'; then
-              echo "Port 8001 is already used by a process other than the expected Goalie container. Refusing to stop or replace it."
-              exit 1
-            fi
-          fi
-          root="/opt/goalie"
-          releases="$root/releases"
-          stage="$releases/$release"
-          mkdir -p "$releases"
-          test ! -e "$stage"
+          live="/home/ubuntu/platform-repos/ai-endurance-coach"
+          service="ai-endurance-coach.service"
+          test -d "$live" && test ! -L "$live"
+          test -s "$live/.env" || { echo "Existing runtime .env missing; refusing deployment."; exit 1; }
+          sudo -n systemctl is-active "$service" >/dev/null
+          test "$(sudo -n systemctl show -p WorkingDirectory --value "$service")" = "$live" || { echo "Service WorkingDirectory differs from expected deployment directory."; exit 1; }
+          command -v rsync >/dev/null
+          command -v curl >/dev/null
+          venv="$live/venv"
+          test -x "$venv/bin/python" || { echo "Expected existing Python virtual environment missing."; exit 1; }
+          backup_root="$HOME/.deploy-goalie"
+          stage="$backup_root/stage-$release"
+          backup="$backup_root/backup-$release.tar.gz"
+          archive="$HOME/goalie-source-$release.tar.gz"
+          mkdir -p "$backup_root"
+          test -s "$archive" && test ! -e "$stage" && test ! -e "$backup"
           mkdir "$stage"
-          trap 'status=$?; rm -rf "$stage"; rm -f "$HOME/goalie-source-'"$release"'.tar.gz"; exit "$status"' ERR
-          tar -xzf "$HOME/goalie-source-$release.tar.gz" -C "$stage"
-          ln -s "$env_source" "$stage/.env"
-          test -s "$stage/Dockerfile" && test -s "$stage/docker-compose.yml"
-          docker compose -p goalie -f "$stage/docker-compose.yml" -f "$stage/docker-compose.production.yml" up -d --build
+          tar -xzf "$archive" -C "$stage"
+          test -s "$stage/app/main.py" && test -s "$stage/requirements.txt"
+          if ! cmp -s "$live/requirements.txt" "$stage/requirements.txt"; then
+            echo "requirements.txt changed. Refusing automatic deployment because production venv dependency updates need a separate reviewed step."
+            rm -rf "$stage"
+            rm -f "$archive"
+            exit 1
+          fi
+          tar --exclude='./.git' --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./.env.*' --exclude='./node_modules' --exclude='./__pycache__' --exclude='./.runtime' -czf "$backup" -C "$live" .
+          rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
+          if ! sudo -n systemctl restart "$service"; then
+            echo "Service restart failed; restoring previous application files."
+            tar -xzf "$backup" -C "$stage"
+            rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
+            sudo -n systemctl restart "$service" || true
+            exit 1
+          fi
+          healthy=false
           for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8001/api/v1/health >/dev/null; then
-              rm -f "$HOME/goalie-source-$release.tar.gz"
-              trap - ERR
-              echo "Go alie API health check passed."
-              exit 0
-            fi
+            if curl -fsS http://127.0.0.1:8001/api/v1/health >/dev/null; then healthy=true; break; fi
             sleep 2
           done
-          echo "Health check failed. Deployment requires manual rollback; previous image/container was not deliberately stopped by this workflow."
-          exit 1
+          if [ "$healthy" != true ]; then
+            echo "Health check failed; restoring previous application files and restarting service."
+            rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
+            # The stage is replaced with the saved copy for rollback below.
+            tar -xzf "$backup" -C "$stage"
+            rsync -a --delete --exclude='/.git/' --exclude='/venv/' --exclude='/.venv/' --exclude='/.env' --exclude='/.env.*' --exclude='/node_modules/' --exclude='/__pycache__/' --exclude='/.runtime/' "$stage/" "$live/"
+            sudo -n systemctl restart "$service" || true
+            exit 1
+          fi
+          rm -rf "$stage"
+          rm -f "$archive"
+          echo "Deployment successful; health endpoint returned HTTP 200. Backup retained at $backup"
           REMOTE
