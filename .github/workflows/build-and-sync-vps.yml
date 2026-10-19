@@ -60,7 +60,7 @@ jobs:
           retention-days: 14
 
       - name: Send APK to VPS via SCP
-        if: ${{ env.VPS_HOST != '' && env.VPS_SSH_KEY != '' }}
+        if: false
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
@@ -76,7 +76,7 @@ jobs:
           echo "Successfully uploaded app-latest.apk to VPS (${VPS_TARGET_DIR}/app-latest.apk)"
 
       - name: Notice if VPS Credentials are missing
-        if: ${{ env.VPS_HOST == '' || env.VPS_SSH_KEY == '' }}
+        if: false
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
@@ -141,7 +141,7 @@ jobs:
           retention-days: 14
 
       - name: Send IPA to VPS via SCP
-        if: ${{ env.VPS_HOST != '' && env.VPS_SSH_KEY != '' }}
+        if: false
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
@@ -157,7 +157,7 @@ jobs:
           echo "Successfully uploaded app-latest.ipa to VPS (${VPS_TARGET_DIR}/app-latest.ipa)"
 
       - name: Notice if VPS Credentials are missing
-        if: ${{ env.VPS_HOST == '' || env.VPS_SSH_KEY == '' }}
+        if: false
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
