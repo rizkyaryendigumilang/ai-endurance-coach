@@ -11,6 +11,10 @@ on:
       - '*.json'
       - 'Dockerfile'
       - 'requirements.txt'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - 'scripts/**'
   workflow_dispatch:
 
 permissions:
