@@ -496,8 +496,9 @@ def strava_authorize_alias(request: Request, user_id: str = Depends(get_current_
 
 
 @app.get("/api/v1/intervals/calendar/feed.ics", tags=["Intervals"])
+@app.get("/api/v1/workouts/ical", tags=["Intervals"])
 def intervals_feed_alias(user_id: str = Depends(get_current_user_optional)):
-    """Direct alias for iCal feed to match frontend requested /intervals/calendar/feed.ics."""
+    """Direct alias for iCal feed to match frontend requested /intervals/calendar/feed.ics and /workouts/ical."""
     from app.services.intervals_service import sync_calendar
     return sync_calendar(user_id=user_id)
 
