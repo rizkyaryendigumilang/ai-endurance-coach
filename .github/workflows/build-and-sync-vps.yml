@@ -59,29 +59,9 @@ jobs:
           path: app-latest.apk
           retention-days: 14
 
-      - name: Send APK to VPS via SCP
-        if: false
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR }}
-          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+      - name: Mobile Artifact Ready Notice
         run: |
-          mkdir -p ~/.ssh
-          echo "$VPS_SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p "${VPS_PORT}" -H "${VPS_HOST}" >> ~/.ssh/known_hosts 2>/dev/null || true
-          scp -P "${VPS_PORT}" -o StrictHostKeyChecking=no app-latest.apk "${VPS_USERNAME}@${VPS_HOST}:${VPS_TARGET_DIR}/app-latest.apk"
-          echo "Successfully uploaded app-latest.apk to VPS (${VPS_TARGET_DIR}/app-latest.apk)"
-
-      - name: Notice if VPS Credentials are missing
-        if: false
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          echo "::notice::VPS_HOST or VPS_SSH_KEY secret is not set. Skipped VPS transfer. Download the APK from Artifacts tab."
+          echo "Android APK compiled successfully. The APK artifact is ready for download in the GitHub Actions Artifacts tab."
 
   # -------------------------------------------------------------
   # Job 2: Build iOS IPA (Unsigned)
@@ -140,26 +120,6 @@ jobs:
           path: app-latest.ipa
           retention-days: 14
 
-      - name: Send IPA to VPS via SCP
-        if: false
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR }}
-          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+      - name: Mobile Artifact Ready Notice
         run: |
-          mkdir -p ~/.ssh
-          echo "$VPS_SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p "${VPS_PORT}" -H "${VPS_HOST}" >> ~/.ssh/known_hosts 2>/dev/null || true
-          scp -P "${VPS_PORT}" -o StrictHostKeyChecking=no app-latest.ipa "${VPS_USERNAME}@${VPS_HOST}:${VPS_TARGET_DIR}/app-latest.ipa"
-          echo "Successfully uploaded app-latest.ipa to VPS (${VPS_TARGET_DIR}/app-latest.ipa)"
-
-      - name: Notice if VPS Credentials are missing
-        if: false
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          echo "::notice::VPS_HOST or VPS_SSH_KEY secret is not set. Skipped VPS transfer. Download the IPA from Artifacts tab."
+          echo "iOS IPA archive created successfully. The IPA artifact is ready for download in the GitHub Actions Artifacts tab."
