@@ -68,7 +68,11 @@ jobs:
       - name: Package source without VPS runtime files
         run: |
           set -euo pipefail
-          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --exclude='dist' --exclude='goalie-source.tar.gz' -czf goalie-source.tar.gz .
+          pkg_tmp="${RUNNER_TEMP:-/tmp}/goalie-pack-${GITHUB_SHA}"
+          mkdir -p "$pkg_tmp"
+          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --exclude='dist' -czf "$pkg_tmp/goalie-source.tar.gz" .
+          mv "$pkg_tmp/goalie-source.tar.gz" goalie-source.tar.gz
+          rm -rf "$pkg_tmp"
           tar -tzf goalie-source.tar.gz | grep -E '^(\./)?app/main.py$'
           tar -tzf goalie-source.tar.gz | grep -E '^(\./)?requirements.txt$'
       - name: Configure verified SSH
