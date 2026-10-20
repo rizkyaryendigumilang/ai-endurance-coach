@@ -1,6 +1,13 @@
 venv/
+.venv/
 .env
+.env.*
 scratch/
 node_modules/
 dist/
 *.log
+*.tar.gz
+goalie-source.tar.gz
+__pycache__/
+.runtime/
+

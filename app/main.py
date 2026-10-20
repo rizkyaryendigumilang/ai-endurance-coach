@@ -15,7 +15,7 @@ from app.schemas.models import (
     UserProfileUpdate, GarminConnectLoginInput, TrainingSuggestionInput,
     AdminImpersonateInput, AdminBroadcastInput,
     SubscriptionOrderInput, SubscriptionActivateInput,
-    GapCalculationInput, ApiKeyValidationInput
+    GapCalculationInput, ApiKeyValidationInput, RaceFuelingInput
 )
 from app.services.sports_engine import SportsEngine
 from app.services.training_engine import TrainingEngine
@@ -472,6 +472,35 @@ def calculate_gap_endpoint(data: GapCalculationInput):
         "grade_adjusted_pace_min_km": gap,
         "gap_formatted": f"{mins:02d}:{secs:02d} min/km"
     }
+
+
+@app.post("/api/v1/telemetry/race-fueling", tags=["Telemetry"])
+def calculate_race_fueling_endpoint(data: RaceFuelingInput):
+    """Calculates evidence-based endurance race fueling strategy (carbs, fluids, electrolytes, gels)."""
+    return SportsEngine.calculate_race_fueling_strategy(
+        distance_km=data.distance_km,
+        expected_duration_hours=data.expected_duration_hours,
+        sport_type=data.sport_type or "run",
+        weight_kg=data.weight_kg or 68.0
+    )
+
+
+@app.get("/api/v1/strava/authorize", tags=["Strava"])
+def strava_authorize_alias(request: Request, user_id: str = Depends(get_current_user_optional)):
+    """Direct alias for Strava OAuth flow supporting both JSON and direct browser redirect."""
+    from app.services.strava_service import strava_login
+    res = strava_login(user_id=user_id)
+    if "text/html" in request.headers.get("accept", ""):
+        return RedirectResponse(url=res["url"])
+    return res
+
+
+@app.get("/api/v1/intervals/calendar/feed.ics", tags=["Intervals"])
+def intervals_feed_alias(user_id: str = Depends(get_current_user_optional)):
+    """Direct alias for iCal feed to match frontend requested /intervals/calendar/feed.ics."""
+    from app.services.intervals_service import sync_calendar
+    return sync_calendar(user_id=user_id)
+
 
 
 @app.post("/api/v1/coach/validate-key", tags=["AI Coach"])

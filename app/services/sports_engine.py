@@ -245,3 +245,73 @@ class SportsEngine:
             "status": status,
             "action_recommendation": action
         }
+
+    @staticmethod
+    def calculate_race_fueling_strategy(
+        distance_km: float,
+        expected_duration_hours: float,
+        sport_type: str = "run",
+        weight_kg: float = 68.0
+    ) -> dict:
+        """
+        Calculates evidence-based endurance nutrition and hydration strategy.
+        Based on Asker Jeukendrup's guidelines for carbohydrate intake and ACSM fluid protocols:
+        - < 45 mins: No exogenous fuel required (mouth rinse optional)
+        - 45 - 75 mins: 30g/hr (single source glucose)
+        - 1h15 - 2h30: 30 - 60g/hr
+        - > 2h30 (Marathon/Ultra/Ironman): 60 - 90g/hr (multiple transportable carbs, 2:1 glucose:fructose)
+        Hydration: 450 - 750 ml/hr depending on intensity and conditions.
+        Electrolytes: 300 - 600 mg sodium/hr.
+        """
+        hours = max(0.25, expected_duration_hours)
+        total_calories = round(distance_km * weight_kg * (1.03 if sport_type in ("run", "trail", "ultra") else 0.35))
+
+        if hours < 1.25:
+            carb_target_g_per_hr = 30
+            carb_ratio = "Single Source (Maltodextrin / Glucose)"
+            strategy = "Light fueling: 1 gel before start, water/electrolyte sips as needed."
+        elif hours <= 2.5:
+            carb_target_g_per_hr = 50
+            carb_ratio = "Glucose + Fructose blend"
+            strategy = "Standard fueling: 1 gel (25g carbs) every 30 minutes with 200ml water."
+        else:
+            carb_target_g_per_hr = 75
+            carb_ratio = "2:1 Glucose : Fructose Multiple Transportable Carbs"
+            strategy = "High-performance fueling: 60-90g carbs/hr via gels + isotonic carb drink mix. Train your gut in advance."
+
+        total_carbs_needed_g = round(carb_target_g_per_hr * hours)
+        total_gels_approx = max(1, round(total_carbs_needed_g / 25))
+        fluid_ml_per_hr = 550
+        total_fluid_liters = round((fluid_ml_per_hr * hours) / 1000, 1)
+        sodium_mg_per_hr = 450
+        total_sodium_mg = round(sodium_mg_per_hr * hours)
+
+        # Feeding schedule breakdown
+        schedule = []
+        interval_min = 30
+        total_intervals = int((hours * 60) // interval_min)
+        for i in range(1, total_intervals + 1):
+            minute = i * interval_min
+            schedule.append({
+                "time_minute": minute,
+                "label": f"T+{minute} min",
+                "intake": "1 Energy Gel (~25g Carbs) + 200-250ml Electrolyte Drink",
+                "milestone": f"Approx km {round((minute / (hours * 60)) * distance_km, 1)}"
+            })
+
+        return {
+            "sport_type": sport_type,
+            "distance_km": distance_km,
+            "expected_duration_hours": round(hours, 2),
+            "estimated_calories_burned": total_calories,
+            "carbohydrate_target_g_per_hr": carb_target_g_per_hr,
+            "total_carbohydrates_g": total_carbs_needed_g,
+            "recommended_gel_count": total_gels_approx,
+            "carb_formulation": carb_ratio,
+            "fluid_rate_ml_per_hr": fluid_ml_per_hr,
+            "total_fluid_liters": total_fluid_liters,
+            "sodium_target_mg_per_hr": sodium_mg_per_hr,
+            "total_sodium_mg": total_sodium_mg,
+            "strategy_summary": strategy,
+            "timeline_schedule": schedule[:12]
+        }

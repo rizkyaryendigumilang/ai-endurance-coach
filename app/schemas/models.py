@@ -118,3 +118,9 @@ class GapCalculationInput(BaseModel):
 
 class ApiKeyValidationInput(BaseModel):
     api_key: str
+
+class RaceFuelingInput(BaseModel):
+    distance_km: float = 42.195
+    expected_duration_hours: float = 3.5
+    sport_type: Optional[str] = "run"  # 'run' | 'trail' | 'ultra' | 'cycling' | 'triathlon'
+    weight_kg: Optional[float] = 68.0

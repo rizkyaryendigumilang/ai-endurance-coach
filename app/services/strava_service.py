@@ -5,14 +5,14 @@ from app.core.config import (
     supabase, STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET,
     FRONTEND_URL, BACKEND_URL
 )
-from app.core.auth import get_current_user
+from app.core.auth import get_current_user, get_current_user_optional
 from app.services.sports_engine import SportsEngine
 
 router = APIRouter(tags=["Strava"])
 
 
 @router.get("/api/v1/auth/strava", summary="Initiate Strava OAuth flow")
-def strava_login(user_id: str = Depends(get_current_user)):
+def strava_login(user_id: str = Depends(get_current_user_optional)):
     """Returns Strava OAuth authorization URL. Redirect user to this URL."""
     if not STRAVA_CLIENT_ID or STRAVA_CLIENT_ID == "YOUR_STRAVA_CLIENT_ID":
         raise HTTPException(

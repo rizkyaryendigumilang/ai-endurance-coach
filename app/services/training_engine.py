@@ -38,6 +38,8 @@ class TrainingEngine:
             return TrainingEngine._generate_swimming_plan(race_name, distance_km, race_date, target_time_seconds)
         elif sport in ("triathlon", "duathlon"):
             return TrainingEngine._generate_triathlon_plan(race_name, distance_km, race_date, target_time_seconds)
+        elif sport in ("trail", "ultra", "trail_running"):
+            return TrainingEngine._generate_trail_ultra_plan(race_name, distance_km, race_date, target_time_seconds)
 
         # Default: Running Plan
         today = date.today()
@@ -276,6 +278,85 @@ class TrainingEngine:
         return {
             "plan_name": f"Goalie Triathlon Macrocycle: {race_name} ({total_weeks} Weeks)",
             "sport_type": "triathlon",
+            "total_weeks": total_weeks,
+            "workouts": plan_workouts
+        }
+
+    @staticmethod
+    def _generate_trail_ultra_plan(race_name: str, distance_km: float, race_date: date, target_time_seconds: int = None) -> dict:
+        """
+        Specialized Trail & Ultra-Endurance Periodization Macrocycle.
+        Incorporates vertical elevation gain, hill repeats, power hiking,
+        and back-to-back weekend long runs (critical for fatigue resistance).
+        """
+        today = date.today()
+        weeks_available = max(4, (race_date - today).days // 7)
+        total_weeks = min(weeks_available, 20)
+        plan_workouts = []
+        is_ultra = distance_km > 45.0
+        target_pace = SportsEngine.calculate_pace(distance_km, target_time_seconds) if target_time_seconds else 6.75
+
+        for week in range(total_weeks):
+            week_start = today + timedelta(weeks=week)
+            progress = week / total_weeks
+            phase = "Base" if progress < 0.4 else ("Build" if progress < 0.75 else ("Peak" if progress < 0.9 else "Taper"))
+            factor = 0.8 + progress * 0.35 if phase != "Taper" else 0.55
+
+            # Tuesday: Hill / Incline Strength Intervals
+            elevation_m = round(250 + (week * 35) * factor)
+            plan_workouts.append({
+                "title": f"[W{week+1} {phase}] Vert Intervals & Hill Repeats",
+                "description": f"6x3 min uphill bounding with active jog down. Total vert target: +{elevation_m}m. Focus on ankle stability and cadence.",
+                "workout_type": "trail",
+                "sport_type": "trail",
+                "scheduled_date": (week_start + timedelta(days=1)).isoformat(),
+                "target_distance_km": round(8 * factor, 1),
+                "target_elevation_gain_m": elevation_m,
+                "target_pace_min_per_km": round(target_pace + 0.8, 2)
+            })
+
+            # Thursday: Sustained Tempo / Power Hike Flow
+            plan_workouts.append({
+                "title": f"[W{week+1} {phase}] Sustained Trail Tempo",
+                "description": "Continuous trail run with dynamic terrain. Practice power hiking on >10% gradients and fast technical descent.",
+                "workout_type": "trail",
+                "sport_type": "trail",
+                "scheduled_date": (week_start + timedelta(days=3)).isoformat(),
+                "target_distance_km": round(11 * factor, 1),
+                "target_pace_min_per_km": round(target_pace - 0.2, 2)
+            })
+
+            # Saturday: Primary Trail Long Run (Fueling simulation)
+            sat_dist = min(distance_km * 0.65, 18 + week * 2.2) if not is_ultra else min(50.0, 22 + week * 2.5)
+            if phase == "Taper": sat_dist = round(sat_dist * 0.5, 1)
+            sat_elev = round(sat_dist * 28)
+            plan_workouts.append({
+                "title": f"[W{week+1} {phase}] Saturday Long Trail Simulation",
+                "description": f"Mandatory trail pack, hydration bladder, and 60-80g/hr carb fueling trial. Target elevation: +{sat_elev}m.",
+                "workout_type": "trail",
+                "sport_type": "trail",
+                "scheduled_date": (week_start + timedelta(days=5)).isoformat(),
+                "target_distance_km": round(sat_dist, 1),
+                "target_elevation_gain_m": sat_elev,
+                "target_pace_min_per_km": round(target_pace + 1.2, 2)
+            })
+
+            # Sunday: Back-to-Back Fatigue Resistance Run (Key Ultra Session)
+            if phase in ("Build", "Peak") or is_ultra:
+                sun_dist = round(sat_dist * 0.55, 1) if phase != "Taper" else 6.0
+                plan_workouts.append({
+                    "title": f"[W{week+1} {phase}] Back-to-Back Aerobic Fatigue Run",
+                    "description": "Second consecutive long run on pre-fatigued legs to build neuromuscular resilience for ultra distances.",
+                    "workout_type": "trail",
+                    "sport_type": "trail",
+                    "scheduled_date": (week_start + timedelta(days=6)).isoformat(),
+                    "target_distance_km": sun_dist,
+                    "target_pace_min_per_km": round(target_pace + 1.5, 2)
+                })
+
+        return {
+            "plan_name": f"Goalie Trail/Ultra Macrocycle: {race_name} ({total_weeks} Weeks)",
+            "sport_type": "trail",
             "total_weeks": total_weeks,
             "workouts": plan_workouts
         }

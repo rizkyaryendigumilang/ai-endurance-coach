@@ -2969,7 +2969,20 @@
     <!-- JAVASCRIPT CONTROLLER: Full Functional Engine              -->
     <!-- ══════════════════════════════════════════════════════════ -->
     <script>
-        const API_BASE = "http://localhost:8000/api/v1";
+        // Dynamic API Base URL for Web & Capacitor Native Mobile App
+        const getApiBase = () => {
+            if (typeof window !== 'undefined' && window.Capacitor) {
+                return localStorage.getItem('goalie_api_base') || "https://43.156.236.102/api/v1";
+            }
+            if (window.location.protocol === 'file:') {
+                return localStorage.getItem('goalie_api_base') || "https://43.156.236.102/api/v1";
+            }
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
+            }
+            return `${window.location.origin}/api/v1`;
+        };
+        const API_BASE = getApiBase();
 
         // ══════════════════════════════════════════════════════
         // 2D FLAT SONNER TOAST NOTIFICATION CONTROLLER
@@ -3820,8 +3833,22 @@
         }
 
         // Strava OAuth
-        function handleStravaAuth() {
+        async function handleStravaAuth() {
             toast.info('Strava Redirect', 'Connecting to Strava OAuth API gateway...');
+            try {
+                const res = await fetch(`${API_BASE}/auth/strava`, {
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.url) {
+                        window.location.href = data.url;
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('[Goalie] Strava OAuth gateway fallback:', err);
+            }
             window.location.href = `${API_BASE}/strava/authorize`;
         }
 

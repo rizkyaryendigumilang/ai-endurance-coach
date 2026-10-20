@@ -78,33 +78,39 @@ jobs:
       - name: Configure verified SSH
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_USER: ${{ secrets.VPS_USERNAME || secrets.VPS_USER }}
+          VPS_KEY: ${{ secrets.VPS_SSH_KEY || secrets.VPS_KEY }}
           VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
           VPS_SSH_KNOWN_HOSTS: ${{ secrets.VPS_SSH_KNOWN_HOSTS }}
         run: |
           set -euo pipefail
-          test -n "$VPS_HOST" && test -n "$VPS_USER" && test -n "$VPS_KEY" && test -n "$VPS_SSH_KNOWN_HOSTS" || { echo "Configure VPS_HOST, VPS_USERNAME, VPS_SSH_KEY and verified VPS_SSH_KNOWN_HOSTS"; exit 1; }
+          test -n "$VPS_HOST" || { echo "Missing secret VPS_HOST"; exit 1; }
+          test -n "$VPS_USER" || { echo "Missing secret VPS_USERNAME (or VPS_USER)"; exit 1; }
+          test -n "$VPS_KEY" || { echo "Missing secret VPS_SSH_KEY (or VPS_KEY)"; exit 1; }
           [[ "$VPS_PORT" =~ ^[0-9]+$ ]] && ((VPS_PORT > 0 && VPS_PORT < 65536)) || { echo "Invalid VPS_PORT"; exit 1; }
           install -d -m 700 "$HOME/.ssh"
-          printf '%s\n' "$VPS_KEY" | tr -d '\r' > "$HOME/.ssh/id_ed25519"
-          chmod 600 "$HOME/.ssh/id_ed25519"
-          printf '%s\n' "$VPS_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          printf '%s\n' "$VPS_KEY" | tr -d '\r' > "$HOME/.ssh/id_deploy"
+          chmod 600 "$HOME/.ssh/id_deploy"
+          # Use user-provided secret or pinned trusted known_hosts for verified host authenticity
+          KNOWN_HOSTS="${VPS_SSH_KNOWN_HOSTS:-43.156.236.102 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPLV8FZsqrUwsNv4dydkY/O6XSpH5a/dMxCg0yHZHRkl
+43.156.236.102 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzsJmItpNpX8Bl6Mg60k50V2XaR0kL6HieqoNSJe0jxCXpT1jXoFS/tbtkAF0DtgLV56Imt6C1BBXsDXGI4JYxp07U3PQ8g/CpJZ8M8amJ/PN4PK2RPQrero91z/rXuZEEYNQZ9cV3L5Ahc0QNAbixYdlGnfnKOsPx4PjhtbhLo7BAwottuxCLW5JoCjnU0F56MAGou/bI0kVgVvnFdwk+Uq+fdI1i7mmUYv2PqbWQ1jKxeC0kATFy3/xngFmst2x3CxA1JLDZ3/MlZz3O1I6VZGuwaGFMlx9RippKqLL7AL8muDOlgRy8tr+6a1l7xVyCa9s4PgyOpK7XWyFZgviD8jOHaI52kKKAtMXvZMWf7Ozei1kNWQsS6RYvY62lSO6KxNF+Ds/Z29hOArsH4sPZN3Sr1QBS97G8mOhM7dE+1lhYMts4kjqb97Vs291Ib1DBh6b/r1ft7VC//xXoZudc54lbkgeYezrm/1VSAMdAAfoVNmMWfHgWi4LZIm/zRKs=
+43.156.236.102 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBM3zFw1kUt4sQlQpW/06R/8VIHtFGVplFTtIhSLGIfwgzlRRQsuL1EIfEUO03sETgbG2xpu13IEhnJDD/flYaB4=}"
+          printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
       - name: Upload release source
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USERNAME }}
+          VPS_USER: ${{ secrets.VPS_USERNAME || secrets.VPS_USER }}
           VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
-        run: scp -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -P "$VPS_PORT" goalie-source.tar.gz "$VPS_USER@$VPS_HOST:goalie-source-${GITHUB_SHA}.tar.gz"
+        run: scp -o BatchMode=yes -o StrictHostKeyChecking=yes -o PubkeyAcceptedKeyTypes=+ssh-rsa -i "$HOME/.ssh/id_deploy" -P "$VPS_PORT" goalie-source.tar.gz "$VPS_USER@$VPS_HOST:goalie-source-${GITHUB_SHA}.tar.gz"
       - name: Deploy and health-check existing service
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USERNAME }}
+          VPS_USER: ${{ secrets.VPS_USERNAME || secrets.VPS_USER }}
           VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
         run: |
           set -euo pipefail
-          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" "bash -s -- '${GITHUB_SHA}'" <<'REMOTE'
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o PubkeyAcceptedKeyTypes=+ssh-rsa -i "$HOME/.ssh/id_deploy" -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" "bash -s -- '${GITHUB_SHA}'" <<'REMOTE'
           set -Eeuo pipefail
           release="$1"
           [[ "$release" =~ ^[0-9a-f]{40}$ ]] || exit 1

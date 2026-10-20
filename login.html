@@ -432,7 +432,20 @@
 
     <!-- Script Controller -->
     <script>
-        const API_BASE = "http://localhost:8000/api/v1";
+        // Dynamic API Base URL for Web & Capacitor Native Mobile App
+        const getApiBase = () => {
+            if (typeof window !== 'undefined' && window.Capacitor) {
+                return localStorage.getItem('goalie_api_base') || "https://43.156.236.102/api/v1";
+            }
+            if (window.location.protocol === 'file:') {
+                return localStorage.getItem('goalie_api_base') || "https://43.156.236.102/api/v1";
+            }
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
+            }
+            return `${window.location.origin}/api/v1`;
+        };
+        const API_BASE = getApiBase();
 
         const toast = {
             create(type, title, description = '') {
