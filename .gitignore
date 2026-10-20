@@ -10,4 +10,8 @@ dist/
 goalie-source.tar.gz
 __pycache__/
 .runtime/
+*.pem
+*.key
+id_rsa*
+id_ed25519*
 
