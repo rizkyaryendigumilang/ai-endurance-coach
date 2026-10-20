@@ -71,13 +71,14 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(H
         pass
 
     # Fallback to Supabase Auth
-    try:
-        res = supabase.auth.get_user(token)
-        if res and res.user:
-            return str(res.user.id)
-    except Exception as e:
-        # If network error or invalid
-        raise HTTPException(status_code=401, detail=f"Autentikasi gagal: {str(e)}")
+    if supabase is not None:
+        try:
+            res = supabase.auth.get_user(token)
+            if res and res.user:
+                return str(res.user.id)
+        except Exception as e:
+            # If network error or invalid
+            raise HTTPException(status_code=401, detail=f"Autentikasi gagal: {str(e)}")
 
     raise HTTPException(status_code=401, detail="Token tidak valid atau telah kadaluarsa")
 

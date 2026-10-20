@@ -23,4 +23,9 @@ INTERVALS_ATHLETE_ID = os.getenv("INTERVALS_ATHLETE_ID", "")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:8000")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception:
+        supabase = None
