@@ -2,17 +2,40 @@ import cv2
 import math
 import base64
 import numpy as np
-import mediapipe as mp
+
+try:
+    import mediapipe as mp
+    try:
+        from mediapipe.python.solutions import pose as mp_pose
+        from mediapipe.python.solutions import drawing_utils as mp_draw
+    except Exception:
+        mp_pose = getattr(mp, "solutions", None).pose if hasattr(mp, "solutions") else None
+        mp_draw = getattr(mp, "solutions", None).drawing_utils if hasattr(mp, "solutions") else None
+except Exception:
+    mp = None
+    mp_pose = None
+    mp_draw = None
 
 class BiomechanicsEngine:
     def __init__(self):
-        self.mp_pose = mp.solutions.pose
-        self.pose = self.mp_pose.Pose(static_image_mode=True)
-        self.mp_draw = mp.solutions.drawing_utils
+        self.mp_pose = mp_pose
+        self.mp_draw = mp_draw
+        self.pose = None
+        if self.mp_pose is not None:
+            try:
+                self.pose = self.mp_pose.Pose(static_image_mode=True)
+            except Exception:
+                self.pose = None
 
     def analyze_image(self, image_bytes: bytes):
+        if not self.pose or not self.mp_draw or not self.mp_pose:
+            return {"error": "Modul analisis pose MediaPipe tidak tersedia di runtime ini."}
+
         np_arr = np.frombuffer(image_bytes, np.uint8)
         img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        if img is None:
+            return {"error": "Gagal membaca format gambar."}
+
         result = self.pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         
         if not result.pose_landmarks:
