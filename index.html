@@ -2,7 +2,7 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
     
     <!-- Primary SEO & Metadata -->
     <title>Goalie — Precision Athletic Performance & AI Endurance Coach</title>
@@ -17,7 +17,7 @@
     <meta property="og:description" content="Deterministic sports science meets adaptive AI. Ingest telemetry, evaluate form fatigue, and execute tailored training blocks.">
     <meta property="og:image" content="/public/icons/pwa/icon-512x512.png">
     
-    <!-- PWA & App Icons -->
+    <!-- PWA & Mobile Native App Icons & Theme -->
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/public/icons/pwa/favicon-32x32.png">
@@ -25,90 +25,68 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/public/icons/pwa/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="Goalie">
     <meta name="application-name" content="Goalie">
-    <meta name="theme-color" content="#121214">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F7F8">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
+    <meta name="color-scheme" content="light dark">
 
     <!-- Fonts: System UI + JetBrains Mono for numerical data -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1A1A1A',
-                        secondary: '#4A4A4A',
-                        tertiary: '#0066FF',
-                        'tertiary-hover': '#0052CC',
-                        neutral: '#FFFFFF',
-                        'flat-green': '#00D084',
-                        'flat-orange': '#FF5722',
-                        'flat-amber': '#FFB800',
-                        bg: 'var(--bg-color)',
-                        surface: 'var(--surface-color)',
-                        'surface-subtle': 'var(--surface-subtle)',
-                        'text-primary': 'var(--text-primary)',
-                        'text-secondary': 'var(--text-secondary)',
-                        border: 'var(--border-color)',
-                        'border-strong': 'var(--border-strong)',
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                        display: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace']
-                    },
-                    borderRadius: {
-                        sm: '2px',
-                        DEFAULT: '2px',
-                        md: '4px',
-                        lg: '8px',
-                        none: '0px'
-                    },
-                    boxShadow: {
-                        none: 'none'
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Compiled Static Tailwind CSS (25.8 KB) -->
+    <link rel="stylesheet" href="/public/css/tailwind.min.css">
+    
+    <!-- Goalie Athlete IndexedDB Storage Layer -->
+    <script src="/public/js/db.js"></script>
 
-    <!-- Flat Design CSS Technical Tokens -->
+    <!-- Design System CSS Tokens (Strava Aesthetic + specs/components/button.md) -->
     <style>
         :root {
-            --bg-color: #F8F9FA;
+            --bg-color: #F7F7F8;
             --surface-color: #FFFFFF;
-            --surface-subtle: #F1F3F5;
-            --text-primary: #1A1A1A;
-            --text-secondary: #4A4A4A;
-            --border-color: #E2E2E6;
-            --border-strong: #1A1A1A;
-            --tertiary: #0066FF;
-            --tertiary-hover: #0052CC;
-            --flat-green: #00D084;
-            --flat-orange: #FF5722;
+            --surface-subtle: #F0F0F2;
+            --text-primary: #242428;
+            --text-secondary: #6D6D78;
+            --border-color: #E5E5E9;
+            --border-strong: #C8C8D0;
+            --tertiary: #FC4C02;
+            --tertiary-hover: #E34402;
+            --tertiary-active: #C93B00;
+            --tertiary-subtle: #FFF3ED;
+            --action-color: #FC4C02;
+            --action-hover: #E34402;
+            --flat-green: #10B981;
+            --flat-orange: #FC4C02;
+            --flat-amber: #F59E0B;
         }
 
         html.dark {
             --bg-color: #121214;
-            --surface-color: #1A1A1E;
-            --surface-subtle: #24242A;
+            --surface-color: #1E1E22;
+            --surface-subtle: #2A2A32;
             --text-primary: #F4F4F6;
-            --text-secondary: #9E9EA8;
+            --text-secondary: #A0A0AA;
             --border-color: #2E2E36;
-            --border-strong: #EAEAEA;
-            --tertiary: #0066FF;
-            --tertiary-hover: #1A75FF;
-            --flat-green: #00D084;
-            --flat-orange: #FF5722;
+            --border-strong: #444450;
+            --tertiary: #FC5200;
+            --tertiary-hover: #FF6A1A;
+            --tertiary-active: #E34402;
+            --tertiary-subtle: rgba(252, 76, 2, 0.15);
+            --action-color: #FC5200;
+            --action-hover: #FF6A1A;
+            --flat-green: #34D399;
+            --flat-orange: #FC5200;
+            --flat-amber: #FBBF24;
         }
 
-        * {
-            box-shadow: none !important;
-            text-shadow: none !important;
+        html {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            overscroll-behavior-y: none;
         }
 
         body {
@@ -118,6 +96,13 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             transition: background-color 150ms ease, color 150ms ease;
+        }
+
+        button, a, [role="button"], .tab, .chip, .drag-handle, .tab-btn {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         h1, h2, h3, h4, .font-display {
@@ -130,133 +115,283 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* 2D Flat Geometric Cards */
+        /* Modern Clean Cards (Strava style) */
         .flat-card {
             background-color: var(--surface-color);
-            border: 1.5px solid var(--border-color);
-            border-radius: 2px;
-            transition: border-color 150ms ease, background-color 150ms ease;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
         }
 
-        .flat-card:hover {
-            border-color: var(--border-strong);
-        }
-
-        /* Flat Buttons */
-        .btn-flat-primary {
-            background-color: #0066FF;
+        /* ══════════════════════════════════════════════════════════ */
+        /* BUTTON SYSTEM: Strava Aesthetic & Pill Round Styling        */
+        /* All variants strictly use Radius/Pill (9999px)              */
+        /* ══════════════════════════════════════════════════════════ */
+        
+        /* Base button styles: Primary Strava Orange (#FC4C02) */
+        .btn-primary, .btn-flat-primary {
+            background-color: #FC4C02;
             color: #FFFFFF;
             font-weight: 600;
             font-size: 0.875rem;
-            padding: 9px 18px;
-            border-radius: 2px;
-            border: 1.5px solid #0066FF;
+            min-height: 44px;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            border: 1px solid transparent;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: background-color 150ms ease, border-color 150ms ease, transform 100ms ease;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
         }
 
-        .btn-flat-primary:hover {
-            background-color: #0052CC;
-            border-color: #0052CC;
+        .btn-primary:active, .btn-flat-primary:active {
+            background-color: #C93B00;
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        .btn-flat-primary:active {
-            transform: translateY(1px);
+        .btn-primary:focus-visible, .btn-flat-primary:focus-visible {
+            box-shadow: 0 0 0 2px var(--surface-color), 0 0 0 4px #FC4C02;
         }
 
-        .btn-flat-secondary {
-            background-color: transparent;
-            color: var(--text-primary);
+        /* Action Variant: High-urgency athletic CTA (#FC4C02) */
+        .btn-action {
+            background-color: #FC4C02;
+            color: #FFFFFF;
             font-weight: 600;
             font-size: 0.875rem;
-            padding: 9px 18px;
-            border-radius: 2px;
-            border: 1.5px solid var(--border-strong);
+            min-height: 44px;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            border: 1px solid transparent;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: background-color 150ms ease, color 150ms ease, transform 100ms ease;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
         }
 
-        .btn-flat-secondary:hover {
-            background-color: var(--surface-subtle);
+        .btn-action:active {
+            background-color: #C93B00;
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        .btn-flat-secondary:active {
-            transform: translateY(1px);
+        .btn-action:focus-visible {
+            box-shadow: 0 0 0 2px var(--surface-color), 0 0 0 4px #FC4C02;
         }
 
+        /* Outline Variant: Surface bg with Strava-orange border */
+        .btn-outline, .btn-flat-secondary {
+            background-color: var(--surface-color);
+            color: #FC4C02;
+            font-weight: 600;
+            font-size: 0.875rem;
+            min-height: 44px;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            border: 1.5px solid #FC4C02;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .btn-outline:active, .btn-flat-secondary:active {
+            background-color: #FFE5D6;
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .btn-outline:focus-visible, .btn-flat-secondary:focus-visible {
+            box-shadow: 0 0 0 2px var(--surface-color), 0 0 0 4px #FC4C02;
+        }
+
+        /* Ghost Variant: Subtle orange fill (#FFF3ED), orange label */
+        .btn-ghost {
+            background-color: #FFF3ED;
+            color: #FC4C02;
+            font-weight: 600;
+            font-size: 0.875rem;
+            min-height: 44px;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        html.dark .btn-ghost {
+            background-color: rgba(252, 76, 2, 0.15);
+            color: #FF7026;
+        }
+
+        .btn-ghost:active {
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Link Variant: text only, inline */
+        .btn-link {
+            background: transparent;
+            color: #FC4C02;
+            font-weight: 600;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 150ms ease;
+        }
+
+        /* Dark / Secondary Flat Dark variant */
         .btn-flat-dark {
-            background-color: var(--border-strong);
+            background-color: var(--text-primary);
             color: var(--surface-color);
             font-weight: 600;
             font-size: 0.875rem;
-            padding: 9px 18px;
-            border-radius: 2px;
-            border: 1.5px solid var(--border-strong);
+            min-height: 44px;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            border: 1px solid transparent;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: opacity 150ms ease;
+            transition: opacity 150ms ease, transform 100ms ease;
         }
 
-        .btn-flat-dark:hover {
-            opacity: 0.88;
+        .btn-flat-dark:active {
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        /* Flat Inputs */
+        /* ══════════════════════════════════════════════════════════ */
+        /* HOVER STYLES: Gated to fine pointers (Desktop Mouse)      */
+        /* Prevents sticky hover syndrome on touchscreen devices     */
+        /* ══════════════════════════════════════════════════════════ */
+        @media (hover: hover) and (pointer: fine) {
+            .flat-card:hover {
+                border-color: var(--border-strong);
+                box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+            }
+            .btn-primary:hover, .btn-flat-primary:hover, .btn-action:hover {
+                background-color: #E34402;
+                box-shadow: 0 2px 4px 0 rgba(252, 76, 2, 0.25);
+            }
+            .btn-outline:hover, .btn-flat-secondary:hover {
+                background-color: #FFF3ED;
+                color: #E34402;
+                border-color: #E34402;
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            }
+            html.dark .btn-outline:hover, html.dark .btn-flat-secondary:hover {
+                background-color: rgba(252, 76, 2, 0.15);
+                color: #FF7026;
+                border-color: #FF7026;
+            }
+            .btn-ghost:hover {
+                background-color: #FFE5D6;
+                color: #E34402;
+            }
+            html.dark .btn-ghost:hover {
+                background-color: rgba(252, 76, 2, 0.25);
+                color: #FFA066;
+            }
+            .btn-link:hover {
+                color: #E34402;
+                text-decoration: underline;
+            }
+            .btn-flat-dark:hover {
+                opacity: 0.9;
+            }
+        }
+
+        /* Size Modifiers per spec */
+        .btn-lg {
+            min-height: 52px !important;
+            padding: 14px 28px !important;
+            font-size: 1rem !important;
+        }
+
+        .btn-md {
+            min-height: 44px !important;
+            padding: 10px 22px !important;
+            font-size: 0.875rem !important;
+        }
+
+        .btn-sm {
+            min-height: 32px !important;
+            padding: 6px 14px !important;
+            font-size: 0.8125rem !important;
+        }
+
+        /* Inputs: Modern Soft Rounded (8px) & Anti-Zoom 16px */
         .flat-input {
-            border: 1.5px solid var(--border-color);
+            border: 1px solid var(--border-color);
             background-color: var(--surface-color);
-            border-radius: 2px;
-            padding: 8px 12px;
-            font-size: 0.875rem;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 16px;
             color: var(--text-primary);
             outline: none;
-            transition: border-color 150ms ease;
+            transition: border-color 150ms ease, box-shadow 150ms ease;
             width: 100%;
         }
 
         .flat-input:focus {
-            border-color: #0066FF;
-            outline: 2px solid #0066FF;
-            outline-offset: 1px;
+            border-color: #FC4C02;
+            box-shadow: 0 0 0 3px rgba(252, 76, 2, 0.15);
         }
 
-        /* Mobile auto-zoom fix for iOS */
-        @media screen and (max-width: 768px) {
-            input, select, textarea, .flat-input {
-                font-size: 16px !important;
+        /* Touch & Input minimum size (Hard Rule 4: never disable zoom, fix font size) */
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+
+        /* Safe area padding & dynamic viewport heights */
+        body {
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 76px);
+            min-height: 100dvh;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: env(safe-area-inset-bottom, 0px);
             }
         }
 
-        /* Safe area padding */
-        body {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        /* Flat Badges */
+        /* Badges: Pill rounded */
         .flat-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 2px 8px;
+            padding: 4px 10px;
             font-size: 0.75rem;
             font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-            border-radius: 2px;
+            border-radius: 9999px;
             border: 1px solid currentColor;
             letter-spacing: 0.02em;
         }
@@ -333,83 +468,110 @@
     <nav class="sticky top-0 z-[100] h-14 bg-surface border-b-2 border-border flex items-center">
         <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
             
-            <!-- Logo & Brand Badge -->
-            <div class="flex items-center gap-4">
-                <a href="/" class="flex items-center gap-2.5 group">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-7 h-7 rounded-[2px] object-contain border border-border">
+            <!-- Logo & Brand Badge (Strava Style) -->
+            <div class="flex items-center gap-6">
+                <a href="/" class="flex items-center gap-2 group">
+                    <div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white shadow-xs group-hover:bg-tertiary-hover transition-colors">
+                        <!-- Athletic Chevron / Runner Icon -->
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                            <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.396 14.63h4.171"/>
+                        </svg>
+                    </div>
                     <div class="flex items-baseline gap-1.5">
-                        <span class="font-display font-bold text-lg tracking-tight text-text-primary">Goalie</span>
-                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-[2px] bg-tertiary text-white">PRO</span>
+                        <span class="font-display font-extrabold text-xl tracking-tight text-text-primary">GOALIE</span>
+                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-tertiary/15 text-tertiary">STRAVA AI</span>
                     </div>
                 </a>
-                <span class="hidden md:inline-block text-border text-sm">/</span>
-                <span class="hidden md:inline-block text-[11px] font-mono text-text-secondary bg-surface-subtle px-2 py-0.5 rounded-[2px] border border-border">v2.4.1 Flat</span>
-            </div>
 
-            <!-- Main Navigation Links (Desktop) -->
-            <div class="hidden lg:flex items-center gap-6 text-xs font-semibold text-text-secondary">
-                <a href="#features" class="hover:text-tertiary transition-colors">Features</a>
-                <a href="#telemetry" class="hover:text-tertiary transition-colors">Telemetry Engine</a>
-                <a href="#workstation" class="hover:text-tertiary transition-colors">Live Terminal</a>
-                <a href="#pricing" class="hover:text-tertiary transition-colors">Pricing</a>
-                <a href="#testimonials" class="hover:text-tertiary transition-colors">Athletes</a>
+                <!-- Main Navigation Links (Desktop) -->
+                <div class="hidden lg:flex items-center gap-6 text-sm font-semibold text-text-secondary">
+                    <a href="#workstation" onclick="switchWorkstationTab('cockpit')" class="hover:text-tertiary transition-colors flex items-center gap-1.5">
+                        <span data-i18n="nav_dashboard">Dashboard</span>
+                    </a>
+                    <a href="#workstation" onclick="switchWorkstationTab('schedule')" class="hover:text-tertiary transition-colors flex items-center gap-1.5">
+                        <span data-i18n="nav_training">Training</span>
+                    </a>
+                    <a href="#workstation" onclick="switchWorkstationTab('chat')" class="hover:text-tertiary transition-colors flex items-center gap-1.5 text-text-primary font-bold">
+                        <span data-i18n="nav_coach">AI Coach</span>
+                        <span class="px-1.5 py-0.2 text-[10px] font-mono font-bold rounded-full bg-tertiary text-white">AI</span>
+                    </a>
+                    <a href="#workstation" onclick="switchWorkstationTab('telemetry')" class="hover:text-tertiary transition-colors flex items-center gap-1.5">
+                        <span data-i18n="nav_telemetry">Telemetry</span>
+                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                    </a>
+                    <a href="#workstation" onclick="switchWorkstationTab('integrations')" class="hover:text-tertiary transition-colors">
+                        <span data-i18n="nav_integrations">Intervals / Strava</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Action Controls -->
             <div class="flex items-center gap-2.5">
                 <!-- Global Quick Action (⌘K) -->
-                <button onclick="focusGlobalSearch()" class="hidden sm:flex items-center gap-2 h-8 px-2.5 text-xs text-text-secondary bg-surface-subtle border border-border rounded-[2px] hover:border-text-primary transition-colors">
+                <button onclick="focusGlobalSearch()" class="hidden sm:flex items-center gap-2 h-8 px-2.5 text-xs text-text-secondary bg-surface-subtle border border-border rounded-full hover:border-text-primary transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <span>Quick find...</span>
-                    <kbd class="text-[10px] font-mono bg-surface px-1 py-0.5 border border-border rounded-[2px]">⌘K</kbd>
+                    <span data-i18n="nav_search_label">Search athletes, workouts...</span>
+                    <kbd class="text-[10px] font-mono bg-surface px-1.5 py-0.5 border border-border rounded-md">⌘K</kbd>
+                </button>
+
+                <!-- Quick Record / Upload Workout Button (Strava Orange Round CTA) -->
+                <button onclick="openLogWorkoutModal()" class="btn-primary h-8 px-3 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-xs" title="Record or Log Activity">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    <span class="hidden sm:inline" data-i18n="nav_record">Record / Log</span>
+                </button>
+
+                <!-- Language Switcher Button (ID / EN) -->
+                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2.5 text-xs font-mono font-bold rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center gap-1.5 transition-colors" title="Ubah Bahasa / Switch Language">
+                    <span class="text-xs">🌐</span>
+                    <span id="nav-lang-label">ID</span>
                 </button>
 
                 <!-- Theme Toggle Button -->
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-[2px] border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors" title="Toggle Light / Dark Mode">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors" title="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
                 <!-- Admin Link -->
-                <a href="/admin" class="hidden sm:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-[2px] hover:border-text-primary transition-colors">
+                <a href="/admin" class="hidden sm:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-full hover:border-text-primary transition-colors">
                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     <span>Admin</span>
                 </a>
 
                 <!-- Unauthenticated State -->
                 <div id="nav-unauth-actions" class="flex items-center gap-2">
-                    <button onclick="openAuthModal('login')" class="h-8 px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-[2px] transition-colors">
-                        Sign In
+                    <button onclick="openAuthModal('login')" class="h-8 px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-full transition-colors" data-i18n="nav_login">
+                        Log In
                     </button>
-                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-3 text-xs">
-                        Join Free
+                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-3 text-xs" data-i18n="nav_signup">
+                        Sign Up
                     </button>
                 </div>
 
                 <!-- Authenticated State -->
                 <div id="nav-auth-actions" class="hidden flex items-center gap-2">
-                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2.5 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-[2px] hover:bg-flat-amber/10 transition-colors flex items-center gap-1">
+                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2.5 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-full hover:bg-flat-amber/10 transition-colors flex items-center gap-1">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                        <span>PRO UPGRADE</span>
+                        <span>SUMMIT PRO</span>
                     </button>
 
                     <div class="relative group">
-                        <button class="h-8 px-2.5 rounded-[2px] border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary">
-                            <span id="user-avatar-initial" class="w-5 h-5 rounded-[2px] bg-tertiary text-white flex items-center justify-center font-mono text-[10px]">US</span>
+                        <button class="h-8 px-2.5 rounded-full border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary">
+                            <span id="user-avatar-initial" class="w-5 h-5 rounded-full bg-tertiary text-white flex items-center justify-center font-mono text-[10px] font-bold">RG</span>
                             <span id="user-display-email" class="max-w-[110px] truncate">athlete</span>
                         </button>
-                        <div class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-[2px] p-1.5 hidden group-hover:block z-50">
+                        <div class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-lg p-1.5 hidden group-hover:block z-50">
                             <div class="px-2 py-1.5 text-[11px] text-text-secondary border-b border-border mb-1" id="dropdown-email">user@domain.com</div>
-                            <button onclick="openSettingsModal()" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-[2px] flex items-center justify-between">
-                                <span>Athlete Settings</span>
+                            <button onclick="openSettingsModal()" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md flex items-center justify-between">
+                                <span>Athlete Profile</span>
                                 <span class="text-[10px] font-mono text-tertiary font-bold flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    <span>PROFILE</span>
+                                    <span>SETTINGS</span>
                                 </span>
                             </button>
-                            <a href="#workstation" onclick="switchWorkstationTab('cockpit')" class="block px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-[2px]">Open Workstation</a>
-                            <button onclick="openProPaymentModal()" class="w-full text-left px-2 py-1.5 text-xs text-tertiary font-semibold hover:bg-surface-subtle rounded-[2px]">Subscription Tier</button>
-                            <button onclick="logout()" class="w-full text-left px-2 py-1.5 text-xs text-flat-orange font-semibold hover:bg-flat-orange/10 rounded-[2px] border-t border-border mt-1">Sign Out</button>
+                            <a href="#workstation" onclick="switchWorkstationTab('cockpit')" class="block px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md">Activity Feed &amp; Dashboard</a>
+                            <button onclick="openProPaymentModal()" class="w-full text-left px-2 py-1.5 text-xs text-tertiary font-semibold hover:bg-surface-subtle rounded-md">Subscription Tier</button>
+                            <button onclick="logout()" class="w-full text-left px-2 py-1.5 text-xs text-flat-orange font-semibold hover:bg-flat-orange/10 rounded-md border-t border-border mt-1">Sign Out</button>
                         </div>
                     </div>
                 </div>
@@ -426,17 +588,10 @@
             
             <!-- Left Text Column (7 cols) -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="flat-badge border-tertiary text-tertiary">
-                        <span class="w-1.5 h-1.5 bg-tertiary"></span>
-                        SPORTS SCIENCE 2.4.1
-                    </span>
-                    <span class="flat-badge border-flat-green text-flat-green">
-                        <span class="w-1.5 h-1.5 bg-flat-green"></span>
-                        DETERMINISTIC ENGINE ACTIVE
-                    </span>
-                    <span class="flat-badge border-border text-text-secondary">
-                        GARMIN DIRECT + STRAVA
+                <div class="flex items-center gap-2">
+                    <span class="flat-badge border-tertiary/30 bg-surface-subtle text-tertiary">
+                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                        Sports Science &bull; Garmin &amp; Strava Telemetry
                     </span>
                 </div>
 
@@ -456,9 +611,6 @@
                     </a>
                     <button onclick="openAuthModal('register')" class="btn-flat-secondary px-6 py-3 text-sm">
                         <span>Create Free Athlete Profile</span>
-                    </button>
-                    <button onclick="triggerPwaInstall()" id="btn-pwa-install" class="hidden btn-flat-dark px-4 py-3 text-xs font-mono">
-                        <span>Install PWA App</span>
                     </button>
                 </div>
 
@@ -494,25 +646,25 @@
 
                     <!-- Geometric Telemetry Metric Grid -->
                     <div class="grid grid-cols-2 gap-2.5">
-                        <div class="p-3 bg-surface border border-border rounded-[2px]">
+                        <div class="p-3 bg-surface border border-border rounded-lg">
                             <div class="text-[10px] font-mono text-text-secondary uppercase">Calculated VO2max</div>
                             <div class="mono font-bold text-2xl text-text-primary mt-1">58.4 <span class="text-xs font-normal text-text-secondary">mL/kg/min</span></div>
                             <div class="text-[10px] text-flat-green font-mono mt-0.5">+1.2 vs 30-day baseline</div>
                         </div>
 
-                        <div class="p-3 bg-surface border border-border rounded-[2px]">
+                        <div class="p-3 bg-surface border border-border rounded-lg">
                             <div class="text-[10px] font-mono text-text-secondary uppercase">Training Stress Balance (TSB)</div>
                             <div class="mono font-bold text-2xl text-tertiary mt-1">+6.2 <span class="text-xs font-normal text-text-secondary">TSB</span></div>
                             <div class="text-[10px] text-text-secondary font-mono mt-0.5">Optimal Freshness Window</div>
                         </div>
 
-                        <div class="p-3 bg-surface border border-border rounded-[2px]">
+                        <div class="p-3 bg-surface border border-border rounded-lg">
                             <div class="text-[10px] font-mono text-text-secondary uppercase">Lactate Threshold (LT2)</div>
                             <div class="mono font-bold text-xl text-text-primary mt-1">04:12 <span class="text-xs font-normal text-text-secondary">min/km</span></div>
                             <div class="text-[10px] text-text-secondary font-mono mt-0.5">HR: 168 bpm / Zone 4</div>
                         </div>
 
-                        <div class="p-3 bg-surface border border-border rounded-[2px]">
+                        <div class="p-3 bg-surface border border-border rounded-lg">
                             <div class="text-[10px] font-mono text-text-secondary uppercase">Cardiac HR Drift</div>
                             <div class="mono font-bold text-xl text-flat-green mt-1">2.4% <span class="text-xs font-normal text-text-secondary">Decoupling</span></div>
                             <div class="text-[10px] text-flat-green font-mono mt-0.5">Aerobic Economy Intact</div>
@@ -520,7 +672,7 @@
                     </div>
 
                     <!-- 2D Geometric Power & Pace SVG Curve -->
-                    <div class="p-3 bg-surface border border-border rounded-[2px] space-y-2">
+                    <div class="p-3 bg-surface border border-border rounded-lg space-y-2">
                         <div class="flex justify-between text-[11px] font-mono text-text-secondary">
                             <span>PHYSIOLOGICAL LOAD CURVE</span>
                             <span class="text-tertiary font-bold">TRIMP 148</span>
@@ -583,7 +735,7 @@
             <!-- Feature 1: TrainingPeaks™ PMC & ACWR Hub (Text Left, Card Right) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div class="lg:col-span-6 space-y-4">
-                    <span class="font-mono text-xs text-flat-orange font-bold">01 // TRAININGPEAKS™ PMC &amp; ACWR HUB</span>
+                    <span class="font-mono text-xs text-flat-orange font-bold uppercase tracking-wider">TrainingPeaks™ PMC &amp; ACWR Modeling</span>
                     <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
                         Performance Management Chart &amp; Acute:Chronic Load Modeling.
                     </h3>
@@ -739,7 +891,7 @@
                 </div>
 
                 <div class="lg:col-span-6 order-1 lg:order-2 space-y-4">
-                    <span class="font-mono text-xs text-tertiary font-bold">02 // INTERVALS.ICU TELEMETRY HUB</span>
+                    <span class="font-mono text-xs text-tertiary font-bold uppercase tracking-wider">Intervals.icu Telemetry &amp; Karvonen Matrix</span>
                     <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
                         Dynamic Karvonen Matrix &amp; Cardiac Decoupling.
                     </h3>
@@ -776,7 +928,7 @@
             <!-- Feature 3: Strava Pro Telemetry Hub (Text Left, Card Right) -->
             <div id="telemetry" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8 border-t border-border">
                 <div class="lg:col-span-6 space-y-4">
-                    <span class="font-mono text-xs text-flat-orange font-bold">03 // STRAVA PRO TELEMETRY HUB</span>
+                    <span class="font-mono text-xs text-flat-orange font-bold uppercase tracking-wider">Strava Pro Telemetry &amp; Suffer Score</span>
                     <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
                         Minetti Grade-Adjusted Pace &amp; Suffer Score.
                     </h3>
@@ -891,7 +1043,7 @@
                 </div>
 
                 <div class="lg:col-span-6 order-1 lg:order-2 space-y-4">
-                    <span class="font-mono text-xs text-flat-green font-bold">04 // COACH (PRO) GEMINI AI &amp; FREE BYOK</span>
+                    <span class="font-mono text-xs text-flat-green font-bold uppercase tracking-wider">Dual-Tier AI Intelligence &amp; Free BYOK</span>
                     <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
                         Dual-Tier Intelligence &amp; Free Bring-Your-Own-Key.
                     </h3>
@@ -951,34 +1103,603 @@
 
                 <!-- Tabs -->
                 <div class="flex flex-wrap items-center gap-1.5 text-xs font-semibold">
-                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" class="px-3 py-1.5 rounded-[2px] bg-tertiary text-white border-1.5 border-tertiary">
+                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" class="px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary" data-i18n="tab_cockpit">
                         Performance Cockpit
                     </button>
-                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" class="px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary">
+                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_chat">
                         Coach AI Chat
                     </button>
-                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" class="px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
-                        <span>Telemetry Suite (TP / Intervals / Strava)</span>
+                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
+                        <span data-i18n="tab_telemetry">Telemetry Suite (TP / Intervals / Strava)</span>
                         <span class="w-1.5 h-1.5 bg-flat-green rounded-full"></span>
                     </button>
-                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" class="px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary">
+                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_biomechanics">
                         Video Gait Analysis
                     </button>
-                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" class="px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary">
+                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_schedule">
                         Schedule & iCal
                     </button>
-                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" class="px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary">
+                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_integrations">
                         Garmin & Strava
                     </button>
-                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
+                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>Athlete Settings</span>
+                        <span data-i18n="tab_settings">Athlete Settings</span>
                     </button>
                 </div>
             </div>
 
             <!-- TAB 0: PERFORMANCE COCKPIT (DATA TRACKING & MONITORING HUB) -->
             <div id="tab-content-cockpit" class="space-y-6">
+
+                <!-- ══════════════════════════════════════════════════════ -->
+                <!-- STRAVA 3-COLUMN ATHLETE FEED & AI COACH HUB            -->
+                <!-- ══════════════════════════════════════════════════════ -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- LEFT COLUMN: Athlete Card & Weekly Goals (3 cols) -->
+                    <div class="lg:col-span-3 space-y-4">
+                        
+                        <!-- 1. Athlete Profile Card -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="relative">
+                                    <div class="w-12 h-12 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-sm border-2 border-surface shadow-xs">
+                                        RG
+                                    </div>
+                                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-flat-green border-2 border-surface" title="Live & Connected"></span>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="font-display font-bold text-sm text-text-primary truncate">Rizky Aryendi Gumilang</h3>
+                                    <div class="flex items-center gap-1.5 text-[11px] text-text-secondary">
+                                        <span>Marathoner &bull; Triathlete</span>
+                                    </div>
+                                    <div class="text-[10px] font-mono text-tertiary font-semibold">ID: i744617</div>
+                                </div>
+                            </div>
+
+                            <!-- Social / Activity Stats Row -->
+                            <div class="grid grid-cols-3 gap-1 pt-2 border-t border-border text-center">
+                                <div class="p-1 bg-surface-subtle rounded-md">
+                                    <span class="text-[10px] text-text-secondary block" data-i18n="athlete_following">Following</span>
+                                    <span class="font-bold text-xs text-text-primary font-mono">142</span>
+                                </div>
+                                <div class="p-1 bg-surface-subtle rounded-md">
+                                    <span class="text-[10px] text-text-secondary block" data-i18n="athlete_followers">Followers</span>
+                                    <span class="font-bold text-xs text-text-primary font-mono">388</span>
+                                </div>
+                                <div class="p-1 bg-surface-subtle rounded-md">
+                                    <span class="text-[10px] text-text-secondary block" data-i18n="athlete_activities">Activities</span>
+                                    <span class="font-bold text-xs text-text-primary font-mono">22</span>
+                                </div>
+                            </div>
+
+                            <!-- Latest Activity Preview -->
+                            <div class="p-2.5 bg-surface-subtle border border-border rounded-lg text-xs space-y-1">
+                                <span class="text-[10px] font-mono text-text-secondary uppercase" data-i18n="athlete_latest">Latest Workout</span>
+                                <div class="font-bold text-text-primary truncate">Morning Threshold Progression</div>
+                                <div class="text-[11px] text-tertiary font-mono">10.25 km &bull; 4:38/km &bull; 47m 32s</div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Weekly Training Goal (Strava Orange Meter) -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider" data-i18n="athlete_weekly_goal">This Week's Goal</h4>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">57%</span>
+                            </div>
+
+                            <div>
+                                <div class="flex items-baseline justify-between font-mono">
+                                    <span class="text-xl font-extrabold text-text-primary">42.8 <span class="text-xs text-text-secondary">km</span></span>
+                                    <span class="text-xs text-text-secondary">Goal: 75.0 km</span>
+                                </div>
+                                <!-- Strava Orange Progress Bar -->
+                                <div class="w-full bg-surface-subtle h-2.5 rounded-full overflow-hidden mt-1.5 border border-border">
+                                    <div class="bg-tertiary h-full rounded-full transition-all duration-500" style="width: 57%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Weekly Metrics -->
+                            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1 text-text-secondary">
+                                <div class="flex items-center justify-between">
+                                    <span>Time:</span>
+                                    <strong class="text-text-primary">4h 12m</strong>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span>Elev:</span>
+                                    <strong class="text-text-primary">580 m</strong>
+                                </div>
+                            </div>
+
+                            <!-- Sport Breakdown Tabs -->
+                            <div class="flex items-center justify-between pt-2 border-t border-border text-[11px] font-mono">
+                                <span class="flex items-center gap-1 text-text-primary">
+                                    <span>🏃</span> 32.6k
+                                </span>
+                                <span class="flex items-center gap-1 text-text-primary">
+                                    <span>🚴</span> 64.8k
+                                </span>
+                                <span class="flex items-center gap-1 text-text-primary">
+                                    <span>🏊</span> 2.0k
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Connected Integrations Status -->
+                        <div class="flat-card border-2 border-border p-3.5 bg-surface space-y-2">
+                            <span class="text-[10px] font-mono text-text-secondary uppercase font-bold tracking-wider block">Connected Devices</span>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                        <span class="font-medium">Intervals.icu</span>
+                                    </span>
+                                    <span class="text-[10px] font-mono text-flat-green font-bold">Connected</span>
+                                </div>
+                                <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                        <span class="font-medium">Strava Telemetry</span>
+                                    </span>
+                                    <span class="text-[10px] font-mono text-tertiary font-bold">Active</span>
+                                </div>
+                                <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                        <span class="font-medium">Gemini 2.5 Coach</span>
+                                    </span>
+                                    <span class="text-[10px] font-mono text-flat-green font-bold">Ready</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- CENTER COLUMN: AI Daily Prescription & Strava Activity Feed (6 cols) -->
+                    <div class="lg:col-span-6 space-y-5">
+                        
+                        <!-- FEED FILTER PILL BAR & ATHLETE FORM STATUS (Strava Signature) -->
+                        <div class="flex flex-wrap items-center justify-between gap-2.5 pb-1">
+                            <div class="flex flex-wrap items-center gap-1.5" id="feed-filter-container">
+                                <button onclick="filterFeed('all')" id="feed-filter-all" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-tertiary text-white shadow-xs transition-all active:scale-95" data-i18n="feed_filter_all">
+                                    All Feed
+                                </button>
+                                <button onclick="filterFeed('run')" id="feed-filter-run" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95" data-i18n="feed_filter_runs">
+                                    🏃 Runs
+                                </button>
+                                <button onclick="filterFeed('cycling')" id="feed-filter-cycling" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95" data-i18n="feed_filter_rides">
+                                    🚴 Rides
+                                </button>
+                                <button onclick="filterFeed('prescription')" id="feed-filter-prescription" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95" data-i18n="feed_filter_prescription">
+                                    ⚡ AI Plan
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border text-[11px] font-mono">
+                                <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                <span class="text-text-secondary font-semibold" data-i18n="feed_form_label">Form (TSB):</span>
+                                <strong class="text-flat-green font-bold">+8 Optimal</strong>
+                            </div>
+                        </div>
+
+                        <!-- 1. Pinned AI Daily Prescribed Training Card (The Killer Feature) -->
+                        <div data-feed-type="prescription" class="feed-card flat-card border-2 border-tertiary/70 p-5 bg-surface space-y-4 shadow-sm relative overflow-hidden transition-all duration-200">
+                            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-tertiary via-flat-orange to-flat-amber"></div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                                        ⚡
+                                    </span>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-display font-bold text-sm text-text-primary" data-i18n="presc_title">TODAY'S AI WORKOUT PRESCRIPTION</h3>
+                                            <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-tertiary text-white" data-i18n="presc_badge">SMART COACH</span>
+                                        </div>
+                                        <span class="text-[11px] text-text-secondary" data-i18n="presc_subtitle">Tailored based on Intervals.icu fatigue &amp; form telemetry</span>
+                                    </div>
+                                </div>
+                                <span class="text-[11px] font-mono text-flat-green font-bold bg-flat-green/10 px-2.5 py-1 rounded-full self-start sm:self-auto">
+                                    Form: +8 (Fresh &bull; Optimal)
+                                </span>
+                            </div>
+
+                            <!-- Prescription Content -->
+                            <div class="space-y-2.5">
+                                <div class="flex items-baseline justify-between">
+                                    <h4 class="text-base font-bold text-text-primary" data-i18n="presc_workout_title">Threshold Progression Run &bull; 10.25 km</h4>
+                                    <span class="text-xs font-mono font-bold text-tertiary" data-i18n="presc_target_pace">Target Pace: 4:20 - 4:35/km</span>
+                                </div>
+                                <p class="text-xs text-text-secondary leading-relaxed" id="presc-desc-text">
+                                    Your form score is <strong class="text-flat-green">+8 TSB</strong> with low acute fatigue (ATL: 54). Prime conditions for aerobic threshold stimulation:
+                                    <span class="block font-mono text-[11px] bg-surface-subtle p-2.5 rounded-md border border-border mt-1.5 text-text-primary">
+                                        &bull; 2.0 km Warmup @ 5:30/km<br>
+                                        &bull; 3x (2.0 km @ 4:20/km with 2 min active recovery jog)<br>
+                                        &bull; 2.25 km Cool down @ 5:45/km
+                                    </span>
+                                </p>
+                            </div>
+
+                            <!-- Target Metrics Strip -->
+                            <div class="grid grid-cols-3 gap-2 text-center font-mono text-xs pt-1">
+                                <div class="p-2 bg-surface-subtle rounded-md border border-border">
+                                    <span class="text-[10px] text-text-secondary block" data-i18n="presc_target_hr">Target HR</span>
+                                    <span class="font-bold text-text-primary">162 - 170 bpm</span>
+                                </div>
+                                <div class="p-2 bg-surface-subtle rounded-md border border-border">
+                                    <span class="text-[10px] text-text-secondary block" data-i18n="presc_suffer">Est. Suffer Score</span>
+                                    <span class="font-bold text-flat-orange">68 (Tough)</span>
+                                </div>
+                                <div class="p-2 bg-surface-subtle rounded-md border border-border">
+                                    <span class="text-[10px] text-text-secondary block" data-i18n="presc_cadence">Ideal Cadence</span>
+                                    <span class="font-bold text-text-primary">176 - 180 spm</span>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons: Round Pill -->
+                            <div class="flex flex-wrap items-center gap-3 pt-2">
+                                <button onclick="quickLogPrescription('Threshold Progression Run', 10.25, 47, 164, 730)" class="btn-primary rounded-full px-5 py-2.5 text-xs font-bold flex items-center gap-2 active:scale-95 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <span data-i18n="presc_start_btn">Start / Log This Session</span>
+                                </button>
+                                <button onclick="switchWorkstationTab('chat')" class="btn-outline rounded-full px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                    <span data-i18n="presc_adapt_btn">Ask AI to Adapt</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. STRAVA FEED ITEM 1: Morning Run -->
+                        <div data-feed-type="run" class="feed-card flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
+                            <!-- Athlete Activity Header -->
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                                        RG
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
+                                            <span class="text-xs text-text-secondary" data-i18n="card_run_time">&bull; Today at 06:15 AM</span>
+                                        </div>
+                                        <div class="flex items-center gap-1 text-[11px] text-text-secondary">
+                                            <span data-i18n="card_sport_run">🏃 Run</span>
+                                            <span>&bull;</span>
+                                            <span>Jakarta, Indonesia</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="text-text-secondary hover:text-text-primary p-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
+                                </button>
+                            </div>
+
+                            <!-- Activity Title & Description -->
+                            <div class="space-y-1">
+                                <h3 onclick="openActivityDetailModal('morning_run')" class="font-display font-extrabold text-lg text-text-primary hover:text-tertiary transition-colors cursor-pointer" data-i18n="card_run_title">
+                                    Morning Progression Tempo Run
+                                </h3>
+                                <p class="text-xs text-text-secondary" data-i18n="card_run_desc">
+                                    Felt extremely strong through the 4:20/km interval blocks. Hydration on point with steady cadence at 178 spm.
+                                </p>
+                            </div>
+
+                            <!-- Strava 4-Column Metric Grid -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3 border-y border-border">
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_distance">Distance</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">10.25 <span class="text-xs font-normal text-text-secondary">km</span></span>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_pace">Pace</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">4:38 <span class="text-xs font-normal text-text-secondary">/km</span></span>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_time">Time</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">47m 32s</span>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_elev">Elev Gain</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">68 <span class="text-xs font-normal text-text-secondary">m</span></span>
+                                </div>
+                            </div>
+
+                            <!-- GPS VECTOR ROUTE MAP & POLYLINE (Strava Signature Dark Canvas) -->
+                            <div onclick="openActivityDetailModal('morning_run')" class="group relative w-full h-44 rounded-xl overflow-hidden cursor-pointer border-2 border-border hover:border-tertiary transition-all shadow-inner bg-[#1a1c22]">
+                                <!-- Athletic Dark Map Terrain Grid Background -->
+                                <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#3a3d4a 1px, transparent 1px), linear-gradient(to right, #242731 1px, transparent 1px), linear-gradient(to bottom, #242731 1px, transparent 1px); background-size: 20px 20px;"></div>
+                                
+                                <!-- GPS Vector Polyline Path (Urban Loop) -->
+                                <svg class="w-full h-full relative z-10" viewBox="0 0 500 200" preserveAspectRatio="none">
+                                    <defs>
+                                        <filter id="glow-orange-1" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="3" result="blur" />
+                                            <feMerge>
+                                                <feMergeNode in="blur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+                                    <!-- Subtle GPS Shadow Buffer -->
+                                    <path d="M 60 140 C 90 120, 140 150, 180 110 C 220 70, 260 50, 310 65 C 360 80, 410 110, 440 85 C 460 68, 470 120, 420 155 C 370 190, 300 165, 230 175 C 160 185, 100 170, 60 140 Z" fill="none" stroke="#000" stroke-width="6" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" />
+                                    <!-- Strava Orange Primary GPS Polyline -->
+                                    <path d="M 60 140 C 90 120, 140 150, 180 110 C 220 70, 260 50, 310 65 C 360 80, 410 110, 440 85 C 460 68, 470 120, 420 155 C 370 190, 300 165, 230 175 C 160 185, 100 170, 60 140 Z" fill="rgba(252,76,2,0.06)" stroke="#FC4C02" stroke-width="3.5" filter="url(#glow-orange-1)" stroke-linecap="round" stroke-linejoin="round" />
+                                    <!-- Start Pin Dot (Green) -->
+                                    <circle cx="60" cy="140" r="7" fill="#10B981" stroke="#ffffff" stroke-width="2" />
+                                    <text x="60" y="143" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">S</text>
+                                    <!-- Finish Pin Dot (Strava Orange Checkered) -->
+                                    <circle cx="68" cy="144" r="7" fill="#FC4C02" stroke="#ffffff" stroke-width="2" />
+                                    <text x="68" y="147" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">F</text>
+                                </svg>
+
+                                <!-- Top Route Floating Info Chips -->
+                                <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white font-bold border border-white/10 flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-flat-green animate-pulse"></span>
+                                        <span>GPS Track &bull; 10.25 km</span>
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-flat-orange font-bold border border-white/10">
+                                        +68m Elev
+                                    </span>
+                                </div>
+
+                                <!-- Hover Interactive Overlay Badge -->
+                                <div class="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-full bg-tertiary text-white font-mono text-[11px] font-bold shadow-md group-hover:scale-105 transition-transform flex items-center gap-1.5">
+                                    <span data-i18n="card_inspect_map">Inspect Route &amp; Splits</span>
+                                    <span>&rarr;</span>
+                                </div>
+                            </div>
+
+                            <!-- AI Telemetry Breakdown Pill -->
+                            <div class="p-3 bg-surface-subtle border border-border rounded-lg text-xs space-y-1.5">
+                                <div class="flex items-center gap-1.5 text-tertiary font-bold font-mono text-[11px]">
+                                    <span data-i18n="card_ai_engine">⚡ AI ANALYSIS ENGINE</span>
+                                    <span>&bull;</span>
+                                    <span class="text-flat-green">AEROBIC EFFICIENCY HIGH</span>
+                                </div>
+                                <p class="text-[11px] text-text-secondary leading-relaxed" data-i18n="card_run_ai_notes">
+                                    Cardiovascular drift measured at only <strong class="text-flat-green font-mono">+1.7%</strong> decoupling. Form balance was symmetric at <strong class="text-text-primary font-mono">49.8% L / 50.2% R</strong> with 212ms ground contact time.
+                                </p>
+                            </div>
+
+                            <!-- Social / Kudos Interaction Footer -->
+                            <div class="flex items-center justify-between pt-2 border-t border-border">
+                                <div class="flex items-center gap-4">
+                                    <!-- Kudos Button (Strava Orange Thumbs-up / Heart) -->
+                                    <button onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
+                                        <svg class="w-4 h-4 text-tertiary group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                        </svg>
+                                        <span class="kudos-count font-mono font-bold text-text-primary">24</span>
+                                        <span data-i18n="card_kudos">Kudos</span>
+                                    </button>
+                                    <!-- Comments Button -->
+                                    <button class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                        <span class="font-mono font-bold text-text-primary">5</span>
+                                        <span data-i18n="card_comments">Comments</span>
+                                    </button>
+                                </div>
+                                <button onclick="openActivityDetailModal('morning_run')" class="text-xs font-mono font-bold text-tertiary hover:underline" data-i18n="card_view_splits">
+                                    View Splits &rarr;
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3. STRAVA FEED ITEM 2: Weekend Ride -->
+                        <div data-feed-type="cycling" class="feed-card flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                                        RG
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
+                                            <span class="text-xs text-text-secondary" data-i18n="card_ride_time">&bull; Yesterday at 05:45 AM</span>
+                                        </div>
+                                        <div class="flex items-center gap-1 text-[11px] text-text-secondary">
+                                            <span data-i18n="card_sport_cycling">🚴 Ride</span>
+                                            <span>&bull;</span>
+                                            <span>Sentul Loop, West Java</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="text-text-secondary hover:text-text-primary p-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
+                                </button>
+                            </div>
+
+                            <div class="space-y-1">
+                                <h3 onclick="openActivityDetailModal('weekend_ride')" class="font-display font-extrabold text-lg text-text-primary hover:text-tertiary transition-colors cursor-pointer" data-i18n="card_ride_title">
+                                    Sentul KM0 Hill Climb Endurance
+                                </h3>
+                                <p class="text-xs text-text-secondary" data-i18n="card_ride_desc">
+                                    Steep climb section held at steady 240W. Smooth descending and solid cadence control.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3 border-y border-border">
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_distance">Distance</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">64.8 <span class="text-xs font-normal text-text-secondary">km</span></span>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_speed">Avg Speed</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">28.4 <span class="text-xs font-normal text-text-secondary">km/h</span></span>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_time">Time</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">2h 16m</span>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_elev">Elev Gain</span>
+                                    <span class="font-display font-extrabold text-2xl text-text-primary">580 <span class="text-xs font-normal text-text-secondary">m</span></span>
+                                </div>
+                            </div>
+
+                            <!-- GPS VECTOR ROUTE MAP & SWITCHBACK CLIMB (Strava Signature) -->
+                            <div onclick="openActivityDetailModal('weekend_ride')" class="group relative w-full h-44 rounded-xl overflow-hidden cursor-pointer border-2 border-border hover:border-tertiary transition-all shadow-inner bg-[#1a1c22]">
+                                <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#3a3d4a 1px, transparent 1px), linear-gradient(to right, #242731 1px, transparent 1px), linear-gradient(to bottom, #242731 1px, transparent 1px); background-size: 20px 20px;"></div>
+                                
+                                <svg class="w-full h-full relative z-10" viewBox="0 0 500 200" preserveAspectRatio="none">
+                                    <!-- Climbing elevation profile contour lines -->
+                                    <path d="M 40 160 Q 120 150 180 130 T 280 80 T 380 40 L 460 25" fill="none" stroke="#2a2e3d" stroke-width="2" stroke-dasharray="4,4" />
+                                    <!-- Climbing switchbacks route line -->
+                                    <path d="M 40 160 C 80 160, 110 135, 130 145 C 160 160, 180 120, 210 125 C 240 130, 260 90, 290 95 C 320 100, 340 60, 370 65 C 400 70, 420 30, 460 25" fill="none" stroke="#000" stroke-width="6" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M 40 160 C 80 160, 110 135, 130 145 C 160 160, 180 120, 210 125 C 240 130, 260 90, 290 95 C 320 100, 340 60, 370 65 C 400 70, 420 30, 460 25" fill="none" stroke="#FC4C02" stroke-width="3.5" filter="url(#glow-orange-1)" stroke-linecap="round" stroke-linejoin="round" />
+                                    <!-- Start Pin Dot -->
+                                    <circle cx="40" cy="160" r="7" fill="#10B981" stroke="#ffffff" stroke-width="2" />
+                                    <text x="40" y="163" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">S</text>
+                                    <!-- Summit Finish Pin Dot -->
+                                    <circle cx="460" cy="25" r="7" fill="#FC4C02" stroke="#ffffff" stroke-width="2" />
+                                    <text x="460" y="28" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">F</text>
+                                </svg>
+
+                                <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white font-bold border border-white/10 flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-flat-orange animate-pulse"></span>
+                                        <span>Sentul KM0 Summit &bull; 64.8 km</span>
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-flat-orange font-bold border border-white/10">
+                                        +580m Elev (Category 2)
+                                    </span>
+                                </div>
+
+                                <div class="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-full bg-tertiary text-white font-mono text-[11px] font-bold shadow-md group-hover:scale-105 transition-transform flex items-center gap-1.5">
+                                    <span data-i18n="card_inspect_map">Inspect Power &amp; Splits</span>
+                                    <span>&rarr;</span>
+                                </div>
+                            </div>
+
+                            <!-- Social Interaction Footer -->
+                            <div class="flex items-center justify-between pt-2 border-t border-border">
+                                <div class="flex items-center gap-4">
+                                    <button onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
+                                        <svg class="w-4 h-4 text-tertiary group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                        </svg>
+                                        <span class="kudos-count font-mono font-bold text-text-primary">38</span>
+                                        <span data-i18n="card_kudos">Kudos</span>
+                                    </button>
+                                    <button class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                        <span class="font-mono font-bold text-text-primary">8</span>
+                                        <span data-i18n="card_comments">Comments</span>
+                                    </button>
+                                </div>
+                                <button onclick="openActivityDetailModal('weekend_ride')" class="text-xs font-mono font-bold text-tertiary hover:underline" data-i18n="card_view_power">
+                                    View Power Curve &rarr;
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: AI Coach Quick Copilot & Challenges (3 cols) -->
+                    <div class="lg:col-span-3 space-y-4">
+                        
+                        <!-- 1. AI Endurance Assistant Quick Chatbox -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                    <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">AI Coach Assistant</h4>
+                                </div>
+                                <span class="text-[10px] font-mono text-tertiary font-bold">GEMINI AI</span>
+                            </div>
+
+                            <p class="text-[11px] text-text-secondary leading-normal">
+                                Instant guidance for tomorrow's training, pacing, and fueling strategy.
+                            </p>
+
+                            <!-- Quick Suggestion Prompt Chips -->
+                            <div class="space-y-1.5">
+                                <button onclick="quickAskAi('Should I do tempo intervals or easy run tomorrow?')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
+                                    &bull; "Should I do tempo or easy run tomorrow?"
+                                </button>
+                                <button onclick="quickAskAi('Calculate my half marathon carb intake per hour')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
+                                    &bull; "Calculate race carb intake per hour"
+                                </button>
+                                <button onclick="quickAskAi('Analyze my heart rate recovery drift')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
+                                    &bull; "Analyze my heart rate recovery drift"
+                                </button>
+                            </div>
+
+                            <!-- Quick Ask Box -->
+                            <div class="pt-1">
+                                <div class="flex items-center gap-1.5">
+                                    <input type="text" id="quick-ai-input" placeholder="Ask your coach anything..." class="flat-input text-xs py-2 px-3 rounded-full flex-1" onkeydown="if(event.key==='Enter') quickSubmitAi()">
+                                    <button onclick="quickSubmitAi()" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center shrink-0 p-0" title="Send">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Fitness & Freshness Gauge (Intervals.icu / Strava) -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Fitness &amp; Freshness</h4>
+                                <span class="text-[10px] font-mono text-flat-green font-bold">INTERVALS.ICU</span>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2 text-center font-mono">
+                                <div class="p-2 bg-surface-subtle rounded-md border border-border">
+                                    <span class="text-[10px] text-text-secondary block">Fitness (CTL)</span>
+                                    <span class="text-sm font-bold text-text-primary">62.4</span>
+                                </div>
+                                <div class="p-2 bg-surface-subtle rounded-md border border-border">
+                                    <span class="text-[10px] text-text-secondary block">Fatigue (ATL)</span>
+                                    <span class="text-sm font-bold text-text-secondary">54.0</span>
+                                </div>
+                                <div class="p-2 bg-surface-subtle rounded-md border border-border">
+                                    <span class="text-[10px] text-text-secondary block">Form (TSB)</span>
+                                    <span class="text-sm font-bold text-flat-green">+8.4</span>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] font-mono flex items-center justify-between text-text-secondary pt-1">
+                                <span>VO2Max: <strong class="text-text-primary">54.2</strong></span>
+                                <span>Threshold: <strong class="text-tertiary">168 bpm</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Strava Monthly Challenges -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Active Challenges</h4>
+                                <span class="text-[10px] font-mono text-text-secondary">October</span>
+                            </div>
+
+                            <div class="space-y-2.5 text-xs">
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="font-bold text-text-primary">October 100km Run</span>
+                                        <span class="font-mono text-tertiary font-bold">68 / 100 km</span>
+                                    </div>
+                                    <div class="w-full bg-surface-subtle h-2 rounded-full overflow-hidden mt-1 border border-border">
+                                        <div class="bg-tertiary h-full rounded-full" style="width: 68%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="font-bold text-text-primary">Gran Fondo 100k Ride</span>
+                                        <span class="font-mono text-flat-green font-bold">Completed 🏅</span>
+                                    </div>
+                                    <div class="w-full bg-surface-subtle h-2 rounded-full overflow-hidden mt-1 border border-border">
+                                        <div class="bg-flat-green h-full rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
 
                 <!-- TRI-PLATFORM SCIENTIFIC TELEMETRY QUICK HUB -->
                 <div class="flat-card border-2 border-border-strong p-4 bg-surface space-y-3">
@@ -1080,7 +1801,7 @@
                         <div class="flex items-center justify-between border-b border-border pb-3">
                             <h3 class="font-display font-bold text-base text-text-primary">Summary</h3>
                             <div class="flex items-center gap-1">
-                                <select id="summary-range-select" onchange="updateSummaryData(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-[2px] font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
+                                <select id="summary-range-select" onchange="updateSummaryData(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
                                     <option value="weekly">Weekly</option>
                                     <option value="monthly" selected>Monthly</option>
                                     <option value="yearly">Yearly</option>
@@ -1170,7 +1891,7 @@
                     <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
                         <div class="flex items-center justify-between border-b border-border pb-3">
                             <h3 class="font-display font-bold text-base text-text-primary">Today's activity</h3>
-                            <select id="today-activity-filter" onchange="filterTodayActivities(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-[2px] font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
+                            <select id="today-activity-filter" onchange="filterTodayActivities(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
                                 <option value="recent" selected>Recent</option>
                                 <option value="planned">Planned</option>
                             </select>
@@ -1291,7 +2012,7 @@
                                 <h3 class="font-display font-bold text-base text-text-primary">Recommended activity</h3>
                                 <p class="text-[11px] text-text-secondary">Targeted endurance and strength workouts.</p>
                             </div>
-                            <select id="rec-activity-filter" onchange="filterRecommendedSessions(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-[2px] font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
+                            <select id="rec-activity-filter" onchange="filterRecommendedSessions(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
                                 <option value="daily" selected>Daily</option>
                                 <option value="weekly">Weekly</option>
                             </select>
@@ -1388,7 +2109,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <select id="activity-timeline-filter" onchange="updateActivityChartTimeframe(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-[2px] font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary self-start sm:self-auto">
+                            <select id="activity-timeline-filter" onchange="updateActivityChartTimeframe(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary self-start sm:self-auto">
                                 <option value="monthly" selected>Monthly</option>
                                 <option value="weekly">Weekly</option>
                             </select>
@@ -1491,14 +2212,14 @@
                             </div>
 
                             <!-- 3-Way Coach Tier Selector -->
-                            <div class="flex items-center gap-1 bg-surface-subtle border border-border p-0.5 rounded-[2px] font-mono text-[10px]">
-                                <button type="button" id="tier-btn-pemula" onclick="selectCoachTier('pemula')" class="px-2 py-0.5 rounded-[2px] text-text-secondary hover:text-text-primary transition-colors">
+                            <div class="flex items-center gap-1 bg-surface-subtle border border-border p-0.5 rounded-full font-mono text-[10px]">
+                                <button type="button" id="tier-btn-pemula" onclick="selectCoachTier('pemula')" class="px-2 py-0.5 rounded-full text-text-secondary hover:text-text-primary transition-colors">
                                     Pemula (Free)
                                 </button>
-                                <button type="button" id="tier-btn-free" onclick="selectCoachTier('free')" class="px-2 py-0.5 rounded-[2px] bg-tertiary text-white font-bold transition-colors">
+                                <button type="button" id="tier-btn-free" onclick="selectCoachTier('free')" class="px-2 py-0.5 rounded-full bg-tertiary text-white font-bold transition-colors">
                                     Coach (Free)
                                 </button>
-                                <button type="button" id="tier-btn-pro" onclick="selectCoachTier('pro')" class="px-2 py-0.5 rounded-[2px] text-text-secondary hover:text-text-primary transition-colors">
+                                <button type="button" id="tier-btn-pro" onclick="selectCoachTier('pro')" class="px-2 py-0.5 rounded-full text-text-secondary hover:text-text-primary transition-colors">
                                     Coach (Pro)
                                 </button>
                             </div>
@@ -1509,7 +2230,7 @@
                         <!-- Chat Message Scroll Stream -->
                         <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3.5 pr-2 text-xs leading-relaxed">
                             <!-- Welcome Message -->
-                            <div class="p-3 bg-surface-subtle border border-border rounded-[2px] max-w-[92%]">
+                            <div class="p-3 bg-surface-subtle border border-border rounded-xl max-w-[92%]">
                                 <div class="font-bold text-[11px] text-tertiary font-mono mb-1">GOALIE COACH // SYSTEM READY</div>
                                 <p class="text-text-primary">
                                     I am your sports scientist and head performance coach. Your training load (CTL/ATL/TSB), target pace distribution, and physiological drift metrics are active. Ask a strategic training question or select one of the prompts below.
@@ -1517,18 +2238,21 @@
                             </div>
                         </div>
 
-                        <!-- Quick Prompt Chips -->
+                        <!-- Quick Prompt Chips (Pill styled) -->
                         <div class="pt-3 border-t border-border flex flex-wrap gap-1.5 text-[11px]">
-                            <button onclick="sendQuickPrompt('Evaluasi status ACWR saya di angka 1.16 dan form TSB -11.9. Apakah saya berada di Sweet Spot atau ada risiko cedera?')" class="px-2 py-1 bg-surface-subtle border border-border rounded-[2px] hover:border-flat-orange text-text-secondary hover:text-text-primary">
+                            <button onclick="sendQuickPrompt('Rekomendasikan menu latihan preskriptif untuk besok berdasarkan fatigue form TSB +8 dan target maraton.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1">
+                                <span>⚡ Prescribe Tomorrow's Workout</span>
+                            </button>
+                            <button onclick="sendQuickPrompt('Evaluasi status ACWR saya di angka 1.16 dan form TSB -11.9. Apakah saya berada di Sweet Spot atau ada risiko cedera?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
                                 TP ACWR 1.16 &amp; TSB
                             </button>
-                            <button onclick="sendQuickPrompt('Berdasarkan HRR 144 bpm (RHR 48, Max 192), bagaimana saya harus membagi waktu di Zona 2 Karvonen (135-149 bpm) untuk maraton?')" class="px-2 py-1 bg-surface-subtle border border-border rounded-[2px] hover:border-tertiary text-text-secondary hover:text-text-primary">
+                            <button onclick="sendQuickPrompt('Berdasarkan HRR 144 bpm (RHR 48, Max 192), bagaimana saya harus membagi waktu di Zona 2 Karvonen (135-149 bpm) untuk maraton?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-tertiary text-text-secondary hover:text-text-primary transition-colors">
                                 Karvonen 5-Zone HR Matrix
                             </button>
-                            <button onclick="sendQuickPrompt('Hitung Minetti Grade-Adjusted Pace jika saya lari di tanjakan elevasi 60 meter dengan pace 05:00 min/km.')" class="px-2 py-1 bg-surface-subtle border border-border rounded-[2px] hover:border-flat-orange text-text-secondary hover:text-text-primary">
+                            <button onclick="sendQuickPrompt('Hitung Minetti Grade-Adjusted Pace jika saya lari di tanjakan elevasi 60 meter dengan pace 05:00 min/km.')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
                                 Strava Minetti GAP
                             </button>
-                            <button onclick="sendQuickPrompt('Cardiac drift saya tercatat +1.7% (decoupling) dan efisiensi 1.36 m/beat. Apakah fondasi aerobik saya sudah cukup solid?')" class="px-2 py-1 bg-surface-subtle border border-border rounded-[2px] hover:border-flat-green text-text-secondary hover:text-text-primary">
+                            <button onclick="sendQuickPrompt('Cardiac drift saya tercatat +1.7% (decoupling) dan efisiensi 1.36 m/beat. Apakah fondasi aerobik saya sudah cukup solid?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
                                 Aerobic Decoupling Drift +1.7%
                             </button>
                         </div>
@@ -2322,12 +3046,12 @@
                         <!-- 3. Coach Tier & Interface Preferences -->
                         <div>
                             <div class="flex items-center gap-2 pb-2 mb-3 border-b border-border">
-                                <span class="font-mono font-bold text-[11px] text-text-primary uppercase tracking-wider">03 // Coach Engine &amp; Display Preferences</span>
+                                <span class="font-mono font-bold text-[11px] text-text-primary uppercase tracking-wider" data-i18n="settings_pref_title">03 // Coach Engine &amp; Display Preferences</span>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div>
-                                    <label class="block font-mono text-[11px] text-text-secondary mb-1">Default AI Coach Engine</label>
+                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_coach_engine">Default AI Coach Engine</label>
                                     <select id="settings-coach-tier" class="flat-input text-xs" onchange="selectCoachTier(this.value)">
                                         <option value="pemula">Pemula (Free) - Deterministic Offline</option>
                                         <option value="free" selected>Coach (Free) - Google Gemini 3.8 Flash</option>
@@ -2335,17 +3059,24 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block font-mono text-[11px] text-text-secondary mb-1">Measurement System</label>
+                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_units_label">Measurement System</label>
                                     <select id="settings-units" class="flat-input text-xs">
                                         <option value="metric" selected>Metric (km, kg, pace min/km, °C)</option>
                                         <option value="imperial">Imperial (miles, lbs, pace min/mi, °F)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block font-mono text-[11px] text-text-secondary mb-1">Color Theme</label>
+                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_theme_label">Color Theme</label>
                                     <select id="settings-theme" class="flat-input text-xs" onchange="applyTheme(this.value)">
                                         <option value="light">Flat Light (Pure Paper)</option>
                                         <option value="dark">Flat Dark (Charcoal 2D)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_language_label">Language / Bahasa</label>
+                                    <select id="settings-language" class="flat-input text-xs" onchange="changeLanguage(this.value)">
+                                        <option value="id" selected>Bahasa Indonesia (ID)</option>
+                                        <option value="en">English (US)</option>
                                     </select>
                                 </div>
                             </div>
@@ -2356,18 +3087,18 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <button type="button" onclick="exportAthleteData()" class="btn-flat-secondary px-3 py-2 text-xs font-mono inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                    <span>EXPORT DATA (.JSON)</span>
+                                    <span data-i18n="settings_export_btn">EXPORT DATA (.JSON)</span>
                                 </button>
-                                <button type="button" onclick="resetSandboxData()" class="btn-flat-secondary px-3 py-2 text-xs font-mono text-flat-orange hover:border-flat-orange">
+                                <button type="button" onclick="resetSandboxData()" class="btn-flat-secondary px-3 py-2 text-xs font-mono text-flat-orange hover:border-flat-orange" data-i18n="settings_reset_btn">
                                     RESET LOCAL CACHE
                                 </button>
                             </div>
 
                             <div class="flex items-center gap-3">
-                                <button type="button" onclick="switchWorkstationTab('cockpit')" class="btn-flat-secondary px-4 py-2 text-xs font-mono">
+                                <button type="button" onclick="switchWorkstationTab('cockpit')" class="btn-flat-secondary px-4 py-2 text-xs font-mono" data-i18n="settings_back_btn">
                                     BACK TO COCKPIT
                                 </button>
-                                <button type="submit" id="btn-save-settings" class="btn-flat-primary px-6 py-2 text-xs font-mono font-bold">
+                                <button type="submit" id="btn-save-settings" class="btn-flat-primary px-6 py-2 text-xs font-mono font-bold" data-i18n="settings_save_btn">
                                     SAVE ATHLETE SETTINGS &gt;
                                 </button>
                             </div>
@@ -2540,7 +3271,7 @@
                 <!-- Tier 3: Coach (Pro) (HIGHLIGHTED) -->
                 <div class="flat-card border-2 border-tertiary p-6 sm:p-8 bg-surface flex flex-col justify-between space-y-6 relative">
                     <div class="absolute -top-3 left-6">
-                        <span class="bg-tertiary text-white font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-[2px] tracking-wider uppercase">
+                        <span class="bg-tertiary text-white font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
                             RECOMMENDED // FULL COACH
                         </span>
                     </div>
@@ -2619,7 +3350,7 @@
             <!-- Col 1: Brand (4 cols) -->
             <div class="md:col-span-4 space-y-3">
                 <div class="flex items-center gap-2">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-6 h-6 rounded-[2px] object-contain border border-border">
+                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-6 h-6 rounded-md object-contain border border-border">
                     <span class="font-display font-bold text-base text-text-primary">Goalie Athletics</span>
                 </div>
                 <p class="text-xs text-text-secondary leading-relaxed max-w-sm">
@@ -2694,7 +3425,7 @@
         <div class="flat-card border-2 border-border-strong max-w-md w-full p-6 bg-surface relative animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-6 h-6 rounded-[2px] object-contain border border-border">
+                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-6 h-6 rounded-md object-contain border border-border">
                     <h3 id="auth-modal-title" class="font-display font-bold text-base text-text-primary">Sign In to Goalie</h3>
                 </div>
                 <button onclick="closeAuthModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">
@@ -2895,29 +3626,211 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- LOG WORKOUT & TELEMETRY MODAL (Flat 2D)                    -->
+    <!-- ACTIVITY DETAIL MODAL / DRAWER (Feature 2)                 -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div id="activity-detail-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto">
+        <div class="flat-card border-2 border-border-strong max-w-2xl w-full p-5 sm:p-6 bg-surface relative animate-in fade-in duration-150 max-h-[90vh] overflow-y-auto space-y-4 shadow-xl">
+            <!-- Header -->
+            <div class="flex justify-between items-start pb-3 border-b-2 border-border gap-3">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span id="detail-sport-badge" class="px-2 py-0.5 rounded-full bg-tertiary text-white font-mono text-[10px] font-bold uppercase">RUN</span>
+                        <span class="text-[10px] font-mono text-flat-green font-bold bg-flat-green/10 border border-flat-green/30 px-2 py-0.5 rounded-full" data-i18n="detail_modal_badge">STRAVA TELEMETRY VERIFIED</span>
+                    </div>
+                    <h3 id="detail-activity-title" class="font-display font-extrabold text-lg sm:text-xl text-text-primary">Morning Progression Tempo Run</h3>
+                    <div id="detail-activity-date" class="text-xs text-text-secondary font-mono">Today at 06:15 AM &bull; Jakarta, Indonesia</div>
+                </div>
+                <button onclick="closeActivityDetailModal()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-full hover:bg-surface-subtle transition-colors" title="Close Modal">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- 4x2 Metric Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_distance">Distance</span>
+                    <span id="detail-metric-dist" class="font-display font-bold text-xl text-text-primary">10.25 <span class="text-xs text-text-secondary">km</span></span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_pace">Avg Pace</span>
+                    <span id="detail-metric-pace" class="font-display font-bold text-xl text-text-primary">4:38 <span class="text-xs text-text-secondary">/km</span></span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_time">Moving Time</span>
+                    <span id="detail-metric-time" class="font-display font-bold text-xl text-text-primary">47m 32s</span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_elev">Elev Gain</span>
+                    <span id="detail-metric-elev" class="font-display font-bold text-xl text-text-primary">+68 <span class="text-xs text-text-secondary">m</span></span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="detail_avg_hr">Avg HR</span>
+                    <span id="detail-metric-avghr" class="font-display font-bold text-base text-text-primary">158 <span class="text-xs text-text-secondary">bpm</span></span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="detail_max_hr">Max HR</span>
+                    <span id="detail-metric-maxhr" class="font-display font-bold text-base text-text-primary">174 <span class="text-xs text-text-secondary">bpm</span></span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="log_cal_label">Calories</span>
+                    <span id="detail-metric-cal" class="font-display font-bold text-base text-text-primary">730 <span class="text-xs text-text-secondary">kcal</span></span>
+                </div>
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                    <span class="text-[10px] text-text-secondary block uppercase" data-i18n="presc_suffer">Relative Effort</span>
+                    <span id="detail-metric-suffer" class="font-display font-bold text-base text-flat-orange">64 (Tough)</span>
+                </div>
+            </div>
+
+            <!-- Route Map Canvas -->
+            <div id="detail-map-container" class="relative w-full h-40 rounded-xl overflow-hidden border border-border bg-[#1a1c22]">
+                <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#3a3d4a 1px, transparent 1px); background-size: 16px 16px;"></div>
+                <svg id="detail-map-svg" class="w-full h-full relative z-10" viewBox="0 0 500 160" preserveAspectRatio="none">
+                    <!-- Polyline rendered dynamically -->
+                    <path id="detail-map-polyline" d="M 50 110 C 90 90, 140 120, 180 85 C 220 50, 260 40, 310 50 C 360 60, 410 90, 440 65 C 460 50, 470 100, 420 125 C 370 150, 300 130, 230 140 C 160 150, 90 135, 50 110 Z" fill="rgba(252,76,2,0.08)" stroke="#FC4C02" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="50" cy="110" r="6" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
+                    <circle cx="58" cy="114" r="6" fill="#FC4C02" stroke="#ffffff" stroke-width="1.5" />
+                </svg>
+                <div class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-[10px] font-mono text-white">
+                    📍 GPS Polyline Visualizer
+                </div>
+            </div>
+
+            <!-- Per-Km Splits Table -->
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-display font-bold text-xs uppercase tracking-wider text-text-primary" data-i18n="detail_splits_title">Per-Kilometer Splits</h4>
+                    <span class="text-[10px] font-mono text-text-secondary" data-i18n="detail_splits_sub">Pace vs Target Distribution</span>
+                </div>
+                <div class="border border-border rounded-lg overflow-hidden bg-surface">
+                    <div class="max-h-48 overflow-y-auto">
+                        <table class="w-full text-left font-mono text-xs">
+                            <thead class="bg-surface-subtle border-b border-border text-[10px] text-text-secondary uppercase">
+                                <tr>
+                                    <th class="py-1.5 px-3">Km</th>
+                                    <th class="py-1.5 px-3" data-i18n="card_pace">Pace</th>
+                                    <th class="py-1.5 px-3 hidden sm:table-cell">Distribution</th>
+                                    <th class="py-1.5 px-3">Elev</th>
+                                    <th class="py-1.5 px-3">Avg HR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-splits-tbody" class="divide-y divide-border">
+                                <!-- Populated dynamically by openActivityDetailModal -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5-Zone Heart Rate Breakdown -->
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-display font-bold text-xs uppercase tracking-wider text-text-primary" data-i18n="detail_hr_zones_title">Heart Rate Zone Distribution (5-Zone Karvonen)</h4>
+                    <span class="text-[10px] font-mono text-flat-green font-bold">Aerobic Focused</span>
+                </div>
+                <!-- Stacked Progress Bar -->
+                <div class="w-full h-3 rounded-full overflow-hidden flex bg-surface-subtle border border-border" id="detail-hr-stacked-bar">
+                    <div style="width: 8%" class="bg-blue-400" title="Z1 Recovery: 8%"></div>
+                    <div style="width: 24%" class="bg-emerald-400" title="Z2 Aerobic: 24%"></div>
+                    <div style="width: 38%" class="bg-amber-400" title="Z3 Tempo: 38%"></div>
+                    <div style="width: 26%" class="bg-orange-500" title="Z4 Threshold: 26%"></div>
+                    <div style="width: 4%" class="bg-rose-500" title="Z5 VO2max: 4%"></div>
+                </div>
+                <!-- Zone Breakdown Badges -->
+                <div class="grid grid-cols-5 gap-1 text-center font-mono text-[10px]" id="detail-hr-zone-badges">
+                    <div class="p-1 rounded bg-surface-subtle border border-border">
+                        <span class="text-blue-500 font-bold block">Z1 (8%)</span>
+                        <span class="text-[9px] text-text-secondary">&lt;125 bpm</span>
+                    </div>
+                    <div class="p-1 rounded bg-surface-subtle border border-border">
+                        <span class="text-emerald-500 font-bold block">Z2 (24%)</span>
+                        <span class="text-[9px] text-text-secondary">125-149</span>
+                    </div>
+                    <div class="p-1 rounded bg-surface-subtle border border-border">
+                        <span class="text-amber-500 font-bold block">Z3 (38%)</span>
+                        <span class="text-[9px] text-text-secondary">150-163</span>
+                    </div>
+                    <div class="p-1 rounded bg-surface-subtle border border-border">
+                        <span class="text-orange-500 font-bold block">Z4 (26%)</span>
+                        <span class="text-[9px] text-text-secondary">164-177</span>
+                    </div>
+                    <div class="p-1 rounded bg-surface-subtle border border-border">
+                        <span class="text-rose-500 font-bold block">Z5 (4%)</span>
+                        <span class="text-[9px] text-text-secondary">&gt;177 bpm</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Coach Post-Mortem Audit -->
+            <div class="p-3 bg-surface-subtle border border-tertiary/40 rounded-xl space-y-1.5">
+                <div class="flex items-center gap-1.5 text-tertiary font-bold font-mono text-[11px]">
+                    <span data-i18n="detail_ai_postmortem_title">⚡ AI COACH POST-WORKOUT AUDIT</span>
+                    <span>&bull;</span>
+                    <span class="text-flat-green">PACING DISCIPLINE 94/100</span>
+                </div>
+                <p id="detail-ai-audit-text" class="text-xs text-text-secondary leading-relaxed">
+                    Solid execution across intervals. Only +1.7% cardiovascular drift was observed between the first and last repeat, indicating stellar mitochondrial density. Recommend 65g fast-absorbing carbs and 25g protein within 45 minutes for optimal glycogen resynthesis.
+                </p>
+            </div>
+
+            <!-- Footer Modal Actions -->
+            <div class="flex items-center justify-between pt-2 border-t border-border">
+                <button onclick="shareWorkoutSession()" class="btn-flat-secondary text-xs font-mono font-bold px-4 py-2 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                    <span data-i18n="detail_btn_share">Share Session</span>
+                </button>
+                <button onclick="closeActivityDetailModal()" class="btn-primary rounded-full text-xs font-mono font-bold px-6 py-2" data-i18n="detail_btn_close">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- LOG WORKOUT & TELEMETRY MODAL (Feature 3 Enhanced)         -->
     <!-- ══════════════════════════════════════════════════════════ -->
     <div id="log-workout-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-lg w-full p-6 bg-surface relative animate-in fade-in duration-150">
-            <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
+        <div class="flat-card border-2 border-border-strong max-w-lg w-full p-6 bg-surface relative animate-in fade-in duration-150 space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 bg-flat-green"></span>
-                    <h3 class="font-display font-bold text-base text-text-primary">Log Completed Workout</h3>
+                    <h3 class="font-display font-bold text-base text-text-primary" data-i18n="log_modal_title">Log Completed Workout</h3>
                 </div>
                 <button onclick="closeLogWorkoutModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
-            <form onsubmit="handleLogWorkoutSubmit(event)" class="space-y-3.5 font-mono text-xs">
+            <!-- 1-Tap Quick Presets (Feature 3) -->
+            <div class="space-y-1.5">
+                <span class="text-[10px] font-mono text-text-secondary font-bold uppercase tracking-wider block" data-i18n="log_quick_presets">1-Tap Quick Presets:</span>
+                <div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+                    <button type="button" onclick="applyWorkoutPreset('5k_run')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_5k">
+                        🏃 5K Recovery
+                    </button>
+                    <button type="button" onclick="applyWorkoutPreset('10k_tempo')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_10k">
+                        🏃 10K Tempo
+                    </button>
+                    <button type="button" onclick="applyWorkoutPreset('21k_half')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_21k">
+                        🏃 21K Half
+                    </button>
+                    <button type="button" onclick="applyWorkoutPreset('30k_ride')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_30k">
+                        🚴 30K Ride
+                    </button>
+                    <button type="button" onclick="applyWorkoutPreset('1_5k_swim')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_swim">
+                        🏊 1.5K Swim
+                    </button>
+                </div>
+            </div>
+
+            <form onsubmit="handleLogWorkoutSubmit(event)" class="space-y-3 font-mono text-xs">
                 <div>
-                    <label class="block text-[11px] text-text-secondary mb-1">Session Title</label>
+                    <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_title_label">Session Title</label>
                     <input type="text" id="log-title" class="flat-input text-xs" value="Morning Threshold Intervals" required>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1">Sport Type</label>
+                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_sport_label">Sport Type</label>
                         <select id="log-sport-type" class="flat-input text-xs">
                             <option value="run" selected>Running</option>
                             <option value="cycling">Cycling</option>
@@ -2925,40 +3838,43 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1">Distance (km)</label>
+                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_distance_label">Distance (km)</label>
                         <input type="number" step="0.1" id="log-distance" class="flat-input text-xs" value="10.5" required>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1">Duration (min)</label>
+                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_duration_label">Duration (min)</label>
                         <input type="number" id="log-duration-min" class="flat-input text-xs" value="48" required>
                     </div>
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1">Avg HR (bpm)</label>
+                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_hr_label">Avg HR (bpm)</label>
                         <input type="number" id="log-avg-hr" class="flat-input text-xs" value="156">
                     </div>
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1">Calories (kcal)</label>
+                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_cal_label">Calories (kcal)</label>
                         <input type="number" id="log-calories" class="flat-input text-xs" value="720">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] text-text-secondary mb-1">Perceived Exertion (RPE 1-10)</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[11px] text-text-secondary" data-i18n="log_rpe_label">Perceived Exertion (RPE 1-10)</label>
+                        <span id="rpe-qualitative-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-flat-orange/15 text-flat-orange">Tempo / Moderate (Steady)</span>
+                    </div>
                     <div class="flex items-center gap-2">
-                        <input type="range" id="log-rpe" min="1" max="10" value="7" class="w-full accent-tertiary" oninput="document.getElementById('rpe-val').textContent = this.value">
+                        <input type="range" id="log-rpe" min="1" max="10" value="7" class="w-full accent-tertiary" oninput="updateRpeDisplay(this.value)">
                         <span id="rpe-val" class="font-bold text-sm text-tertiary w-6 text-center">7</span>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] text-text-secondary mb-1">Coach Notes</label>
+                    <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_notes_label">Coach Notes</label>
                     <textarea id="log-notes" rows="2" class="flat-input text-xs resize-none" placeholder="Felt smooth across intervals, slight fatigue on repetition 5."></textarea>
                 </div>
 
-                <button type="submit" id="btn-save-workout" class="btn-flat-primary w-full py-3 text-xs font-mono font-bold uppercase mt-2">
+                <button type="submit" id="btn-save-workout" class="btn-flat-primary w-full py-3 text-xs font-mono font-bold uppercase mt-2" data-i18n="log_submit_btn">
                     SAVE &amp; RECALCULATE TELEMETRY
                 </button>
             </form>
@@ -2983,6 +3899,68 @@
             return `${window.location.origin}/api/v1`;
         };
         const API_BASE = getApiBase();
+
+        // ══════════════════════════════════════════════════════
+        // NATIVE HAPTICS & DEVICE SENSORY SERVICE
+        // ══════════════════════════════════════════════════════
+        const HapticsService = {
+            async impact(style = 'LIGHT') {
+                try {
+                    if (window.Capacitor?.Plugins?.Haptics) {
+                        await window.Capacitor.Plugins.Haptics.impact({ style: style.toUpperCase() });
+                        return;
+                    }
+                } catch (e) {}
+                if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+                    try {
+                        if (style === 'HEAVY') navigator.vibrate([25, 20, 25]);
+                        else if (style === 'MEDIUM') navigator.vibrate(20);
+                        else navigator.vibrate(10);
+                    } catch (e) {}
+                }
+            },
+            async notification(type = 'SUCCESS') {
+                try {
+                    if (window.Capacitor?.Plugins?.Haptics) {
+                        await window.Capacitor.Plugins.Haptics.notification({ type: type.toUpperCase() });
+                        return;
+                    }
+                } catch (e) {}
+                if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+                    try {
+                        if (type === 'ERROR') navigator.vibrate([40, 30, 40]);
+                        else navigator.vibrate([15, 25, 15]);
+                    } catch (e) {}
+                }
+            },
+            async selection() {
+                try {
+                    if (window.Capacitor?.Plugins?.Haptics) {
+                        await window.Capacitor.Plugins.Haptics.selectionStart();
+                        await window.Capacitor.Plugins.Haptics.selectionChanged();
+                        return;
+                    }
+                } catch (e) {}
+                if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+                    try { navigator.vibrate(8); } catch (e) {}
+                }
+            }
+        };
+
+        // Native Status Bar & System UI Styling (Capacitor)
+        const initNativeStatusBar = async () => {
+            try {
+                if (window.Capacitor?.Plugins?.StatusBar) {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    await window.Capacitor.Plugins.StatusBar.setStyle({ 
+                        style: isDark ? 'DARK' : 'LIGHT' 
+                    });
+                    await window.Capacitor.Plugins.StatusBar.setBackgroundColor({ 
+                        color: isDark ? '#121214' : '#F7F7F8' 
+                    });
+                }
+            } catch (e) {}
+        };
 
         // ══════════════════════════════════════════════════════
         // 2D FLAT SONNER TOAST NOTIFICATION CONTROLLER
@@ -3055,6 +4033,8 @@
         // DOM Ready Initializer
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
+            initLanguage();
+            initNativeStatusBar();
             updateNavAuthUI();
             checkAppInstalledStatus();
             updateByokUI();
@@ -3091,26 +4071,11 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             appState.deferredPrompt = e;
-            const btn = document.getElementById('btn-pwa-install');
-            if (btn) btn.classList.remove('hidden');
         });
-
-        function triggerPwaInstall() {
-            if (appState.deferredPrompt) {
-                appState.deferredPrompt.prompt();
-                appState.deferredPrompt.userChoice.then(() => {
-                    appState.deferredPrompt = null;
-                });
-            } else {
-                toast.info('PWA Ready', 'To install on iOS: Tap Share -> Add to Home Screen.');
-            }
-        }
 
         function checkAppInstalledStatus() {
             window.addEventListener('appinstalled', () => {
                 toast.success('App Installed', 'Goalie is now pinned to your device homescreen.');
-                const btn = document.getElementById('btn-pwa-install');
-                if (btn) btn.classList.add('hidden');
             });
         }
 
@@ -3135,11 +4100,17 @@
                 if (moonIcon) moonIcon.classList.remove('hidden');
             }
             localStorage.setItem('theme', theme);
+            if (typeof initNativeStatusBar === 'function') {
+                initNativeStatusBar();
+            }
         }
 
         function toggleTheme() {
             const isDark = document.documentElement.classList.contains('dark');
             applyTheme(isDark ? 'light' : 'dark');
+            if (typeof HapticsService !== 'undefined') {
+                HapticsService.selection();
+            }
         }
 
         // Global search
@@ -3160,7 +4131,7 @@
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (content) content.classList.add('hidden');
                 if (btn) {
-                    btn.className = 'px-3 py-1.5 rounded-[2px] bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5';
+                    btn.className = 'px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5';
                 }
             });
 
@@ -3168,7 +4139,27 @@
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeContent) activeContent.classList.remove('hidden');
             if (activeBtn) {
-                activeBtn.className = 'px-3 py-1.5 rounded-[2px] bg-tertiary text-white border-1.5 border-tertiary flex items-center gap-1.5';
+                activeBtn.className = 'px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary flex items-center gap-1.5';
+            }
+
+            // Sync Mobile Native Bottom Navigation Bar state
+            const mobileTabs = ['cockpit', 'schedule', 'chat', 'telemetry'];
+            mobileTabs.forEach(t => {
+                const mBtn = document.getElementById(`mobile-nav-${t}`);
+                if (mBtn) {
+                    if (t === tabName) {
+                        mBtn.classList.remove('text-text-secondary');
+                        mBtn.classList.add('text-tertiary', 'font-bold');
+                    } else {
+                        mBtn.classList.remove('text-tertiary', 'font-bold');
+                        mBtn.classList.add('text-text-secondary');
+                    }
+                }
+            });
+
+            // Physical tactile click feedback for mobile
+            if (typeof HapticsService !== 'undefined') {
+                HapticsService.impact('LIGHT');
             }
 
             if (tabName === 'settings') {
@@ -3176,6 +4167,52 @@
             } else if (tabName === 'telemetry') {
                 syncTelemetrySuite();
             }
+        }
+
+        // ══════════════════════════════════════════════════════
+        // STRAVA FEED & QUICK AI ASSISTANT HELPERS
+        // ══════════════════════════════════════════════════════
+        function toggleKudos(btn) {
+            const countEl = btn.querySelector('.kudos-count');
+            if (!countEl) return;
+            const current = parseInt(countEl.textContent, 10) || 0;
+            const isGiven = btn.dataset.given === 'true';
+            if (isGiven) {
+                countEl.textContent = current - 1;
+                btn.dataset.given = 'false';
+                btn.classList.remove('text-tertiary');
+                if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
+            } else {
+                countEl.textContent = current + 1;
+                btn.dataset.given = 'true';
+                btn.classList.add('text-tertiary');
+                btn.classList.add('scale-105');
+                setTimeout(() => btn.classList.remove('scale-105'), 200);
+                if (typeof HapticsService !== 'undefined') HapticsService.impact('MEDIUM');
+                if (typeof toast !== 'undefined') {
+                    toast.success('Kudos Given!', 'Activity kudos sent.');
+                }
+            }
+        }
+
+        function quickAskAi(promptText) {
+            switchWorkstationTab('chat');
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.value = promptText;
+                chatInput.focus();
+                if (typeof toast !== 'undefined') {
+                    toast.info('AI Coach', 'Ready to answer: "' + promptText.substring(0, 35) + '..."');
+                }
+            }
+        }
+
+        function quickSubmitAi() {
+            const input = document.getElementById('quick-ai-input');
+            if (!input || !input.value.trim()) return;
+            const text = input.value.trim();
+            input.value = '';
+            quickAskAi(text);
         }
 
         // ══════════════════════════════════════════════════════
@@ -3275,25 +4312,593 @@
             toast.info(`${month} 2026`, `Actual: ${actual} km | Planned: ${target} km`);
         }
 
-        function triggerWorkoutPreview(title, pace) {
-            toast.success('Workout Selected', `${title} loaded into plan queue.`);
-            switchWorkstationTab('chat');
-            const input = document.getElementById('chat-input');
-            if (input) {
-                input.value = `How should I pace my ${title} session targeting ${pace}?`;
-                input.focus();
+        // ══════════════════════════════════════════════════════
+        // STRAVA ATHLETIC ACTIVITY FIXTURES & MODAL (Feature 1 & 2)
+        // ══════════════════════════════════════════════════════
+        const ACTIVITY_FIXTURES = {
+            morning_run: {
+                id: 'morning_run',
+                sport: 'run',
+                title: { id: 'Morning Progression Tempo Run', en: 'Morning Progression Tempo Run' },
+                date: { id: 'Hari ini pukul 06:15 WIB • Jakarta, Indonesia', en: 'Today at 06:15 AM • Jakarta, Indonesia' },
+                distance: '10.25 km',
+                pace: '4:38 /km',
+                time: '47m 32s',
+                elev: '+68 m',
+                avgHr: '158 bpm',
+                maxHr: '174 bpm',
+                calories: '730 kcal',
+                suffer: '64 (Tough)',
+                hrStacked: [
+                    { pct: 8, color: 'bg-blue-400', label: 'Z1 (<125 bpm): 8%' },
+                    { pct: 24, color: 'bg-emerald-400', label: 'Z2 (125-149): 24%' },
+                    { pct: 38, color: 'bg-amber-400', label: 'Z3 (150-163): 38%' },
+                    { pct: 26, color: 'bg-orange-500', label: 'Z4 (164-177): 26%' },
+                    { pct: 4, color: 'bg-rose-500', label: 'Z5 (>177 bpm): 4%' }
+                ],
+                splits: [
+                    { km: '1', pace: '05:12', distPct: 75, elev: '+4m', hr: 142 },
+                    { km: '2', pace: '04:58', distPct: 80, elev: '+6m', hr: 148 },
+                    { km: '3', pace: '04:44', distPct: 86, elev: '+8m', hr: 153 },
+                    { km: '4', pace: '04:36', distPct: 91, elev: '+5m', hr: 157 },
+                    { km: '5', pace: '04:32', distPct: 93, elev: '+2m', hr: 160 },
+                    { km: '6', pace: '04:28', distPct: 95, elev: '+7m', hr: 163 },
+                    { km: '7', pace: '04:22', distPct: 98, elev: '+9m', hr: 166 },
+                    { km: '8', pace: '04:20', distPct: 100, elev: '+11m', hr: 169 },
+                    { km: '9', pace: '04:21', distPct: 99, elev: '+10m', hr: 171 },
+                    { km: '10', pace: '04:35', distPct: 92, elev: '+6m', hr: 165 },
+                    { km: '10.25', pace: '04:48', distPct: 85, elev: '0m', hr: 159 }
+                ],
+                aiAudit: {
+                    id: 'Eksekusi sangat solid pada blok interval threshold. Decoupling kardiovaskular tercatat hanya +1.7% antara repetisi awal dan akhir, membuktikan densitas mitokondria yang prima. Rekomendasi pemulihan: 65g karbohidrat cepat serap dan 25g protein dalam 45 menit pertama.',
+                    en: 'Stellar execution across threshold interval blocks. Cardiovascular drift was limited to only +1.7% decoupling, proving high mitochondrial density. Recommended recovery: 65g fast carbohydrates and 25g protein within 45 minutes.'
+                }
+            },
+            weekend_ride: {
+                id: 'weekend_ride',
+                sport: 'cycling',
+                title: { id: 'Sentul KM0 Hill Climb Endurance', en: 'Sentul KM0 Hill Climb Endurance' },
+                date: { id: 'Kemarin pukul 05:45 WIB • Sentul Loop, Jawa Barat', en: 'Yesterday at 05:45 AM • Sentul Loop, West Java' },
+                distance: '64.8 km',
+                pace: '28.4 km/h',
+                time: '2h 16m',
+                elev: '+580 m',
+                avgHr: '146 bpm',
+                maxHr: '178 bpm',
+                calories: '1,420 kcal',
+                suffer: '142 (Epic)',
+                hrStacked: [
+                    { pct: 12, color: 'bg-blue-400', label: 'Z1 (<120 bpm): 12%' },
+                    { pct: 45, color: 'bg-emerald-400', label: 'Z2 (120-142): 45%' },
+                    { pct: 25, color: 'bg-amber-400', label: 'Z3 (143-158): 25%' },
+                    { pct: 15, color: 'bg-orange-500', label: 'Z4 (159-172): 15%' },
+                    { pct: 3, color: 'bg-rose-500', label: 'Z5 (>172 bpm): 3%' }
+                ],
+                splits: [
+                    { km: '0-10', pace: '32.1 km/h', distPct: 90, elev: '+25m', hr: 134 },
+                    { km: '10-20', pace: '30.5 km/h', distPct: 85, elev: '+45m', hr: 139 },
+                    { km: '20-30', pace: '24.2 km/h', distPct: 70, elev: '+180m', hr: 156 },
+                    { km: '30-40', pace: '18.6 km/h', distPct: 55, elev: '+240m', hr: 168 },
+                    { km: '40-50', pace: '38.4 km/h', distPct: 98, elev: '-310m', hr: 128 },
+                    { km: '50-64.8', pace: '31.2 km/h', distPct: 88, elev: '+90m', hr: 142 }
+                ],
+                aiAudit: {
+                    id: 'Manajemen tenaga di tanjakan KM0 sangat konsisten di 240W Normalised Power. Efisiensi aerodinamis saat turunan menjaga denyut jantung di zona pemulihan aktif. Waspadai asupan elektrolit untuk mencegah dehidrasi pada cuaca tropis.',
+                    en: 'Climbing power management up KM0 was exceptionally steady at 240W Normalized Power. Aerodynamic efficiency during descent allowed quick active recovery. Monitor electrolyte replenishment in hot tropical climates.'
+                }
             }
+        };
+
+        function filterFeed(type) {
+            const cards = document.querySelectorAll('.feed-card');
+            cards.forEach(card => {
+                const feedType = card.getAttribute('data-feed-type');
+                if (type === 'all' || feedType === type) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const filterBtns = document.querySelectorAll('.feed-filter-btn');
+            filterBtns.forEach(btn => {
+                btn.classList.remove('bg-tertiary', 'text-white', 'shadow-xs');
+                btn.classList.add('bg-surface', 'border', 'border-border', 'text-text-secondary');
+            });
+
+            const activeBtn = document.getElementById(`feed-filter-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-tertiary', 'text-white', 'shadow-xs');
+                activeBtn.classList.remove('bg-surface', 'border', 'border-border', 'text-text-secondary');
+            }
+
+            if (typeof HapticsService !== 'undefined') HapticsService.selection();
+        }
+
+        function openActivityDetailModal(activityId) {
+            const data = ACTIVITY_FIXTURES[activityId] || ACTIVITY_FIXTURES.morning_run;
+            const currentLang = localStorage.getItem('goalie_language') || 'id';
+
+            const titleEl = document.getElementById('detail-activity-title');
+            if (titleEl) titleEl.textContent = (data.title && data.title[currentLang]) ? data.title[currentLang] : data.title.en;
+
+            const dateEl = document.getElementById('detail-activity-date');
+            if (dateEl) dateEl.textContent = (data.date && data.date[currentLang]) ? data.date[currentLang] : data.date.en;
+
+            const badgeEl = document.getElementById('detail-sport-badge');
+            if (badgeEl) {
+                badgeEl.textContent = data.sport === 'run' ? '🏃 RUN' : '🚴 CYCLING';
+                badgeEl.className = data.sport === 'run' 
+                    ? 'px-2 py-0.5 rounded-full bg-tertiary text-white font-mono text-[10px] font-bold uppercase' 
+                    : 'px-2 py-0.5 rounded-full bg-flat-orange text-white font-mono text-[10px] font-bold uppercase';
+            }
+
+            const setDetail = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = val;
+            };
+
+            setDetail('detail-metric-dist', `${data.distance}`);
+            setDetail('detail-metric-pace', `${data.pace}`);
+            setDetail('detail-metric-time', `${data.time}`);
+            setDetail('detail-metric-elev', `${data.elev}`);
+            setDetail('detail-metric-avghr', `${data.avgHr}`);
+            setDetail('detail-metric-maxhr', `${data.maxHr}`);
+            setDetail('detail-metric-cal', `${data.calories}`);
+            setDetail('detail-metric-suffer', `${data.suffer}`);
+
+            const tbody = document.getElementById('detail-splits-tbody');
+            if (tbody && data.splits) {
+                tbody.innerHTML = data.splits.map(s => `
+                    <tr class="hover:bg-surface-subtle transition-colors">
+                        <td class="py-2 px-3 font-bold text-text-primary">Km ${s.km}</td>
+                        <td class="py-2 px-3 text-tertiary font-bold">${s.pace}</td>
+                        <td class="py-2 px-3 hidden sm:table-cell">
+                            <div class="w-24 bg-surface-subtle h-2 rounded-full overflow-hidden border border-border">
+                                <div class="bg-tertiary h-full rounded-full" style="width: ${s.distPct || 80}%"></div>
+                            </div>
+                        </td>
+                        <td class="py-2 px-3 text-text-secondary">${s.elev}</td>
+                        <td class="py-2 px-3 text-text-primary font-bold">${s.hr} bpm</td>
+                    </tr>
+                `).join('');
+            }
+
+            const barEl = document.getElementById('detail-hr-stacked-bar');
+            if (barEl && data.hrStacked) {
+                barEl.innerHTML = data.hrStacked.map(z => 
+                    `<div style="width: ${z.pct}%" class="${z.color}" title="${z.label}"></div>`
+                ).join('');
+            }
+
+            const auditEl = document.getElementById('detail-ai-audit-text');
+            if (auditEl && data.aiAudit) {
+                auditEl.textContent = (data.aiAudit && data.aiAudit[currentLang]) ? data.aiAudit[currentLang] : data.aiAudit.en;
+            }
+
+            const modal = document.getElementById('activity-detail-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
+        }
+
+        function closeActivityDetailModal() {
+            const modal = document.getElementById('activity-detail-modal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
+        }
+
+        function shareWorkoutSession() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Goalie Athlete Workout',
+                    text: 'Check out my latest endurance session analyzed with Goalie AI Coach!',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard?.writeText(window.location.href);
+                toast.success('Link Copied', 'Activity share URL copied to clipboard.');
+            }
+        }
+
+        // ══════════════════════════════════════════════════════
+        // WORKOUT LOGGER PRESETS & QUALITATIVE RPE (Feature 3)
+        // ══════════════════════════════════════════════════════
+        const WORKOUT_PRESETS = {
+            '5k_run': { title: '5K Recovery Aerobic Run', sport: 'run', distance: 5.0, duration: 28, hr: 138, cal: 320, rpe: 3, notes: 'Zone 2 aerobic recovery, comfortable nose-breathing pace.' },
+            '10k_tempo': { title: '10K Lactate Threshold Tempo', sport: 'run', distance: 10.0, duration: 46, hr: 164, cal: 710, rpe: 7, notes: '2km warmup, 6km at lactate threshold, 2km cooldown.' },
+            '21k_half': { title: 'Half Marathon Long Progression', sport: 'run', distance: 21.1, duration: 98, hr: 156, cal: 1480, rpe: 8, notes: 'Negative split pacing with gel every 35 minutes.' },
+            '30k_ride': { title: '30K Sweet Spot Cycling Session', sport: 'cycling', distance: 30.0, duration: 58, hr: 148, cal: 680, rpe: 6, notes: 'Steady tempo on rolling terrain, 90 rpm cadence target.' },
+            '1_5k_swim': { title: '1.5K Aerobic Technique Swim', sport: 'swimming', distance: 1.5, duration: 32, hr: 142, cal: 390, rpe: 5, notes: 'Focus on catch and body rotation, 50m intervals with 15s rest.' }
+        };
+
+        function applyWorkoutPreset(presetKey) {
+            const p = WORKOUT_PRESETS[presetKey];
+            if (!p) return;
+
+            const setInput = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val;
+            };
+
+            setInput('log-title', p.title);
+            setInput('log-sport-type', p.sport);
+            setInput('log-distance', p.distance);
+            setInput('log-duration-min', p.duration);
+            setInput('log-avg-hr', p.hr);
+            setInput('log-calories', p.cal);
+            setInput('log-rpe', p.rpe);
+            setInput('log-notes', p.notes);
+
+            updateRpeDisplay(p.rpe);
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
+            toast.info('Preset Applied', `Loaded ${p.title}`);
+        }
+
+        function updateRpeDisplay(val) {
+            const num = parseInt(val, 10);
+            const valEl = document.getElementById('rpe-val');
+            if (valEl) valEl.textContent = num;
+
+            const badgeEl = document.getElementById('rpe-qualitative-badge');
+            if (!badgeEl) return;
+
+            const currentLang = localStorage.getItem('goalie_language') || 'id';
+
+            const rpeLabels = {
+                id: {
+                    low: 'Sangat Ringan (Pemulihan Aktif)',
+                    z2: 'Zona 2 (Bisa Mengobrol Santai)',
+                    tempo: 'Tempo / Menengah (Stabil Berirama)',
+                    threshold: 'Threshold / Keras (Napas Berat Terkontrol)',
+                    max: 'Maksimal / VO2max (Sprint All-Out)'
+                },
+                en: {
+                    low: 'Very Easy (Active Recovery)',
+                    z2: 'Zone 2 (Conversational Pace)',
+                    tempo: 'Tempo / Moderate (Steady Rhythm)',
+                    threshold: 'Threshold / Hard (Controlled Heavy Breathing)',
+                    max: 'All-Out / VO2max (Maximum Effort)'
+                }
+            };
+
+            const dict = rpeLabels[currentLang] || rpeLabels.id;
+
+            if (num <= 2) {
+                badgeEl.textContent = dict.low;
+                badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/15 text-blue-500';
+            } else if (num <= 4) {
+                badgeEl.textContent = dict.z2;
+                badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-flat-green/15 text-flat-green';
+            } else if (num <= 6) {
+                badgeEl.textContent = dict.tempo;
+                badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-flat-orange/15 text-flat-orange';
+            } else if (num <= 8) {
+                badgeEl.textContent = dict.threshold;
+                badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-tertiary/20 text-tertiary';
+            } else {
+                badgeEl.textContent = dict.max;
+                badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-red-500/20 text-red-600 font-extrabold';
+            }
+        }
+
+        function quickLogPrescription(title, dist, duration, hr, cal) {
+            openLogWorkoutModal();
+            const setInput = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val;
+            };
+            setInput('log-title', title);
+            setInput('log-sport-type', 'run');
+            setInput('log-distance', dist);
+            setInput('log-duration-min', duration);
+            setInput('log-avg-hr', hr);
+            setInput('log-calories', cal);
+            setInput('log-rpe', 7);
+            setInput('log-notes', 'Completed according to AI Daily Prescription intervals.');
+            updateRpeDisplay(7);
+        }
+
+        function applyPrescriptionToCalendar(title, dist, duration, pace) {
+            switchWorkstationTab('schedule');
+            const target = document.getElementById('workstation');
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            toast.success('Added to Training Schedule', `${title} (${dist}km @ ${pace}) scheduled in iCal plan.`);
+            if (typeof HapticsService !== 'undefined') HapticsService.notification('SUCCESS');
+        }
+
+        function appendChatPrescriptionCard(prescription) {
+            const container = document.getElementById('chat-messages');
+            if (!container) return;
+            const currentLang = localStorage.getItem('goalie_language') || 'id';
+
+            const card = document.createElement('div');
+            card.className = 'p-4 bg-surface border-2 border-tertiary/70 rounded-xl space-y-3 max-w-[92%] shadow-sm';
+            card.innerHTML = `
+                <div class="flex items-center justify-between border-b border-border pb-2">
+                    <div class="flex items-center gap-1.5 font-mono text-[11px] font-bold text-tertiary">
+                        <span>⚡ ACTIONABLE WORKOUT PRESCRIPTION</span>
+                    </div>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-flat-green/10 text-flat-green font-bold">SMART COACH</span>
+                </div>
+                <div>
+                    <h4 class="font-display font-extrabold text-sm text-text-primary">${prescription.title}</h4>
+                    <div class="text-[11px] font-mono text-tertiary mt-0.5">${prescription.distance} km &bull; Target: ${prescription.pace} &bull; ${prescription.duration} min</div>
+                    <p class="text-xs text-text-secondary mt-1">${prescription.notes}</p>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1 font-mono text-xs">
+                    <button onclick="applyPrescriptionToCalendar('${escapeHTML(prescription.title)}', ${prescription.distance}, ${prescription.duration}, '${escapeHTML(prescription.pace)}')" class="btn-primary rounded-full px-4 py-1.5 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span>${currentLang === 'id' ? '+ Tambah ke Kalender' : '+ Add to Calendar'}</span>
+                    </button>
+                    <button onclick="quickLogPrescription('${escapeHTML(prescription.title)}', ${prescription.distance}, ${prescription.duration}, ${prescription.hr}, ${prescription.calories})" class="btn-outline rounded-full px-4 py-1.5 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>${currentLang === 'id' ? 'Catat Sesi Ini' : 'Record This Session'}</span>
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // ══════════════════════════════════════════════════════
+        // INTERNATIONALIZATION (i18n) & LANGUAGE CONSISTENCY
+        // ══════════════════════════════════════════════════════
+        const GOALIE_I18N = {
+            id: {
+                nav_dashboard: "Beranda",
+                nav_training: "Rencana Latihan",
+                nav_coach: "Pelatih AI",
+                nav_telemetry: "Telemetri",
+                nav_integrations: "Integrasi Strava",
+                nav_record: "Catat Latihan",
+                nav_login: "Masuk",
+                nav_signup: "Daftar",
+                nav_search_label: "Cari atlet, latihan, rute... (⌘K)",
+                tab_cockpit: "Kokpit Performa",
+                tab_chat: "Chat Pelatih AI",
+                tab_telemetry: "Suite Telemetri (TP / Intervals / Strava)",
+                tab_biomechanics: "Analisis Video Postur & Langkah",
+                tab_schedule: "Jadwal & Kalender iCal",
+                tab_integrations: "Garmin & Strava",
+                tab_settings: "Pengaturan Atlet",
+                feed_filter_all: "Semua Aktivitas",
+                feed_filter_runs: "🏃 Lari",
+                feed_filter_rides: "🚴 Sepeda",
+                feed_filter_prescription: "⚡ Preskripsi AI",
+                feed_form_label: "Status Form (TSB):",
+                presc_title: "PRESKRIPSI LATIHAN AI HARI INI",
+                presc_badge: "PELATIH PINTAR",
+                presc_subtitle: "Disesuaikan berdasarkan kelelahan & form Intervals.icu",
+                presc_workout_title: "Latihan Progresif Threshold • 10.25 km",
+                presc_target_pace: "Target Pace: 4:20 - 4:35/km",
+                presc_target_hr: "Target Detak Jantung",
+                presc_suffer: "Estimasi Suffer Score",
+                presc_cadence: "Kadens Ideal",
+                presc_start_btn: "Mulai / Catat Sesi Ini",
+                presc_adapt_btn: "Minta AI Menyesuaikan",
+                card_run_time: "• Hari ini pukul 06:15 WIB",
+                card_sport_run: "🏃 Lari",
+                card_run_title: "Morning Progression Tempo Run",
+                card_run_desc: "Kaki terasa sangat bertenaga di repetisi blok 4:20/km. Hidrasi optimal dengan kadens stabil 178 spm.",
+                card_distance: "Jarak",
+                card_pace: "Pace",
+                card_speed: "Kecepatan Rata-rata",
+                card_time: "Waktu",
+                card_elev: "Kenaikan Elevasi",
+                card_inspect_map: "Buka Rute & Split Km →",
+                card_ai_engine: "⚡ MESIN ANALISIS AI",
+                card_run_ai_notes: "Cardiac drift terpantau hanya +1.7% decoupling. Keseimbangan langkah sangat simetris di 49.8% Kiri / 50.2% Kanan dengan ground contact time 212ms.",
+                card_kudos: "Kudos",
+                card_comments: "Komentar",
+                card_view_splits: "Lihat Split Km →",
+                card_ride_time: "• Kemarin pukul 05:45 WIB",
+                card_sport_cycling: "🚴 Sepeda",
+                card_ride_title: "Sentul KM0 Hill Climb Endurance",
+                card_ride_desc: "Tanjakan KM0 stabil di 240W Normalised Power. Manuver turunan aman dengan kontrol kadens rapi.",
+                card_view_power: "Lihat Kurva Tenaga →",
+                detail_modal_badge: "VERIFIKASI STRAVA TELEMETRI",
+                detail_avg_hr: "Detak Jantung Rata-rata",
+                detail_max_hr: "Detak Jantung Maksimal",
+                detail_splits_title: "Tabel Split Per Kilometer",
+                detail_splits_sub: "Distribusi Pace vs Target",
+                detail_hr_zones_title: "Distribusi Zona Denyut Jantung (5-Zone Karvonen)",
+                detail_ai_postmortem_title: "⚡ AUDIT PASCA-LATIHAN PELATIH AI",
+                detail_btn_share: "Bagikan Sesi",
+                detail_btn_close: "Tutup",
+                log_modal_title: "Catat Latihan Selesai",
+                log_quick_presets: "Preset Cepat 1-Ketuk:",
+                log_preset_5k: "🏃 5K Pemulihan",
+                log_preset_10k: "🏃 10K Tempo",
+                log_preset_21k: "🏃 21K Half",
+                log_preset_30k: "🚴 30K Sepeda",
+                log_preset_swim: "🏊 1.5K Renang",
+                log_title_label: "Judul Sesi",
+                log_sport_label: "Jenis Olahraga",
+                log_distance_label: "Jarak (km)",
+                log_duration_label: "Durasi (menit)",
+                log_hr_label: "Detak Jantung Rata-rata (bpm)",
+                log_cal_label: "Kalori (kcal)",
+                log_rpe_label: "Skala Usaha / RPE (1-10)",
+                log_notes_label: "Catatan Pelatih",
+                log_submit_btn: "SIMPAN & HITUNG ULANG TELEMETRI",
+                settings_pref_title: "03 // Preferensi Mesin Pelatih & Tampilan",
+                settings_coach_engine: "Mesin Pelatih AI Utama",
+                settings_units_label: "Sistem Satuan",
+                settings_theme_label: "Tema Warna",
+                settings_language_label: "Bahasa / Language",
+                settings_export_btn: "EKSPOR DATA (.JSON)",
+                settings_reset_btn: "RESET CACHE LOKAL",
+                settings_back_btn: "KEMBALI KE KOKPIT",
+                settings_save_btn: "SIMPAN PENGATURAN ATLET >",
+                athlete_following: "Mengikuti",
+                athlete_followers: "Pengikut",
+                athlete_activities: "Aktivitas",
+                athlete_latest: "Latihan Terakhir",
+                athlete_weekly_goal: "Target Minggu Ini",
+                mobile_nav_feed: "Feed",
+                mobile_nav_training: "Latihan",
+                mobile_nav_coach: "Pelatih AI",
+                mobile_nav_telemetry: "Telemetri"
+            },
+            en: {
+                nav_dashboard: "Dashboard",
+                nav_training: "Training",
+                nav_coach: "AI Coach",
+                nav_telemetry: "Telemetry",
+                nav_integrations: "Intervals / Strava",
+                nav_record: "Record / Log",
+                nav_login: "Log In",
+                nav_signup: "Sign Up",
+                nav_search_label: "Search athletes, workouts... (⌘K)",
+                tab_cockpit: "Performance Cockpit",
+                tab_chat: "Coach AI Chat",
+                tab_telemetry: "Telemetry Suite (TP / Intervals / Strava)",
+                tab_biomechanics: "Video Gait Analysis",
+                tab_schedule: "Schedule & iCal",
+                tab_integrations: "Garmin & Strava",
+                tab_settings: "Athlete Settings",
+                feed_filter_all: "All Feed",
+                feed_filter_runs: "🏃 Runs",
+                feed_filter_rides: "🚴 Rides",
+                feed_filter_prescription: "⚡ AI Plan",
+                feed_form_label: "Form (TSB):",
+                presc_title: "TODAY'S AI WORKOUT PRESCRIPTION",
+                presc_badge: "SMART COACH",
+                presc_subtitle: "Tailored based on Intervals.icu fatigue & form telemetry",
+                presc_workout_title: "Threshold Progression Run • 10.25 km",
+                presc_target_pace: "Target Pace: 4:20 - 4:35/km",
+                presc_target_hr: "Target HR",
+                presc_suffer: "Est. Suffer Score",
+                presc_cadence: "Ideal Cadence",
+                presc_start_btn: "Start / Log This Session",
+                presc_adapt_btn: "Ask AI to Adapt",
+                card_run_time: "• Today at 06:15 AM",
+                card_sport_run: "🏃 Run",
+                card_run_title: "Morning Progression Tempo Run",
+                card_run_desc: "Felt extremely strong through the 4:20/km interval blocks. Hydration on point with steady cadence at 178 spm.",
+                card_distance: "Distance",
+                card_pace: "Pace",
+                card_speed: "Avg Speed",
+                card_time: "Time",
+                card_elev: "Elev Gain",
+                card_inspect_map: "Inspect Route & Splits →",
+                card_ai_engine: "⚡ AI ANALYSIS ENGINE",
+                card_run_ai_notes: "Cardiovascular drift measured at only +1.7% decoupling. Form balance was symmetric at 49.8% L / 50.2% R with 212ms ground contact time.",
+                card_kudos: "Kudos",
+                card_comments: "Comments",
+                card_view_splits: "View Splits →",
+                card_ride_time: "• Yesterday at 05:45 AM",
+                card_sport_cycling: "🚴 Ride",
+                card_ride_title: "Sentul KM0 Hill Climb Endurance",
+                card_ride_desc: "Steep climb section held at steady 240W. Smooth descending and solid cadence control.",
+                card_view_power: "View Power Curve →",
+                detail_modal_badge: "STRAVA TELEMETRY VERIFIED",
+                detail_avg_hr: "Avg HR",
+                detail_max_hr: "Max HR",
+                detail_splits_title: "Per-Kilometer Splits",
+                detail_splits_sub: "Pace vs Target Distribution",
+                detail_hr_zones_title: "Heart Rate Zone Distribution (5-Zone Karvonen)",
+                detail_ai_postmortem_title: "⚡ AI COACH POST-WORKOUT AUDIT",
+                detail_btn_share: "Share Session",
+                detail_btn_close: "Close",
+                log_modal_title: "Log Completed Workout",
+                log_quick_presets: "1-Tap Quick Presets:",
+                log_preset_5k: "🏃 5K Recovery",
+                log_preset_10k: "🏃 10K Tempo",
+                log_preset_21k: "🏃 21K Half",
+                log_preset_30k: "🚴 30K Ride",
+                log_preset_swim: "🏊 1.5K Swim",
+                log_title_label: "Session Title",
+                log_sport_label: "Sport Type",
+                log_distance_label: "Distance (km)",
+                log_duration_label: "Duration (min)",
+                log_hr_label: "Avg HR (bpm)",
+                log_cal_label: "Calories (kcal)",
+                log_rpe_label: "Perceived Exertion (RPE 1-10)",
+                log_notes_label: "Coach Notes",
+                log_submit_btn: "SAVE & RECALCULATE TELEMETRY",
+                settings_pref_title: "03 // Coach Engine & Display Preferences",
+                settings_coach_engine: "Default AI Coach Engine",
+                settings_units_label: "Measurement System",
+                settings_theme_label: "Color Theme",
+                settings_language_label: "Language / Bahasa",
+                settings_export_btn: "EXPORT DATA (.JSON)",
+                settings_reset_btn: "RESET LOCAL CACHE",
+                settings_back_btn: "BACK TO COCKPIT",
+                settings_save_btn: "SAVE ATHLETE SETTINGS >",
+                athlete_following: "Following",
+                athlete_followers: "Followers",
+                athlete_activities: "Activities",
+                athlete_latest: "Latest Workout",
+                athlete_weekly_goal: "This Week's Goal",
+                mobile_nav_feed: "Feed",
+                mobile_nav_training: "Training",
+                mobile_nav_coach: "AI Coach",
+                mobile_nav_telemetry: "Telemetry"
+            }
+        };
+
+        function changeLanguage(lang, showToast = true) {
+            if (!GOALIE_I18N[lang]) lang = 'id';
+            localStorage.setItem('goalie_language', lang);
+
+            const langSelect = document.getElementById('settings-language');
+            if (langSelect) langSelect.value = lang;
+
+            const navLabel = document.getElementById('nav-lang-label');
+            if (navLabel) navLabel.textContent = lang.toUpperCase();
+
+            applyTranslations(lang);
+
+            const rpeInput = document.getElementById('log-rpe');
+            if (rpeInput) updateRpeDisplay(rpeInput.value);
+
+            if (showToast) {
+                if (typeof HapticsService !== 'undefined') HapticsService.selection();
+                if (lang === 'id') {
+                    toast.success('Bahasa Diubah', 'Bahasa tampilan disetel ke Bahasa Indonesia.');
+                } else {
+                    toast.success('Language Changed', 'Display language set to English (US).');
+                }
+            }
+        }
+
+        function toggleAppLanguage() {
+            const current = localStorage.getItem('goalie_language') || 'id';
+            const next = current === 'id' ? 'en' : 'id';
+            changeLanguage(next, true);
+        }
+
+        function applyTranslations(lang) {
+            const dict = GOALIE_I18N[lang] || GOALIE_I18N.id;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+        }
+
+        function initLanguage() {
+            const saved = localStorage.getItem('goalie_language') || 'id';
+            changeLanguage(saved, false);
+        }
+
+        function triggerWorkoutPreview(title, pace) {
+            openActivityDetailModal('morning_run');
         }
 
         // Workout Logger Modal
         function openLogWorkoutModal() {
             const modal = document.getElementById('log-workout-modal');
             if (modal) modal.classList.remove('hidden');
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
         }
 
         function closeLogWorkoutModal() {
             const modal = document.getElementById('log-workout-modal');
             if (modal) modal.classList.add('hidden');
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
         }
 
         async function handleLogWorkoutSubmit(e) {
@@ -3309,7 +4914,22 @@
 
             const btn = document.getElementById('btn-save-workout');
             btn.disabled = true;
-            btn.textContent = 'RECORDING SESSION...';
+            const workoutPayload = {
+                title: title,
+                sport_type: sportType,
+                distance_km: distanceKm,
+                duration_minutes: durationMin,
+                avg_hr: avgHr,
+                calories_burned: calories,
+                rpe: rpe,
+                notes: notes,
+                date: new Date().toISOString()
+            };
+
+            // Always persist into IndexedDB offline-first storage
+            if (typeof GoalieDB !== 'undefined') {
+                try { await GoalieDB.saveWorkout(workoutPayload); } catch (e) {}
+            }
 
             try {
                 // Ensure guest token if anonymous
@@ -3358,10 +4978,26 @@
                 if (centerEl) centerEl.textContent = `+${cockpitData.summaryGoal}%`;
 
                 closeLogWorkoutModal();
+                if (typeof HapticsService !== 'undefined') HapticsService.notification('SUCCESS');
                 toast.success('Workout Ingested', `Logged ${distanceKm}km (${durationMin} min). Telemetry recalculated.`);
             } catch (err) {
+                // Queue for background sync when connection resumes
+                if (typeof GoalieDB !== 'undefined') {
+                    try {
+                        await GoalieDB.queueOfflineAction(`${API_BASE}/workouts/log`, 'POST', {
+                            title: title,
+                            workout_type: sportType,
+                            distance_km: distanceKm,
+                            duration_seconds: durationMin * 60,
+                            avg_hr: avgHr,
+                            rpe: rpe,
+                            notes: notes
+                        });
+                    } catch (e) {}
+                }
                 closeLogWorkoutModal();
-                toast.success('Workout Logged', 'Local training load and endurance meters updated.');
+                if (typeof HapticsService !== 'undefined') HapticsService.notification('SUCCESS');
+                toast.success('Saved Offline (IndexedDB)', 'Workout persisted locally. Will sync when reconnected.');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'SAVE & RECALCULATE TELEMETRY';
@@ -3410,18 +5046,18 @@
 
             // Reset button classes
             [btnPemula, btnFree, btnPro].forEach(b => {
-                if (b) b.className = 'px-2 py-0.5 rounded-[2px] text-text-secondary hover:text-text-primary transition-colors';
+                if (b) b.className = 'px-2 py-0.5 rounded-full text-text-secondary hover:text-text-primary transition-colors';
             });
 
             if (tier === 'pemula') {
-                if (btnPemula) btnPemula.className = 'px-2 py-0.5 rounded-[2px] bg-secondary text-white font-bold';
+                if (btnPemula) btnPemula.className = 'px-2 py-0.5 rounded-full bg-secondary text-white font-bold';
                 if (badge) {
                     badge.textContent = 'PEMULA (DETERMINISTIC)';
                     badge.className = 'font-mono text-[10px] text-text-primary font-bold bg-surface-subtle border border-border px-1.5 py-0.2';
                 }
                 if (showToast) toast.info('Pemula (Free) Active', 'Using 100% deterministic offline Sports Science Engine.');
             } else if (tier === 'pro') {
-                if (btnPro) btnPro.className = 'px-2 py-0.5 rounded-[2px] bg-tertiary text-white font-bold';
+                if (btnPro) btnPro.className = 'px-2 py-0.5 rounded-full bg-tertiary text-white font-bold';
                 if (appState.customApiKey) {
                     if (badge) {
                         badge.textContent = 'COACH (PRO) - BYOK ACTIVE';
@@ -3443,7 +5079,7 @@
                 }
             } else {
                 // Free Coach
-                if (btnFree) btnFree.className = 'px-2 py-0.5 rounded-[2px] bg-tertiary text-white font-bold';
+                if (btnFree) btnFree.className = 'px-2 py-0.5 rounded-full bg-tertiary text-white font-bold';
                 if (badge) {
                     badge.textContent = 'COACH (FREE) - GEMINI 3.8';
                     badge.className = 'font-mono text-[10px] text-tertiary font-bold bg-surface-subtle border border-border px-1.5 py-0.2';
@@ -3515,10 +5151,35 @@
                 const data = await res.json();
                 const replyText = data.response || data.reply || data.text || 'No response returned from model.';
                 appendChatMessage('coach', replyText, data.provider_used || 'Gemini 3.8 Flash');
+
+                const checkText = (msg + ' ' + replyText).toLowerCase();
+                if (checkText.includes('rekomendasi') || checkText.includes('prescribe') || checkText.includes('tomorrow') || checkText.includes('latihan') || checkText.includes('workout') || checkText.includes('progression')) {
+                    appendChatPrescriptionCard({
+                        title: 'AI Prescribed: Threshold Progression Run',
+                        distance: 10.25,
+                        duration: 47,
+                        pace: '4:20 - 4:35/km',
+                        hr: 164,
+                        calories: 730,
+                        notes: '2.0km warmup, 3x2km @ 4:20/km with 2 min jog recovery, 2.25km cooldown. Tailored to TSB +8.'
+                    });
+                }
             } catch (err) {
                 // Resilient local simulation fallback
                 const simulated = `Pace analysis: For message "${msg}", your optimal aerobic base zone is 04:55-05:25 min/km. Ensure heart rate remains under 152 bpm to preserve mitochondrial density.`;
                 appendChatMessage('coach', simulated, 'Sports Science Engine (Offline Fallback)');
+
+                if (msg.toLowerCase().includes('rekomendasi') || msg.toLowerCase().includes('prescribe') || msg.toLowerCase().includes('latihan') || msg.toLowerCase().includes('workout')) {
+                    appendChatPrescriptionCard({
+                        title: 'AI Prescribed: Threshold Progression Run',
+                        distance: 10.25,
+                        duration: 47,
+                        pace: '4:20 - 4:35/km',
+                        hr: 164,
+                        calories: 730,
+                        notes: '2.0km warmup, 3x2km @ 4:20/km with 2 min jog recovery, 2.25km cooldown. Tailored to TSB +8.'
+                    });
+                }
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
@@ -3542,13 +5203,13 @@
 
             const div = document.createElement('div');
             if (sender === 'user') {
-                div.className = 'p-3 bg-surface border border-border-strong rounded-[2px] max-w-[90%] ml-auto text-text-primary';
+                div.className = 'p-3 bg-surface border border-border-strong rounded-xl max-w-[90%] ml-auto text-text-primary';
                 div.innerHTML = `
                     <div class="font-bold text-[10px] text-text-secondary font-mono mb-1">ATHLETE</div>
                     <div>${escapeHTML(text)}</div>
                 `;
             } else {
-                div.className = 'p-3 bg-surface-subtle border border-border rounded-[2px] max-w-[92%]';
+                div.className = 'p-3 bg-surface-subtle border border-border rounded-xl max-w-[92%]';
                 div.innerHTML = `
                     <div class="flex items-center justify-between font-bold text-[10px] text-tertiary font-mono mb-1">
                         <span>GOALIE COACH</span>
@@ -3571,7 +5232,7 @@
             return escapeHTML(str)
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/`([^`]+)`/g, '<code class="bg-surface px-1 py-0.5 border border-border rounded-[2px] font-mono">$1</code>');
+                .replace(/`([^`]+)`/g, '<code class="bg-surface px-1.5 py-0.5 border border-border rounded-md font-mono">$1</code>');
         }
 
         // Biomechanics Video Analysis
@@ -4416,6 +6077,7 @@
                 setVal('settings-coach-tier', p.preferred_coach_tier || appState.selectedCoachTier || 'free');
                 setVal('settings-units', p.unit_preference || 'metric');
                 setVal('settings-theme', localStorage.getItem('theme') || 'light');
+                setVal('settings-language', localStorage.getItem('goalie_language') || 'id');
             } catch (err) {
                 console.warn('[Goalie] Load profile settings:', err);
             }
@@ -4431,6 +6093,9 @@
             }
 
             const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : null;
+
+            const chosenLang = getVal('settings-language') || 'id';
+            changeLanguage(chosenLang, false);
 
             const payload = {
                 full_name: getVal('settings-name'),
@@ -4516,5 +6181,44 @@
             }
         }
     </script>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- MOBILE NATIVE BOTTOM NAVIGATION BAR (md:hidden)            -->
+    <!-- Strava-inspired 5-target thumb layout with safe area       -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <nav id="mobile-bottom-nav" class="fixed bottom-0 inset-x-0 z-[120] md:hidden bg-surface/95 backdrop-blur-md border-t border-border" style="padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));">
+        <div class="grid grid-cols-5 h-14 items-center px-2">
+            <!-- 1. Feed / Cockpit -->
+            <button type="button" onclick="switchWorkstationTab('cockpit')" id="mobile-nav-cockpit" class="mobile-nav-item flex flex-col items-center justify-center py-1 text-tertiary font-bold transition-colors" aria-label="Activity Feed">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                <span class="text-[10px] mt-0.5 tracking-tight" data-i18n="mobile_nav_feed">Feed</span>
+            </button>
+
+            <!-- 2. Training / Schedule -->
+            <button type="button" onclick="switchWorkstationTab('schedule')" id="mobile-nav-schedule" class="mobile-nav-item flex flex-col items-center justify-center py-1 text-text-secondary transition-colors" aria-label="Training Plan">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span class="text-[10px] mt-0.5 tracking-tight" data-i18n="mobile_nav_training">Training</span>
+            </button>
+
+            <!-- 3. Record / Log Workout (Center Elevated Action) -->
+            <div class="flex items-center justify-center">
+                <button type="button" onclick="openLogWorkoutModal()" id="mobile-nav-record" class="w-12 h-12 -mt-4 rounded-full bg-tertiary text-white shadow-md flex items-center justify-center active:scale-95 transition-transform" aria-label="Record Activity" title="Record or Log Activity">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                </button>
+            </div>
+
+            <!-- 4. AI Coach -->
+            <button type="button" onclick="switchWorkstationTab('chat')" id="mobile-nav-chat" class="mobile-nav-item flex flex-col items-center justify-center py-1 text-text-secondary transition-colors" aria-label="AI Coach Assistant">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span class="text-[10px] mt-0.5 tracking-tight" data-i18n="mobile_nav_coach">AI Coach</span>
+            </button>
+
+            <!-- 5. Telemetry & Analytics -->
+            <button type="button" onclick="switchWorkstationTab('telemetry')" id="mobile-nav-telemetry" class="mobile-nav-item flex flex-col items-center justify-center py-1 text-text-secondary transition-colors" aria-label="Telemetry & Vitals">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span class="text-[10px] mt-0.5 tracking-tight" data-i18n="mobile_nav_telemetry">Telemetry</span>
+            </button>
+        </div>
+    </nav>
 </body>
 </html>

@@ -49,7 +49,7 @@ async def fetch_intervals_activities(user_id: str = Depends(get_current_user), d
         )
 
     athlete_id = INTERVALS_ATHLETE_ID
-    oldest = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    oldest = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
 
     async with httpx.AsyncClient() as client:
         res = await client.get(
@@ -79,34 +79,61 @@ async def fetch_intervals_activities(user_id: str = Depends(get_current_user), d
         load = SportsEngine.calculate_training_load(duration_sec, rpe=6)
         eff = SportsEngine.calculate_aerobic_efficiency(distance_km, duration_sec, avg_hr)
 
-        try:
-            act_res = (
-                supabase.table("actual_workouts")
-                .upsert({
-                    "user_id": user_id,
-                    "external_activity_id": f"icu_{act.get('id', '')}",
-                    "source": "intervals",
-                    "title": act.get("name", "Intervals Activity"),
-                    "workout_type": (act.get("type") or "Run").lower(),
-                    "duration_seconds": duration_sec,
-                    "distance_km": distance_km,
-                    "elevation_gain_m": act.get("total_elevation_gain", 0),
-                    "avg_pace_min_per_km": pace,
-                    "avg_hr": avg_hr if avg_hr else None,
-                }, on_conflict="user_id,external_activity_id")
-                .execute()
-            )
+        saved = False
+        if supabase is not None:
+            try:
+                act_res = (
+                    supabase.table("actual_workouts")
+                    .upsert({
+                        "user_id": user_id,
+                        "external_activity_id": f"icu_{act.get('id', '')}",
+                        "source": "intervals",
+                        "title": act.get("name", "Intervals Activity"),
+                        "workout_type": (act.get("type") or "Run").lower(),
+                        "duration_seconds": duration_sec,
+                        "distance_km": distance_km,
+                        "elevation_gain_m": act.get("total_elevation_gain", 0),
+                        "avg_pace_min_per_km": pace,
+                        "avg_hr": avg_hr if avg_hr else None,
+                    }, on_conflict="user_id,external_activity_id")
+                    .execute()
+                )
 
-            if act_res.data:
-                supabase.table("activity_metrics").insert({
-                    "actual_workout_id": act_res.data[0]["id"],
-                    "training_load": load,
-                    "aerobic_efficiency": eff,
-                }).execute()
+                if act_res.data:
+                    supabase.table("activity_metrics").insert({
+                        "actual_workout_id": act_res.data[0]["id"],
+                        "training_load": load,
+                        "aerobic_efficiency": eff,
+                    }).execute()
+                    imported += 1
+                    saved = True
+            except Exception:
+                saved = False
+
+        if not saved:
+            try:
+                from app.services import sandbox_store
+                sandbox_store.add_actual_workout(
+                    user_id,
+                    {
+                        "external_activity_id": f"icu_{act.get('id', '')}",
+                        "source": "intervals",
+                        "title": act.get("name", "Intervals Activity"),
+                        "workout_type": (act.get("type") or "Run").lower(),
+                        "duration_seconds": duration_sec,
+                        "distance_km": distance_km,
+                        "elevation_gain_m": act.get("total_elevation_gain", 0),
+                        "avg_pace_min_per_km": pace,
+                        "avg_hr": avg_hr if avg_hr else None,
+                    },
+                    {
+                        "training_load": load,
+                        "aerobic_efficiency": eff,
+                    }
+                )
                 imported += 1
-
-        except Exception:
-            continue
+            except Exception:
+                pass
 
     return {
         "imported": imported,

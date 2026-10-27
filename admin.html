@@ -2,7 +2,7 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
     
     <title>Admin Command Center — Goalie</title>
     <meta name="description" content="Platform observability, mathematical engine calibration, and athlete telemetry monitoring.">
@@ -15,79 +15,65 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/public/icons/pwa/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="Goalie">
     <meta name="application-name" content="Goalie">
-    <meta name="theme-color" content="#121214">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F7F8">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
+    <meta name="color-scheme" content="light dark">
 
     <!-- Fonts: System UI + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1A1A1A',
-                        secondary: '#4A4A4A',
-                        tertiary: '#0066FF',
-                        'tertiary-hover': '#0052CC',
-                        neutral: '#FFFFFF',
-                        bg: 'var(--bg-color)',
-                        surface: 'var(--surface-color)',
-                        'surface-subtle': 'var(--surface-subtle)',
-                        'text-primary': 'var(--text-primary)',
-                        'text-secondary': 'var(--text-secondary)',
-                        border: 'var(--border-color)',
-                        'border-strong': 'var(--border-strong)',
-                        'flat-green': '#00D084',
-                        'flat-orange': '#FF5722'
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
-                        display: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace']
-                    },
-                    borderRadius: {
-                        sm: '2px',
-                        DEFAULT: '2px',
-                        md: '4px',
-                        lg: '8px'
-                    },
-                    boxShadow: {
-                        none: 'none'
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Compiled Static Tailwind CSS (25.8 KB) -->
+    <link rel="stylesheet" href="/public/css/tailwind.min.css">
+    
+    <!-- Goalie Athlete IndexedDB Storage Layer -->
+    <script src="/public/js/db.js"></script>
 
-    <!-- Flat Design System Tokens -->
+    <!-- Design System Tokens (Strava Aesthetic + specs/components/button.md) -->
     <style>
         :root {
-            --bg-color: #F8F9FA;
+            --bg-color: #F7F7F8;
             --surface-color: #FFFFFF;
-            --surface-subtle: #F1F3F5;
-            --text-primary: #1A1A1A;
-            --text-secondary: #4A4A4A;
-            --border-color: #E2E2E6;
-            --border-strong: #1A1A1A;
+            --surface-subtle: #F0F0F2;
+            --text-primary: #242428;
+            --text-secondary: #6D6D78;
+            --border-color: #E5E5E9;
+            --border-strong: #C8C8D0;
+            --tertiary: #FC4C02;
+            --tertiary-hover: #E34402;
+            --tertiary-active: #C93B00;
+            --tertiary-subtle: #FFF3ED;
+            --action-color: #FC4C02;
+            --action-hover: #E34402;
+            --flat-green: #10B981;
+            --flat-orange: #FC4C02;
         }
         html.dark {
             --bg-color: #121214;
-            --surface-color: #1A1A1E;
-            --surface-subtle: #24242A;
+            --surface-color: #1E1E22;
+            --surface-subtle: #2A2A32;
             --text-primary: #F4F4F6;
-            --text-secondary: #9E9EA8;
+            --text-secondary: #A0A0AA;
             --border-color: #2E2E36;
-            --border-strong: #EAEAEA;
+            --border-strong: #444450;
+            --tertiary: #FC5200;
+            --tertiary-hover: #FF6A1A;
+            --tertiary-active: #E34402;
+            --tertiary-subtle: rgba(252, 76, 2, 0.15);
+            --action-color: #FC5200;
+            --action-hover: #FF6A1A;
+            --flat-green: #34D399;
+            --flat-orange: #FC5200;
         }
-        * {
-            box-shadow: none !important;
-            text-shadow: none !important;
+
+        html {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            overscroll-behavior-y: none;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
@@ -95,7 +81,18 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             transition: background-color 150ms ease, color 150ms ease;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            min-height: 100dvh;
         }
+
+        button, a, [role="button"] {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
         h1, h2, h3, h4, .font-display {
             font-weight: 700;
             letter-spacing: -0.03em;
@@ -106,20 +103,46 @@
         }
         .flat-card {
             background-color: var(--surface-color);
-            border: 1.5px solid var(--border-color);
-            border-radius: 2px;
-            transition: border-color 150ms ease;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 150ms ease, box-shadow 150ms ease;
         }
-        .flat-card:hover {
-            border-color: var(--border-strong);
-        }
-        .btn-flat-primary {
-            background-color: #0066FF;
+
+        /* Buttons — Strava Orange & Pill radius (Radius/Pill = 9999px) */
+        .btn-primary, .btn-flat-primary {
+            background-color: #FC4C02;
             color: #FFFFFF;
-            border-radius: 2px;
-            border: 1.5px solid #0066FF;
+            border-radius: 9999px;
+            border: 1px solid transparent;
             font-weight: 600;
             font-size: 0.8125rem;
+            min-height: 40px;
+            padding: 8px 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .btn-primary:active, .btn-flat-primary:active {
+            background-color: #C93B00;
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .btn-outline, .btn-flat-secondary {
+            background-color: var(--surface-color);
+            color: #FC4C02;
+            border: 1.5px solid #FC4C02;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            min-height: 40px;
             padding: 8px 16px;
             display: inline-flex;
             align-items: center;
@@ -127,56 +150,54 @@
             gap: 6px;
             cursor: pointer;
             user-select: none;
-            transition: background-color 150ms ease, transform 100ms ease;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
         }
-        .btn-flat-primary:hover {
-            background-color: #0052CC;
-            border-color: #0052CC;
+
+        .btn-outline:active, .btn-flat-secondary:active {
+            background-color: #FFE5D6;
+            transform: scale(0.96) !important;
+            transition: transform 80ms cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
-        .btn-flat-primary:active {
-            transform: translateY(1px);
+
+        @media (hover: hover) and (pointer: fine) {
+            .flat-card:hover {
+                border-color: var(--border-strong);
+                box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+            }
+            .btn-primary:hover, .btn-flat-primary:hover {
+                background-color: #E34402;
+                box-shadow: 0 2px 4px 0 rgba(252, 76, 2, 0.25);
+            }
+            .btn-outline:hover, .btn-flat-secondary:hover {
+                background-color: #FFF3ED;
+                color: #E34402;
+                border-color: #E34402;
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            }
+            html.dark .btn-outline:hover, html.dark .btn-flat-secondary:hover {
+                background-color: rgba(252, 76, 2, 0.15);
+                color: #FF7026;
+                border-color: #FF7026;
+            }
         }
-        .btn-flat-secondary {
-            background-color: transparent;
-            color: var(--text-primary);
-            border: 1.5px solid var(--border-strong);
-            border-radius: 2px;
-            font-weight: 600;
-            font-size: 0.8125rem;
-            padding: 8px 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-            user-select: none;
-            transition: background-color 150ms ease, transform 100ms ease;
-        }
-        .btn-flat-secondary:hover {
-            background-color: var(--surface-subtle);
-        }
-        .btn-flat-secondary:active {
-            transform: translateY(1px);
-        }
+
         .flat-input {
-            border: 1.5px solid var(--border-color);
+            border: 1px solid var(--border-color);
             background-color: var(--surface-color);
-            border-radius: 2px;
-            padding: 8px 12px;
-            font-size: 0.8125rem;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 16px;
             color: var(--text-primary);
             outline: none;
-            transition: border-color 150ms ease;
+            transition: border-color 150ms ease, box-shadow 150ms ease;
         }
         .flat-input:focus {
-            border-color: #0066FF;
-            outline: 2px solid #0066FF;
-            outline-offset: 1px;
+            border-color: #FC4C02;
+            box-shadow: 0 0 0 3px rgba(252, 76, 2, 0.15);
         }
-        @media screen and (max-width: 768px) {
-            input, select, textarea, .flat-input {
-                font-size: 16px !important;
-            }
+        input, select, textarea {
+            font-size: 16px !important;
         }
     </style>
 </head>
@@ -188,10 +209,10 @@
             
             <div class="flex items-center gap-3">
                 <a href="/admin" class="flex items-center gap-2.5">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-7 h-7 rounded-[2px] object-contain border border-border">
+                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-7 h-7 rounded-md object-contain border border-border">
                     <div class="flex items-baseline gap-2">
                         <span class="font-display font-bold text-base tracking-tight text-text-primary">Goalie Admin</span>
-                        <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-1.5 py-0.2 rounded-[2px] border border-border">SUPERUSER</span>
+                        <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-2 py-0.5 rounded-full border border-border">SUPERUSER</span>
                     </div>
                 </a>
 
@@ -202,17 +223,17 @@
             </div>
 
             <div class="flex items-center gap-2.5">
-                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 py-1.5 border border-border rounded-[2px] hover:border-text-primary transition-colors">
+                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span class="hidden sm:inline">Athlete Terminal</span>
                 </a>
-                <a href="/login" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 py-1.5 border border-border rounded-[2px] hover:border-text-primary transition-colors">
+                <a href="/login" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors">
                     <span>Sign In Portal</span>
                 </a>
-                <button onclick="lockAdminSession()" id="btn-lock" class="hidden text-xs text-flat-orange hover:text-red-700 px-2 py-1.5 border border-flat-orange/30 rounded-[2px] transition-colors" title="Lock Admin Session">
+                <button onclick="lockAdminSession()" id="btn-lock" class="hidden text-xs text-flat-orange hover:text-red-700 px-3 py-1.5 border border-flat-orange/30 rounded-full transition-colors" title="Lock Admin Session">
                     <span>Lock Session</span>
                 </button>
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-[2px] border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors" title="Toggle Theme">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors" title="Toggle Theme">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
@@ -225,9 +246,9 @@
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
         
         <!-- Gatekeeper Screen (Shown when passcode not yet verified) -->
-        <div id="gatekeeper-view" class="max-w-md mx-auto my-12 flat-card border-2 border-border-strong p-8 bg-surface text-center">
-            <div class="w-10 h-10 rounded-[2px] bg-surface-subtle border border-border text-tertiary mx-auto flex items-center justify-center text-sm mb-3">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        <div id="gatekeeper-view" class="max-w-md mx-auto my-12 flat-card border border-border p-8 bg-surface text-center">
+            <div class="w-12 h-12 rounded-xl bg-surface-subtle border border-border text-tertiary mx-auto flex items-center justify-center text-sm mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
             <h2 class="font-extrabold text-2xl text-text-primary mb-1">Admin Authorization</h2>
             <p class="text-xs text-text-secondary mb-6 leading-relaxed">
@@ -409,7 +430,7 @@
     <footer class="border-t-2 border-border py-4 bg-surface text-xs text-text-secondary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-[2px] object-contain border border-border">
+                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-md object-contain border border-border">
                 <span>&copy; 2026 Goalie Athletics Inc. • System Observability & Governance.</span>
             </div>
             <div class="flex items-center gap-4 text-[11px] font-mono">

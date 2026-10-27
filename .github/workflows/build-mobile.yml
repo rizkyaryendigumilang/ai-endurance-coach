@@ -1,0 +1,134 @@
+name: Build Mobile Apps (APK & IPA)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - 'ios/**'
+      - 'capacitor.config.*'
+      - '.github/workflows/build-mobile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_SLUG: 'goalie'
+
+jobs:
+  # ========================================================
+  # JOB 1: Build Android APK
+  # ========================================================
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Web App & Sync Capacitor Android
+        run: |
+          npm run build
+          npx cap sync android
+
+      - name: Compile Android APK (assembleDebug)
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Prepare APK Artifact
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk ${{ env.APP_SLUG }}-latest.apk
+          echo "APK generated: $(ls -lh ${{ env.APP_SLUG }}-latest.apk)"
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_SLUG }}-android-apk
+          path: ${{ env.APP_SLUG }}-latest.apk
+          retention-days: 14
+
+  # ========================================================
+  # JOB 2: Build iOS IPA (Unsigned Archive)
+  # ========================================================
+  build-ios:
+    name: Build iOS IPA
+    runs-on: macos-14
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Web App & Sync Capacitor iOS
+        run: |
+          npm run build
+          npx cap sync ios
+
+      - name: Compile and Archive iOS App (Unsigned)
+        run: |
+          mkdir -p build
+          if [ -d "ios/App/App.xcworkspace" ]; then
+            TARGET_FLAG="-workspace ios/App/App.xcworkspace"
+          else
+            TARGET_FLAG="-project ios/App/App.xcodeproj"
+          fi
+          echo "Running xcodebuild archive with $TARGET_FLAG..."
+          xcodebuild archive \
+            $TARGET_FLAG \
+            -scheme App \
+            -destination "generic/platform=iOS" \
+            -archivePath build/App.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Extract Payload and Package IPA
+        run: |
+          mkdir -p Payload
+          APP_PATH=$(find build/App.xcarchive/Products/Applications -name "*.app" -maxdepth 1 | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::Could not find .app in archive Products!"
+            exit 1
+          fi
+          echo "Found compiled app at: $APP_PATH"
+          cp -r "$APP_PATH" Payload/
+          zip -r -y ${{ env.APP_SLUG }}-latest.ipa Payload
+          echo "IPA packaged: $(ls -lh ${{ env.APP_SLUG }}-latest.ipa)"
+
+      - name: Upload iOS IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_SLUG }}-ios-ipa
+          path: ${{ env.APP_SLUG }}-latest.ipa
+          retention-days: 14
