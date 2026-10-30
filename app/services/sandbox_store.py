@@ -390,3 +390,239 @@ def get_platform_telemetry():
         "active_garmin_sessions": sum(1 for a in athletes if a["garmin_connected"])
     }
 
+
+# ── Global Audit, Webhook, and Broadcast Storage ──────────────────────────────
+_AUDIT_LOGS = []
+_WEBHOOK_LOGS = []
+_SYSTEM_BROADCAST = None
+
+def _seed_admin_logs():
+    global _AUDIT_LOGS, _WEBHOOK_LOGS, _SYSTEM_BROADCAST
+    if not _AUDIT_LOGS:
+        _AUDIT_LOGS = [
+            {
+                "id": "aud-101",
+                "timestamp": "2026-10-30T10:15:00Z",
+                "action": "CACHE_PURGE",
+                "target": "Platform Compute Cache",
+                "admin": "Superuser",
+                "detail": "Membersihkan 42 expired athlete telemetry tokens dan menghitung ulang matriks TRIMP"
+            },
+            {
+                "id": "aud-102",
+                "timestamp": "2026-10-29T16:30:00Z",
+                "action": "SUBSCRIPTION_OVERRIDE",
+                "target": "Sarah Jenkins (demo-athlete-sarah)",
+                "admin": "Superuser",
+                "detail": "Mengubah paket ke PRO (Tahunan) via Admin Override"
+            },
+            {
+                "id": "aud-103",
+                "timestamp": "2026-10-28T08:45:00Z",
+                "action": "IMPERSONATION",
+                "target": "Rendi Kurniawan (demo-athlete-rendi)",
+                "admin": "Superuser",
+                "detail": "Inspeksi telemetri dropout Garmin cadence pada sesi Tempo Run 8K"
+            }
+        ]
+    if not _WEBHOOK_LOGS:
+        _WEBHOOK_LOGS = [
+            {
+                "id": "whk-501",
+                "timestamp": "2026-10-30T11:42:15Z",
+                "source": "Strava",
+                "event_type": "activity.create",
+                "status": "200 OK",
+                "athlete_id": "demo-athlete-sarah",
+                "athlete_name": "Sarah Jenkins",
+                "detail": "Activity #84920194 • Zone 2 Endurance Ride (82.0 km) parsed & normalized"
+            },
+            {
+                "id": "whk-502",
+                "timestamp": "2026-10-30T09:12:00Z",
+                "source": "Garmin",
+                "event_type": "health_metrics.sync",
+                "status": "200 OK",
+                "athlete_id": "demo-user-12345",
+                "athlete_name": "Alex Rivers",
+                "detail": "Resting HR: 48 bpm, Sleep Score: 86, HRV Status: Balanced (58ms)"
+            },
+            {
+                "id": "whk-503",
+                "timestamp": "2026-10-29T18:22:10Z",
+                "source": "Intervals.icu",
+                "event_type": "wellness.update",
+                "status": "200 OK",
+                "athlete_id": "demo-athlete-sarah",
+                "athlete_name": "Sarah Jenkins",
+                "detail": "TSB: +12, CTL: 78.4, ATL: 66.4 • Ingested via API polling stream"
+            },
+            {
+                "id": "whk-504",
+                "timestamp": "2026-10-29T06:05:32Z",
+                "source": "Strava",
+                "event_type": "activity.update",
+                "status": "FAILED",
+                "athlete_id": "demo-athlete-rendi",
+                "athlete_name": "Rendi Kurniawan",
+                "detail": "Invalid FIT binary CRC checksum • Stream retry queued"
+            }
+        ]
+    if _SYSTEM_BROADCAST is None:
+        _SYSTEM_BROADCAST = {
+            "id": "bc-active-01",
+            "title": "Pembaruan Mesin Telemetri Banister TRIMP v2.4",
+            "message": "Kalkulasi beban latihan kardiovaskular kini menggunakan normalisasi Minetti GAP dengan kompensasi elevasi real-time.",
+            "level": "info",
+            "created_at": "2026-10-30T08:00:00Z",
+            "active": True
+        }
+
+def add_audit_log(action: str, target: str, detail: str, admin: str = "Superuser"):
+    _seed_admin_logs()
+    item = {
+        "id": f"aud-{uuid.uuid4().hex[:6]}",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "action": action,
+        "target": target,
+        "admin": admin,
+        "detail": detail
+    }
+    _AUDIT_LOGS.insert(0, item)
+    return item
+
+def get_audit_logs(limit: int = 50):
+    _seed_admin_logs()
+    return _AUDIT_LOGS[:limit]
+
+def add_webhook_log(source: str, event_type: str, status: str, athlete_id: str, athlete_name: str, detail: str):
+    _seed_admin_logs()
+    item = {
+        "id": f"whk-{uuid.uuid4().hex[:6]}",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "source": source,
+        "event_type": event_type,
+        "status": status,
+        "athlete_id": athlete_id,
+        "athlete_name": athlete_name,
+        "detail": detail
+    }
+    _WEBHOOK_LOGS.insert(0, item)
+    return item
+
+def get_webhook_logs(limit: int = 50):
+    _seed_admin_logs()
+    return _WEBHOOK_LOGS[:limit]
+
+def set_system_broadcast(title: str, message: str, level: str = "info"):
+    global _SYSTEM_BROADCAST
+    _SYSTEM_BROADCAST = {
+        "id": f"bc-{uuid.uuid4().hex[:6]}",
+        "title": title,
+        "message": message,
+        "level": level or "info",
+        "created_at": datetime.utcnow().isoformat() + "Z",
+        "active": True
+    }
+    add_audit_log("BROADCAST_PUBLISHED", f"Broadcast: {title}", f"Level: {level} • {message[:60]}...")
+    return _SYSTEM_BROADCAST
+
+def get_system_broadcast():
+    _seed_admin_logs()
+    return _SYSTEM_BROADCAST
+
+def clear_system_broadcast():
+    global _SYSTEM_BROADCAST
+    old = _SYSTEM_BROADCAST
+    _SYSTEM_BROADCAST = None
+    if old:
+        add_audit_log("BROADCAST_REVOKED", f"Broadcast: {old.get('title', 'Notice')}", "Broadcast revoked by administrator")
+    return {"status": "cleared"}
+
+def get_athlete_detail(user_id: str):
+    _ensure_seed_data()
+    store = _get_user_store(user_id)
+    prof = store.get("profile", {})
+    actual = store.get("actual_workouts", [])
+    plans = store.get("training_plans", [])
+    garmin = store.get("garmin_session", {})
+    sub = store.get("subscription", {})
+    races = store.get("races", [])
+
+    total_dist = sum(w.get("distance_km", 0.0) for w in actual)
+    total_dur = sum(w.get("duration_seconds", 0) for w in actual) // 60
+    total_trimp = sum(
+        sum(m.get("training_load", 0) for m in w.get("activity_metrics", []))
+        for w in actual
+    )
+
+    return {
+        "user_id": user_id,
+        "profile": prof,
+        "status": prof.get("status", "active"),
+        "subscription": {
+            "is_pro": bool(sub.get("is_active")),
+            "status": sub.get("status", "free"),
+            "plan": sub.get("plan", "free"),
+            "expires_at": sub.get("expires_at")
+        },
+        "garmin_session": {
+            "connected": bool(garmin.get("is_active")),
+            "email": garmin.get("email"),
+            "last_sync": garmin.get("last_sync")
+        },
+        "stats": {
+            "total_workouts": len(actual),
+            "total_distance_km": round(total_dist, 2),
+            "total_duration_minutes": total_dur,
+            "total_training_load": total_trimp,
+            "total_plans": len(plans),
+            "total_races": len(races)
+        },
+        "recent_workouts": actual[:8],
+        "training_plans": plans[:3]
+    }
+
+def update_athlete_subscription(user_id: str, is_pro: bool, plan: str = "monthly"):
+    store = _get_user_store(user_id)
+    if "subscription" not in store:
+        store["subscription"] = {}
+    store["subscription"]["is_active"] = is_pro
+    store["subscription"]["status"] = "pro" if is_pro else "free"
+    store["subscription"]["plan"] = plan if is_pro else "free"
+    store["subscription"]["updated_at"] = datetime.utcnow().isoformat() + "Z"
+    
+    prof_name = store.get("profile", {}).get("full_name", user_id)
+    add_audit_log(
+        "SUBSCRIPTION_OVERRIDE",
+        f"{prof_name} ({user_id})",
+        f"Tier diubah ke {'PRO (' + plan + ')' if is_pro else 'FREE'} oleh Administrator"
+    )
+    return store["subscription"]
+
+def update_athlete_status(user_id: str, status: str):
+    store = _get_user_store(user_id)
+    if "profile" not in store:
+        store["profile"] = {"id": user_id}
+    store["profile"]["status"] = status
+    prof_name = store.get("profile", {}).get("full_name", user_id)
+    add_audit_log(
+        "ATHLETE_STATUS_CHANGE",
+        f"{prof_name} ({user_id})",
+        f"Status akun diubah menjadi {status.upper()}"
+    )
+    return {"user_id": user_id, "status": status}
+
+def delete_athlete(user_id: str):
+    if user_id in _USERS_DB:
+        prof_name = _USERS_DB[user_id].get("profile", {}).get("full_name", user_id)
+        del _USERS_DB[user_id]
+        add_audit_log(
+            "ATHLETE_DELETED",
+            f"{prof_name} ({user_id})",
+            "Seluruh data profil, telemetri, dan histori latihan dihapus permanen (GDPR / UU PDP)"
+        )
+        return True
+    return False
+
+

@@ -100,6 +100,21 @@ class AdminBroadcastInput(BaseModel):
     message: str
     level: Optional[str] = "info"  # 'info' | 'warning' | 'alert'
 
+class AdminSubscriptionUpdateInput(BaseModel):
+    is_pro: bool = True
+    plan: Optional[str] = "monthly"
+
+class AdminAthleteStatusInput(BaseModel):
+    status: str = "active"  # 'active' | 'suspended'
+
+class AdminSimulateWebhookInput(BaseModel):
+    source: str = "Strava"  # 'Strava' | 'Garmin' | 'Intervals.icu'
+    event_type: str = "activity.create"
+    status: Optional[str] = "200 OK"
+    athlete_id: Optional[str] = "demo-user-12345"
+    athlete_name: Optional[str] = "Alex Rivers"
+    detail: Optional[str] = "Simulated webhook push event"
+
 # ── Pro Subscription & Payments ───────────────────────────────────────────────
 class SubscriptionOrderInput(BaseModel):
     plan: Optional[str] = "monthly"  # 'monthly' | 'annual'

@@ -145,7 +145,7 @@
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
             outline: none;
         }
 
@@ -175,7 +175,7 @@
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
             outline: none;
         }
 
@@ -205,7 +205,7 @@
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
             outline: none;
         }
 
@@ -235,8 +235,14 @@
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease, background-color 150ms ease, border-color 150ms ease;
             outline: none;
+        }
+
+        /* High-Performance Feed Virtualization */
+        .feed-card-contain {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 420px;
         }
 
         html.dark .btn-ghost {
@@ -579,6 +585,18 @@
             </div>
         </div>
     </nav>
+
+    <!-- Global System Broadcast Banner (Admin Feature 6) -->
+    <div id="system-broadcast-banner" class="hidden border-b border-border bg-surface px-4 py-2 text-xs font-mono transition-all z-[90] relative">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span id="system-bc-pill" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-flat-orange text-white">NOTICE</span>
+                <strong id="system-bc-title" class="font-bold text-text-primary">System Notice</strong>
+                <span id="system-bc-msg" class="text-text-secondary hidden sm:inline">-</span>
+            </div>
+            <button onclick="dismissSystemBroadcast()" class="text-text-secondary hover:text-text-primary p-1 text-xs font-bold" title="Tutup Notifikasi">✕</button>
+        </div>
+    </div>
 
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- HERO SECTION: Split-screen, Geometric 2D/3D Graphic       -->
@@ -1353,7 +1371,7 @@
                         </div>
 
                         <!-- 2. STRAVA FEED ITEM 1: Morning Run -->
-                        <div data-feed-type="run" class="feed-card flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
+                        <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
                             <!-- Athlete Activity Header -->
                             <div class="flex items-start justify-between">
                                 <div class="flex items-center gap-3">
@@ -1490,7 +1508,7 @@
                         </div>
 
                         <!-- 3. STRAVA FEED ITEM 2: Weekend Ride -->
-                        <div data-feed-type="cycling" class="feed-card flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
+                        <div data-feed-type="cycling" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -4040,8 +4058,13 @@
             updateByokUI();
             selectCoachTier(appState.selectedCoachTier, false);
             switchWorkstationTab('cockpit');
-            syncCockpitWithBackend();
-            syncTelemetrySuite();
+            
+            // Parallel Initial Data Hydration (High-Performance Non-blocking Promise.allSettled)
+            Promise.allSettled([
+                syncCockpitWithBackend(),
+                syncTelemetrySuite(),
+                checkSystemBroadcast()
+            ]);
 
             // Shortcut ⌘K
             document.addEventListener('keydown', (e) => {
@@ -4077,6 +4100,39 @@
             window.addEventListener('appinstalled', () => {
                 toast.success('App Installed', 'Goalie is now pinned to your device homescreen.');
             });
+        }
+
+        async function checkSystemBroadcast() {
+            try {
+                const res = await fetch('/api/v1/system/broadcast');
+                if (!res.ok) return;
+                const data = await res.json();
+                const bc = data.broadcast;
+                const banner = document.getElementById('system-broadcast-banner');
+                if (!banner) return;
+                if (bc && bc.active) {
+                    const dismissedId = sessionStorage.getItem('dismissed_broadcast_id');
+                    if (dismissedId === bc.id) return;
+                    document.getElementById('system-bc-title').textContent = bc.title;
+                    document.getElementById('system-bc-msg').textContent = bc.message;
+                    const pill = document.getElementById('system-bc-pill');
+                    pill.textContent = (bc.level || 'info').toUpperCase();
+                    banner.classList.remove('hidden');
+                    banner.dataset.bcId = bc.id;
+                } else {
+                    banner.classList.add('hidden');
+                }
+            } catch (e) {
+                // Ignore in offline mode
+            }
+        }
+
+        function dismissSystemBroadcast() {
+            const banner = document.getElementById('system-broadcast-banner');
+            if (banner) {
+                banner.classList.add('hidden');
+                if (banner.dataset.bcId) sessionStorage.setItem('dismissed_broadcast_id', banner.dataset.bcId);
+            }
         }
 
         // Theme management
@@ -4226,8 +4282,36 @@
             totalWorkouts: 14
         };
 
+        function applyCockpitTotals(totals) {
+            if (!totals) return;
+            cockpitData.totalKm = totals.total_distance_km || cockpitData.totalKm;
+            cockpitData.totalWorkouts = totals.total_workouts || cockpitData.totalWorkouts;
+            cockpitData.weeklyWork = Math.round(4200 + (totals.total_training_load || 0));
+            cockpitData.calorieLoss = Math.round(4957 + ((totals.total_distance_km || 0) * 68));
+            cockpitData.summaryGoal = Math.min(100, Math.round(68.4 + ((totals.total_distance_km || 0) / 60 * 25)));
+
+            const workEl = document.getElementById('stat-weekly-work');
+            if (workEl) workEl.textContent = cockpitData.weeklyWork.toLocaleString();
+
+            const calEl = document.getElementById('stat-calorie-loss');
+            if (calEl) calEl.textContent = `-${cockpitData.calorieLoss.toLocaleString()} kcal`;
+
+            const centerEl = document.getElementById('summary-center-pct');
+            if (centerEl) centerEl.textContent = `+${cockpitData.summaryGoal}%`;
+        }
+
         async function syncCockpitWithBackend() {
+            // 1. Instant Cache Hydration (0ms Stale-While-Revalidate)
+            try {
+                const cached = localStorage.getItem('goalie_cached_cockpit');
+                if (cached) {
+                    applyCockpitTotals(JSON.parse(cached));
+                }
+            } catch (e) {}
+
             if (!appState.token) return;
+
+            // 2. Network Revalidation
             try {
                 const res = await fetch(`${API_BASE}/analytics/sports-summary`, {
                     headers: getAuthHeaders()
@@ -4235,20 +4319,10 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data.totals && data.totals.total_distance_km > 0) {
-                        cockpitData.totalKm = data.totals.total_distance_km;
-                        cockpitData.totalWorkouts = data.totals.total_workouts;
-                        cockpitData.weeklyWork = Math.round(4200 + (data.totals.total_training_load || 0));
-                        cockpitData.calorieLoss = Math.round(4957 + (data.totals.total_distance_km * 68));
-                        cockpitData.summaryGoal = Math.min(100, Math.round(68.4 + (data.totals.total_distance_km / 60 * 25)));
-
-                        const workEl = document.getElementById('stat-weekly-work');
-                        if (workEl) workEl.textContent = cockpitData.weeklyWork.toLocaleString();
-
-                        const calEl = document.getElementById('stat-calorie-loss');
-                        if (calEl) calEl.textContent = `-${cockpitData.calorieLoss.toLocaleString()} kcal`;
-
-                        const centerEl = document.getElementById('summary-center-pct');
-                        if (centerEl) centerEl.textContent = `+${cockpitData.summaryGoal}%`;
+                        applyCockpitTotals(data.totals);
+                        try {
+                            localStorage.setItem('goalie_cached_cockpit', JSON.stringify(data.totals));
+                        } catch (e) {}
                     }
                 }
             } catch (err) {

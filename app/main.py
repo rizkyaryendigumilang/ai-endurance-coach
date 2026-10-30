@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
@@ -14,6 +15,7 @@ from app.schemas.models import (
     UserLoginInput, UserRegisterInput, ForgotPasswordInput, OAuthLoginInput,
     UserProfileUpdate, GarminConnectLoginInput, TrainingSuggestionInput,
     AdminImpersonateInput, AdminBroadcastInput,
+    AdminSubscriptionUpdateInput, AdminAthleteStatusInput, AdminSimulateWebhookInput,
     SubscriptionOrderInput, SubscriptionActivateInput,
     GapCalculationInput, ApiKeyValidationInput, RaceFuelingInput
 )
@@ -44,6 +46,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# High-Performance HTTP Compression (GZip for HTML, JS, CSS, JSON >= 1KB)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# HTTP Static Caching Headers Middleware
+@app.middleware("http")
+async def add_cache_control_headers(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/public/") or path.startswith("/icons/"):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    elif path in ["/manifest.json", "/favicon.ico", "/apple-touch-icon.png"]:
+        response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
 
 # Register routers
 app.include_router(strava_router)
@@ -1291,6 +1307,7 @@ def sync_garmin_activities(
 
 
 # ═══════════════════════════════════════════════
+# ═══════════════════════════════════════════════
 # ADMIN COMMAND CENTER ENDPOINTS
 # ═══════════════════════════════════════════════
 
@@ -1308,62 +1325,72 @@ def get_admin_telemetry():
     
     gemini_key = os.getenv("GEMINI_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")
-    services = [
-        {
+
+    kpis = {
+        "total_athletes": telemetry.get("total_athletes", len(athletes)),
+        "total_workouts": telemetry.get("total_workouts", 0),
+        "total_distance_km": telemetry.get("total_distance_km", 0.0),
+        "total_trimp_load": telemetry.get("total_training_load", 0),
+        "total_plans": telemetry.get("total_plans", 0),
+        "active_garmin_sessions": telemetry.get("active_garmin_sessions", 0)
+    }
+
+    services_health = {
+        "sports_engine": {
             "name": "Deterministic Sports Engine",
-            "category": "Math & Physiology",
-            "status": "operational",
-            "detail": "Pace/GAP, Banister TRIMP, Foster RPE, EF Aerobic Decoupling",
+            "status": "online",
             "latency_ms": 1.2,
-            "version": "v2.4"
+            "version": "v2.4",
+            "detail": "Pace/GAP, Banister TRIMP, Foster RPE, EF Aerobic Decoupling"
         },
-        {
-            "name": "OpenAI AI Coach (Free Tier)",
-            "category": "Standard AI Reasoning",
-            "status": "operational" if openai_key else "unconfigured",
-            "detail": "GPT-4o-mini (Free tier daily athletic consultations & recovery)",
-            "latency_ms": 180,
-            "version": "gpt-4o-mini"
+        "gemini_reasoning": {
+            "name": "Google Gemini 3.8 Flash (Dual-Tier)",
+            "status": "online" if gemini_key else "unconfigured",
+            "latency_ms": 142 if gemini_key else 0,
+            "version": "gemini-3.8-flash",
+            "detail": "Pro Subscription macrocycles, deep fatigue & video biomechanics"
         },
-        {
-            "name": "Gemini AI Coach (Pro Subscription)",
-            "category": "Advanced Reasoning",
-            "status": "operational" if gemini_key else "unconfigured",
-            "detail": "Gemini 3.8 Flash (Pro Subscription macrocycles, deep fatigue & video biomechanics)",
-            "latency_ms": 320,
-            "version": "gemini-3.8-flash"
+        "openai_reasoning": {
+            "name": "OpenAI GPT-4o-mini (Free Tier)",
+            "status": "online" if openai_key else "unconfigured",
+            "latency_ms": 180 if openai_key else 0,
+            "version": "gpt-4o-mini",
+            "detail": "Daily athletic consultations & recovery suggestions"
         },
-        {
+        "mediapipe_vision": {
             "name": "MediaPipe Vision Biomechanics",
-            "category": "Computer Vision",
-            "status": "operational",
-            "detail": "Pose Landmark Detection (Cadence, Oscillation, Knee Angle)",
+            "status": "online",
             "latency_ms": 42,
-            "version": "0.10.x"
+            "version": "0.10.x",
+            "detail": "Pose Landmark Detection (Cadence, Oscillation, Knee Angle)"
         },
-        {
+        "garmin_ingest": {
             "name": "Garmin Direct Sync Engine",
-            "category": "Wearable Integration",
-            "status": "operational",
-            "detail": "Garmin Connect Session Direct & Webhook Ingestion",
-            "latency_ms": 95,
-            "version": "v1.1"
+            "status": "online",
+            "latency_ms": 28,
+            "version": "v1.1",
+            "detail": "Garmin Connect Session Direct & Webhook Ingestion"
         },
-        {
-            "name": "Athlete Isolation Store",
-            "category": "Security & Storage",
-            "status": "operational",
-            "detail": "Row-Level Isolation (Local Sandbox / Supabase Fallback)",
-            "latency_ms": 0.9,
-            "version": "RLS-v2"
+        "row_level_security": {
+            "name": "Database Isolation (RLS)",
+            "status": "online",
+            "latency_ms": 0.8,
+            "version": "RLS-v2",
+            "detail": "Row-Level Isolation (Local Sandbox / Supabase Fallback)"
         }
-    ]
+    }
+
+    services_list = list(services_health.values())
 
     return {
         "status": "success",
+        "kpis": kpis,
         "telemetry": telemetry,
-        "services": services,
+        "services_health": services_health,
+        "services": services_list,
+        "athletes": athletes,
         "recent_athletes": athletes[:10],
+        "active_broadcast": sandbox_store.get_system_broadcast(),
         "generated_at": datetime.utcnow().isoformat()
     }
 
@@ -1390,6 +1417,161 @@ def get_admin_athletes(search: Optional[str] = None):
     }
 
 
+@app.get("/api/v1/admin/athletes/{user_id}/detail", tags=["Admin"])
+def get_admin_athlete_detail(user_id: str):
+    """
+    Returns granular athlete telemetry, profile thresholds, workout history, and integration status.
+    """
+    detail = sandbox_store.get_athlete_detail(user_id)
+    return {
+        "status": "success",
+        "athlete": detail
+    }
+
+
+@app.post("/api/v1/admin/athletes/{user_id}/subscription", tags=["Admin"])
+def admin_update_subscription(user_id: str, data: AdminSubscriptionUpdateInput):
+    """
+    Administrative Subscription Override (Upgrade to Pro or Downgrade to Free).
+    """
+    sub = sandbox_store.update_athlete_subscription(user_id, is_pro=data.is_pro, plan=data.plan or "monthly")
+    return {
+        "status": "success",
+        "message": f"Paket langganan atlet berhasil diubah ke {'PRO (' + (data.plan or 'monthly') + ')' if data.is_pro else 'FREE'}.",
+        "subscription": sub
+    }
+
+
+@app.post("/api/v1/admin/athletes/{user_id}/status", tags=["Admin"])
+def admin_update_athlete_status(user_id: str, data: AdminAthleteStatusInput):
+    """
+    Administrative Account Status Control (Active / Suspended).
+    """
+    res = sandbox_store.update_athlete_status(user_id, status=data.status)
+    return {
+        "status": "success",
+        "message": f"Status atlet berhasil diubah ke {data.status.upper()}.",
+        "result": res
+    }
+
+
+@app.delete("/api/v1/admin/athletes/{user_id}", tags=["Admin"])
+def admin_delete_athlete(user_id: str):
+    """
+    Permanently delete athlete records and telemetry (GDPR / UU PDP compliance).
+    """
+    ok = sandbox_store.delete_athlete(user_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Athlete record not found")
+    return {
+        "status": "success",
+        "message": f"Data atlet {user_id} berhasil dihapus permanen dari platform."
+    }
+
+
+@app.get("/api/v1/admin/logs", tags=["Admin"])
+def get_admin_logs():
+    """
+    Returns administrative audit trails and incoming webhook inspection logs (Strava, Garmin, Intervals.icu).
+    """
+    return {
+        "status": "success",
+        "audit_logs": sandbox_store.get_audit_logs(limit=50),
+        "webhook_logs": sandbox_store.get_webhook_logs(limit=50)
+    }
+
+
+@app.post("/api/v1/admin/logs/simulate-webhook", tags=["Admin"])
+def admin_simulate_webhook(data: AdminSimulateWebhookInput):
+    """
+    Simulate incoming webhook ingestion event for platform telemetry testing.
+    """
+    entry = sandbox_store.add_webhook_log(
+        source=data.source,
+        event_type=data.event_type,
+        status=data.status or "200 OK",
+        athlete_id=data.athlete_id or "demo-user-12345",
+        athlete_name=data.athlete_name or "Alex Rivers",
+        detail=data.detail or "Simulated test event"
+    )
+    return {
+        "status": "success",
+        "message": f"Webhook {data.source} ({data.event_type}) berhasil disimulasikan.",
+        "log": entry
+    }
+
+
+@app.get("/api/v1/admin/broadcast", tags=["Admin"])
+def get_admin_broadcast():
+    """
+    Get current global system broadcast announcement.
+    """
+    return {
+        "status": "success",
+        "broadcast": sandbox_store.get_system_broadcast()
+    }
+
+
+@app.post("/api/v1/admin/broadcast", tags=["Admin"])
+def set_admin_broadcast(data: AdminBroadcastInput):
+    """
+    Publish a platform-wide announcement banner to all athlete terminals.
+    """
+    bc = sandbox_store.set_system_broadcast(title=data.title, message=data.message, level=data.level or "info")
+    return {
+        "status": "success",
+        "message": "Pengumuman sistem berhasil dipublikasikan ke seluruh atlet.",
+        "broadcast": bc
+    }
+
+
+@app.delete("/api/v1/admin/broadcast", tags=["Admin"])
+def delete_admin_broadcast():
+    """
+    Revoke current system broadcast announcement.
+    """
+    res = sandbox_store.clear_system_broadcast()
+    return {
+        "status": "success",
+        "message": "Pengumuman sistem berhasil dicabut.",
+        "result": res
+    }
+
+
+@app.get("/api/v1/system/broadcast", tags=["System"])
+def get_public_system_broadcast():
+    """
+    Public endpoint for athlete frontends to fetch active system notices/banners.
+    """
+    bc = sandbox_store.get_system_broadcast()
+    return {
+        "status": "success",
+        "broadcast": bc if (bc and bc.get("active")) else None
+    }
+
+
+@app.get("/api/v1/admin/export", tags=["Admin"])
+def admin_export_data(format: str = "json"):
+    """
+    Export aggregated platform data for offline analytics and governance.
+    """
+    from datetime import datetime
+    telemetry = sandbox_store.get_platform_telemetry()
+    athletes = sandbox_store.get_all_athletes_summary()
+    audit_logs = sandbox_store.get_audit_logs(limit=100)
+    webhook_logs = sandbox_store.get_webhook_logs(limit=100)
+
+    data = {
+        "exported_at": datetime.utcnow().isoformat() + "Z",
+        "platform_telemetry": telemetry,
+        "athletes_count": len(athletes),
+        "athletes": athletes,
+        "audit_logs": audit_logs,
+        "webhook_logs": webhook_logs
+    }
+    return data
+
+
 @app.post("/api/v1/admin/impersonate", tags=["Admin"])
 def admin_impersonate(data: AdminImpersonateInput):
     """
@@ -1403,6 +1585,13 @@ def admin_impersonate(data: AdminImpersonateInput):
     email = prof.get("email") or f"{user_id[:8]}@endurance.local"
     name = prof.get("full_name", "Athlete")
     token = create_demo_token(user_id, email)
+    
+    sandbox_store.add_audit_log(
+        "IMPERSONATION",
+        f"{name} ({user_id})",
+        f"Administrator memulai sesi impersonasi atlet {email}"
+    )
+
     return {
         "status": "success",
         "message": f"Sesi impersonasi aktif untuk {name}",
@@ -1419,6 +1608,11 @@ def admin_clear_cache():
     """
     Maintenance tool: Re-calibrates system telemetry and clears compute cache.
     """
+    sandbox_store.add_audit_log(
+        "CACHE_PURGE",
+        "Platform Compute Cache",
+        "Administrator membersihkan telemetry cache dan sinkronisasi ulang data atlet"
+    )
     return {
         "status": "success",
         "message": "Compute cache platform berhasil dibersihkan dan ditelemetri ulang."

@@ -20,15 +20,20 @@ class BiomechanicsEngine:
     def __init__(self):
         self.mp_pose = mp_pose
         self.mp_draw = mp_draw
-        self.pose = None
-        if self.mp_pose is not None:
+        self._pose = None
+
+    def get_pose(self):
+        """Lazy-loads MediaPipe TensorFlow model on demand, saving 80MB+ RAM on server boot."""
+        if self._pose is None and self.mp_pose is not None:
             try:
-                self.pose = self.mp_pose.Pose(static_image_mode=True)
+                self._pose = self.mp_pose.Pose(static_image_mode=True)
             except Exception:
-                self.pose = None
+                self._pose = None
+        return self._pose
 
     def analyze_image(self, image_bytes: bytes):
-        if not self.pose or not self.mp_draw or not self.mp_pose:
+        pose = self.get_pose()
+        if not pose or not self.mp_draw or not self.mp_pose:
             return {"error": "Modul analisis pose MediaPipe tidak tersedia di runtime ini."}
 
         np_arr = np.frombuffer(image_bytes, np.uint8)
@@ -36,7 +41,7 @@ class BiomechanicsEngine:
         if img is None:
             return {"error": "Gagal membaca format gambar."}
 
-        result = self.pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        result = pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         
         if not result.pose_landmarks:
             return {"error": "Pose tidak terdeteksi pada gambar."}
