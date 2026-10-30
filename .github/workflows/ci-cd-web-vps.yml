@@ -112,7 +112,8 @@ jobs:
       - name: Package web & application release artifact
         run: |
           set -euo pipefail
-          # Package dist web assets, python backend, and configurations
+          # Package dist web assets, python backend, and configurations into clean staging location
+          mkdir -p /tmp/pkg-stage
           tar --exclude='.git' \
               --exclude='node_modules' \
               --exclude='venv' \
@@ -123,7 +124,12 @@ jobs:
               --exclude='.runtime' \
               --exclude='android' \
               --exclude='ios' \
-              -czf web-dist.tar.gz .
+              --exclude='*.tar.gz' \
+              --exclude='web-dist.tar.gz' \
+              --warning=no-file-changed \
+              -czf /tmp/pkg-stage/web-dist.tar.gz .
+          mv /tmp/pkg-stage/web-dist.tar.gz ./web-dist.tar.gz
+          rm -rf /tmp/pkg-stage
           test -s web-dist.tar.gz
           tar -tzf web-dist.tar.gz | grep 'index.html' > /dev/null
           tar -tzf web-dist.tar.gz | grep 'app/main.py' > /dev/null
@@ -258,7 +264,7 @@ jobs:
           # 3. Snapshot backup versi aktif saat ini (tanpa menimpa runtime venv/.env)
           if [ "$(ls -A "$live" 2>/dev/null)" ]; then
             echo "Creating snapshot backup of current live release..."
-            tar --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./node_modules' -czf "$backup" -C "$live" .
+            tar --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./node_modules' --warning=no-file-changed -czf "$backup" -C "$live" .
             tar -tzf "$backup" > /dev/null || { echo "::error::Backup archive verification failed"; exit 1; }
           fi
 
