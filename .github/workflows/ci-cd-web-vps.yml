@@ -194,14 +194,27 @@ jobs:
           printf '%s\n' "$VPS_KEY" | tr -d '\r' > "$HOME/.ssh/id_ed25519"
           chmod 600 "$HOME/.ssh/id_ed25519"
           printf '%s\n' "$VPS_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
-          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> "$HOME/.ssh/known_hosts" 2>/dev/null || true
+          
+          # Auto-detect working SSH port between VPS_PORT, 2222, and 22
+          CHOSEN_PORT="$VPS_PORT"
+          if ! ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=5 -i "$HOME/.ssh/id_ed25519" -p "$CHOSEN_PORT" "$VPS_USER@$VPS_HOST" "true" 2>/dev/null; then
+            echo "Port $CHOSEN_PORT did not respond. Testing alternative port 2222..."
+            if ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=5 -i "$HOME/.ssh/id_ed25519" -p 2222 "$VPS_USER@$VPS_HOST" "true" 2>/dev/null; then
+              CHOSEN_PORT=2222
+            elif ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=5 -i "$HOME/.ssh/id_ed25519" -p 22 "$VPS_USER@$VPS_HOST" "true" 2>/dev/null; then
+              CHOSEN_PORT=22
+            fi
+          fi
+          echo "Verified working SSH port: $CHOSEN_PORT"
+          echo "ACTIVE_VPS_PORT=$CHOSEN_PORT" >> "$GITHUB_ENV"
+          ssh-keyscan -p "$CHOSEN_PORT" -H "$VPS_HOST" >> "$HOME/.ssh/known_hosts" 2>/dev/null || true
           chmod 600 "$HOME/.ssh/known_hosts"
 
       - name: Upload release bundle and checksum to VPS
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+          VPS_PORT: ${{ env.ACTIVE_VPS_PORT || secrets.VPS_SSH_PORT || '22' }}
         run: |
           scp -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -P "$VPS_PORT" \
             ./artifact/web-dist.tar.gz \
@@ -213,7 +226,7 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+          VPS_PORT: ${{ env.ACTIVE_VPS_PORT || secrets.VPS_SSH_PORT || '22' }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
@@ -347,7 +360,7 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+          VPS_PORT: ${{ env.ACTIVE_VPS_PORT || secrets.VPS_SSH_PORT || '22' }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
           echo "Health check failed. Executing remote rollback on VPS..."
