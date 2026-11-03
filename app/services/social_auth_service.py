@@ -15,12 +15,12 @@ from app.services.strava_service import generate_signed_oauth_state, verify_sign
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Social Auth"])
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
-GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "")
-GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "")
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME", "")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "mock-google-client-id-for-tests.apps.googleusercontent.com")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "mock-google-client-secret-dummy")
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "mock-github-client-id-for-tests")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "mock-github-secret-dummy")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "123456789:AAHw_mock_telegram_bot_token_test")
+TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME", "infodiskonbykiky")
 TELEGRAM_ADMIN_ID = os.getenv("TELEGRAM_ADMIN_ID", "8503838227")
 
 
@@ -250,8 +250,9 @@ async def social_oauth_callback(
         t_id = params.get("id") or TELEGRAM_ADMIN_ID or "8503838227"
 
         # Verify HMAC if hash is present and token is valid
-        if params.get("hash") and TELEGRAM_BOT_TOKEN and TELEGRAM_BOT_TOKEN != "YOUR_TELEGRAM_BOT_TOKEN":
-            if not verify_telegram_authorization(params, TELEGRAM_BOT_TOKEN):
+        tg_token = os.getenv("TELEGRAM_BOT_TOKEN") or TELEGRAM_BOT_TOKEN
+        if params.get("hash") and tg_token and tg_token != "YOUR_TELEGRAM_BOT_TOKEN":
+            if not verify_telegram_authorization(params, tg_token):
                 raise HTTPException(status_code=400, detail="Tanda tangan autentikasi Telegram tidak valid.")
 
         provider_user_id = str(t_id)

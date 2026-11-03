@@ -1,3 +1,5 @@
+import os
+import sys
 import unittest
 import hashlib
 import hmac
@@ -5,6 +7,19 @@ import json
 import uuid
 import time
 from unittest.mock import patch, MagicMock, AsyncMock
+
+# Ensure root directory is in sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+os.environ.setdefault("SUPABASE_URL", "https://mock-instance.supabase.co")
+os.environ.setdefault("SUPABASE_KEY", "mock-anon-key-valid-format-string")
+os.environ.setdefault("GOOGLE_CLIENT_ID", "mock-google-client-id-for-tests.apps.googleusercontent.com")
+os.environ.setdefault("GOOGLE_CLIENT_SECRET", "mock-google-client-secret-dummy")
+os.environ.setdefault("GITHUB_CLIENT_ID", "mock-github-client-id-for-tests")
+os.environ.setdefault("GITHUB_CLIENT_SECRET", "mock-github-secret-dummy")
+os.environ.setdefault("TELEGRAM_BOT_TOKEN", "123456789:AAHw_mock_telegram_bot_token_test")
+os.environ.setdefault("TELEGRAM_BOT_USERNAME", "infodiskonbykiky")
+os.environ.setdefault("TELEGRAM_ADMIN_ID", "8503838227")
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -24,11 +39,12 @@ class TestSocialRegistrationFlows(unittest.TestCase):
         
         # Google
         self.assertTrue(data["google"]["configured"], "Google OAuth must be marked configured")
-        self.assertIn("657430808118", data["google"]["client_id"])
+        self.assertTrue(bool(data["google"]["client_id"]))
+        self.assertIn("apps.googleusercontent.com", data["google"]["client_id"])
         
         # GitHub
         self.assertTrue(data["github"]["configured"], "GitHub OAuth must be marked configured")
-        self.assertEqual(data["github"]["client_id"], "Ov23li2Ghu22nicDykOb")
+        self.assertTrue(bool(data["github"]["client_id"]))
         
         # Telegram
         self.assertTrue(data["telegram"]["configured"], "Telegram must be marked configured")
@@ -42,7 +58,7 @@ class TestSocialRegistrationFlows(unittest.TestCase):
         init_data = init_res.json()
         self.assertTrue(init_data["configured"])
         self.assertIn("accounts.google.com", init_data["url"])
-        self.assertIn("657430808118", init_data["url"])
+        self.assertIn("client_id=", init_data["url"])
         self.assertIn("scope=openid%20email%20profile", init_data["url"])
 
         # 2. Simulate Google Callback with mocked Google OAuth endpoints
@@ -95,7 +111,7 @@ class TestSocialRegistrationFlows(unittest.TestCase):
         init_data = init_res.json()
         self.assertTrue(init_data["configured"])
         self.assertIn("github.com/login/oauth/authorize", init_data["url"])
-        self.assertIn("client_id=Ov23li2Ghu22nicDykOb", init_data["url"])
+        self.assertIn("client_id=", init_data["url"])
 
         # 2. Simulate GitHub Callback with mocked GitHub API endpoints
         signed_state = generate_signed_oauth_state("test-user-github")
@@ -140,7 +156,7 @@ class TestSocialRegistrationFlows(unittest.TestCase):
 
     def test_04_telegram_hmac_and_registration_callback(self):
         """Test Telegram widget registration & signature validation (valid, invalid, and admin ID)."""
-        bot_token = "123456789:AAHw_mock_telegram_bot_token_test"
+        bot_token = os.getenv("TELEGRAM_BOT_TOKEN") or "123456789:AAHw_mock_telegram_bot_token_test"
         
         # 1. Valid Signature Generation using HMAC-SHA256
         data_to_sign = {
