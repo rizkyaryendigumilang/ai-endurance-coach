@@ -38,10 +38,11 @@
             --surface-color: #FFFFFF;
             --surface-subtle: #F0F0F2;
             --text-primary: #242428;
-            --text-secondary: #6D6D78;
+            --text-secondary: #656570;
             --border-color: #E5E5E9;
             --border-strong: #C8C8D0;
             --tertiary: #FC4C02;
+            --tertiary-text: #D03B00; /* WCAG AA 4.54:1 contrast on white */
             --tertiary-hover: #E34402;
             --tertiary-active: #C93B00;
             --tertiary-subtle: #FFF3ED;
@@ -55,10 +56,11 @@
             --surface-color: #1E1E22;
             --surface-subtle: #2A2A32;
             --text-primary: #F4F4F6;
-            --text-secondary: #A0A0AA;
+            --text-secondary: #A6A6B2;
             --border-color: #2E2E36;
             --border-strong: #444450;
             --tertiary: #FC5200;
+            --tertiary-text: #FF7026; /* WCAG AA 5.1:1 contrast on dark surface */
             --tertiary-hover: #FF6A1A;
             --tertiary-active: #E34402;
             --tertiary-subtle: rgba(252, 76, 2, 0.15);
@@ -66,6 +68,65 @@
             --action-hover: #FF6A1A;
             --flat-green: #34D399;
             --flat-orange: #FC5200;
+        }
+
+        .text-tertiary {
+            color: var(--tertiary-text, var(--tertiary)) !important;
+        }
+
+        /* Touch Target 44x44px expansion (Apple HIG / WCAG 2.5.5) */
+        .touch-target-expand {
+            position: relative;
+        }
+        .touch-target-expand::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 44px;
+            min-height: 44px;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+        }
+
+        /* Accessible Keyboard Focus Ring (WCAG 2.4.7) */
+        :focus-visible {
+            outline: 2px solid var(--tertiary) !important;
+            outline-offset: 2px !important;
+        }
+
+        /* Accessible Skip Link */
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 16px;
+            z-index: 9999;
+            padding: 8px 16px;
+            background-color: var(--surface-color);
+            color: var(--tertiary-text, var(--tertiary));
+            border: 2px solid var(--tertiary);
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: top 150ms ease;
+        }
+        .skip-link:focus {
+            top: 16px;
+            outline: none;
+        }
+
+        /* Reduced Motion for accessibility (WCAG 2.2) */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         html {
@@ -96,10 +157,12 @@
         h1, h2, h3, h4, .font-display {
             font-weight: 700;
             letter-spacing: -0.03em;
+            text-wrap: balance;
         }
-        .mono {
+        .mono, .font-mono {
             font-family: 'JetBrains Mono', monospace;
             font-variant-numeric: tabular-nums;
+            letter-spacing: -0.01em;
         }
         .flat-card {
             background-color: var(--surface-color);
@@ -140,7 +203,7 @@
 
         .btn-outline, .btn-flat-secondary {
             background-color: var(--surface-color);
-            color: #FC4C02;
+            color: var(--tertiary-text, #FC4C02);
             border: 1.5px solid #FC4C02;
             border-radius: 9999px;
             font-weight: 600;
@@ -232,9 +295,37 @@
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Apple Spring Motion */
+        @keyframes modal-spring-in {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: modal-spring-in 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-in {
+                animation: none !important;
+                transform: none !important;
+                will-change: auto !important;
+            }
+        }
     </style>
 </head>
 <body class="min-h-[100dvh] flex flex-col justify-between">
+
+    <!-- Accessible Skip Link (WCAG 2.4.1) -->
+    <a href="#login-main" class="skip-link">Skip to login form</a>
 
     <div id="sonner-toaster" aria-live="polite"></div>
 
@@ -242,7 +333,7 @@
     <header class="h-14 border-b-2 border-border bg-surface sticky top-0 z-[100] flex items-center">
         <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
             <a href="/" class="flex items-center gap-2.5">
-                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-7 h-7 rounded-md object-contain border border-border">
+                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border">
                 <div class="flex items-baseline gap-1.5">
                     <span class="font-display font-bold text-lg tracking-tight text-text-primary">Goalie</span>
                     <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-md bg-tertiary text-white">PRO</span>
@@ -250,15 +341,15 @@
             </a>
 
             <div class="flex items-center gap-3">
-                <a href="/admin" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors">
+                <a href="/admin" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     <span class="font-semibold">Admin Center</span>
                 </a>
-                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 px-3 py-1.5 hover:bg-surface-subtle rounded-full border border-transparent transition-colors">
+                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 px-3 py-1.5 hover:bg-surface-subtle rounded-full border border-transparent transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span>Back to Home</span>
                 </a>
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors" title="Toggle Theme">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Theme" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
@@ -267,7 +358,7 @@
     </header>
 
     <!-- Main Container: Split 2D Layout -->
-    <main class="flex-1 flex items-center justify-center py-12 px-4 sm:px-6">
+    <main id="login-main" tabindex="-1" class="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 outline-none">
         <div class="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             <!-- Left Column: Value Proposition (5 cols) -->
@@ -315,35 +406,40 @@
                     </div>
 
                     <!-- Mode Switcher (Pill style) -->
-                    <div class="grid grid-cols-3 gap-1 bg-surface-subtle p-1 border border-border rounded-full mb-5 text-xs font-semibold">
-                        <button type="button" onclick="switchMode('login')" id="tab-login" class="py-1.5 px-3 text-center bg-surface text-text-primary rounded-full shadow-xs">
+                    <div class="grid grid-cols-3 gap-1 bg-surface-subtle p-1 border border-border rounded-full mb-5 text-xs font-semibold" role="tablist" aria-label="Sign-in Options">
+                        <button type="button" onclick="switchMode('login')" id="tab-login" role="tab" aria-selected="true" class="py-1.5 px-3 text-center bg-surface text-text-primary rounded-full shadow-xs">
                             Sign In
                         </button>
-                        <button type="button" onclick="switchMode('register')" id="tab-register" class="py-1.5 px-3 text-center text-text-secondary hover:text-text-primary rounded-full">
+                        <button type="button" onclick="switchMode('register')" id="tab-register" role="tab" aria-selected="false" class="py-1.5 px-3 text-center text-text-secondary hover:text-text-primary rounded-full">
                             Register
                         </button>
-                        <button type="button" onclick="switchMode('forgot')" id="tab-forgot" class="py-1.5 px-3 text-center text-text-secondary hover:text-text-primary rounded-full">
+                        <button type="button" onclick="switchMode('forgot')" id="tab-forgot" role="tab" aria-selected="false" class="py-1.5 px-3 text-center text-text-secondary hover:text-text-primary rounded-full">
                             Reset
                         </button>
                     </div>
 
-                    <div id="auth-alert" class="hidden p-3 text-xs mb-4 font-mono"></div>
+                    <div id="auth-alert" role="alert" aria-live="polite" class="hidden p-3 text-xs mb-4 font-mono"></div>
 
                     <!-- Form 1: Sign In -->
                     <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3.5">
                         <div>
-                            <label class="block text-[11px] font-mono text-text-secondary mb-1">Email Address</label>
+                            <label for="login-email" class="block text-[11px] font-mono text-text-secondary mb-1">Email Address</label>
                             <input type="email" id="login-email" class="flat-input text-xs" placeholder="athlete@domain.com" required autocomplete="email">
                         </div>
 
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <label class="block text-[11px] font-mono text-text-secondary">Password</label>
+                                <label for="login-password" class="block text-[11px] font-mono text-text-secondary">Password</label>
                                 <button type="button" onclick="switchMode('forgot')" class="text-[11px] text-tertiary hover:underline">
                                     Forgot password?
                                 </button>
                             </div>
-                            <input type="password" id="login-password" class="flat-input text-xs" placeholder="••••••••••••" required autocomplete="current-password">
+                            <div class="relative">
+                                <input type="password" id="login-password" class="flat-input text-xs pr-10" placeholder="••••••••••••" required autocomplete="current-password" aria-describedby="auth-alert">
+                                <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" id="btn-login" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold mt-1">
@@ -354,18 +450,23 @@
                     <!-- Form 2: Register -->
                     <form id="form-register" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
                         <div>
-                            <label class="block text-[11px] font-mono text-text-secondary mb-1">Athlete Full Name</label>
+                            <label for="reg-name" class="block text-[11px] font-mono text-text-secondary mb-1">Athlete Full Name</label>
                             <input type="text" id="reg-name" class="flat-input text-xs" placeholder="e.g. Eliud Kipchoge" required autocomplete="name">
                         </div>
 
                         <div>
-                            <label class="block text-[11px] font-mono text-text-secondary mb-1">Email Address</label>
+                            <label for="reg-email" class="block text-[11px] font-mono text-text-secondary mb-1">Email Address</label>
                             <input type="email" id="reg-email" class="flat-input text-xs" placeholder="kipchoge@domain.com" required autocomplete="email">
                         </div>
 
                         <div>
-                            <label class="block text-[11px] font-mono text-text-secondary mb-1">Password (6+ chars)</label>
-                            <input type="password" id="reg-password" class="flat-input text-xs" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password">
+                            <label for="reg-password" class="block text-[11px] font-mono text-text-secondary mb-1">Password (6+ chars)</label>
+                            <div class="relative">
+                                <input type="password" id="reg-password" class="flat-input text-xs pr-10" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password" aria-describedby="auth-alert">
+                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="pt-1">
@@ -403,9 +504,18 @@
                     <div class="mt-5 pt-4 border-t border-border">
                         <div class="text-[11px] font-mono text-text-secondary text-center mb-2.5">Or continue with third-party ID:</div>
                         <div class="grid grid-cols-3 gap-2 text-xs font-mono">
-                            <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs">Google</button>
-                            <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs">Telegram</button>
-                            <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs">GitHub</button>
+                            <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                                <span>Google</span>
+                            </button>
+                            <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                                <span>Telegram</span>
+                            </button>
+                            <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                                <span>GitHub</span>
+                            </button>
                         </div>
                     </div>
 
@@ -438,11 +548,11 @@
     </footer>
 
     <!-- Legal Compliance Modal -->
-    <div id="legal-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
+    <div id="legal-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
         <div class="flat-card border-2 border-border-strong max-w-xl w-full p-6 bg-surface relative animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-2 border-b-2 border-border">
                 <h3 id="legal-modal-title" class="font-bold text-base text-text-primary">Terms of Service</h3>
-                <button onclick="closeLegalModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">✕</button>
+                <button onclick="closeLegalModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close legal compliance dialog">✕</button>
             </div>
             <div id="legal-modal-body" class="max-h-72 overflow-y-auto text-xs text-text-secondary space-y-3 leading-relaxed">
                 <p>Goalie provides physiological data modeling for endurance sports. All workouts, pace charts, and periodization structures are mathematical models.</p>
@@ -520,10 +630,21 @@
             }
         }
 
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            btn.innerHTML = isPassword 
+                ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>'
+                : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
+        }
+
         function fillTestAccount() {
-            document.getElementById('login-email').value = 'kipchoge@berlin.org';
-            document.getElementById('login-password').value = 'secretpassword';
-            toast.info('Credentials Filled', 'Sandbox athlete test credentials applied.');
+            document.getElementById('login-email').value = 'rizkyaryendigumilang@gmail.com';
+            document.getElementById('login-password').value = 'Apaya1234';
+            toast.info('Credentials Filled', 'Rizky Aryendi Gumilang (Apaya1234) loaded.');
         }
 
         async function handleLogin(e) {
@@ -532,7 +653,7 @@
             const password = document.getElementById('login-password').value;
             const btn = document.getElementById('btn-login');
             btn.disabled = true;
-            btn.textContent = 'AUTHENTICATING...';
+            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> AUTHENTICATING...';
 
             try {
                 const res = await fetch(`${API_BASE}/auth/login`, {
@@ -551,7 +672,7 @@
                 showAlert(err.message, false);
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'SIGN IN >';
+                btn.innerHTML = 'SIGN IN >';
             }
         }
 
@@ -562,7 +683,7 @@
             const password = document.getElementById('reg-password').value;
             const btn = document.getElementById('btn-register');
             btn.disabled = true;
-            btn.textContent = 'REGISTERING ATHLETE...';
+            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> REGISTERING ATHLETE...';
 
             try {
                 const res = await fetch(`${API_BASE}/auth/register`, {
@@ -582,7 +703,7 @@
                 showAlert(err.message, false);
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'CREATE ATHLETE ACCOUNT >';
+                btn.innerHTML = 'CREATE ATHLETE ACCOUNT >';
             }
         }
 
@@ -607,25 +728,80 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tokenParam = urlParams.get('token');
+            const emailParam = urlParams.get('email');
+            if (tokenParam) {
+                localStorage.setItem('access_token', tokenParam);
+                if (emailParam) localStorage.setItem('user_email', emailParam);
+                window.location.href = '/';
+            }
+        });
+
         async function quickOAuth(provider) {
             toast.info('OAuth Gateway', `Connecting via ${provider}...`);
             try {
+                // Check if real OAuth provider is configured in backend
+                try {
+                    const checkRes = await fetch(`${API_BASE}/auth/social/${provider}`);
+                    if (checkRes.ok) {
+                        const checkData = await checkRes.json();
+                        if (checkData.configured && checkData.url) {
+                            toast.info('OAuth Redirect', `Redirecting to official ${provider} authentication...`);
+                            window.location.href = checkData.url;
+                            return;
+                        }
+                    }
+                } catch (checkErr) {
+                    console.warn('[Goalie] Social OAuth check fallback:', checkErr);
+                }
+
+                // If credentials not configured in .env yet, sign in via Sandbox Gateway
+                toast.info('Sandbox Gateway', `${provider} credentials not set in .env. Entering sandbox mode.`);
+                const profilePayloads = {
+                    google: {
+                        provider: 'google',
+                        provider_user_id: 'google_rizkyaryendigumilang',
+                        email: 'rizkyaryendigumilang@gmail.com',
+                        full_name: 'Rizky Aryendi Gumilang'
+                    },
+                    telegram: {
+                        provider: 'telegram',
+                        provider_user_id: '8503838227',
+                        email: '8503838227@telegram.athlete',
+                        full_name: 'Rizky Aryendi Gumilang (@admin_kiky)'
+                    },
+                    github: {
+                        provider: 'github',
+                        provider_user_id: 'github_rizkyaryendigumilang',
+                        email: 'rizkyaryendigumilang@github.athlete',
+                        full_name: 'Rizky Aryendi Gumilang (GitHub)'
+                    }
+                };
+
+                const payload = profilePayloads[provider] || {
+                    provider,
+                    provider_user_id: `${provider}_demo_${Date.now()}`,
+                    email: `athlete_${provider}@goalie.fit`,
+                    full_name: `${provider.toUpperCase()} Runner`
+                };
+
                 const res = await fetch(`${API_BASE}/auth/oauth`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        provider,
-                        provider_user_id: `${provider}_demo_${Date.now()}`,
-                        email: `athlete_${provider}@goalie.fit`,
-                        full_name: `${provider.toUpperCase()} Runner`
-                    })
+                    body: JSON.stringify(payload)
                 });
                 const data = await res.json();
                 if (data.access_token) {
                     localStorage.setItem('access_token', data.access_token);
-                    localStorage.setItem('user_email', data.user.email);
-                    toast.success('Authenticated', `Welcome ${data.user.full_name}`);
+                    const userEmail = data.email || (data.user && data.user.email) || payload.email;
+                    const userName = data.full_name || (data.user && data.user.full_name) || payload.full_name;
+                    localStorage.setItem('user_email', userEmail);
+                    toast.success('Authenticated', `Welcome ${userName}`);
                     setTimeout(() => window.location.href = '/', 600);
+                } else {
+                    throw new Error(data.detail || 'OAuth authentication failed');
                 }
             } catch (err) {
                 toast.error('OAuth Failed', err.message);
@@ -672,6 +848,17 @@
             applyTheme(isDark ? 'light' : 'dark');
         }
         initTheme();
+
+        // Accessible Modal Esc & Backdrop Listener
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLegalModal();
+        });
+        const legalModalEl = document.getElementById('legal-modal');
+        if (legalModalEl) {
+            legalModalEl.addEventListener('click', (e) => {
+                if (e.target === legalModalEl) closeLegalModal();
+            });
+        }
     </script>
 </body>
 </html>

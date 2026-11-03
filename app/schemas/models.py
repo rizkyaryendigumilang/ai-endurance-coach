@@ -61,6 +61,15 @@ class TrainingSuggestionInput(BaseModel):
     target_date: Optional[date] = None
     readiness_override: Optional[int] = None  # 1-100 score
 
+class WeeklyCalendarGenerateInput(BaseModel):
+    week_offset: int = 0
+    focus_goal: Optional[str] = None
+    force_regenerate: bool = True
+
+class WeeklyCalendarToggleInput(BaseModel):
+    week_key: str
+    day_index: int
+
 
 # ── Workout ───────────────────────────────────────────────────────────────────
 class WorkoutLogInput(BaseModel):
@@ -92,6 +101,9 @@ class GarminSyncQuery(BaseModel):
     sync_health_metrics: bool = True
 
 # ── Admin Command Center ──────────────────────────────────────────────────────
+class AdminLoginInput(BaseModel):
+    passcode: str
+
 class AdminImpersonateInput(BaseModel):
     user_id: str
 

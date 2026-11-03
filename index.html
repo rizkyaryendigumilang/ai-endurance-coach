@@ -50,10 +50,11 @@
             --surface-color: #FFFFFF;
             --surface-subtle: #F0F0F2;
             --text-primary: #242428;
-            --text-secondary: #6D6D78;
+            --text-secondary: #656570;
             --border-color: #E5E5E9;
             --border-strong: #C8C8D0;
             --tertiary: #FC4C02;
+            --tertiary-text: #D03B00; /* WCAG AA 4.54:1 contrast on white */
             --tertiary-hover: #E34402;
             --tertiary-active: #C93B00;
             --tertiary-subtle: #FFF3ED;
@@ -69,10 +70,11 @@
             --surface-color: #1E1E22;
             --surface-subtle: #2A2A32;
             --text-primary: #F4F4F6;
-            --text-secondary: #A0A0AA;
+            --text-secondary: #A6A6B2;
             --border-color: #2E2E36;
             --border-strong: #444450;
             --tertiary: #FC5200;
+            --tertiary-text: #FF7026; /* WCAG AA 5.1:1 contrast on dark surface */
             --tertiary-hover: #FF6A1A;
             --tertiary-active: #E34402;
             --tertiary-subtle: rgba(252, 76, 2, 0.15);
@@ -83,10 +85,82 @@
             --flat-amber: #FBBF24;
         }
 
+        /* WCAG 2.2 AA text contrast guarantee for small tertiary text */
+        .text-tertiary {
+            color: var(--tertiary-text, var(--tertiary)) !important;
+        }
+        .text-flat-orange {
+            color: var(--tertiary-text, var(--flat-orange)) !important;
+        }
+
+        /* Touch Target 44x44px expansion without altering visual dimensions (Apple HIG / WCAG 2.5.5) */
+        .touch-target-expand, .btn-sm, .feed-filter-btn {
+            position: relative;
+        }
+        .touch-target-expand::after, .btn-sm::after, .feed-filter-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 44px;
+            min-height: 44px;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+        }
+
+        /* Accessible Keyboard Focus Ring (WCAG 2.4.7 & 2.4.11) */
+        :focus-visible {
+            outline: 2px solid var(--tertiary) !important;
+            outline-offset: 2px !important;
+        }
+
+        /* Accessible Skip Link */
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 16px;
+            z-index: 9999;
+            padding: 8px 16px;
+            background-color: var(--surface-color);
+            color: var(--tertiary-text, var(--tertiary));
+            border: 2px solid var(--tertiary);
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: top 150ms ease;
+        }
+        .skip-link:focus {
+            top: 16px;
+            outline: none;
+        }
+
+        /* Respect prefers-reduced-motion for vestibular comfort (WCAG 2.2) */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         html {
             -webkit-tap-highlight-color: transparent;
             -webkit-text-size-adjust: 100%;
             overscroll-behavior-y: none;
+        }
+
+        /* Hide scrollbars for clean horizontal carousels (iOS/Android mobile-native) */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         body {
@@ -108,11 +182,13 @@
         h1, h2, h3, h4, .font-display {
             font-weight: 700;
             letter-spacing: -0.03em;
+            text-wrap: balance;
         }
 
-        .mono {
+        .mono, .font-mono {
             font-family: 'JetBrains Mono', monospace;
             font-variant-numeric: tabular-nums;
+            letter-spacing: -0.01em;
         }
 
         /* Modern Clean Cards (Strava style) */
@@ -192,7 +268,7 @@
         /* Outline Variant: Surface bg with Strava-orange border */
         .btn-outline, .btn-flat-secondary {
             background-color: var(--surface-color);
-            color: #FC4C02;
+            color: var(--tertiary-text, #FC4C02);
             font-weight: 600;
             font-size: 0.875rem;
             min-height: 44px;
@@ -222,7 +298,7 @@
         /* Ghost Variant: Subtle orange fill (#FFF3ED), orange label */
         .btn-ghost {
             background-color: #FFF3ED;
-            color: #FC4C02;
+            color: var(--tertiary-text, #FC4C02);
             font-weight: 600;
             font-size: 0.875rem;
             min-height: 44px;
@@ -446,6 +522,31 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Apple Spring Motion for Modals & Overlays */
+        @keyframes modal-spring-in {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: modal-spring-in 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-in {
+                animation: none !important;
+                transform: none !important;
+                will-change: auto !important;
+            }
+        }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
@@ -464,6 +565,9 @@
     </style>
 </head>
 <body class="min-h-[100dvh] flex flex-col justify-between">
+
+    <!-- Accessible Skip Link for Keyboard Users (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link" data-i18n="skip_to_content">Skip to main content</a>
 
     <!-- Toast Notifications Root -->
     <div id="sonner-toaster" aria-live="polite"></div>
@@ -514,32 +618,32 @@
             <!-- Action Controls -->
             <div class="flex items-center gap-2.5">
                 <!-- Global Quick Action (⌘K) -->
-                <button onclick="focusGlobalSearch()" class="hidden sm:flex items-center gap-2 h-8 px-2.5 text-xs text-text-secondary bg-surface-subtle border border-border rounded-full hover:border-text-primary transition-colors">
+                <button onclick="focusGlobalSearch()" class="hidden sm:flex items-center gap-2 h-8 px-2.5 text-xs text-text-secondary bg-surface-subtle border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" aria-label="Search athletes and workouts (Cmd+K)">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <span data-i18n="nav_search_label">Search athletes, workouts...</span>
                     <kbd class="text-[10px] font-mono bg-surface px-1.5 py-0.5 border border-border rounded-md">⌘K</kbd>
                 </button>
 
                 <!-- Quick Record / Upload Workout Button (Strava Orange Round CTA) -->
-                <button onclick="openLogWorkoutModal()" class="btn-primary h-8 px-3 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-xs" title="Record or Log Activity">
+                <button onclick="openLogWorkoutModal()" class="hidden sm:inline-flex btn-primary h-8 px-3 text-xs font-semibold rounded-full items-center gap-1.5 shadow-xs touch-target-expand" title="Record or Log Activity" aria-label="Record or Log Activity">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                     <span class="hidden sm:inline" data-i18n="nav_record">Record / Log</span>
                 </button>
 
                 <!-- Language Switcher Button (ID / EN) -->
-                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2.5 text-xs font-mono font-bold rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center gap-1.5 transition-colors" title="Ubah Bahasa / Switch Language">
-                    <span class="text-xs">🌐</span>
+                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2.5 text-xs font-mono font-bold rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center gap-1.5 transition-colors touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     <span id="nav-lang-label">ID</span>
                 </button>
 
                 <!-- Theme Toggle Button -->
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors" title="Toggle Light / Dark Mode">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
                 <!-- Admin Link -->
-                <a href="/admin" class="hidden sm:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-full hover:border-text-primary transition-colors">
+                <a href="/admin" class="hidden sm:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" aria-label="Open Admin Command Center">
                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     <span>Admin</span>
                 </a>
@@ -561,23 +665,23 @@
                         <span>SUMMIT PRO</span>
                     </button>
 
-                    <div class="relative group">
-                        <button class="h-8 px-2.5 rounded-full border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary">
+                    <div class="relative" id="user-profile-menu-container">
+                        <button type="button" onclick="toggleUserDropdown(event)" id="user-dropdown-btn" aria-expanded="false" aria-haspopup="true" class="h-8 px-2.5 rounded-full border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary hover:border-text-primary transition-colors touch-target-expand">
                             <span id="user-avatar-initial" class="w-5 h-5 rounded-full bg-tertiary text-white flex items-center justify-center font-mono text-[10px] font-bold">RG</span>
                             <span id="user-display-email" class="max-w-[110px] truncate">athlete</span>
                         </button>
-                        <div class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-lg p-1.5 hidden group-hover:block z-50">
+                        <div id="user-dropdown-menu" class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-lg p-1.5 hidden z-50 shadow-lg">
                             <div class="px-2 py-1.5 text-[11px] text-text-secondary border-b border-border mb-1" id="dropdown-email">user@domain.com</div>
-                            <button onclick="openSettingsModal()" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md flex items-center justify-between">
+                            <button onclick="openSettingsModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md flex items-center justify-between">
                                 <span>Athlete Profile</span>
                                 <span class="text-[10px] font-mono text-tertiary font-bold flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     <span>SETTINGS</span>
                                 </span>
                             </button>
-                            <a href="#workstation" onclick="switchWorkstationTab('cockpit')" class="block px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md">Activity Feed &amp; Dashboard</a>
-                            <button onclick="openProPaymentModal()" class="w-full text-left px-2 py-1.5 text-xs text-tertiary font-semibold hover:bg-surface-subtle rounded-md">Subscription Tier</button>
-                            <button onclick="logout()" class="w-full text-left px-2 py-1.5 text-xs text-flat-orange font-semibold hover:bg-flat-orange/10 rounded-md border-t border-border mt-1">Sign Out</button>
+                            <a href="#workstation" onclick="switchWorkstationTab('cockpit'); toggleUserDropdown();" class="block px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md">Activity Feed &amp; Dashboard</a>
+                            <button onclick="openProPaymentModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-tertiary font-semibold hover:bg-surface-subtle rounded-md">Subscription Tier</button>
+                            <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-flat-orange font-semibold hover:bg-flat-orange/10 rounded-md border-t border-border mt-1">Sign Out</button>
                         </div>
                     </div>
                 </div>
@@ -1104,8 +1208,8 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- INTERACTIVE ATHLETIC WORKSTATION (Live Functional App)     -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <main id="workstation" class="py-16 border-b-2 border-border bg-surface">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+    <main id="main-content" tabindex="-1" class="py-16 border-b-2 border-border bg-surface outline-none">
+        <div id="workstation" class="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
             
             <!-- Workstation Header & Tab Switcher -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-border pb-4">
@@ -1119,28 +1223,28 @@
                     </p>
                 </div>
 
-                <!-- Tabs -->
-                <div class="flex flex-wrap items-center gap-1.5 text-xs font-semibold">
-                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" class="px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary" data-i18n="tab_cockpit">
+                <!-- Tabs (Mobile-native horizontal scrollable carousel without scrollbar) -->
+                <div class="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto no-scrollbar py-1 flex-nowrap -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" role="tablist" aria-label="Workstation View Navigation">
+                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary" data-i18n="tab_cockpit">
                         Performance Cockpit
                     </button>
-                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_chat">
+                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_chat">
                         Coach AI Chat
                     </button>
-                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
+                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
                         <span data-i18n="tab_telemetry">Telemetry Suite (TP / Intervals / Strava)</span>
                         <span class="w-1.5 h-1.5 bg-flat-green rounded-full"></span>
                     </button>
-                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_biomechanics">
+                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_biomechanics">
                         Video Gait Analysis
                     </button>
-                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_schedule">
+                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_schedule">
                         Schedule & iCal
                     </button>
-                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_integrations">
+                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_integrations">
                         Garmin & Strava
                     </button>
-                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
+                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         <span data-i18n="tab_settings">Athlete Settings</span>
                     </button>
@@ -1148,7 +1252,7 @@
             </div>
 
             <!-- TAB 0: PERFORMANCE COCKPIT (DATA TRACKING & MONITORING HUB) -->
-            <div id="tab-content-cockpit" class="space-y-6">
+            <div id="tab-content-cockpit" role="tabpanel" aria-labelledby="tab-btn-cockpit" class="space-y-6">
 
                 <!-- ══════════════════════════════════════════════════════ -->
                 <!-- STRAVA 3-COLUMN ATHLETE FEED & AI COACH HUB            -->
@@ -1234,15 +1338,18 @@
                             </div>
 
                             <!-- Sport Breakdown Tabs -->
-                            <div class="flex items-center justify-between pt-2 border-t border-border text-[11px] font-mono">
-                                <span class="flex items-center gap-1 text-text-primary">
-                                    <span>🏃</span> 32.6k
+                            <div class="flex items-center justify-between pt-2 border-t border-border text-[11px] font-mono" role="group" aria-label="Sport Distance Breakdown">
+                                <span class="flex items-center gap-1.5 text-text-primary" title="Running: 32.6 km" aria-label="Running: 32.6 km">
+                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                                    <span>32.6k</span>
                                 </span>
-                                <span class="flex items-center gap-1 text-text-primary">
-                                    <span>🚴</span> 64.8k
+                                <span class="flex items-center gap-1.5 text-text-primary" title="Cycling: 64.8 km" aria-label="Cycling: 64.8 km">
+                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
+                                    <span>64.8k</span>
                                 </span>
-                                <span class="flex items-center gap-1 text-text-primary">
-                                    <span>🏊</span> 2.0k
+                                <span class="flex items-center gap-1.5 text-text-primary" title="Swimming: 2.0 km" aria-label="Swimming: 2.0 km">
+                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0 3-1.5 4.5 0"/><path d="M2 22c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0 3-1.5 4.5 0"/><circle cx="18" cy="5" r="2"/><path d="M8 12l4-2 3 2 3-2"/><path d="M4 11l4 2"/></svg>
+                                    <span>2.0k</span>
                                 </span>
                             </div>
                         </div>
@@ -1282,18 +1389,21 @@
                         
                         <!-- FEED FILTER PILL BAR & ATHLETE FORM STATUS (Strava Signature) -->
                         <div class="flex flex-wrap items-center justify-between gap-2.5 pb-1">
-                            <div class="flex flex-wrap items-center gap-1.5" id="feed-filter-container">
-                                <button onclick="filterFeed('all')" id="feed-filter-all" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-tertiary text-white shadow-xs transition-all active:scale-95" data-i18n="feed_filter_all">
-                                    All Feed
+                            <div class="flex flex-wrap items-center gap-1.5" id="feed-filter-container" role="toolbar" aria-label="Feed filter options">
+                                <button onclick="filterFeed('all')" id="feed-filter-all" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-tertiary text-white shadow-xs transition-all active:scale-95">
+                                    <span data-i18n="feed_filter_all">All Feed</span>
                                 </button>
-                                <button onclick="filterFeed('run')" id="feed-filter-run" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95" data-i18n="feed_filter_runs">
-                                    🏃 Runs
+                                <button onclick="filterFeed('run')" id="feed-filter-run" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                                    <span data-i18n="feed_filter_runs">Runs</span>
                                 </button>
-                                <button onclick="filterFeed('cycling')" id="feed-filter-cycling" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95" data-i18n="feed_filter_rides">
-                                    🚴 Rides
+                                <button onclick="filterFeed('cycling')" id="feed-filter-cycling" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
+                                    <span data-i18n="feed_filter_rides">Rides</span>
                                 </button>
-                                <button onclick="filterFeed('prescription')" id="feed-filter-prescription" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95" data-i18n="feed_filter_prescription">
-                                    ⚡ AI Plan
+                                <button onclick="filterFeed('prescription')" id="feed-filter-prescription" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <span data-i18n="feed_filter_prescription">AI Plan</span>
                                 </button>
                             </div>
                             <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border text-[11px] font-mono">
@@ -1309,8 +1419,8 @@
                             
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-7 h-7 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                                        ⚡
+                                    <span class="w-7 h-7 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs" aria-hidden="true">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                     </span>
                                     <div>
                                         <div class="flex items-center gap-2">
@@ -1383,8 +1493,9 @@
                                             <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
                                             <span class="text-xs text-text-secondary" data-i18n="card_run_time">&bull; Today at 06:15 AM</span>
                                         </div>
-                                        <div class="flex items-center gap-1 text-[11px] text-text-secondary">
-                                            <span data-i18n="card_sport_run">🏃 Run</span>
+                                        <div class="flex items-center gap-1.5 text-[11px] text-text-secondary">
+                                            <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                                            <span data-i18n="card_sport_run">Run</span>
                                             <span>&bull;</span>
                                             <span>Jakarta, Indonesia</span>
                                         </div>
@@ -1474,7 +1585,8 @@
                             <!-- AI Telemetry Breakdown Pill -->
                             <div class="p-3 bg-surface-subtle border border-border rounded-lg text-xs space-y-1.5">
                                 <div class="flex items-center gap-1.5 text-tertiary font-bold font-mono text-[11px]">
-                                    <span data-i18n="card_ai_engine">⚡ AI ANALYSIS ENGINE</span>
+                                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <span data-i18n="card_ai_engine">AI ANALYSIS ENGINE</span>
                                     <span>&bull;</span>
                                     <span class="text-flat-green">AEROBIC EFFICIENCY HIGH</span>
                                 </div>
@@ -1519,8 +1631,9 @@
                                             <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
                                             <span class="text-xs text-text-secondary" data-i18n="card_ride_time">&bull; Yesterday at 05:45 AM</span>
                                         </div>
-                                        <div class="flex items-center gap-1 text-[11px] text-text-secondary">
-                                            <span data-i18n="card_sport_cycling">🚴 Ride</span>
+                                        <div class="flex items-center gap-1.5 text-[11px] text-text-secondary">
+                                            <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
+                                            <span data-i18n="card_sport_cycling">Ride</span>
                                             <span>&bull;</span>
                                             <span>Sentul Loop, West Java</span>
                                         </div>
@@ -2219,7 +2332,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     
                     <!-- Left: Chat Window (8 cols) -->
-                    <div class="lg:col-span-8 flat-card border-2 border-border-strong p-4 sm:p-6 bg-surface flex flex-col h-[520px]">
+                    <div class="lg:col-span-8 flat-card border-2 border-border-strong p-3.5 sm:p-6 bg-surface flex flex-col min-h-[420px] h-[72dvh] sm:h-[540px]">
                         
                         <!-- Chat Header -->
                         <div class="flex flex-wrap items-center justify-between border-b border-border pb-3 mb-3 gap-2">
@@ -2230,14 +2343,14 @@
                             </div>
 
                             <!-- 3-Way Coach Tier Selector -->
-                            <div class="flex items-center gap-1 bg-surface-subtle border border-border p-0.5 rounded-full font-mono text-[10px]">
-                                <button type="button" id="tier-btn-pemula" onclick="selectCoachTier('pemula')" class="px-2 py-0.5 rounded-full text-text-secondary hover:text-text-primary transition-colors">
+                            <div class="flex items-center gap-1 bg-surface-subtle border border-border p-0.5 rounded-full font-mono text-[11px]">
+                                <button type="button" id="tier-btn-pemula" onclick="selectCoachTier('pemula')" class="px-2.5 py-1 rounded-full text-text-secondary hover:text-text-primary transition-colors touch-target-expand">
                                     Pemula (Free)
                                 </button>
-                                <button type="button" id="tier-btn-free" onclick="selectCoachTier('free')" class="px-2 py-0.5 rounded-full bg-tertiary text-white font-bold transition-colors">
+                                <button type="button" id="tier-btn-free" onclick="selectCoachTier('free')" class="px-2.5 py-1 rounded-full bg-tertiary text-white font-bold transition-colors touch-target-expand">
                                     Coach (Free)
                                 </button>
-                                <button type="button" id="tier-btn-pro" onclick="selectCoachTier('pro')" class="px-2 py-0.5 rounded-full text-text-secondary hover:text-text-primary transition-colors">
+                                <button type="button" id="tier-btn-pro" onclick="selectCoachTier('pro')" class="px-2.5 py-1 rounded-full text-text-secondary hover:text-text-primary transition-colors touch-target-expand">
                                     Coach (Pro)
                                 </button>
                             </div>
@@ -2258,8 +2371,9 @@
 
                         <!-- Quick Prompt Chips (Pill styled) -->
                         <div class="pt-3 border-t border-border flex flex-wrap gap-1.5 text-[11px]">
-                            <button onclick="sendQuickPrompt('Rekomendasikan menu latihan preskriptif untuk besok berdasarkan fatigue form TSB +8 dan target maraton.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1">
-                                <span>⚡ Prescribe Tomorrow's Workout</span>
+                            <button onclick="sendQuickPrompt('Rekomendasikan menu latihan preskriptif untuk besok berdasarkan fatigue form TSB +8 dan target maraton.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <span>Prescribe Tomorrow's Workout</span>
                             </button>
                             <button onclick="sendQuickPrompt('Evaluasi status ACWR saya di angka 1.16 dan form TSB -11.9. Apakah saya berada di Sweet Spot atau ada risiko cedera?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
                                 TP ACWR 1.16 &amp; TSB
@@ -2794,6 +2908,147 @@
 
             <!-- TAB 4: SCHEDULE & ICAL -->
             <div id="tab-content-schedule" class="hidden space-y-6">
+
+                <!-- ════════════════════════════════════════════════════════════ -->
+                <!-- INTERACTIVE AI WEEKLY TRAINING CALENDAR WIDGET                -->
+                <!-- ════════════════════════════════════════════════════════════ -->
+                <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
+                    <!-- Header Controls -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="w-2.5 h-2.5 bg-tertiary"></span>
+                                <h3 class="font-display font-bold text-base text-text-primary">AI Weekly Training Calendar</h3>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-flat-green/10 text-flat-green border border-flat-green/30">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-flat-green animate-pulse"></span>
+                                    <span>AI ADAPTIVE ENGINE</span>
+                                </span>
+                            </div>
+                            <p id="calendar-week-range" class="text-xs text-text-secondary font-mono">Loading weekly schedule...</p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+                            <!-- Week Navigation (Touch Target ≥44px compliant) -->
+                            <div class="inline-flex items-center border border-border bg-surface-subtle rounded-md overflow-hidden">
+                                <button type="button" onclick="changeCalendarWeek(-1)" class="w-10 h-9 flex items-center justify-center hover:bg-surface border-r border-border transition-colors touch-target-expand" aria-label="Previous week">
+                                    <svg class="w-3.5 h-3.5 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                </button>
+                                <button type="button" onclick="resetCalendarWeek()" class="px-3.5 h-9 flex items-center justify-center hover:bg-surface font-bold text-[11px] transition-colors" id="calendar-btn-today">THIS WEEK</button>
+                                <button type="button" onclick="changeCalendarWeek(1)" class="w-10 h-9 flex items-center justify-center hover:bg-surface border-l border-border transition-colors touch-target-expand" aria-label="Next week">
+                                    <svg class="w-3.5 h-3.5 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </button>
+                            </div>
+
+                            <!-- AI Regenerate Button -->
+                            <button type="button" onclick="regenerateAIWeeklyCalendar()" id="btn-ai-regen" class="btn-flat-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                <span>AI REGENERATE</span>
+                            </button>
+
+                            <!-- Sync / Download iCal -->
+                            <button type="button" onclick="downloadWeeklyICS()" class="btn-flat-primary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 font-bold">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>SYNC CALENDAR (.ICS)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI Coaching Directive Alert Box -->
+                    <div id="calendar-ai-directive-box" class="p-3 bg-surface-subtle border border-border text-xs flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-tertiary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="leading-relaxed">
+                            <span class="font-bold text-text-primary mr-1">AI Coach Directive:</span>
+                            <span id="calendar-ai-directive-text" class="text-text-secondary">Analyzing current fatigue, TSB balance, and weekly periodization goals...</span>
+                        </div>
+                    </div>
+
+                    <!-- Summary Metrics Strip -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
+                        <div class="p-2.5 bg-surface-subtle border border-border">
+                            <div class="text-[10px] text-text-secondary uppercase">Planned Volume</div>
+                            <div class="text-sm font-bold text-text-primary mt-0.5" id="cal-stat-volume">-- km</div>
+                        </div>
+                        <div class="p-2.5 bg-surface-subtle border border-border">
+                            <div class="text-[10px] text-text-secondary uppercase">Total Time</div>
+                            <div class="text-sm font-bold text-text-primary mt-0.5" id="cal-stat-duration">-- hrs</div>
+                        </div>
+                        <div class="p-2.5 bg-surface-subtle border border-border">
+                            <div class="text-[10px] text-text-secondary uppercase">Quality Sessions</div>
+                            <div class="text-sm font-bold text-flat-orange mt-0.5" id="cal-stat-quality">-- Sessions</div>
+                        </div>
+                        <div class="p-2.5 bg-surface-subtle border border-border">
+                            <div class="text-[10px] text-text-secondary uppercase">Recovery Focus</div>
+                            <div class="text-sm font-bold text-flat-green mt-0.5" id="cal-stat-recovery">-- Days</div>
+                        </div>
+                    </div>
+
+                    <!-- 7-Day Responsive Calendar Grid -->
+                    <div id="calendar-days-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                        <!-- Rendered dynamically by JavaScript -->
+                    </div>
+
+                    <!-- Selected Day Detail Flyout / Drawer (Expandable) -->
+                    <div id="calendar-day-detail-panel" class="hidden p-4 bg-surface-subtle border border-border-strong space-y-3">
+                        <div class="flex items-center justify-between border-b border-border pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span id="detail-day-badge" class="px-2 py-0.5 font-mono text-[11px] font-bold border border-tertiary text-tertiary">MONDAY</span>
+                                <h4 id="detail-day-title" class="font-display font-bold text-sm text-text-primary">Zone 2 Aerobic Foundation Run</h4>
+                            </div>
+                            <button type="button" onclick="closeCalendarDayDetail()" class="text-text-secondary hover:text-text-primary text-xs font-mono py-1 px-2.5 rounded-md hover:bg-surface border border-transparent hover:border-border transition-colors touch-target-expand inline-flex items-center gap-1" aria-label="Close session details">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                <span>CLOSE</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
+                            <div class="p-3 bg-surface border border-border space-y-1">
+                                <span class="text-[10px] text-text-secondary uppercase block">Session Protocol</span>
+                                <div class="font-sans text-xs space-y-1 mt-1 text-text-secondary">
+                                    <div><b class="text-text-primary">Warmup:</b> <span id="detail-warmup">--</span></div>
+                                    <div><b class="text-text-primary">Main Set:</b> <span id="detail-main-set">--</span></div>
+                                    <div><b class="text-text-primary">Cooldown:</b> <span id="detail-cooldown">--</span></div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-surface border border-border space-y-1.5">
+                                <span class="text-[10px] text-text-secondary uppercase block">Physiological Target</span>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Intensity Zone:</span>
+                                    <span id="detail-zone" class="font-bold text-tertiary">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Target Pace:</span>
+                                    <span id="detail-pace" class="font-bold text-text-primary">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Heart Rate Ceiling:</span>
+                                    <span id="detail-hr" class="font-bold text-text-primary">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Fueling &amp; Hydration:</span>
+                                    <span id="detail-fuel" class="font-sans text-[11px] text-text-secondary text-right">--</span>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-surface border border-border space-y-2 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] text-text-secondary uppercase block mb-1">AI Coach Rationale</span>
+                                    <p id="detail-rationale" class="font-sans text-xs text-text-secondary leading-relaxed">--</p>
+                                </div>
+                                <div class="pt-2 border-t border-border flex flex-wrap gap-2">
+                                    <button type="button" id="btn-toggle-day-status" onclick="toggleCurrentSelectedDayStatus()" class="btn-flat-primary py-1.5 px-3 text-xs flex-1">
+                                        MARK AS COMPLETED
+                                    </button>
+                                    <button type="button" onclick="askAiAboutSelectedSession()" class="btn-flat-secondary py-1.5 px-3 text-xs text-tertiary inline-flex items-center gap-1.5" title="Consult AI Coach about this workout">
+                                        <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                        <span>ASK AI COACH</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
                     <!-- Form: Generate Custom Race Macrocycle -->
@@ -3439,27 +3694,27 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- AUTH MODAL: Login, Register, Reset (Flat 2D)               -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="auth-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-md w-full p-6 bg-surface relative animate-in fade-in duration-150">
+    <div id="auth-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-md w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-6 h-6 rounded-md object-contain border border-border">
+                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" width="24" height="24" class="w-6 h-6 rounded-md object-contain border border-border">
                     <h3 id="auth-modal-title" class="font-display font-bold text-base text-text-primary">Sign In to Goalie</h3>
                 </div>
-                <button onclick="closeAuthModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">
+                <button onclick="closeAuthModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close authentication dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- Tab Switcher inside Modal -->
-            <div class="flex border-b border-border mb-4 text-xs font-semibold">
-                <button type="button" onclick="switchAuthTab('login')" id="auth-tab-login" class="flex-1 py-2 text-center text-tertiary border-b-2 border-tertiary">
+            <div class="flex border-b border-border mb-4 text-xs font-semibold" role="tablist" aria-label="Authentication Type">
+                <button type="button" onclick="switchAuthTab('login')" id="auth-tab-login" role="tab" aria-selected="true" class="flex-1 py-2 text-center text-tertiary border-b-2 border-tertiary">
                     Sign In
                 </button>
-                <button type="button" onclick="switchAuthTab('register')" id="auth-tab-register" class="flex-1 py-2 text-center text-text-secondary hover:text-text-primary border-b-2 border-transparent">
+                <button type="button" onclick="switchAuthTab('register')" id="auth-tab-register" role="tab" aria-selected="false" class="flex-1 py-2 text-center text-text-secondary hover:text-text-primary border-b-2 border-transparent">
                     Create Account
                 </button>
-                <button type="button" onclick="switchAuthTab('forgot')" id="auth-tab-forgot" class="flex-1 py-2 text-center text-text-secondary hover:text-text-primary border-b-2 border-transparent">
+                <button type="button" onclick="switchAuthTab('forgot')" id="auth-tab-forgot" role="tab" aria-selected="false" class="flex-1 py-2 text-center text-text-secondary hover:text-text-primary border-b-2 border-transparent">
                     Reset Password
                 </button>
             </div>
@@ -3467,24 +3722,48 @@
             <!-- Modal Form Body -->
             <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
                 <div id="field-full-name" class="hidden">
-                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Full Name</label>
+                    <label for="auth-name" class="block text-[11px] font-mono text-text-secondary mb-1">Full Name</label>
                     <input type="text" id="auth-name" class="flat-input text-xs" placeholder="e.g. Eliud Kipchoge">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Athlete Email</label>
+                    <label for="auth-email" class="block text-[11px] font-mono text-text-secondary mb-1">Athlete Email</label>
                     <input type="email" id="auth-email" class="flat-input text-xs" placeholder="athlete@domain.com" required autocomplete="email">
                 </div>
                 <div id="field-password">
-                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Password</label>
-                    <input type="password" id="auth-password" class="flat-input text-xs" placeholder="••••••••••••" autocomplete="current-password">
+                    <label for="auth-password" class="block text-[11px] font-mono text-text-secondary mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="auth-password" class="flat-input text-xs pr-10" placeholder="••••••••••••" autocomplete="current-password" aria-describedby="auth-error-msg">
+                        <button type="button" onclick="togglePasswordVisibility('auth-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div id="auth-error-msg" class="hidden text-xs text-flat-orange font-mono p-2 bg-flat-orange/10 border border-flat-orange"></div>
+                <div id="auth-error-msg" role="alert" aria-live="polite" class="hidden text-xs text-flat-orange font-mono p-2 bg-flat-orange/10 border border-flat-orange"></div>
 
                 <button type="submit" id="auth-submit-btn" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold mt-2">
                     SUBMIT
                 </button>
             </form>
+
+            <!-- Quick Social Login (Gmail/Google, Telegram, GitHub) -->
+            <div class="mt-4 pt-3 border-t border-border">
+                <div class="text-[11px] font-mono text-text-secondary text-center mb-2">Or continue with third-party ID:</div>
+                <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+                    <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                        <span>Google</span>
+                    </button>
+                    <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        <span>Telegram</span>
+                    </button>
+                    <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                        <span>GitHub</span>
+                    </button>
+                </div>
+            </div>
 
             <div class="mt-4 pt-3 border-t border-border flex justify-between text-[11px] text-text-secondary font-mono">
                 <span>Demo Sandbox</span>
@@ -3496,14 +3775,14 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- PRO PAYMENT MODAL (Flat 2D)                                -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="pro-payment-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-        <div class="flat-card border-2 border-tertiary max-w-lg w-full p-6 bg-surface relative animate-in fade-in duration-150">
+    <div id="pro-payment-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
+        <div class="flat-card border-2 border-tertiary max-w-lg w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 bg-tertiary"></span>
-                    <h3 class="font-display font-bold text-base text-text-primary">Unlock Coach (Pro) Access</h3>
+                    <h3 id="pro-modal-title" class="font-display font-bold text-base text-text-primary">Unlock Coach (Pro) Access</h3>
                 </div>
-                <button onclick="closeProPaymentModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">
+                <button onclick="closeProPaymentModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close Pro dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -3599,11 +3878,11 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- LEGAL COMPLIANCE MODAL (Terms, Privacy, Medical)           -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="legal-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-xl w-full p-6 bg-surface relative animate-in fade-in duration-150">
+    <div id="legal-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-xl w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
                 <h3 id="legal-modal-title" class="font-display font-bold text-base text-text-primary">Terms of Service</h3>
-                <button onclick="closeLegalModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">
+                <button onclick="closeLegalModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close legal compliance dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -3646,8 +3925,8 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- ACTIVITY DETAIL MODAL / DRAWER (Feature 2)                 -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="activity-detail-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-2xl w-full p-5 sm:p-6 bg-surface relative animate-in fade-in duration-150 max-h-[90vh] overflow-y-auto space-y-4 shadow-xl">
+    <div id="activity-detail-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="detail-activity-title">
+        <div class="flat-card border-2 border-border-strong max-w-2xl w-full p-4 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 max-h-[88dvh] overflow-y-auto space-y-4 shadow-xl">
             <!-- Header -->
             <div class="flex justify-between items-start pb-3 border-b-2 border-border gap-3">
                 <div class="space-y-1">
@@ -3658,42 +3937,42 @@
                     <h3 id="detail-activity-title" class="font-display font-extrabold text-lg sm:text-xl text-text-primary">Morning Progression Tempo Run</h3>
                     <div id="detail-activity-date" class="text-xs text-text-secondary font-mono">Today at 06:15 AM &bull; Jakarta, Indonesia</div>
                 </div>
-                <button onclick="closeActivityDetailModal()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-full hover:bg-surface-subtle transition-colors" title="Close Modal">
+                <button onclick="closeActivityDetailModal()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-full hover:bg-surface-subtle transition-colors touch-target-expand flex items-center justify-center" title="Close Modal" aria-label="Close activity detail dialog">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- 4x2 Metric Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs" role="region" aria-label="Workout Metrics Overview">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Distance: 10.25 kilometers">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_distance">Distance</span>
                     <span id="detail-metric-dist" class="font-display font-bold text-xl text-text-primary">10.25 <span class="text-xs text-text-secondary">km</span></span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Average Pace: 4 minutes 38 seconds per kilometer">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_pace">Avg Pace</span>
                     <span id="detail-metric-pace" class="font-display font-bold text-xl text-text-primary">4:38 <span class="text-xs text-text-secondary">/km</span></span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Moving Time: 47 minutes 32 seconds">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_time">Moving Time</span>
                     <span id="detail-metric-time" class="font-display font-bold text-xl text-text-primary">47m 32s</span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Elevation Gain: 68 meters">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="card_elev">Elev Gain</span>
                     <span id="detail-metric-elev" class="font-display font-bold text-xl text-text-primary">+68 <span class="text-xs text-text-secondary">m</span></span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Average Heart Rate: 158 beats per minute">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="detail_avg_hr">Avg HR</span>
                     <span id="detail-metric-avghr" class="font-display font-bold text-base text-text-primary">158 <span class="text-xs text-text-secondary">bpm</span></span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Maximum Heart Rate: 174 beats per minute">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="detail_max_hr">Max HR</span>
                     <span id="detail-metric-maxhr" class="font-display font-bold text-base text-text-primary">174 <span class="text-xs text-text-secondary">bpm</span></span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Calories burned: 730 kilocalories">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="log_cal_label">Calories</span>
                     <span id="detail-metric-cal" class="font-display font-bold text-base text-text-primary">730 <span class="text-xs text-text-secondary">kcal</span></span>
                 </div>
-                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg" role="group" aria-label="Relative Effort Suffer Score: 64 Tough">
                     <span class="text-[10px] text-text-secondary block uppercase" data-i18n="presc_suffer">Relative Effort</span>
                     <span id="detail-metric-suffer" class="font-display font-bold text-base text-flat-orange">64 (Tough)</span>
                 </div>
@@ -3708,8 +3987,9 @@
                     <circle cx="50" cy="110" r="6" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
                     <circle cx="58" cy="114" r="6" fill="#FC4C02" stroke="#ffffff" stroke-width="1.5" />
                 </svg>
-                <div class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-[10px] font-mono text-white">
-                    📍 GPS Polyline Visualizer
+                <div class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 text-[10px] font-mono text-white inline-flex items-center gap-1">
+                    <svg class="w-3 h-3 text-tertiary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>GPS Polyline Visualizer</span>
                 </div>
             </div>
 
@@ -3720,7 +4000,7 @@
                     <span class="text-[10px] font-mono text-text-secondary" data-i18n="detail_splits_sub">Pace vs Target Distribution</span>
                 </div>
                 <div class="border border-border rounded-lg overflow-hidden bg-surface">
-                    <div class="max-h-48 overflow-y-auto">
+                    <div class="max-h-48 overflow-y-auto overflow-x-auto">
                         <table class="w-full text-left font-mono text-xs">
                             <thead class="bg-surface-subtle border-b border-border text-[10px] text-text-secondary uppercase">
                                 <tr>
@@ -3757,23 +4037,23 @@
                 <div class="grid grid-cols-5 gap-1 text-center font-mono text-[10px]" id="detail-hr-zone-badges">
                     <div class="p-1 rounded bg-surface-subtle border border-border">
                         <span class="text-blue-500 font-bold block">Z1 (8%)</span>
-                        <span class="text-[9px] text-text-secondary">&lt;125 bpm</span>
+                        <span class="text-[10px] text-text-secondary">&lt;125 bpm</span>
                     </div>
                     <div class="p-1 rounded bg-surface-subtle border border-border">
                         <span class="text-emerald-500 font-bold block">Z2 (24%)</span>
-                        <span class="text-[9px] text-text-secondary">125-149</span>
+                        <span class="text-[10px] text-text-secondary">125-149</span>
                     </div>
                     <div class="p-1 rounded bg-surface-subtle border border-border">
                         <span class="text-amber-500 font-bold block">Z3 (38%)</span>
-                        <span class="text-[9px] text-text-secondary">150-163</span>
+                        <span class="text-[10px] text-text-secondary">150-163</span>
                     </div>
                     <div class="p-1 rounded bg-surface-subtle border border-border">
                         <span class="text-orange-500 font-bold block">Z4 (26%)</span>
-                        <span class="text-[9px] text-text-secondary">164-177</span>
+                        <span class="text-[10px] text-text-secondary">164-177</span>
                     </div>
                     <div class="p-1 rounded bg-surface-subtle border border-border">
                         <span class="text-rose-500 font-bold block">Z5 (4%)</span>
-                        <span class="text-[9px] text-text-secondary">&gt;177 bpm</span>
+                        <span class="text-[10px] text-text-secondary">&gt;177 bpm</span>
                     </div>
                 </div>
             </div>
@@ -3781,7 +4061,8 @@
             <!-- AI Coach Post-Mortem Audit -->
             <div class="p-3 bg-surface-subtle border border-tertiary/40 rounded-xl space-y-1.5">
                 <div class="flex items-center gap-1.5 text-tertiary font-bold font-mono text-[11px]">
-                    <span data-i18n="detail_ai_postmortem_title">⚡ AI COACH POST-WORKOUT AUDIT</span>
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <span data-i18n="detail_ai_postmortem_title">AI COACH POST-WORKOUT AUDIT</span>
                     <span>&bull;</span>
                     <span class="text-flat-green">PACING DISCIPLINE 94/100</span>
                 </div>
@@ -3806,14 +4087,14 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- LOG WORKOUT & TELEMETRY MODAL (Feature 3 Enhanced)         -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="log-workout-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-lg w-full p-6 bg-surface relative animate-in fade-in duration-150 space-y-4">
+    <div id="log-workout-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="log-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-lg w-full p-4 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 space-y-4">
             <div class="flex justify-between items-center pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 bg-flat-green"></span>
-                    <h3 class="font-display font-bold text-base text-text-primary" data-i18n="log_modal_title">Log Completed Workout</h3>
+                    <h3 id="log-modal-title" class="font-display font-bold text-base text-text-primary" data-i18n="log_modal_title">Log Completed Workout</h3>
                 </div>
-                <button onclick="closeLogWorkoutModal()" class="text-text-secondary hover:text-text-primary text-xs p-1">
+                <button onclick="closeLogWorkoutModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close workout logger dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -3821,34 +4102,39 @@
             <!-- 1-Tap Quick Presets (Feature 3) -->
             <div class="space-y-1.5">
                 <span class="text-[10px] font-mono text-text-secondary font-bold uppercase tracking-wider block" data-i18n="log_quick_presets">1-Tap Quick Presets:</span>
-                <div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
-                    <button type="button" onclick="applyWorkoutPreset('5k_run')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_5k">
-                        🏃 5K Recovery
+                <div class="flex flex-wrap gap-1.5 font-mono text-[10px]" role="toolbar" aria-label="Quick workout presets">
+                    <button type="button" onclick="applyWorkoutPreset('5k_run')" class="filter-pill px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95 inline-flex items-center gap-1">
+                        <svg class="w-3 h-3 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                        <span data-i18n="log_preset_5k">5K Recovery</span>
                     </button>
-                    <button type="button" onclick="applyWorkoutPreset('10k_tempo')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_10k">
-                        🏃 10K Tempo
+                    <button type="button" onclick="applyWorkoutPreset('10k_tempo')" class="filter-pill px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95 inline-flex items-center gap-1">
+                        <svg class="w-3 h-3 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                        <span data-i18n="log_preset_10k">10K Tempo</span>
                     </button>
-                    <button type="button" onclick="applyWorkoutPreset('21k_half')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_21k">
-                        🏃 21K Half
+                    <button type="button" onclick="applyWorkoutPreset('21k_half')" class="filter-pill px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95 inline-flex items-center gap-1">
+                        <svg class="w-3 h-3 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                        <span data-i18n="log_preset_21k">21K Half</span>
                     </button>
-                    <button type="button" onclick="applyWorkoutPreset('30k_ride')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_30k">
-                        🚴 30K Ride
+                    <button type="button" onclick="applyWorkoutPreset('30k_ride')" class="filter-pill px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95 inline-flex items-center gap-1">
+                        <svg class="w-3 h-3 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
+                        <span data-i18n="log_preset_30k">30K Ride</span>
                     </button>
-                    <button type="button" onclick="applyWorkoutPreset('1_5k_swim')" class="px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95" data-i18n="log_preset_swim">
-                        🏊 1.5K Swim
+                    <button type="button" onclick="applyWorkoutPreset('1_5k_swim')" class="filter-pill px-2.5 py-1 rounded-full bg-surface-subtle border border-border hover:border-tertiary hover:text-tertiary transition-all active:scale-95 inline-flex items-center gap-1">
+                        <svg class="w-3 h-3 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0 3-1.5 4.5 0"/><path d="M2 22c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3-1.5 4.5 0"/><circle cx="18" cy="5" r="2"/><path d="M8 12l4-2 3 2 3-2"/><path d="M4 11l4 2"/></svg>
+                        <span data-i18n="log_preset_swim">1.5K Swim</span>
                     </button>
                 </div>
             </div>
 
             <form onsubmit="handleLogWorkoutSubmit(event)" class="space-y-3 font-mono text-xs">
                 <div>
-                    <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_title_label">Session Title</label>
+                    <label for="log-title" class="block text-[11px] text-text-secondary mb-1" data-i18n="log_title_label">Session Title</label>
                     <input type="text" id="log-title" class="flat-input text-xs" value="Morning Threshold Intervals" required>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_sport_label">Sport Type</label>
+                        <label for="log-sport-type" class="block text-[11px] text-text-secondary mb-1" data-i18n="log_sport_label">Sport Type</label>
                         <select id="log-sport-type" class="flat-input text-xs">
                             <option value="run" selected>Running</option>
                             <option value="cycling">Cycling</option>
@@ -3856,7 +4142,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_distance_label">Distance (km)</label>
+                        <label for="log-distance" class="block text-[11px] text-text-secondary mb-1" data-i18n="log_distance_label">Distance (km)</label>
                         <input type="number" step="0.1" id="log-distance" class="flat-input text-xs" value="10.5" required>
                     </div>
                 </div>
@@ -4050,6 +4336,19 @@
 
         // DOM Ready Initializer
         document.addEventListener('DOMContentLoaded', () => {
+            // Handle OAuth / Callback Query Parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const tokenParam = urlParams.get('token');
+            const emailParam = urlParams.get('email');
+            const providerParam = urlParams.get('provider');
+            if (tokenParam) {
+                localStorage.setItem('access_token', tokenParam);
+                if (emailParam) localStorage.setItem('user_email', emailParam);
+                appState.token = tokenParam;
+                appState.userEmail = emailParam;
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
             initTheme();
             initLanguage();
             initNativeStatusBar();
@@ -4058,12 +4357,18 @@
             updateByokUI();
             selectCoachTier(appState.selectedCoachTier, false);
             switchWorkstationTab('cockpit');
+            setupAccessibleModals();
+            
+            if (tokenParam) {
+                toast.success('Signed In', `Authenticated via ${providerParam ? providerParam.toUpperCase() : 'Social ID'}`);
+            }
             
             // Parallel Initial Data Hydration (High-Performance Non-blocking Promise.allSettled)
             Promise.allSettled([
                 syncCockpitWithBackend(),
                 syncTelemetrySuite(),
-                checkSystemBroadcast()
+                checkSystemBroadcast(),
+                loadWeeklyCalendar(0)
             ]);
 
             // Shortcut ⌘K
@@ -4179,6 +4484,41 @@
             }
         }
 
+        // Universal Accessible Modal Management (Escape key, Scrim click, Focus return)
+        function setupAccessibleModals() {
+            const modalConfigs = [
+                { id: 'auth-modal', close: closeAuthModal },
+                { id: 'pro-payment-modal', close: closeProPaymentModal },
+                { id: 'legal-modal', close: closeLegalModal },
+                { id: 'activity-detail-modal', close: closeActivityDetailModal },
+                { id: 'log-workout-modal', close: closeLogWorkoutModal }
+            ];
+
+            // Close on Escape key press (WCAG 2.1 §2.1.2)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    modalConfigs.forEach(({ id, close }) => {
+                        const el = document.getElementById(id);
+                        if (el && !el.classList.contains('hidden')) {
+                            close();
+                        }
+                    });
+                }
+            });
+
+            // Close on backdrop / scrim click
+            modalConfigs.forEach(({ id, close }) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('click', (e) => {
+                        if (e.target === el) {
+                            close();
+                        }
+                    });
+                }
+            });
+        }
+
         // Tab Switcher for Workstation
         function switchWorkstationTab(tabName) {
             const tabs = ['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'];
@@ -4187,7 +4527,8 @@
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (content) content.classList.add('hidden');
                 if (btn) {
-                    btn.className = 'px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5';
+                    btn.className = 'tab-btn px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5';
+                    btn.setAttribute('aria-selected', 'false');
                 }
             });
 
@@ -4195,7 +4536,8 @@
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeContent) activeContent.classList.remove('hidden');
             if (activeBtn) {
-                activeBtn.className = 'px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary flex items-center gap-1.5';
+                activeBtn.className = 'tab-btn px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary flex items-center gap-1.5';
+                activeBtn.setAttribute('aria-selected', 'true');
             }
 
             // Sync Mobile Native Bottom Navigation Bar state
@@ -4206,9 +4548,11 @@
                     if (t === tabName) {
                         mBtn.classList.remove('text-text-secondary');
                         mBtn.classList.add('text-tertiary', 'font-bold');
+                        mBtn.setAttribute('aria-current', 'page');
                     } else {
                         mBtn.classList.remove('text-tertiary', 'font-bold');
                         mBtn.classList.add('text-text-secondary');
+                        mBtn.removeAttribute('aria-current');
                     }
                 }
             });
@@ -4222,6 +4566,8 @@
                 loadProfileSettings();
             } else if (tabName === 'telemetry') {
                 syncTelemetrySuite();
+            } else if (tabName === 'schedule') {
+                loadWeeklyCalendar(currentCalendarWeekOffset);
             }
         }
 
@@ -4501,25 +4847,32 @@
 
             const badgeEl = document.getElementById('detail-sport-badge');
             if (badgeEl) {
-                badgeEl.textContent = data.sport === 'run' ? '🏃 RUN' : '🚴 CYCLING';
+                badgeEl.innerHTML = data.sport === 'run' 
+                    ? '<svg class="w-3 h-3 inline-block mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg><span>RUN</span>' 
+                    : '<svg class="w-3 h-3 inline-block mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg><span>CYCLING</span>';
                 badgeEl.className = data.sport === 'run' 
-                    ? 'px-2 py-0.5 rounded-full bg-tertiary text-white font-mono text-[10px] font-bold uppercase' 
-                    : 'px-2 py-0.5 rounded-full bg-flat-orange text-white font-mono text-[10px] font-bold uppercase';
+                    ? 'inline-flex items-center px-2 py-0.5 rounded-full bg-tertiary text-white font-mono text-[10px] font-bold uppercase' 
+                    : 'inline-flex items-center px-2 py-0.5 rounded-full bg-flat-orange text-white font-mono text-[10px] font-bold uppercase';
             }
 
-            const setDetail = (id, val) => {
+            const setDetail = (id, val, spoken = '') => {
                 const el = document.getElementById(id);
-                if (el) el.innerHTML = val;
+                if (el) {
+                    el.innerHTML = val;
+                    if (spoken && el.parentElement) {
+                        el.parentElement.setAttribute('aria-label', spoken);
+                    }
+                }
             };
 
-            setDetail('detail-metric-dist', `${data.distance}`);
-            setDetail('detail-metric-pace', `${data.pace}`);
-            setDetail('detail-metric-time', `${data.time}`);
-            setDetail('detail-metric-elev', `${data.elev}`);
-            setDetail('detail-metric-avghr', `${data.avgHr}`);
-            setDetail('detail-metric-maxhr', `${data.maxHr}`);
-            setDetail('detail-metric-cal', `${data.calories}`);
-            setDetail('detail-metric-suffer', `${data.suffer}`);
+            setDetail('detail-metric-dist', `${data.distance}`, `Distance: ${data.distance}`);
+            setDetail('detail-metric-pace', `${data.pace}`, `Average Pace: ${data.pace}`);
+            setDetail('detail-metric-time', `${data.time}`, `Moving Time: ${data.time}`);
+            setDetail('detail-metric-elev', `${data.elev}`, `Elevation Gain: ${data.elev}`);
+            setDetail('detail-metric-avghr', `${data.avgHr}`, `Average Heart Rate: ${data.avgHr}`);
+            setDetail('detail-metric-maxhr', `${data.maxHr}`, `Maximum Heart Rate: ${data.maxHr}`);
+            setDetail('detail-metric-cal', `${data.calories}`, `Calories: ${data.calories}`);
+            setDetail('detail-metric-suffer', `${data.suffer}`, `Relative Effort: ${data.suffer}`);
 
             const tbody = document.getElementById('detail-splits-tbody');
             if (tbody && data.splits) {
@@ -4690,7 +5043,8 @@
             card.innerHTML = `
                 <div class="flex items-center justify-between border-b border-border pb-2">
                     <div class="flex items-center gap-1.5 font-mono text-[11px] font-bold text-tertiary">
-                        <span>⚡ ACTIONABLE WORKOUT PRESCRIPTION</span>
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>ACTIONABLE WORKOUT PRESCRIPTION</span>
                     </div>
                     <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-flat-green/10 text-flat-green font-bold">SMART COACH</span>
                 </div>
@@ -4736,9 +5090,9 @@
                 tab_integrations: "Garmin & Strava",
                 tab_settings: "Pengaturan Atlet",
                 feed_filter_all: "Semua Aktivitas",
-                feed_filter_runs: "🏃 Lari",
-                feed_filter_rides: "🚴 Sepeda",
-                feed_filter_prescription: "⚡ Preskripsi AI",
+                feed_filter_runs: "Lari",
+                feed_filter_rides: "Sepeda",
+                feed_filter_prescription: "Preskripsi AI",
                 feed_form_label: "Status Form (TSB):",
                 presc_title: "PRESKRIPSI LATIHAN AI HARI INI",
                 presc_badge: "PELATIH PINTAR",
@@ -4751,7 +5105,7 @@
                 presc_start_btn: "Mulai / Catat Sesi Ini",
                 presc_adapt_btn: "Minta AI Menyesuaikan",
                 card_run_time: "• Hari ini pukul 06:15 WIB",
-                card_sport_run: "🏃 Lari",
+                card_sport_run: "Lari",
                 card_run_title: "Morning Progression Tempo Run",
                 card_run_desc: "Kaki terasa sangat bertenaga di repetisi blok 4:20/km. Hidrasi optimal dengan kadens stabil 178 spm.",
                 card_distance: "Jarak",
@@ -4760,13 +5114,13 @@
                 card_time: "Waktu",
                 card_elev: "Kenaikan Elevasi",
                 card_inspect_map: "Buka Rute & Split Km →",
-                card_ai_engine: "⚡ MESIN ANALISIS AI",
+                card_ai_engine: "MESIN ANALISIS AI",
                 card_run_ai_notes: "Cardiac drift terpantau hanya +1.7% decoupling. Keseimbangan langkah sangat simetris di 49.8% Kiri / 50.2% Kanan dengan ground contact time 212ms.",
                 card_kudos: "Kudos",
                 card_comments: "Komentar",
                 card_view_splits: "Lihat Split Km →",
                 card_ride_time: "• Kemarin pukul 05:45 WIB",
-                card_sport_cycling: "🚴 Sepeda",
+                card_sport_cycling: "Sepeda",
                 card_ride_title: "Sentul KM0 Hill Climb Endurance",
                 card_ride_desc: "Tanjakan KM0 stabil di 240W Normalised Power. Manuver turunan aman dengan kontrol kadens rapi.",
                 card_view_power: "Lihat Kurva Tenaga →",
@@ -4776,16 +5130,16 @@
                 detail_splits_title: "Tabel Split Per Kilometer",
                 detail_splits_sub: "Distribusi Pace vs Target",
                 detail_hr_zones_title: "Distribusi Zona Denyut Jantung (5-Zone Karvonen)",
-                detail_ai_postmortem_title: "⚡ AUDIT PASCA-LATIHAN PELATIH AI",
+                detail_ai_postmortem_title: "AUDIT PASCA-LATIHAN PELATIH AI",
                 detail_btn_share: "Bagikan Sesi",
                 detail_btn_close: "Tutup",
                 log_modal_title: "Catat Latihan Selesai",
                 log_quick_presets: "Preset Cepat 1-Ketuk:",
-                log_preset_5k: "🏃 5K Pemulihan",
-                log_preset_10k: "🏃 10K Tempo",
-                log_preset_21k: "🏃 21K Half",
-                log_preset_30k: "🚴 30K Sepeda",
-                log_preset_swim: "🏊 1.5K Renang",
+                log_preset_5k: "5K Pemulihan",
+                log_preset_10k: "10K Tempo",
+                log_preset_21k: "21K Half",
+                log_preset_30k: "30K Sepeda",
+                log_preset_swim: "1.5K Renang",
                 log_title_label: "Judul Sesi",
                 log_sport_label: "Jenis Olahraga",
                 log_distance_label: "Jarak (km)",
@@ -4832,9 +5186,9 @@
                 tab_integrations: "Garmin & Strava",
                 tab_settings: "Athlete Settings",
                 feed_filter_all: "All Feed",
-                feed_filter_runs: "🏃 Runs",
-                feed_filter_rides: "🚴 Rides",
-                feed_filter_prescription: "⚡ AI Plan",
+                feed_filter_runs: "Runs",
+                feed_filter_rides: "Rides",
+                feed_filter_prescription: "AI Plan",
                 feed_form_label: "Form (TSB):",
                 presc_title: "TODAY'S AI WORKOUT PRESCRIPTION",
                 presc_badge: "SMART COACH",
@@ -4847,7 +5201,7 @@
                 presc_start_btn: "Start / Log This Session",
                 presc_adapt_btn: "Ask AI to Adapt",
                 card_run_time: "• Today at 06:15 AM",
-                card_sport_run: "🏃 Run",
+                card_sport_run: "Run",
                 card_run_title: "Morning Progression Tempo Run",
                 card_run_desc: "Felt extremely strong through the 4:20/km interval blocks. Hydration on point with steady cadence at 178 spm.",
                 card_distance: "Distance",
@@ -4856,13 +5210,13 @@
                 card_time: "Time",
                 card_elev: "Elev Gain",
                 card_inspect_map: "Inspect Route & Splits →",
-                card_ai_engine: "⚡ AI ANALYSIS ENGINE",
+                card_ai_engine: "AI ANALYSIS ENGINE",
                 card_run_ai_notes: "Cardiovascular drift measured at only +1.7% decoupling. Form balance was symmetric at 49.8% L / 50.2% R with 212ms ground contact time.",
                 card_kudos: "Kudos",
                 card_comments: "Comments",
                 card_view_splits: "View Splits →",
                 card_ride_time: "• Yesterday at 05:45 AM",
-                card_sport_cycling: "🚴 Ride",
+                card_sport_cycling: "Ride",
                 card_ride_title: "Sentul KM0 Hill Climb Endurance",
                 card_ride_desc: "Steep climb section held at steady 240W. Smooth descending and solid cadence control.",
                 card_view_power: "View Power Curve →",
@@ -4872,16 +5226,16 @@
                 detail_splits_title: "Per-Kilometer Splits",
                 detail_splits_sub: "Pace vs Target Distribution",
                 detail_hr_zones_title: "Heart Rate Zone Distribution (5-Zone Karvonen)",
-                detail_ai_postmortem_title: "⚡ AI COACH POST-WORKOUT AUDIT",
+                detail_ai_postmortem_title: "AI COACH POST-WORKOUT AUDIT",
                 detail_btn_share: "Share Session",
                 detail_btn_close: "Close",
                 log_modal_title: "Log Completed Workout",
                 log_quick_presets: "1-Tap Quick Presets:",
-                log_preset_5k: "🏃 5K Recovery",
-                log_preset_10k: "🏃 10K Tempo",
-                log_preset_21k: "🏃 21K Half",
-                log_preset_30k: "🚴 30K Ride",
-                log_preset_swim: "🏊 1.5K Swim",
+                log_preset_5k: "5K Recovery",
+                log_preset_10k: "10K Tempo",
+                log_preset_21k: "21K Half",
+                log_preset_30k: "30K Ride",
+                log_preset_swim: "1.5K Swim",
                 log_title_label: "Session Title",
                 log_sport_label: "Sport Type",
                 log_distance_label: "Distance (km)",
@@ -5297,10 +5651,12 @@
         }
 
         function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
             return String(str).replace(/[&<>'"]/g, tag => ({
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
             }[tag] || tag));
         }
+        const escapeHtml = escapeHTML;
 
         function formatMarkdown(str) {
             return escapeHTML(str)
@@ -5509,6 +5865,326 @@
             }).join('');
         }
 
+        // ══════════════════════════════════════════════════════
+        // AI WEEKLY TRAINING CALENDAR & RECOMMENDATION ENGINE
+        // ══════════════════════════════════════════════════════
+        let currentCalendarWeekOffset = 0;
+        let currentWeeklyCalendarData = null;
+        let currentSelectedCalendarDayIndex = null;
+
+        async function loadWeeklyCalendar(offset = 0, force = false) {
+            currentCalendarWeekOffset = offset;
+            const rangeEl = document.getElementById('calendar-week-range');
+            const directiveEl = document.getElementById('calendar-ai-directive-text');
+            const btnToday = document.getElementById('calendar-btn-today');
+
+            if (btnToday) {
+                if (offset === 0) {
+                    btnToday.className = 'px-3 py-1.5 bg-tertiary text-white font-bold text-[11px]';
+                } else {
+                    btnToday.className = 'px-3 py-1.5 hover:bg-surface font-bold text-[11px] text-text-secondary';
+                }
+            }
+
+            try {
+                const url = `${API_BASE}/training/weekly-calendar?week_offset=${offset}&force_regenerate=${force}`;
+                const res = await fetch(url, { headers: getAuthHeaders() });
+                if (!res.ok) throw new Error('Failed to fetch weekly calendar');
+                const data = await res.json();
+                currentWeeklyCalendarData = data;
+
+                if (rangeEl && data.start_date && data.end_date) {
+                    const startD = new Date(data.start_date);
+                    const endD = new Date(data.end_date);
+                    const opt = { day: 'numeric', month: 'short' };
+                    const optEnd = { day: 'numeric', month: 'short', year: 'numeric' };
+                    const weekLabel = offset === 0 ? 'Minggu Ini' : (offset > 0 ? `+${offset} Minggu ke depan` : `${offset} Minggu lalu`);
+                    rangeEl.textContent = `${startD.toLocaleDateString('id-ID', opt)} – ${endD.toLocaleDateString('id-ID', optEnd)} (${weekLabel})`;
+                }
+
+                if (directiveEl && data.ai_coaching_directive) {
+                    directiveEl.textContent = data.ai_coaching_directive;
+                }
+
+                const volEl = document.getElementById('cal-stat-volume');
+                const durEl = document.getElementById('cal-stat-duration');
+                const qualEl = document.getElementById('cal-stat-quality');
+                const recEl = document.getElementById('cal-stat-recovery');
+
+                if (volEl) volEl.textContent = `${data.total_volume_km || 0} km`;
+                if (durEl) durEl.textContent = `${Math.round((data.total_duration_minutes || 0) / 60 * 10) / 10} jam`;
+                if (qualEl) qualEl.textContent = `${data.quality_sessions_count || 0} Sesi Kunci`;
+                if (recEl) recEl.textContent = `${data.rest_days_count || 0} Hari Recovery`;
+
+                renderCalendarDays(data.days || []);
+
+                if (currentSelectedCalendarDayIndex !== null && data.days && data.days[currentSelectedCalendarDayIndex]) {
+                    selectCalendarDay(currentSelectedCalendarDayIndex, false);
+                } else {
+                    closeCalendarDayDetail();
+                }
+            } catch (err) {
+                console.error('loadWeeklyCalendar error:', err);
+                if (rangeEl) rangeEl.textContent = 'Gagal memuat jadwal mingguan';
+            }
+        }
+
+        function renderCalendarDays(days) {
+            const gridEl = document.getElementById('calendar-days-grid');
+            if (!gridEl) return;
+
+            if (!days || days.length === 0) {
+                gridEl.innerHTML = '<div class="col-span-full p-6 text-center text-text-secondary font-mono text-xs">Belum ada rekomendasi latihan mingguan. Klik AI REGENERATE untuk membuat.</div>';
+                return;
+            }
+
+            const zoneStyles = {
+                'Z1': 'bg-slate-500/10 text-slate-400 border-slate-500/30',
+                'Z2': 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+                'Z3': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+                'Z4': 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+                'Z5': 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+            };
+
+            gridEl.innerHTML = days.map((day, idx) => {
+                const isSelected = currentSelectedCalendarDayIndex === idx;
+                const zoneBadge = zoneStyles[day.intensity_zone] || 'bg-surface-subtle text-text-secondary border-border';
+                const dateObj = new Date(day.date);
+                const dayNum = isNaN(dateObj.getDate()) ? day.date : `${dateObj.getDate()} ${dateObj.toLocaleDateString('id-ID', { month: 'short' })}`;
+
+                let sportIcon = '<svg class="w-4 h-4 text-tertiary shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>';
+                if (day.sport_type === 'bike') {
+                    sportIcon = '<svg class="w-4 h-4 text-tertiary shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>';
+                } else if (day.sport_type === 'swim') {
+                    sportIcon = '<svg class="w-4 h-4 text-tertiary shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0"/><path d="M2 22c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3-1.5 4.5 0"/><circle cx="18" cy="5" r="2"/><path d="M8 12l4-2 3 2 3-2"/><path d="M4 11l4 2"/></svg>';
+                } else if (day.sport_type === 'rest' || (day.intensity_zone === 'Z1' && day.target_distance_km === 0)) {
+                    sportIcon = '<svg class="w-4 h-4 text-flat-green shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M12 7v5l3 3"/></svg>';
+                }
+
+                let statusBadge = '';
+                if (day.completed) {
+                    statusBadge = '<span class="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-flat-green/10 text-flat-green border border-flat-green/30 font-bold">✓ SELESAI</span>';
+                } else if (day.target_distance_km === 0) {
+                    statusBadge = '<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-subtle text-text-secondary border border-border">REST</span>';
+                } else {
+                    statusBadge = '<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-subtle text-text-secondary border border-border">PLANNED</span>';
+                }
+
+                const cardBorder = isSelected
+                    ? 'border-2 border-tertiary shadow-md'
+                    : (day.is_today ? 'border-2 border-tertiary/70' : 'border border-border hover:border-text-primary');
+
+                return `
+                    <div onclick="selectCalendarDay(${idx}, true)" 
+                         class="flat-card p-3 bg-surface ${cardBorder} flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-0.5 group min-h-[175px]"
+                         role="button"
+                         tabindex="0"
+                         aria-label="${day.day_name} ${day.title}">
+                        <div>
+                            <div class="flex items-center justify-between border-b border-border pb-1.5 mb-2">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-display font-extrabold text-xs text-text-primary uppercase">${day.day_name.slice(0, 3)}</span>
+                                    <span class="text-[10px] font-mono text-text-secondary">${dayNum}</span>
+                                </div>
+                                ${day.is_today ? '<span class="text-[10px] font-mono px-1.5 py-0.5 bg-tertiary text-white rounded font-bold">HARI INI</span>' : ''}
+                            </div>
+
+                            <div class="flex items-start gap-2 mb-2">
+                                <span class="shrink-0 leading-none">${sportIcon}</span>
+                                <h4 class="font-display font-bold text-xs text-text-primary line-clamp-2 leading-tight group-hover:text-tertiary transition-colors">
+                                    ${escapeHTML(day.title)}
+                                </h4>
+                            </div>
+
+                            <div class="space-y-1 font-mono text-[11px] mb-2">
+                                <div class="text-text-secondary font-medium">
+                                    ${day.target_distance_km > 0 ? `${day.target_distance_km} km` : 'Active Rec'}
+                                    ${day.target_duration_minutes > 0 ? `• ${day.target_duration_minutes}m` : ''}
+                                </div>
+                                ${day.target_pace ? `<div class="text-[10px] text-text-secondary truncate">@ ${escapeHTML(day.target_pace)}</div>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-border mt-auto">
+                            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded border font-bold ${zoneBadge}">
+                                ${escapeHTML(day.intensity_zone)}
+                            </span>
+                            ${statusBadge}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectCalendarDay(idx, shouldScroll = false) {
+            if (!currentWeeklyCalendarData || !currentWeeklyCalendarData.days || !currentWeeklyCalendarData.days[idx]) return;
+            currentSelectedCalendarDayIndex = idx;
+            const day = currentWeeklyCalendarData.days[idx];
+
+            renderCalendarDays(currentWeeklyCalendarData.days);
+
+            const panel = document.getElementById('calendar-day-detail-panel');
+            if (panel) panel.classList.remove('hidden');
+
+            const badgeEl = document.getElementById('detail-day-badge');
+            const titleEl = document.getElementById('detail-day-title');
+            const warmupEl = document.getElementById('detail-warmup');
+            const mainSetEl = document.getElementById('detail-main-set');
+            const cooldownEl = document.getElementById('detail-cooldown');
+            const zoneEl = document.getElementById('detail-zone');
+            const paceEl = document.getElementById('detail-pace');
+            const hrEl = document.getElementById('detail-hr');
+            const fuelEl = document.getElementById('detail-fuel');
+            const rationaleEl = document.getElementById('detail-rationale');
+            const toggleBtn = document.getElementById('btn-toggle-day-status');
+
+            if (badgeEl) badgeEl.textContent = `${day.day_name.toUpperCase()} • ${day.date}`;
+            if (titleEl) titleEl.textContent = day.title;
+            if (warmupEl) warmupEl.textContent = day.warmup || '5-10m pemanasan dinamis, leg swings & mobilitas ankle';
+            if (mainSetEl) mainSetEl.textContent = day.main_set || day.description;
+            if (cooldownEl) cooldownEl.textContent = day.cooldown || '5m jalan santai & peregangan statis paha/betis';
+            if (zoneEl) zoneEl.textContent = day.intensity_zone;
+            if (paceEl) paceEl.textContent = day.target_pace || 'Zona santai / conversational';
+            if (hrEl) hrEl.textContent = day.target_hr_range || 'BPM dalam zona aerobik';
+            if (fuelEl) fuelEl.textContent = day.fueling_hydration || 'Air putih + elektrolit ringan';
+            if (rationaleEl) rationaleEl.textContent = day.rationale;
+
+            if (toggleBtn) {
+                if (day.completed) {
+                    toggleBtn.className = 'btn-flat-secondary py-1.5 px-3 text-xs flex-1 text-flat-orange';
+                    toggleBtn.innerHTML = '↺ TANDAI BELUM SELESAI';
+                } else {
+                    toggleBtn.className = 'btn-flat-primary py-1.5 px-3 text-xs flex-1 font-bold';
+                    toggleBtn.innerHTML = '✓ TANDAI SELESAI (COMPLETE)';
+                }
+            }
+
+            if (shouldScroll && panel) {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function closeCalendarDayDetail() {
+            currentSelectedCalendarDayIndex = null;
+            const panel = document.getElementById('calendar-day-detail-panel');
+            if (panel) panel.classList.add('hidden');
+            if (currentWeeklyCalendarData && currentWeeklyCalendarData.days) {
+                renderCalendarDays(currentWeeklyCalendarData.days);
+            }
+        }
+
+        function changeCalendarWeek(direction) {
+            loadWeeklyCalendar(currentCalendarWeekOffset + direction);
+        }
+
+        function resetCalendarWeek() {
+            loadWeeklyCalendar(0);
+        }
+
+        async function regenerateAIWeeklyCalendar() {
+            const btn = document.getElementById('btn-ai-regen');
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="animate-spin inline-block mr-1">⟳</span> GENERATING...';
+            }
+
+            const loadToast = toast.loading('AI Coach Berpikir', 'Mengalibrasi target latihan 1 minggu berdasarkan profil kebugaran...');
+            try {
+                const res = await fetch(`${API_BASE}/training/weekly-calendar/generate`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        week_offset: currentCalendarWeekOffset,
+                        force_regenerate: true
+                    })
+                });
+
+                loadToast.dismiss();
+                if (!res.ok) throw new Error('Gagal meregenerasi jadwal mingguan');
+                const data = await res.json();
+                currentWeeklyCalendarData = data;
+                toast.success('Kalender AI Terkalibrasi', 'Rekomendasi 7 hari berhasil disesuaikan secara ilmiah.');
+                loadWeeklyCalendar(currentCalendarWeekOffset, false);
+            } catch (err) {
+                loadToast.dismiss();
+                toast.error('Gagal Regenerate', err.message || 'Terjadi kesalahan sistem.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            }
+        }
+
+        async function toggleCurrentSelectedDayStatus() {
+            if (currentSelectedCalendarDayIndex === null || !currentWeeklyCalendarData) return;
+            const day = currentWeeklyCalendarData.days[currentSelectedCalendarDayIndex];
+            const loadToast = toast.loading('Mengupdate Status', 'Menyimpan log status latihan...');
+
+            try {
+                const res = await fetch(`${API_BASE}/training/weekly-calendar/toggle-day`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        week_key: currentWeeklyCalendarData.week_key,
+                        day_index: currentSelectedCalendarDayIndex
+                    })
+                });
+
+                loadToast.dismiss();
+                if (!res.ok) throw new Error('Gagal update status latihan');
+                const result = await res.json();
+                day.completed = result.completed;
+
+                renderCalendarDays(currentWeeklyCalendarData.days);
+                selectCalendarDay(currentSelectedCalendarDayIndex, false);
+
+                toast.success('Status Terupdate', result.completed ? `Sesi ${day.day_name} ditandai selesai! Log tercatat.` : `Sesi ${day.day_name} dikembalikan ke status terencana.`);
+            } catch (err) {
+                loadToast.dismiss();
+                toast.error('Gagal Update', err.message || 'Tidak dapat memperbarui status.');
+            }
+        }
+
+        async function downloadWeeklyICS() {
+            const loadToast = toast.loading('Export Kalender', 'Menghasilkan file format iCalendar (.ICS)...');
+            try {
+                const res = await fetch(`${API_BASE}/training/weekly-calendar/ical?week_offset=${currentCalendarWeekOffset}`, {
+                    headers: getAuthHeaders()
+                });
+                loadToast.dismiss();
+                if (!res.ok) throw new Error('Export kalender gagal');
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `goalie_weekly_calendar_week_${currentCalendarWeekOffset}.ics`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                toast.success('Kalender Diunduh (.ICS)', 'Buka file untuk menyinkronkan langsung ke Google / Apple Calendar.');
+            } catch (err) {
+                loadToast.dismiss();
+                toast.error('Gagal Ekspor', 'Tidak dapat mengunduh kalender mingguan.');
+            }
+        }
+
+        function askAiAboutSelectedSession() {
+            if (currentSelectedCalendarDayIndex === null || !currentWeeklyCalendarData) return;
+            const day = currentWeeklyCalendarData.days[currentSelectedCalendarDayIndex];
+            switchWorkstationTab('chat');
+
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.value = `Halo Coach! Berikan panduan eksekusi untuk sesi ${day.day_name} (${day.date}): "${day.title}". Target: ${day.target_distance_km}km, Zona ${day.intensity_zone}, Pace ${day.target_pace || 'santai'}. Apa rekomendasi nutrisi dan strategi detak jantungnya?`;
+                chatInput.focus();
+                const chatContainer = document.getElementById('tab-content-chat');
+                if (chatContainer) chatContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
         // iCal Calendar Download
         async function downloadICS() {
             try {
@@ -5637,10 +6313,21 @@
             }
         }
 
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            btn.innerHTML = isPassword 
+                ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>'
+                : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
+        }
+
         function prefillDemoCredentials() {
-            document.getElementById('auth-email').value = 'kipchoge@berlin.org';
-            document.getElementById('auth-password').value = 'secretpassword';
-            toast.info('Filled', 'Demo credentials loaded into form.');
+            document.getElementById('auth-email').value = 'rizkyaryendigumilang@gmail.com';
+            document.getElementById('auth-password').value = 'Apaya1234';
+            toast.info('Filled', 'Rizky Aryendi Gumilang (Apaya1234) loaded.');
         }
 
         async function handleAuthSubmit(e) {
@@ -5652,7 +6339,9 @@
             errBox.classList.add('hidden');
 
             const submitBtn = document.getElementById('auth-submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
 
             try {
                 let endpoint = `${API_BASE}/auth/${currentAuthMode}`;
@@ -5685,6 +6374,79 @@
                 errBox.classList.remove('hidden');
             } finally {
                 submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        }
+
+        async function quickOAuth(provider) {
+            toast.info('OAuth Gateway', `Connecting via ${provider}...`);
+            try {
+                // Check if real OAuth provider is configured in backend
+                try {
+                    const checkRes = await fetch(`${API_BASE}/auth/social/${provider}`);
+                    if (checkRes.ok) {
+                        const checkData = await checkRes.json();
+                        if (checkData.configured && checkData.url) {
+                            toast.info('OAuth Redirect', `Redirecting to official ${provider} authentication...`);
+                            window.location.href = checkData.url;
+                            return;
+                        }
+                    }
+                } catch (checkErr) {
+                    console.warn('[Goalie] Social OAuth check fallback:', checkErr);
+                }
+
+                // If credentials not configured in .env yet, sign in via Sandbox Gateway
+                toast.info('Sandbox Gateway', `${provider} credentials not set in .env. Entering sandbox mode.`);
+                const profilePayloads = {
+                    google: {
+                        provider: 'google',
+                        provider_user_id: 'google_rizkyaryendigumilang',
+                        email: 'rizkyaryendigumilang@gmail.com',
+                        full_name: 'Rizky Aryendi Gumilang'
+                    },
+                    telegram: {
+                        provider: 'telegram',
+                        provider_user_id: '8503838227',
+                        email: '8503838227@telegram.athlete',
+                        full_name: 'Rizky Aryendi Gumilang (@admin_kiky)'
+                    },
+                    github: {
+                        provider: 'github',
+                        provider_user_id: 'github_rizkyaryendigumilang',
+                        email: 'rizkyaryendigumilang@github.athlete',
+                        full_name: 'Rizky Aryendi Gumilang (GitHub)'
+                    }
+                };
+
+                const payload = profilePayloads[provider] || {
+                    provider,
+                    provider_user_id: `${provider}_demo_${Date.now()}`,
+                    email: `athlete_${provider}@goalie.fit`,
+                    full_name: `${provider.toUpperCase()} Runner`
+                };
+
+                const res = await fetch(`${API_BASE}/auth/oauth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.access_token) {
+                    appState.token = data.access_token;
+                    const userEmail = data.email || (data.user && data.user.email) || payload.email;
+                    const userName = data.full_name || (data.user && data.user.full_name) || payload.full_name;
+                    appState.userEmail = userEmail;
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('user_email', userEmail);
+                    updateNavAuthUI();
+                    closeAuthModal();
+                    toast.success('Authenticated', `Welcome ${userName}`);
+                } else {
+                    throw new Error(data.detail || 'OAuth authentication failed');
+                }
+            } catch (err) {
+                toast.error('OAuth Failed', err.message);
             }
         }
 
@@ -5698,6 +6460,26 @@
             updateNavAuthUI();
             toast.info('Signed Out', 'You have been logged out of your session.');
         }
+
+        function toggleUserDropdown(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('user-dropdown-menu');
+            const btn = document.getElementById('user-dropdown-btn');
+            if (!menu) return;
+            const isHidden = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !isHidden);
+            if (btn) btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+        }
+
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('user-profile-menu-container');
+            const menu = document.getElementById('user-dropdown-menu');
+            if (menu && !menu.classList.contains('hidden') && container && !container.contains(e.target)) {
+                menu.classList.add('hidden');
+                const btn = document.getElementById('user-dropdown-btn');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+        });
 
         // Pro Payment & BYOK Modal Controller
         function openProPaymentModal() {

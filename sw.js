@@ -1,5 +1,5 @@
-// Goalie — Production PWA Service Worker (v2.4.1)
-const CACHE_NAME = 'goalie-cache-v2.4.1';
+// Goalie — Production PWA Service Worker (v2.4.3)
+const CACHE_NAME = 'goalie-cache-v2.4.3';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -10,10 +10,9 @@ const STATIC_ASSETS = [
     '/apple-touch-icon.png',
     '/public/icons/pwa/icon-192x192.png',
     '/public/icons/pwa/icon-512x512.png',
-    'https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap',
-    'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
-    'https://cdn.tailwindcss.com'
+    '/public/css/tailwind.min.css',
+    '/public/js/db.js',
+    'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap'
 ];
 
 // Install: Cache shell assets

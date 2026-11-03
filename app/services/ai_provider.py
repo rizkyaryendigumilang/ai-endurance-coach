@@ -1,4 +1,5 @@
 import os
+import asyncio
 import requests
 from typing import List, Dict, Optional
 from app.core.config import GEMINI_API_KEY, GEMINI_FREE_API_KEY, GEMINI_PRO_API_KEY, OPENAI_API_KEY
@@ -136,11 +137,11 @@ class MultiTierAIProvider:
         }
 
     async def _call_openai(self, context: str, message: str, history: List[Dict] = None) -> Dict:
-        """Invokes OpenAI GPT-4o-mini."""
+        """Invokes OpenAI GPT-4o-mini non-blockingly using worker thread."""
         if not self.openai_client:
             return {"success": False, "error": "OpenAI client not configured"}
 
-        try:
+        def _execute_sync_openai():
             messages = [{"role": "system", "content": SYSTEM_PROMPT}]
             if history:
                 for h in history[-8:]:
@@ -156,7 +157,10 @@ class MultiTierAIProvider:
                 max_tokens=450,
                 temperature=0.4
             )
-            text = completion.choices[0].message.content.strip()
+            return completion.choices[0].message.content.strip()
+
+        try:
+            text = await asyncio.to_thread(_execute_sync_openai)
             return {"success": True, "text": text}
         except Exception as e:
             err_str = str(e)
@@ -170,53 +174,60 @@ class MultiTierAIProvider:
         api_key: Optional[str] = None,
         model_name: str = "gemini-3.8-flash"
     ) -> Dict:
-        """Invokes Google Gemini with the specified API key."""
+        """Invokes Google Gemini with the specified API key non-blockingly via asyncio.to_thread."""
         target_key = api_key or self.gemini_pro_key or self.gemini_free_key
         if not target_key:
             return {"success": False, "error": "Gemini key not configured"}
 
-        # 1. First attempt: google.generativeai SDK
-        try:
-            import google.generativeai as genai
-            genai.configure(api_key=target_key)
-            model = genai.GenerativeModel(
-                model_name=model_name,
-                system_instruction=SYSTEM_PROMPT
-            )
-            chat_history = []
-            if history:
-                for h in history[-8:]:
-                    role = "user" if h.get("role") == "user" else "model"
-                    chat_history.append({"role": role, "parts": [h.get("content", "")]})
-
-            full_msg = f"Konteks Fisiologi Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"
-            chat = model.start_chat(history=chat_history)
-            response = chat.send_message(full_msg)
-            if response and response.text:
-                return {"success": True, "text": response.text.strip()}
-        except Exception as e:
-            print(f"[AI Provider] Gemini SDK attempt error: {e}")
-
-        # 2. Second attempt: Direct REST API
-        models_to_try = [model_name, "gemini-flash-latest", "gemini-pro-latest", "gemini-flash-lite-latest"]
-        for m in models_to_try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={target_key}"
-            contents = [
-                {"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nKonteks Data Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"}]}
-            ]
+        def _execute_sync_gemini():
+            # 1. First attempt: google.generativeai SDK
             try:
-                res = requests.post(url, json={"contents": contents}, timeout=15)
-                if res.status_code == 200:
-                    data = res.json()
-                    candidates = data.get("candidates", [])
-                    if candidates and "content" in candidates[0]:
-                        parts = candidates[0]["content"].get("parts", [])
-                        if parts:
-                            return {"success": True, "text": parts[0].get("text", "").strip()}
-            except Exception:
-                continue
+                import google.generativeai as genai
+                genai.configure(api_key=target_key)
+                model = genai.GenerativeModel(
+                    model_name=model_name,
+                    system_instruction=SYSTEM_PROMPT
+                )
+                chat_history = []
+                if history:
+                    for h in history[-8:]:
+                        role = "user" if h.get("role") == "user" else "model"
+                        chat_history.append({"role": role, "parts": [h.get("content", "")]})
 
-        return {"success": False, "error": "Gemini request timed out or unavailable"}
+                full_msg = f"Konteks Fisiologi Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"
+                chat = model.start_chat(history=chat_history)
+                response = chat.send_message(full_msg)
+                if response and response.text:
+                    return {"success": True, "text": response.text.strip()}
+            except Exception as e:
+                # Silently catch SDK issue and fallback to REST
+                pass
+
+            # 2. Second attempt: Direct REST API
+            models_to_try = [model_name, "gemini-flash-latest", "gemini-pro-latest", "gemini-flash-lite-latest"]
+            for m in models_to_try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={target_key}"
+                contents = [
+                    {"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nKonteks Data Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"}]}
+                ]
+                try:
+                    res = requests.post(url, json={"contents": contents}, timeout=15)
+                    if res.status_code == 200:
+                        data = res.json()
+                        candidates = data.get("candidates", [])
+                        if candidates and "content" in candidates[0]:
+                            parts = candidates[0]["content"].get("parts", [])
+                            if parts:
+                                return {"success": True, "text": parts[0].get("text", "").strip()}
+                except Exception:
+                    continue
+
+            return {"success": False, "error": "Gemini request timed out or unavailable"}
+
+        try:
+            return await asyncio.to_thread(_execute_sync_gemini)
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def _generate_deterministic_response(self, context: str, message: str) -> str:
         """

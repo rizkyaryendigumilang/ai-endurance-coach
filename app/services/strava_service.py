@@ -1,3 +1,8 @@
+import os
+import time
+import secrets
+import hmac
+import hashlib
 import httpx
 from fastapi import APIRouter, Request, BackgroundTasks, Depends, HTTPException
 from fastapi.responses import RedirectResponse
@@ -9,6 +14,45 @@ from app.core.auth import get_current_user, get_current_user_optional
 from app.services.sports_engine import SportsEngine
 
 router = APIRouter(tags=["Strava"])
+OAUTH_STATE_SECRET = os.getenv("OAUTH_STATE_SECRET") or os.getenv("DEMO_JWT_SECRET", "goalie-oauth-secret-key-2026")
+
+def generate_signed_oauth_state(user_id: str) -> str:
+    """Generate cryptographically signed, timestamped state token to prevent OAuth Account-Linking CSRF."""
+    nonce = secrets.token_hex(8)
+    ts = int(time.time())
+    payload = f"{user_id}:{ts}:{nonce}"
+    sig = hmac.new(OAUTH_STATE_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
+    return f"{payload}:{sig}"
+
+def verify_signed_oauth_state(state: str) -> str:
+    """Verify HMAC signature and timestamp (15-min TTL) of OAuth state parameter."""
+    if not state:
+        raise HTTPException(status_code=400, detail="OAuth state parameter missing")
+
+    parts = state.split(":")
+    # Graceful fallback for sandbox guest during offline preview
+    if len(parts) == 1 and state.startswith("sandbox_"):
+        return state
+
+    if len(parts) != 4:
+        raise HTTPException(status_code=400, detail="Invalid OAuth state structure")
+
+    user_id, ts_str, nonce, given_sig = parts
+    try:
+        ts = int(ts_str)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid OAuth state timestamp")
+
+    # Reject expired tokens older than 15 minutes (900 seconds)
+    if time.time() - ts > 900:
+        raise HTTPException(status_code=400, detail="Sesi autentikasi Strava kadaluarsa (>15 menit). Harap ulangi otorisasi.")
+
+    payload = f"{user_id}:{ts}:{nonce}"
+    expected_sig = hmac.new(OAUTH_STATE_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(expected_sig, given_sig):
+        raise HTTPException(status_code=400, detail="Verifikasi signature OAuth state gagal (Proteksi CSRF aktif)")
+
+    return user_id
 
 
 @router.get("/api/v1/auth/strava", summary="Initiate Strava OAuth flow")
@@ -20,6 +64,7 @@ def strava_login(user_id: str = Depends(get_current_user_optional)):
             detail="STRAVA_CLIENT_ID belum dikonfigurasi di .env"
         )
     redirect_uri = f"{BACKEND_URL}/api/v1/auth/strava/callback"
+    signed_state = generate_signed_oauth_state(user_id)
     url = (
         f"https://www.strava.com/oauth/authorize"
         f"?client_id={STRAVA_CLIENT_ID}"
@@ -27,7 +72,7 @@ def strava_login(user_id: str = Depends(get_current_user_optional)):
         f"&redirect_uri={redirect_uri}"
         f"&approval_prompt=force"
         f"&scope=activity:read_all,profile:read_all"
-        f"&state={user_id}"
+        f"&state={signed_state}"
     )
     return {"url": url}
 
@@ -35,7 +80,7 @@ def strava_login(user_id: str = Depends(get_current_user_optional)):
 @router.get("/api/v1/auth/strava/callback", summary="Strava OAuth callback")
 async def strava_callback(code: str, state: str):
     """Exchanges Strava auth code for access token and saves to DB."""
-    user_id = state
+    user_id = verify_signed_oauth_state(state)
     async with httpx.AsyncClient() as client:
         res = await client.post(
             "https://www.strava.com/oauth/token",

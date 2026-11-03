@@ -113,7 +113,9 @@ jobs:
         run: |
           set -euo pipefail
           # Package dist web assets, python backend, and configurations into clean staging location
-          mkdir -p /tmp/pkg-stage
+          pkg_tmp="${RUNNER_TEMP:-/tmp}/pkg-stage-${GITHUB_SHA}"
+          mkdir -p "$pkg_tmp"
+          tar_exit=0
           tar --exclude='.git' \
               --exclude='node_modules' \
               --exclude='venv' \
@@ -127,9 +129,16 @@ jobs:
               --exclude='*.tar.gz' \
               --exclude='web-dist.tar.gz' \
               --warning=no-file-changed \
-              -czf /tmp/pkg-stage/web-dist.tar.gz .
-          mv /tmp/pkg-stage/web-dist.tar.gz ./web-dist.tar.gz
-          rm -rf /tmp/pkg-stage
+              -czf "$pkg_tmp/web-dist.tar.gz" . || tar_exit=$?
+
+          # GNU tar exits with 1 if files changed while reading (non-fatal warning); >= 2 is fatal error
+          if [ "$tar_exit" -ne 0 ] && [ "$tar_exit" -ne 1 ]; then
+            echo "::error::tar archiving failed with fatal exit code: $tar_exit"
+            exit "$tar_exit"
+          fi
+
+          mv "$pkg_tmp/web-dist.tar.gz" ./web-dist.tar.gz
+          rm -rf "$pkg_tmp"
           test -s web-dist.tar.gz
           tar -tzf web-dist.tar.gz | grep 'index.html' > /dev/null
           tar -tzf web-dist.tar.gz | grep 'app/main.py' > /dev/null
@@ -264,7 +273,12 @@ jobs:
           # 3. Snapshot backup versi aktif saat ini (tanpa menimpa runtime venv/.env)
           if [ "$(ls -A "$live" 2>/dev/null)" ]; then
             echo "Creating snapshot backup of current live release..."
-            tar --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./node_modules' --warning=no-file-changed -czf "$backup" -C "$live" .
+            backup_exit=0
+            tar --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./node_modules' --warning=no-file-changed -czf "$backup" -C "$live" . || backup_exit=$?
+            if [ "$backup_exit" -ne 0 ] && [ "$backup_exit" -ne 1 ]; then
+              echo "::error::Backup snapshot failed with fatal exit code: $backup_exit"
+              exit "$backup_exit"
+            fi
             tar -tzf "$backup" > /dev/null || { echo "::error::Backup archive verification failed"; exit 1; }
           fi
 

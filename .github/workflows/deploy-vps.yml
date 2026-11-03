@@ -92,7 +92,12 @@ jobs:
           set -euo pipefail
           pkg_tmp="${RUNNER_TEMP:-/tmp}/goalie-pack-${GITHUB_SHA}"
           mkdir -p "$pkg_tmp"
-          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --exclude='dist' -czf "$pkg_tmp/goalie-source.tar.gz" .
+          tar_exit=0
+          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --exclude='dist' --warning=no-file-changed -czf "$pkg_tmp/goalie-source.tar.gz" . || tar_exit=$?
+          if [ "$tar_exit" -ne 0 ] && [ "$tar_exit" -ne 1 ]; then
+            echo "::error::tar archiving failed with fatal exit code: $tar_exit"
+            exit "$tar_exit"
+          fi
           mv "$pkg_tmp/goalie-source.tar.gz" goalie-source.tar.gz
           rm -rf "$pkg_tmp"
           tar -tzf goalie-source.tar.gz | grep -E '^(\./)?app/main.py$'
@@ -166,7 +171,12 @@ jobs:
             rm -f "$archive"
             exit 1
           fi
-          tar --exclude='./.git' --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./.env.*' --exclude='./node_modules' --exclude='./__pycache__' --exclude='./.runtime' -czf "$backup" -C "$live" .
+          backup_exit=0
+          tar --exclude='./.git' --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./.env.*' --exclude='./node_modules' --exclude='./__pycache__' --exclude='./.runtime' --warning=no-file-changed -czf "$backup" -C "$live" . || backup_exit=$?
+          if [ "$backup_exit" -ne 0 ] && [ "$backup_exit" -ne 1 ]; then
+            echo "::error::Live backup archiving failed with fatal exit code: $backup_exit"
+            exit "$backup_exit"
+          fi
           rollback() {
             status="${1:-$?}"
             trap - ERR

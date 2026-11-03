@@ -4,12 +4,104 @@ import time
 import base64
 import hmac
 import hashlib
-from fastapi import HTTPException, Depends
+from typing import Optional
+from fastapi import HTTPException, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import supabase
 
 security = HTTPBearer(auto_error=False)
 DEMO_SECRET = os.getenv("DEMO_JWT_SECRET", "goalie-genesis-secret-key-2026")
+ADMIN_SECRET_KEY = os.getenv("ADMIN_SECRET_KEY", "goalie-admin-secret-2026")
+ENVIRONMENT = os.getenv("ENVIRONMENT", os.getenv("APP_ENV", "development")).lower()
+
+# Fail-fast security check: Prevent booting in production with public repository default secrets
+if ENVIRONMENT == "production":
+    if not os.getenv("ADMIN_SECRET_KEY") or ADMIN_SECRET_KEY == "goalie-admin-secret-2026" or len(ADMIN_SECRET_KEY) < 20:
+        raise RuntimeError("FATAL SECURITY: Insecure default ADMIN_SECRET_KEY detected in production environment! Configure a unique ADMIN_SECRET_KEY in .env.")
+    if not os.getenv("DEMO_JWT_SECRET") or DEMO_SECRET == "goalie-genesis-secret-key-2026" or len(DEMO_SECRET) < 20:
+        raise RuntimeError("FATAL SECURITY: Insecure default DEMO_JWT_SECRET detected in production environment! Configure a unique DEMO_JWT_SECRET in .env.")
+
+def b64url_encode(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).decode('utf-8').rstrip('=')
+
+def b64url_decode(s: str) -> bytes:
+    pad = s + '=' * (-len(s) % 4)
+    return base64.urlsafe_b64decode(pad)
+
+def create_admin_token(username: str = "admin") -> str:
+    """Generate signed JWT token specifically for Administrator Command Center sessions."""
+    header = {"alg": "HS256", "typ": "JWT"}
+    payload = {
+        "sub": f"admin_{username}",
+        "email": f"{username}@goalie.run",
+        "role": "admin",
+        "iat": int(time.time()),
+        "exp": int(time.time()) + (86400 * 7),  # 7 days
+        "iss": "goalie-admin"
+    }
+    h_b64 = b64url_encode(json.dumps(header).encode('utf-8'))
+    p_b64 = b64url_encode(json.dumps(payload).encode('utf-8'))
+    signing_input = f"{h_b64}.{p_b64}".encode('utf-8')
+    sig = hmac.new(ADMIN_SECRET_KEY.encode('utf-8'), signing_input, hashlib.sha256).digest()
+    sig_b64 = b64url_encode(sig)
+    return f"{h_b64}.{p_b64}.{sig_b64}"
+
+def verify_admin_token(token: str) -> dict:
+    """Verify and decode Admin JWT token with strict secret validation."""
+    parts = token.split(".")
+    if len(parts) != 3:
+        raise ValueError("Invalid admin JWT structure")
+    h_b64, p_b64, sig_b64 = parts
+    signing_input = f"{h_b64}.{p_b64}".encode('utf-8')
+
+    # Verify against ADMIN_SECRET_KEY
+    expected_sig = hmac.new(ADMIN_SECRET_KEY.encode('utf-8'), signing_input, hashlib.sha256).digest()
+    given_sig = b64url_decode(sig_b64)
+    if not hmac.compare_digest(expected_sig, given_sig):
+        # Fallback check against DEMO_SECRET for demo admin sessions
+        demo_expected = hmac.new(DEMO_SECRET.encode('utf-8'), signing_input, hashlib.sha256).digest()
+        if not hmac.compare_digest(demo_expected, given_sig):
+            raise ValueError("Admin signature mismatch")
+
+    payload_json = b64url_decode(p_b64).decode('utf-8')
+    payload = json.loads(payload_json)
+    if payload.get("exp", 0) < time.time():
+        raise ValueError("Admin token expired")
+    if payload.get("role") != "admin" and payload.get("iss") != "goalie-admin":
+        raise ValueError("Token does not carry administrator role")
+    return payload
+
+async def require_admin_role(
+    request: Request,
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
+) -> dict:
+    """
+    FastAPI Security Dependency:
+    1. Checks 'X-Admin-Key' header for programmatic server-to-server calls.
+    2. Verifies Bearer JWT token with signed admin claims.
+    Raises 401 if missing, 403 if invalid / unprivileged.
+    """
+    # 1. Header API Key bypass (for VPS automation / internal services)
+    admin_header = request.headers.get("x-admin-key")
+    if admin_header and hmac.compare_digest(admin_header, ADMIN_SECRET_KEY):
+        return {"sub": "admin_service_key", "role": "admin", "iss": "header-key"}
+
+    # 2. Bearer Token Check
+    if not credentials or not credentials.credentials:
+        raise HTTPException(
+            status_code=401,
+            detail="Autentikasi administrator dibutuhkan (Bearer token atau X-Admin-Key tidak ditemukan)"
+        )
+
+    token = credentials.credentials
+    try:
+        payload = verify_admin_token(token)
+        return payload
+    except Exception as e:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Akses ditolak: Token administrator tidak valid ({str(e)})"
+        )
 
 def create_demo_token(user_id: str, email: str) -> str:
     """Generate lightweight signed JWT token for demo / offline sandbox sessions."""

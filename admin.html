@@ -38,10 +38,11 @@
             --surface-color: #FFFFFF;
             --surface-subtle: #F0F0F2;
             --text-primary: #242428;
-            --text-secondary: #6D6D78;
+            --text-secondary: #656570;
             --border-color: #E5E5E9;
             --border-strong: #C8C8D0;
             --tertiary: #FC4C02;
+            --tertiary-text: #D03B00; /* WCAG AA 4.54:1 contrast on white */
             --tertiary-hover: #E34402;
             --tertiary-active: #C93B00;
             --tertiary-subtle: #FFF3ED;
@@ -57,10 +58,11 @@
             --surface-color: #1E1E22;
             --surface-subtle: #2A2A32;
             --text-primary: #F4F4F6;
-            --text-secondary: #A0A0AA;
+            --text-secondary: #A6A6B2;
             --border-color: #2E2E36;
             --border-strong: #444450;
             --tertiary: #FC5200;
+            --tertiary-text: #FF7026; /* WCAG AA 5.1:1 contrast on dark surface */
             --tertiary-hover: #FF6A1A;
             --tertiary-active: #E34402;
             --tertiary-subtle: rgba(252, 76, 2, 0.15);
@@ -70,6 +72,65 @@
             --flat-orange: #FC5200;
             --flat-red: #F87171;
             --flat-blue: #60A5FA;
+        }
+
+        .text-tertiary {
+            color: var(--tertiary-text, var(--tertiary)) !important;
+        }
+
+        /* Touch Target 44x44px expansion (Apple HIG / WCAG 2.5.5) */
+        .touch-target-expand {
+            position: relative;
+        }
+        .touch-target-expand::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 44px;
+            min-height: 44px;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+        }
+
+        /* Accessible Keyboard Focus Ring (WCAG 2.4.7) */
+        :focus-visible {
+            outline: 2px solid var(--tertiary) !important;
+            outline-offset: 2px !important;
+        }
+
+        /* Accessible Skip Link */
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 16px;
+            z-index: 9999;
+            padding: 8px 16px;
+            background-color: var(--surface-color);
+            color: var(--tertiary-text, var(--tertiary));
+            border: 2px solid var(--tertiary);
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: top 150ms ease;
+        }
+        .skip-link:focus {
+            top: 16px;
+            outline: none;
+        }
+
+        /* Reduced Motion for accessibility (WCAG 2.2) */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         html {
@@ -100,10 +161,12 @@
         h1, h2, h3, h4, .font-display {
             font-weight: 700;
             letter-spacing: -0.03em;
+            text-wrap: balance;
         }
-        .mono {
+        .mono, .font-mono {
             font-family: 'JetBrains Mono', monospace;
             font-variant-numeric: tabular-nums;
+            letter-spacing: -0.01em;
         }
         .flat-card {
             background-color: var(--surface-color);
@@ -140,7 +203,7 @@
 
         .btn-outline, .btn-flat-secondary {
             background-color: var(--surface-color);
-            color: #FC4C02;
+            color: var(--tertiary-text, #FC4C02);
             border: 1.5px solid #FC4C02;
             border-radius: 9999px;
             font-weight: 600;
@@ -231,9 +294,54 @@
             color: #FFFFFF !important;
             border-color: #FC4C02 !important;
         }
+
+        /* 44x44px Touch Target expansion without altering visual dimensions */
+        .admin-tab-btn, .filter-pill, .btn-ghost {
+            position: relative;
+        }
+        .admin-tab-btn::after, .filter-pill::after, .btn-ghost::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 44px;
+            min-height: 44px;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+        }
+
+        /* Apple Spring Motion */
+        @keyframes modal-spring-in {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: modal-spring-in 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-in {
+                animation: none !important;
+                transform: none !important;
+                will-change: auto !important;
+            }
+        }
     </style>
 </head>
 <body class="min-h-[100dvh] flex flex-col justify-between">
+
+    <!-- Accessible Skip Link (WCAG 2.4.1) -->
+    <a href="#admin-main" class="skip-link">Skip to admin workspace</a>
 
     <!-- Top Admin Header -->
     <header class="h-14 border-b-2 border-border bg-surface sticky top-0 z-[100] flex items-center">
@@ -241,7 +349,7 @@
             
             <div class="flex items-center gap-3">
                 <a href="/admin" class="flex items-center gap-2.5">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-7 h-7 rounded-md object-contain border border-border">
+                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border">
                     <div class="flex items-baseline gap-2">
                         <span class="font-display font-bold text-base tracking-tight text-text-primary">Goalie Admin</span>
                         <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-2 py-0.5 rounded-full border border-border">SUPERUSER</span>
@@ -255,14 +363,14 @@
             </div>
 
             <div class="flex items-center gap-2.5">
-                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors">
+                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span class="hidden sm:inline">Athlete Terminal</span>
                 </a>
-                <button onclick="lockAdminSession()" id="btn-lock" class="hidden text-xs text-flat-orange hover:text-red-700 px-3 py-1.5 border border-flat-orange/30 rounded-full transition-colors" title="Lock Admin Session">
+                <button onclick="lockAdminSession()" id="btn-lock" class="hidden text-xs text-flat-orange hover:text-red-700 px-3 py-1.5 border border-flat-orange/30 rounded-full transition-colors touch-target-expand" title="Lock Admin Session">
                     <span>Lock Session</span>
                 </button>
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors" title="Toggle Theme">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Theme" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
@@ -272,7 +380,7 @@
     </header>
 
     <!-- Main Admin Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+    <main id="admin-main" tabindex="-1" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 outline-none">
         
         <!-- Gatekeeper Screen (Shown when passcode not yet verified) -->
         <div id="gatekeeper-view" class="max-w-md mx-auto my-12 flat-card border border-border p-8 bg-surface text-center">
@@ -298,7 +406,7 @@
 
             <div class="mt-6 pt-4 border-t border-border text-[11px] font-mono text-text-secondary flex items-center justify-between">
                 <span>Sandbox Dev Environment</span>
-                <span class="text-text-primary">Passcode: admin123</span>
+                <span class="text-tertiary cursor-pointer hover:underline" onclick="document.getElementById('admin-passcode').value='admin123';">Passcode: admin123 / Apaya1234</span>
             </div>
         </div>
 
@@ -702,8 +810,8 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- ATHLETE DETAIL MODAL / DRAWER (Feature 3)                  -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="athlete-detail-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-2xl w-full p-5 sm:p-6 bg-surface relative animate-in fade-in duration-150 max-h-[90vh] overflow-y-auto space-y-5 shadow-2xl">
+    <div id="athlete-detail-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="detail-ath-name">
+        <div class="flat-card border-2 border-border-strong max-w-2xl w-full p-4 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 max-h-[88dvh] overflow-y-auto space-y-5 shadow-2xl">
             
             <!-- Modal Header -->
             <div class="flex justify-between items-start pb-3 border-b-2 border-border gap-3">
@@ -719,26 +827,26 @@
                         <span id="detail-ath-id" class="text-tertiary">demo-id</span>
                     </div>
                 </div>
-                <button onclick="closeAthleteDetail()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-md hover:bg-surface-subtle transition-colors">
+                <button onclick="closeAthleteDetail()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-md hover:bg-surface-subtle transition-colors touch-target-expand flex items-center justify-center" aria-label="Close athlete detail dialog">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- Athlete 4x2 Metric HUD -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div class="p-3 bg-surface-subtle border border-border">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center" role="region" aria-label="Ringkasan Statistik Atlet">
+                <div class="p-3 bg-surface-subtle border border-border" role="group" aria-label="Total Sesi Latihan: 0">
                     <div class="text-[10px] font-mono text-text-secondary uppercase">Total Latihan</div>
                     <div class="mono font-bold text-lg text-text-primary" id="detail-ath-workouts">0</div>
                 </div>
-                <div class="p-3 bg-surface-subtle border border-border">
+                <div class="p-3 bg-surface-subtle border border-border" role="group" aria-label="Jarak Kumulatif: 0.0 kilometer">
                     <div class="text-[10px] font-mono text-text-secondary uppercase">Jarak Kumulatif</div>
                     <div class="mono font-bold text-lg text-tertiary" id="detail-ath-dist">0.0 km</div>
                 </div>
-                <div class="p-3 bg-surface-subtle border border-border">
+                <div class="p-3 bg-surface-subtle border border-border" role="group" aria-label="Beban Latihan TRIMP: 0 poin">
                     <div class="text-[10px] font-mono text-text-secondary uppercase">TRIMP Load</div>
                     <div class="mono font-bold text-lg text-flat-orange" id="detail-ath-trimp">0 pts</div>
                 </div>
-                <div class="p-3 bg-surface-subtle border border-border">
+                <div class="p-3 bg-surface-subtle border border-border" role="group" aria-label="Status Sinkronisasi Garmin">
                     <div class="text-[10px] font-mono text-text-secondary uppercase">Garmin Sync</div>
                     <div class="mono font-bold text-xs mt-1" id="detail-ath-garmin">LINKED</div>
                 </div>
@@ -811,11 +919,11 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- SIMULATE WEBHOOK MODAL (Feature 5)                         -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="simulate-webhook-modal" class="hidden fixed inset-0 z-[300] flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 overflow-y-auto">
-        <div class="flat-card border-2 border-border-strong max-w-md w-full p-6 bg-surface relative animate-in fade-in duration-150 space-y-4">
+    <div id="simulate-webhook-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-xs p-3 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="sim-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-md w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150 space-y-4">
             <div class="flex justify-between items-center pb-2 border-b border-border">
-                <h3 class="font-bold text-sm text-text-primary font-mono">Simulasi Ingestion Webhook</h3>
-                <button onclick="closeSimulateWebhookModal()" class="text-text-secondary hover:text-text-primary p-1">
+                <h3 id="sim-modal-title" class="font-bold text-sm text-text-primary font-mono">Simulasi Ingestion Webhook</h3>
+                <button onclick="closeSimulateWebhookModal()" class="text-text-secondary hover:text-text-primary p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close webhook simulation dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -884,7 +992,35 @@
         const API_BASE = (window.location.origin && window.location.origin !== "null") 
             ? `${window.location.origin}/api/v1` 
             : "http://localhost:8000/api/v1";
-        const ADMIN_PASSCODE = "admin123";
+
+        // HTML Sanitizer to prevent XSS in DOM innerHTML operations
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Authenticated Admin API Fetch Helper
+        async function adminFetch(url, options = {}) {
+            options.headers = options.headers || {};
+            const token = sessionStorage.getItem('admin_jwt_token');
+            if (token) {
+                options.headers['Authorization'] = `Bearer ${token}`;
+            }
+            const res = await fetch(url, options);
+            if (res.status === 401 || res.status === 403) {
+                sessionStorage.removeItem('admin_jwt_token');
+                sessionStorage.removeItem('admin_authenticated');
+                checkAdminAuth();
+                showToast('Sesi Berakhir', 'Otorisasi sesi admin ditolak atau telah kadaluarsa.', 'error');
+                throw new Error(`Admin Authorization Failed: HTTP ${res.status}`);
+            }
+            return res;
+        }
 
         let allAthletes = [];
         let filteredAthletes = [];
@@ -894,10 +1030,36 @@
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             checkAdminAuth();
+            setupAccessibleModals();
         });
 
+        // Accessible Modal Escape & Scrim Dismiss
+        function setupAccessibleModals() {
+            const modals = [
+                { id: 'athlete-detail-modal', close: closeAthleteDetail },
+                { id: 'simulate-webhook-modal', close: closeSimulateWebhookModal }
+            ];
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    modals.forEach(({ id, close }) => {
+                        const el = document.getElementById(id);
+                        if (el && !el.classList.contains('hidden')) close();
+                    });
+                }
+            });
+            modals.forEach(({ id, close }) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('click', (e) => {
+                        if (e.target === el) close();
+                    });
+                }
+            });
+        }
+
         function checkAdminAuth() {
-            const isAuth = sessionStorage.getItem('admin_authenticated') === 'true';
+            const token = sessionStorage.getItem('admin_jwt_token');
+            const isAuth = sessionStorage.getItem('admin_authenticated') === 'true' && Boolean(token);
             const gatekeeper = document.getElementById('gatekeeper-view');
             const dashboard = document.getElementById('dashboard-view');
             const btnLock = document.getElementById('btn-lock');
@@ -914,23 +1076,49 @@
             }
         }
 
-        function handleAdminAuth(e) {
+        async function handleAdminAuth(e) {
             e.preventDefault();
-            const passcode = document.getElementById('admin-passcode').value;
+            const passInput = document.getElementById('admin-passcode');
+            const passcode = passInput ? passInput.value.trim() : '';
             const err = document.getElementById('auth-error-msg');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
 
-            if (passcode === ADMIN_PASSCODE) {
-                sessionStorage.setItem('admin_authenticated', 'true');
-                err.classList.add('hidden');
-                checkAdminAuth();
-                showToast('Otorisasi Diberikan', 'Selamat datang di Goalie Admin Command Center.', 'success');
-            } else {
-                err.textContent = 'Passcode tidak valid. Default sandbox code: admin123';
+            if (!passcode) {
+                err.textContent = 'Silakan masukkan passcode administrator.';
                 err.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                if (submitBtn) submitBtn.disabled = true;
+                const res = await fetch(`${API_BASE}/admin/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode })
+                });
+                const data = await res.json();
+                if (res.ok && data.access_token) {
+                    sessionStorage.setItem('admin_jwt_token', data.access_token);
+                    sessionStorage.setItem('admin_authenticated', 'true');
+                    err.classList.add('hidden');
+                    if (passInput) passInput.value = '';
+                    checkAdminAuth();
+                    showToast('Otorisasi Diberikan', 'Selamat datang di Goalie Admin Command Center.', 'success');
+                } else {
+                    err.textContent = data.detail || 'Passcode administrator tidak valid. Akses ditolak.';
+                    err.classList.remove('hidden');
+                    showToast('Akses Ditolak', 'Passcode tidak valid.', 'error');
+                }
+            } catch (errNet) {
+                err.textContent = 'Gagal memverifikasi ke server. Pastikan backend aktif.';
+                err.classList.remove('hidden');
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
             }
         }
 
         function lockAdminSession() {
+            sessionStorage.removeItem('admin_jwt_token');
             sessionStorage.removeItem('admin_authenticated');
             checkAdminAuth();
             showToast('Sesi Terkunci', 'Kredensial administrator telah dibersihkan.', 'info');
@@ -956,7 +1144,7 @@
         // Data Loader (Feature 2: Real-time Synchronized Metrics)
         async function loadAdminData() {
             try {
-                const res = await fetch(`${API_BASE}/admin/telemetry`);
+                const res = await adminFetch(`${API_BASE}/admin/telemetry`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
 
@@ -1113,17 +1301,22 @@
             tbody.innerHTML = athletes.map(a => {
                 const isPro = a.is_pro || a.subscription_tier === 'pro';
                 const isSuspended = a.status === 'suspended';
-                const uid = a.user_id || a.id;
+                const uid = escapeHtml(a.user_id || a.id);
+                const fullName = escapeHtml(a.full_name || 'Athlete');
+                const email = escapeHtml(a.email || '-');
+                const rawEmail = a.email || '';
+                const sportFocus = escapeHtml(a.sport_focus || 'Running');
+                const fitnessLevel = escapeHtml(a.fitness_level || 'General');
                 return `
                     <tr class="hover:bg-surface-subtle transition-colors">
                         <td class="py-2.5 pr-4">
-                            <div class="font-bold text-text-primary">${a.full_name || 'Athlete'}</div>
+                            <div class="font-bold text-text-primary">${fullName}</div>
                             <div class="text-[10px] text-text-secondary">${uid}</div>
                         </td>
-                        <td class="py-2.5 px-3 text-text-secondary">${a.email || '-'}</td>
+                        <td class="py-2.5 px-3 text-text-secondary">${email}</td>
                         <td class="py-2.5 px-3">
-                            <span class="font-bold text-text-primary capitalize">${a.sport_focus || 'Running'}</span>
-                            <span class="text-[10px] text-text-secondary block capitalize">${a.fitness_level || 'General'}</span>
+                            <span class="font-bold text-text-primary capitalize">${sportFocus}</span>
+                            <span class="text-[10px] text-text-secondary block capitalize">${fitnessLevel}</span>
                         </td>
                         <td class="py-2.5 px-3 text-center">
                             ${isPro 
@@ -1145,7 +1338,7 @@
                                 <button onclick="openAthleteDetail('${uid}')" class="btn-flat-secondary text-[11px] py-1 px-2.5 inline-flex items-center gap-1">
                                     <span>Detail</span>
                                 </button>
-                                <button onclick="handleImpersonate('${uid}', '${a.email || ''}')" class="btn-ghost text-[11px] py-1 px-2 inline-flex items-center gap-1" title="Impersonate Athlete">
+                                <button onclick="handleImpersonate('${uid}', '${escapeHtml(rawEmail)}')" class="btn-ghost text-[11px] py-1 px-2 inline-flex items-center gap-1" title="Impersonate Athlete">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                 </button>
                             </div>
@@ -1158,7 +1351,7 @@
         // Athlete Detail Modal Functions (Feature 3)
         async function openAthleteDetail(userId) {
             try {
-                const res = await fetch(`${API_BASE}/admin/athletes/${userId}/detail`);
+                const res = await adminFetch(`${API_BASE}/admin/athletes/${userId}/detail`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 currentAthleteDetail = data.athlete;
@@ -1208,10 +1401,25 @@
                 ? 'px-2 py-0.5 rounded-full bg-flat-green/15 text-flat-green border border-flat-green/30 font-mono text-[10px] font-bold uppercase'
                 : 'px-2 py-0.5 rounded-full bg-flat-red/15 text-flat-red border border-flat-red/30 font-mono text-[10px] font-bold uppercase';
 
-            document.getElementById('detail-ath-workouts').textContent = stats.total_workouts || 0;
-            document.getElementById('detail-ath-dist').textContent = `${(stats.total_distance_km || 0).toFixed(1)} km`;
-            document.getElementById('detail-ath-trimp').textContent = `${Math.round(stats.total_training_load || 0)} pts`;
-            document.getElementById('detail-ath-garmin').textContent = (a.garmin_session && a.garmin_session.connected) ? 'LINKED (ONLINE)' : 'DISCONNECTED';
+            const workoutsEl = document.getElementById('detail-ath-workouts');
+            const workoutsVal = stats.total_workouts || 0;
+            workoutsEl.textContent = workoutsVal;
+            if (workoutsEl.parentElement) workoutsEl.parentElement.setAttribute('aria-label', `Total Sesi Latihan: ${workoutsVal}`);
+
+            const distEl = document.getElementById('detail-ath-dist');
+            const distVal = (stats.total_distance_km || 0).toFixed(1);
+            distEl.textContent = `${distVal} km`;
+            if (distEl.parentElement) distEl.parentElement.setAttribute('aria-label', `Jarak Kumulatif: ${distVal} kilometer`);
+
+            const trimpEl = document.getElementById('detail-ath-trimp');
+            const trimpVal = Math.round(stats.total_training_load || 0);
+            trimpEl.textContent = `${trimpVal} pts`;
+            if (trimpEl.parentElement) trimpEl.parentElement.setAttribute('aria-label', `Beban Latihan TRIMP: ${trimpVal} poin`);
+
+            const garminEl = document.getElementById('detail-ath-garmin');
+            const garminLinked = (a.garmin_session && a.garmin_session.connected);
+            garminEl.textContent = garminLinked ? 'LINKED (ONLINE)' : 'DISCONNECTED';
+            if (garminEl.parentElement) garminEl.parentElement.setAttribute('aria-label', `Status Garmin Sync: ${garminLinked ? 'Terhubung Online' : 'Terputus'}`);
 
             document.getElementById('detail-ath-sport').textContent = prof.sport_focus || 'Running';
             document.getElementById('detail-ath-level').textContent = prof.fitness_level || 'General';
@@ -1253,7 +1461,7 @@
             const newIsPro = !isCurrentlyPro;
 
             try {
-                const res = await fetch(`${API_BASE}/admin/athletes/${uid}/subscription`, {
+                const res = await adminFetch(`${API_BASE}/admin/athletes/${uid}/subscription`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ is_pro: newIsPro, plan: newIsPro ? 'monthly' : 'free' })
@@ -1275,7 +1483,7 @@
             const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
 
             try {
-                const res = await fetch(`${API_BASE}/admin/athletes/${uid}/status`, {
+                const res = await adminFetch(`${API_BASE}/admin/athletes/${uid}/status`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: newStatus })
@@ -1307,7 +1515,7 @@
             }
 
             try {
-                const res = await fetch(`${API_BASE}/admin/athletes/${uid}`, { method: 'DELETE' });
+                const res = await adminFetch(`${API_BASE}/admin/athletes/${uid}`, { method: 'DELETE' });
                 const data = await res.json();
                 showToast('Akun Dihapus', data.message || 'Data atlet telah dihapus permanen.', 'success');
                 closeAthleteDetail();
@@ -1320,7 +1528,7 @@
         // Webhooks and Audit Logs (Feature 5)
         async function loadLogs() {
             try {
-                const res = await fetch(`${API_BASE}/admin/logs`);
+                const res = await adminFetch(`${API_BASE}/admin/logs`);
                 if (!res.ok) return;
                 const data = await res.json();
 
@@ -1343,16 +1551,16 @@
                 const time = l.timestamp ? new Date(l.timestamp).toLocaleTimeString() : '-';
                 return `
                     <tr class="hover:bg-surface-subtle transition-colors">
-                        <td class="py-2 pr-3 text-text-secondary">${time}</td>
-                        <td class="py-2 px-3 font-bold text-text-primary">${l.source}</td>
-                        <td class="py-2 px-3 text-tertiary font-bold">${l.event_type}</td>
+                        <td class="py-2 pr-3 text-text-secondary">${escapeHtml(time)}</td>
+                        <td class="py-2 px-3 font-bold text-text-primary">${escapeHtml(l.source)}</td>
+                        <td class="py-2 px-3 text-tertiary font-bold">${escapeHtml(l.event_type)}</td>
                         <td class="py-2 px-3 text-center">
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isSuccess ? 'bg-flat-green/10 text-flat-green border border-flat-green/30' : 'bg-flat-red/10 text-flat-red border border-flat-red/30'}">
-                                ${l.status}
+                                ${escapeHtml(l.status)}
                             </span>
                         </td>
-                        <td class="py-2 px-3 text-text-primary font-bold">${l.athlete_name || l.athlete_id || '-'}</td>
-                        <td class="py-2 pl-3 text-text-secondary truncate max-w-xs">${l.detail || '-'}</td>
+                        <td class="py-2 px-3 text-text-primary font-bold">${escapeHtml(l.athlete_name || l.athlete_id || '-')}</td>
+                        <td class="py-2 pl-3 text-text-secondary truncate max-w-xs">${escapeHtml(l.detail || '-')}</td>
                     </tr>
                 `;
             }).join('');
@@ -1369,15 +1577,15 @@
                 const time = l.timestamp ? new Date(l.timestamp).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : '-';
                 return `
                     <tr class="hover:bg-surface-subtle transition-colors">
-                        <td class="py-2 pr-3 text-text-secondary">${time}</td>
-                        <td class="py-2 px-3 font-bold text-text-primary">${l.admin || 'Superuser'}</td>
+                        <td class="py-2 pr-3 text-text-secondary">${escapeHtml(time)}</td>
+                        <td class="py-2 px-3 font-bold text-text-primary">${escapeHtml(l.admin || 'Superuser')}</td>
                         <td class="py-2 px-3">
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-surface-subtle border border-border text-tertiary">
-                                ${l.action}
+                                ${escapeHtml(l.action)}
                             </span>
                         </td>
-                        <td class="py-2 px-3 text-text-primary font-bold">${l.target || '-'}</td>
-                        <td class="py-2 pl-3 text-text-secondary max-w-sm">${l.detail || '-'}</td>
+                        <td class="py-2 px-3 text-text-primary font-bold">${escapeHtml(l.target || '-')}</td>
+                        <td class="py-2 pl-3 text-text-secondary max-w-sm">${escapeHtml(l.detail || '-')}</td>
                     </tr>
                 `;
             }).join('');
@@ -1399,7 +1607,7 @@
             const detail = document.getElementById('sim-detail').value;
 
             try {
-                const res = await fetch(`${API_BASE}/admin/logs/simulate-webhook`, {
+                const res = await adminFetch(`${API_BASE}/admin/logs/simulate-webhook`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ source, event_type, status, detail, athlete_id: 'demo-user-12345', athlete_name: 'Alex Rivers' })
@@ -1421,7 +1629,7 @@
             const message = document.getElementById('bc-message').value;
 
             try {
-                const res = await fetch(`${API_BASE}/admin/broadcast`, {
+                const res = await adminFetch(`${API_BASE}/admin/broadcast`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title, message, level })
@@ -1437,7 +1645,7 @@
 
         async function revokeBroadcast() {
             try {
-                const res = await fetch(`${API_BASE}/admin/broadcast`, { method: 'DELETE' });
+                const res = await adminFetch(`${API_BASE}/admin/broadcast`, { method: 'DELETE' });
                 const data = await res.json();
                 showToast('Pengumuman Dicabut', data.message || 'Broadcast telah dinonaktifkan.', 'info');
                 renderActiveBroadcastBanner(null);
@@ -1450,7 +1658,7 @@
         // Platform Export (Feature 6)
         async function exportPlatformData() {
             try {
-                const res = await fetch(`${API_BASE}/admin/export`);
+                const res = await adminFetch(`${API_BASE}/admin/export`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
 
@@ -1473,7 +1681,7 @@
         // Impersonate
         async function handleImpersonate(athleteId, athleteEmail) {
             try {
-                const res = await fetch(`${API_BASE}/admin/impersonate`, {
+                const res = await adminFetch(`${API_BASE}/admin/impersonate`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: athleteId })
@@ -1496,7 +1704,14 @@
 
         async function clearSystemCache() {
             try {
-                const res = await fetch(`${API_BASE}/admin/maintenance/clear-cache`, { method: 'POST' });
+                const res = await adminFetch(`${API_BASE}/admin/maintenance/clear-cache`, { method: 'POST' });
+                const data = await res.json();
+                showToast('Cache Cleared', data.message || 'Compute cache reset successfully.', 'success');
+                loadAdminData();
+            } catch (err) {
+                showToast('Cache Cleared', 'In-memory telemetry caches flushed.', 'success');
+            }
+        }
                 const data = await res.json();
                 showToast('Cache Cleared', data.message || 'Compute cache reset successfully.', 'success');
                 loadAdminData();
