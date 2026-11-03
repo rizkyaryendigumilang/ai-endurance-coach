@@ -183,7 +183,7 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USERNAME }}
           VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
           VPS_SSH_KNOWN_HOSTS: ${{ secrets.VPS_SSH_KNOWN_HOSTS }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '2222' }}
+          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
         run: |
           set -euo pipefail
           test -n "${VPS_HOST:-}" || { echo "::error::Missing required secret: VPS_HOST"; exit 1; }
@@ -201,7 +201,7 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '2222' }}
+          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
         run: |
           scp -o BatchMode=yes -o StrictHostKeyChecking=yes -i "$HOME/.ssh/id_ed25519" -P "$VPS_PORT" \
             ./artifact/web-dist.tar.gz \
@@ -213,7 +213,7 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '2222' }}
+          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
@@ -347,7 +347,7 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '2222' }}
+          VPS_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
           echo "Health check failed. Executing remote rollback on VPS..."
