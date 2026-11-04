@@ -720,30 +720,28 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- HERO SECTION: Split-screen, Geometric 2D/3D Graphic       -->
+    <!-- HERO SECTION: Clean Centered Intro + Bento Telemetry Canvas -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <header class="border-b-2 border-border bg-surface py-12 lg:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+    <header class="border-b border-border bg-surface py-14 sm:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
             
-            <!-- Left Text Column (7 cols) -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="flex items-center gap-2">
-                    <span class="flat-badge border-tertiary/30 bg-surface-subtle text-tertiary">
-                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
-                        Sports Science &bull; Garmin &amp; Strava Telemetry
-                    </span>
+            <!-- Hero Top Header (Centered, Clean, Breathing Room) -->
+            <div class="max-w-3xl mx-auto text-center space-y-5">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium border border-border bg-surface-subtle text-text-secondary">
+                    <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                    <span>Garmin FIT &amp; Strava Direct Sync &bull; Banister TRIMP Engine</span>
                 </div>
 
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary leading-[1.1] tracking-tight">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight leading-[1.15]">
                     Train with verifiable metrics.
                 </h1>
 
-                <p class="text-base sm:text-lg text-text-secondary max-w-2xl leading-relaxed">
-                    Real-time telemetry ingestion from Garmin and Strava, lactate threshold modeling, and adaptive periodization for endurance athletes.
+                <p class="text-base sm:text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
+                    Lactate threshold modeling, acute-chronic workload balancing, and adaptive AI periodization for marathoners and triathletes.
                 </p>
 
-                <!-- Action CTA Buttons -->
-                <div class="pt-2 flex flex-wrap items-center gap-3">
+                <!-- Action CTA Group -->
+                <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
                     <a href="#workstation" class="btn-flat-primary px-6 py-3 text-sm">
                         <span>Launch Live Terminal</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -753,473 +751,312 @@
                     </button>
                 </div>
 
-                <!-- Trust Micro Metrics -->
-                <div class="pt-4 grid grid-cols-3 gap-4 border-t border-border text-xs max-w-lg">
-                    <div>
-                        <div class="mono font-bold text-base text-text-primary">100%</div>
-                        <div class="text-[11px] text-text-secondary">Row-Level Security Isolation</div>
-                    </div>
-                    <div>
-                        <div class="mono font-bold text-base text-tertiary">0.0 ms</div>
-                        <div class="text-[11px] text-text-secondary">Math Engine Latency</div>
-                    </div>
-                    <div>
-                        <div class="mono font-bold text-base text-flat-green">Gemini 3.8</div>
-                        <div class="text-[11px] text-text-secondary">Dual-Tier AI Reasoning</div>
-                    </div>
+                <!-- Trust Micro Spec Line -->
+                <div class="pt-3 flex flex-wrap items-center justify-center gap-6 text-xs text-text-secondary font-mono">
+                    <span class="flex items-center gap-1.5">
+                        <span class="text-text-primary font-bold">100%</span> RLS Data Isolation
+                    </span>
+                    <span class="hidden sm:inline text-border">&bull;</span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="text-tertiary font-bold">0.2 ms</span> Compute Latency
+                    </span>
+                    <span class="hidden sm:inline text-border">&bull;</span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="text-flat-green font-bold">Gemini 3.8</span> Dual-Tier AI
+                    </span>
                 </div>
             </div>
 
-            <!-- Right Visual Column (5 cols): 2D Flat Geometric HUD Visual -->
-            <div class="lg:col-span-5">
-                <div class="flat-card border-2 border-border-strong p-6 bg-surface-subtle space-y-4">
-                    
-                    <!-- HUD Top Bar -->
-                    <div class="flex items-center justify-between border-b border-border pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 bg-tertiary rounded-xs"></span>
-                            <span class="text-xs font-semibold text-text-primary">Live Telemetry Stream</span>
-                        </div>
-                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-flat-green/10 text-flat-green border border-flat-green/20">
+            <!-- Bento Telemetry Console (21st.dev Clean High-Density Bento Grid) -->
+            <div id="telemetry" class="border border-border rounded-xl bg-surface-subtle p-3 sm:p-5 shadow-xs space-y-4">
+                
+                <!-- Console Top Control Strip -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-border text-xs font-mono">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-flat-green/10 text-flat-green border border-flat-green/20">
                             <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
-                            Connected
+                            Live Telemetry Stream
                         </span>
+                        <span class="text-text-secondary text-[11px]">Sub-3:00 Marathon Target Block</span>
                     </div>
+                    <div class="flex items-center gap-3 text-[11px] text-text-secondary">
+                        <span>Weekly Volume: <strong class="text-text-primary">68.4 / 72.0 km</strong></span>
+                        <span class="hidden md:inline text-border">&bull;</span>
+                        <span class="hidden md:inline">Readiness: <strong class="text-flat-green">94% (Fresh)</strong></span>
+                    </div>
+                </div>
 
-                    <!-- Geometric Telemetry Metric Grid -->
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div class="p-3 bg-surface border border-border rounded-lg">
-                            <div class="text-[10px] font-mono text-text-secondary uppercase">Calculated VO2max</div>
-                            <div class="mono font-bold text-2xl text-text-primary mt-1">58.4 <span class="text-xs font-normal text-text-secondary">mL/kg/min</span></div>
-                            <div class="text-[10px] text-flat-green font-mono mt-0.5">+1.2 vs 30-day baseline</div>
+                <!-- 4 Top-Tier Physiological Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <!-- Metric 1: VO2max -->
+                    <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
+                        <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
+                            <span>AEROBIC CAPACITY</span>
+                            <span class="text-flat-green font-semibold">VDOT 62.1</span>
                         </div>
-
-                        <div class="p-3 bg-surface border border-border rounded-lg">
-                            <div class="text-[10px] font-mono text-text-secondary uppercase">Training Stress Balance (TSB)</div>
-                            <div class="mono font-bold text-2xl text-tertiary mt-1">+6.2 <span class="text-xs font-normal text-text-secondary">TSB</span></div>
-                            <div class="text-[10px] text-text-secondary font-mono mt-0.5">Optimal Freshness Window</div>
+                        <div class="font-mono font-extrabold text-2xl text-text-primary">
+                            58.4 <span class="text-xs font-normal text-text-secondary">mL/kg/min</span>
                         </div>
-
-                        <div class="p-3 bg-surface border border-border rounded-lg">
-                            <div class="text-[10px] font-mono text-text-secondary uppercase">Lactate Threshold (LT2)</div>
-                            <div class="mono font-bold text-xl text-text-primary mt-1">04:12 <span class="text-xs font-normal text-text-secondary">min/km</span></div>
-                            <div class="text-[10px] text-text-secondary font-mono mt-0.5">HR: 168 bpm / Zone 4</div>
-                        </div>
-
-                        <div class="p-3 bg-surface border border-border rounded-lg">
-                            <div class="text-[10px] font-mono text-text-secondary uppercase">Cardiac HR Drift</div>
-                            <div class="mono font-bold text-xl text-flat-green mt-1">2.4% <span class="text-xs font-normal text-text-secondary">Decoupling</span></div>
-                            <div class="text-[10px] text-flat-green font-mono mt-0.5">Aerobic Economy Intact</div>
+                        <div class="text-[10px] text-flat-green font-mono">
+                            +1.2 vs 30-day baseline
                         </div>
                     </div>
 
-                    <!-- 2D Geometric Power & Pace SVG Curve -->
-                    <div class="p-3 bg-surface border border-border rounded-lg space-y-2">
-                        <div class="flex justify-between text-[11px] font-mono text-text-secondary">
-                            <span>PHYSIOLOGICAL LOAD CURVE</span>
-                            <span class="text-tertiary font-bold">TRIMP 148</span>
+                    <!-- Metric 2: TSB -->
+                    <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
+                        <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
+                            <span>TRAINING STRESS BALANCE</span>
+                            <span class="text-tertiary font-semibold">FORM</span>
                         </div>
-                        <div class="h-16 w-full bg-surface-subtle border border-border relative flex items-end px-1 gap-1">
-                            <div class="w-1/12 bg-border h-[25%]"></div>
-                            <div class="w-1/12 bg-border h-[35%]"></div>
-                            <div class="w-1/12 bg-border h-[40%]"></div>
-                            <div class="w-1/12 bg-tertiary h-[60%]"></div>
-                            <div class="w-1/12 bg-tertiary h-[75%]"></div>
-                            <div class="w-1/12 bg-tertiary h-[88%]"></div>
-                            <div class="w-1/12 bg-tertiary h-[94%]"></div>
-                            <div class="w-1/12 bg-tertiary h-[85%]"></div>
-                            <div class="w-1/12 bg-flat-orange h-[92%]"></div>
-                            <div class="w-1/12 bg-tertiary h-[70%]"></div>
-                            <div class="w-1/12 bg-border h-[45%]"></div>
-                            <div class="w-1/12 bg-flat-green h-[30%]"></div>
+                        <div class="font-mono font-extrabold text-2xl text-tertiary">
+                            +6.2 <span class="text-xs font-normal text-text-secondary">TSB</span>
                         </div>
-                        <div class="flex justify-between text-[10px] font-mono text-text-secondary">
-                            <span>0 km (Warmup)</span>
-                            <span>Tempo Interval 12km</span>
-                            <span>Cooldown</span>
+                        <div class="text-[10px] text-text-secondary font-mono">
+                            CTL 74.2 &bull; ATL 68.0 (Sweet Spot)
                         </div>
                     </div>
 
-                    <!-- AI Coach Real-Time Directive Snippet -->
-                    <div class="p-3 bg-surface border-l-4 border-tertiary border border-border text-xs">
-                        <div class="flex items-center gap-1.5 font-bold text-text-primary text-[11px] mb-1">
-                            <span class="w-2 h-2 bg-tertiary"></span>
-                            <span>GOALIE DIRECTIVE // RECOVERY RECOMMENDATION</span>
+                    <!-- Metric 3: LT2 -->
+                    <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
+                        <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
+                            <span>LACTATE THRESHOLD (LT2)</span>
+                            <span class="text-text-primary font-semibold">Z4</span>
                         </div>
-                        <p class="text-text-secondary text-[11px] leading-relaxed">
-                            "Decoupling remained below 3.5% across 21km. Maintain current carbohydrate intake of 60g/hr. Tomorrow scheduled: 45 min Active Recovery (Z1, <132 bpm)."
+                        <div class="font-mono font-extrabold text-2xl text-text-primary">
+                            04:12 <span class="text-xs font-normal text-text-secondary">min/km</span>
+                        </div>
+                        <div class="text-[10px] text-text-secondary font-mono">
+                            HR: 168 bpm &bull; 88% HRmax
+                        </div>
+                    </div>
+
+                    <!-- Metric 4: Cardiac Decoupling -->
+                    <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
+                        <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
+                            <span>AEROBIC DECOUPLING</span>
+                            <span class="text-flat-green font-semibold">Pw:HR</span>
+                        </div>
+                        <div class="font-mono font-extrabold text-2xl text-flat-green">
+                            +1.7% <span class="text-xs font-normal text-text-secondary">Drift</span>
+                        </div>
+                        <div class="text-[10px] text-flat-green font-mono">
+                            EF 1.36 m/beat (Base Stable &lt;5%)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Deep-Dive High-Density Panels -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                    
+                    <!-- Panel A: Acute:Chronic Workload Ratio (ACWR) -->
+                    <div class="p-4 bg-surface border border-border rounded-lg space-y-3">
+                        <div class="flex items-center justify-between border-b border-border pb-2">
+                            <span class="text-xs font-mono font-bold text-text-primary">ACWR WORKLOAD HAZARD METER</span>
+                            <span class="text-[11px] font-mono font-bold text-flat-green bg-flat-green/10 px-2 py-0.5 rounded border border-flat-green/20">1.16 OPTIMAL</span>
+                        </div>
+                        
+                        <p class="text-xs text-text-secondary leading-relaxed">
+                            Banister impulse-response model tracks acute fatigue against 42-day chronic fitness. Protects soft tissue from acute load spikes.
                         </p>
+
+                        <!-- 4-Zone Segmented Hazard Meter -->
+                        <div class="space-y-1.5 font-mono">
+                            <div class="w-full bg-border h-3.5 flex rounded-sm overflow-hidden border border-border">
+                                <div class="w-1/4 bg-surface text-[9px] flex items-center justify-center text-text-secondary border-r border-border" title="Under-training (&lt;0.8)">&lt;0.8</div>
+                                <div class="w-1/4 bg-flat-green text-surface text-[9px] font-bold flex items-center justify-center border-r border-border" title="Optimal Adaptations (0.8-1.3) [ACTIVE]">0.8&ndash;1.3 ACTIVE</div>
+                                <div class="w-1/4 bg-flat-amber text-surface text-[9px] font-bold flex items-center justify-center border-r border-border" title="Caution (1.3-1.5)">1.3&ndash;1.5</div>
+                                <div class="w-1/4 bg-flat-orange text-surface text-[9px] font-bold flex items-center justify-center" title="Injury Danger Zone (&gt;1.5)">&gt;1.5</div>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-text-secondary">
+                                <span>Under-training Risk</span>
+                                <span class="text-flat-green font-bold">Sweet Spot (1.16)</span>
+                                <span class="text-flat-orange font-bold">Injury Zone</span>
+                            </div>
+                        </div>
+
+                        <!-- Micro stats -->
+                        <div class="pt-1 flex items-center justify-between text-[11px] font-mono text-text-secondary border-t border-border">
+                            <span>Ramp Rate: <strong class="text-text-primary">+4.8 TSS/wk</strong></span>
+                            <span>Injury Risk: <strong class="text-flat-green">0.14x (Low)</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Panel B: Dynamic Karvonen HRR 5-Zone Spectrum -->
+                    <div class="p-4 bg-surface border border-border rounded-lg space-y-3">
+                        <div class="flex items-center justify-between border-b border-border pb-2">
+                            <span class="text-xs font-mono font-bold text-text-primary">KARVONEN 5-ZONE HR MATRIX</span>
+                            <span class="text-[11px] font-mono text-tertiary font-bold">HRR 144 BPM</span>
+                        </div>
+
+                        <p class="text-xs text-text-secondary leading-relaxed">
+                            Dynamic zones calculated from true resting heart rate (48 bpm) and peak max HR (192 bpm) for strict polarized 80/20 distribution.
+                        </p>
+
+                        <!-- 5 Zones Grid -->
+                        <div class="grid grid-cols-5 gap-1 text-center font-mono text-xs">
+                            <div class="p-1.5 bg-surface-subtle border border-border rounded">
+                                <div class="text-[9px] text-text-secondary">Z1 Recovery</div>
+                                <div class="text-[11px] font-bold text-text-primary">&lt;134</div>
+                            </div>
+                            <div class="p-1.5 bg-flat-green/10 border border-flat-green rounded">
+                                <div class="text-[9px] text-flat-green font-bold">Z2 Base</div>
+                                <div class="text-[11px] font-bold text-flat-green">135-149</div>
+                            </div>
+                            <div class="p-1.5 bg-surface-subtle border border-border rounded">
+                                <div class="text-[9px] text-text-secondary">Z3 Tempo</div>
+                                <div class="text-[11px] font-bold text-text-primary">150-163</div>
+                            </div>
+                            <div class="p-1.5 bg-surface-subtle border border-border rounded">
+                                <div class="text-[9px] text-text-secondary">Z4 Thresh</div>
+                                <div class="text-[11px] font-bold text-text-primary">164-178</div>
+                            </div>
+                            <div class="p-1.5 bg-surface-subtle border border-border rounded">
+                                <div class="text-[9px] text-text-secondary">Z5 Anaer</div>
+                                <div class="text-[11px] font-bold text-text-primary">&gt;178</div>
+                            </div>
+                        </div>
+
+                        <!-- Micro stats -->
+                        <div class="pt-1 flex items-center justify-between text-[11px] font-mono text-text-secondary border-t border-border">
+                            <span>Current Focus: <strong class="text-flat-green">Zone 2 Aerobic Base</strong></span>
+                            <span>Polarized: <strong class="text-text-primary">82% Low / 18% High</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Panel C: Minetti Grade-Adjusted Pace (GAP) & Biometrics -->
+                    <div class="p-4 bg-surface border border-border rounded-lg space-y-3">
+                        <div class="flex items-center justify-between border-b border-border pb-2">
+                            <span class="text-xs font-mono font-bold text-text-primary">MINETTI GRADE-ADJUSTED PACE</span>
+                            <span class="text-[11px] font-mono font-bold text-flat-orange bg-flat-orange/10 px-2 py-0.5 rounded border border-flat-orange/20">POLYNOMIAL</span>
+                        </div>
+
+                        <p class="text-xs text-text-secondary leading-relaxed">
+                            Minetti's metabolic equation normalizes incline running velocities to flat-ground metabolic cost, eliminating hill split distortion.
+                        </p>
+
+                        <!-- GAP Conversion Live Demo Card -->
+                        <div class="p-2.5 bg-surface-subtle border border-border rounded font-mono text-xs space-y-1">
+                            <div class="flex items-center justify-between text-[10px] text-text-secondary">
+                                <span>INCLINE: 5:00 /km @ +6.0%</span>
+                                <span class="text-flat-green font-bold">FLAT EQUIVALENT</span>
+                            </div>
+                            <div class="flex items-baseline justify-between">
+                                <span class="text-sm font-bold text-text-primary">05:00 /km</span>
+                                <span class="text-text-secondary">&rarr;</span>
+                                <span class="text-base font-extrabold text-flat-green">04:05 /km GAP</span>
+                            </div>
+                        </div>
+
+                        <!-- Micro stats: Biomechanics -->
+                        <div class="pt-1 flex items-center justify-between text-[11px] font-mono text-text-secondary border-t border-border">
+                            <span>Cadence: <strong class="text-text-primary">178 spm</strong></span>
+                            <span>GCT: <strong class="text-text-primary">210 ms</strong></span>
+                            <span>Oscillation: <strong class="text-text-primary">7.4 cm</strong></span>
+                        </div>
                     </div>
 
                 </div>
+
+                <!-- Console Bottom Action Bar: Instant Workstation Jumps -->
+                <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-border text-xs">
+                    <span class="text-text-secondary font-mono text-[11px]">Explore interactive simulation tools:</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="switchWorkstationTab('telemetry')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
+                            <span>ACWR Simulator</span>
+                        </button>
+                        <button onclick="switchWorkstationTab('telemetry')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                            <span>Karvonen Zones</span>
+                        </button>
+                        <button onclick="switchWorkstationTab('biomechanics')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-flat-orange"></span>
+                            <span>Biomechanics Video</span>
+                        </button>
+                        <button onclick="switchWorkstationTab('chat')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-tertiary font-mono font-bold text-[11px] transition-colors flex items-center gap-1.5">
+                            <span>Gemini AI Coach &rarr;</span>
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
         </div>
     </header>
 
     <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- FEATURES SECTION: Asymmetric & Zig-zag Rows (No 3-cols)    -->
+    <!-- FEATURES SECTION: Clean 3-Pillar Architectural Framework   -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <section id="features" class="py-16 lg:py-24 border-b-2 border-border bg-bg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-16">
+    <section id="features" class="py-14 sm:py-20 border-b border-border bg-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
             
             <!-- Section Header -->
-            <div class="max-w-2xl space-y-2">
-                <span class="flat-badge border-text-primary text-text-primary">CORE ARCHITECTURE</span>
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-primary tracking-tight">
-                    Engineered for Rigorous Periodization.
-                </h2>
-                <p class="text-sm text-text-secondary">
-                    Eliminate guesswork with mathematical load modeling, biomechanical run form ingestion, and conversational AI calibrated by sports scientists.
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 max-w-4xl">
+                <div>
+                    <span class="flat-badge border-text-primary text-text-primary mb-2">SYSTEM ARCHITECTURE</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
+                        Engineered for Rigorous Periodization.
+                    </h2>
+                </div>
+                <p class="text-xs sm:text-sm text-text-secondary max-w-md">
+                    Eliminate guesswork with deterministic physiological formulas, automated hardware ingestion, and verifiable AI guidance.
                 </p>
             </div>
 
-            <!-- Feature 1: TrainingPeaks™ PMC & ACWR Hub (Text Left, Card Right) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div class="lg:col-span-6 space-y-4">
-                    <span class="text-xs font-semibold text-flat-orange">Workload Architecture</span>
-                    <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
-                        Performance Management Chart &amp; Acute:Chronic Load Modeling.
-                    </h3>
-                    <p class="text-sm text-text-secondary leading-relaxed">
-                        Track long-term fitness and mitigate soft-tissue injury risk with Dr. Tim Gabbett's Acute:Chronic Workload Ratio (ACWR) and Banister impulse-response modeling. Eliminate overtraining guesswork forever.
-                    </p>
-                    <ul class="space-y-2 text-xs font-semibold text-text-primary pt-1">
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Fitness (CTL: 74.2 pts) &bull; Fatigue (ATL: 86.1 pts) &bull; Form (TSB: -11.9 pts)</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Visual 4-zone ACWR meter (1.16 Sweet Spot ratio, 0.8&ndash;1.3 safe progression)</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Ramp Rate tracking (+4.8 TSS/wk) to protect Achilles tendons and calves</span>
-                        </li>
-                    </ul>
-                    <div class="pt-2">
-                        <button onclick="switchWorkstationTab('telemetry')" class="btn-flat-secondary text-xs inline-flex items-center gap-1.5">
-                            <span>Open Live ACWR Simulator</span>
-                            <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </button>
+            <!-- 3 Clean Architectural Pillar Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Pillar 1: Deterministic Sports Science -->
+                <div class="p-6 bg-surface border border-border rounded-xl space-y-4 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-lg bg-surface-subtle border border-border flex items-center justify-center text-tertiary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-text-primary">100% Deterministic Math</h3>
+                        <p class="text-xs text-text-secondary leading-relaxed">
+                            No AI hallucination in physiological calculations. Banister impulse-response TRIMP, Dr. Tim Gabbett's ACWR, Minetti's metabolic GAP polynomial, and Karvonen HRR are computed mathematically with zero variance.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-border flex items-center justify-between text-xs font-mono">
+                        <span class="text-text-secondary">Execution Latency</span>
+                        <span class="text-flat-green font-bold">&lt; 0.2 ms</span>
                     </div>
                 </div>
 
-                <div class="lg:col-span-6">
-                    <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 bg-flat-orange"></span>
-                                <span class="text-xs font-bold text-text-primary">Performance Management Chart</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-flat-green bg-flat-green/10 px-2 py-0.5 border border-flat-green font-bold">1.16 OPTIMAL</span>
+                <!-- Pillar 2: Hardware & Ecosystem Ingestion -->
+                <div class="p-6 bg-surface border border-border rounded-xl space-y-4 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-lg bg-surface-subtle border border-border flex items-center justify-center text-flat-orange">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
-
-                        <!-- 3 Metric Boxes -->
-                        <div class="grid grid-cols-3 gap-2 text-center font-mono">
-                            <div class="p-2.5 border border-border bg-surface-subtle">
-                                <div class="text-[10px] text-text-secondary">Fitness (CTL)</div>
-                                <div class="font-extrabold text-lg text-text-primary">74.2 <span class="text-[10px] font-normal text-text-secondary">pts</span></div>
-                                <div class="text-[9px] text-flat-green">42-day rolling avg</div>
-                            </div>
-                            <div class="p-2.5 border border-border bg-surface-subtle">
-                                <div class="text-[10px] text-text-secondary">Fatigue (ATL)</div>
-                                <div class="font-extrabold text-lg text-flat-orange">86.1 <span class="text-[10px] font-normal text-text-secondary">pts</span></div>
-                                <div class="text-[9px] text-flat-orange">7-day acute load</div>
-                            </div>
-                            <div class="p-2.5 border border-border bg-surface-subtle">
-                                <div class="text-[10px] text-text-secondary">Form (TSB)</div>
-                                <div class="font-extrabold text-lg text-tertiary">-11.9 <span class="text-[10px] font-normal text-text-secondary">pts</span></div>
-                                <div class="text-[9px] text-tertiary">Building Block</div>
-                            </div>
-                        </div>
-
-                        <!-- 4-Segment Visual ACWR Meter -->
-                        <div class="p-3 bg-surface-subtle border border-border space-y-2">
-                            <div class="flex justify-between items-center text-xs font-mono">
-                                <span class="text-text-secondary">ACWR Hazard Meter (Acute / Chronic)</span>
-                                <span class="font-bold text-flat-green">1.16 (Sweet Spot)</span>
-                            </div>
-                            <div class="w-full bg-border h-3 flex overflow-hidden border border-border-strong">
-                                <div class="w-1/4 bg-surface text-[9px] font-mono flex items-center justify-center text-text-secondary border-r border-border" title="< 0.8 Under">
-                                    &lt;0.8
-                                </div>
-                                <div class="w-1/4 bg-flat-green text-surface text-[9px] font-mono font-bold flex items-center justify-center border-r border-border" title="0.8-1.3 Sweet Spot [ACTIVE]">
-                                    0.8-1.3 ACTIVE
-                                </div>
-                                <div class="w-1/4 bg-flat-amber text-surface text-[9px] font-mono font-bold flex items-center justify-center border-r border-border" title="1.3-1.5 Caution">
-                                    1.3-1.5
-                                </div>
-                                <div class="w-1/4 bg-flat-orange text-surface text-[9px] font-mono font-bold flex items-center justify-center" title="> 1.5 Danger">
-                                    &gt;1.5
-                                </div>
-                            </div>
-                            <div class="text-[10px] font-mono text-text-secondary flex justify-between">
-                                <span>Under-training Risk</span>
-                                <span class="text-flat-green font-bold">Optimal Adaptations</span>
-                                <span class="text-flat-orange font-bold">Injury Danger Zone</span>
-                            </div>
-                        </div>
+                        <h3 class="text-lg font-bold text-text-primary">Seamless Ecosystem Sync</h3>
+                        <p class="text-xs text-text-secondary leading-relaxed">
+                            Direct OAuth integration with Garmin Connect, Strava Streams, Apple Health, and Intervals.icu. Native RFC 5545 iCalendar feeds synchronize adaptive training blocks directly to your watch.
+                        </p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Feature 2: Intervals.icu Telemetry Hub (Card Left, Text Right) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8 border-t border-border">
-                <div class="lg:col-span-6 order-2 lg:order-1">
-                    <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 bg-tertiary"></span>
-                                <span class="font-mono text-xs font-bold text-text-primary">INTERVALS_ICU_TELEMETRY</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-tertiary bg-tertiary/10 px-2 py-0.5 border border-tertiary font-bold">HRR 144 BPM</span>
-                        </div>
-
-                        <!-- Karvonen 5 Zones Strip -->
-                        <div class="space-y-1.5 font-mono text-xs">
-                            <div class="flex justify-between items-center text-[11px] text-text-secondary pb-1">
-                                <span>Karvonen 5-Zone Distribution (RHR 48 &bull; Max 192)</span>
-                                <span class="text-tertiary font-bold">Dynamic HRR</span>
-                            </div>
-                            <div class="grid grid-cols-5 gap-1 text-center">
-                                <div class="p-1.5 bg-surface-subtle border border-border">
-                                    <div class="text-[9px] text-text-secondary">Z1 Recovery</div>
-                                    <div class="text-[11px] font-bold text-text-primary">&lt;134</div>
-                                </div>
-                                <div class="p-1.5 bg-flat-green/10 border border-flat-green">
-                                    <div class="text-[9px] text-flat-green font-bold">Z2 Base</div>
-                                    <div class="text-[11px] font-bold text-flat-green">135-149</div>
-                                </div>
-                                <div class="p-1.5 bg-surface-subtle border border-border">
-                                    <div class="text-[9px] text-text-secondary">Z3 Tempo</div>
-                                    <div class="text-[11px] font-bold text-text-primary">150-163</div>
-                                </div>
-                                <div class="p-1.5 bg-surface-subtle border border-border">
-                                    <div class="text-[9px] text-text-secondary">Z4 Thresh</div>
-                                    <div class="text-[11px] font-bold text-text-primary">164-178</div>
-                                </div>
-                                <div class="p-1.5 bg-surface-subtle border border-border">
-                                    <div class="text-[9px] text-text-secondary">Z5 Anaer</div>
-                                    <div class="text-[11px] font-bold text-text-primary">&gt;178</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Decoupling & Efficiency Factor -->
-                        <div class="grid grid-cols-2 gap-2 font-mono text-xs">
-                            <div class="p-3 bg-surface-subtle border border-border space-y-1">
-                                <div class="text-[10px] text-text-secondary">Aerobic Decoupling (Pw:HR)</div>
-                                <div class="text-base font-extrabold text-flat-green">+1.7%</div>
-                                <div class="text-[9px] text-text-secondary">Stable aerobic base (&lt; 5.0%)</div>
-                            </div>
-                            <div class="p-3 bg-surface-subtle border border-border space-y-1">
-                                <div class="text-[10px] text-text-secondary">Aerobic Efficiency Factor</div>
-                                <div class="text-base font-extrabold text-tertiary">1.36 <span class="text-[10px] text-text-secondary">m/beat</span></div>
-                                <div class="text-[9px] text-text-secondary">Speed / Mean Heart Rate</div>
-                            </div>
-                        </div>
-
-                        <!-- Live iCal Sync Bar -->
-                        <div class="p-2.5 bg-surface-subtle border border-border flex items-center justify-between gap-2 font-mono text-[11px]">
-                            <div class="flex items-center gap-2 truncate">
-                                <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <span class="text-text-secondary truncate">RFC 5545 iCal Feed: /api/v1/workouts/ical</span>
-                            </div>
-                            <span class="text-flat-green font-bold text-[10px] shrink-0">AUTO-SYNC</span>
-                        </div>
+                    <div class="pt-3 border-t border-border flex items-center justify-between text-xs font-mono">
+                        <span class="text-text-secondary">Supported Formats</span>
+                        <span class="text-tertiary font-bold">FIT, TCX, GPX, iCal</span>
                     </div>
                 </div>
 
-                <div class="lg:col-span-6 order-1 lg:order-2 space-y-4">
-                    <span class="text-xs font-semibold text-tertiary">Biometric Matrix</span>
-                    <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
-                        Dynamic Karvonen Matrix &amp; Cardiac Decoupling.
-                    </h3>
-                    <p class="text-sm text-text-secondary leading-relaxed">
-                        Precision heart rate reserve modeling based on your true resting and maximum heart rate. Detect early physiological fatigue before it shows in your split times through aerobic decoupling drift analysis.
-                    </p>
-                    <ul class="space-y-2 text-xs font-semibold text-text-primary pt-1">
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-tertiary"></span>
-                            <span>Dynamic 5-Zone Karvonen calculation from HRR (144 bpm: RHR 48, Max 192)</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-tertiary"></span>
-                            <span>Aerobic Decoupling (Pw:HR Drift: +1.7% / Base stable &lt; 5.0%)</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-tertiary"></span>
-                            <span>Aerobic Efficiency Factor (1.36 m/beat) tracking cardiac cost per meter</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-tertiary"></span>
-                            <span>Direct RFC 5545 iCal Feed URL for native sync with Garmin and Apple Calendar</span>
-                        </li>
-                    </ul>
-                    <div class="pt-2">
-                        <button onclick="switchWorkstationTab('telemetry')" class="btn-flat-secondary text-xs inline-flex items-center gap-1.5">
-                            <span>Inspect Karvonen Zones</span>
-                            <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </button>
+                <!-- Pillar 3: Adaptive Dual-Tier AI & Free BYOK -->
+                <div class="p-6 bg-surface border border-border rounded-xl space-y-4 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-10 h-10 rounded-lg bg-surface-subtle border border-border flex items-center justify-center text-flat-green">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-text-primary">Dual-Tier AI &amp; Free BYOK</h3>
+                        <p class="text-xs text-text-secondary leading-relaxed">
+                            Google Gemini 3.8 Flash powers instant session adjustments, while Gemini Pro reasons across multi-week training meso-cycles. Bring your own Google AI key for unlimited free coaching.
+                        </p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Feature 3: Strava Pro Telemetry Hub (Text Left, Card Right) -->
-            <div id="telemetry" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8 border-t border-border">
-                <div class="lg:col-span-6 space-y-4">
-                    <span class="text-xs font-semibold text-flat-orange">Gradient Effort</span>
-                    <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
-                        Minetti Grade-Adjusted Pace &amp; Suffer Score.
-                    </h3>
-                    <p class="text-sm text-text-secondary leading-relaxed">
-                        No more misleading paces on hilly trail and mountain routes. Goalie applies Minetti's metabolic cost polynomial to equate gradient climbs with flat running velocities, alongside relative effort Suffer Scores.
-                    </p>
-                    <ul class="space-y-2 text-xs font-semibold text-text-primary pt-1">
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Interactive Minetti GAP Calculator: 5:00 min/km on +6.0% slope &rarr; 04:05 min/km flat</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Strava Relative Effort / Suffer Score (248 pts High Aerobic Stimulus)</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Weekly Target Volume Progress (48.5 / 50.0 km, 97% completed)</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-orange"></span>
-                            <span>Split-level Pace Degradation Index (+2.8% on final 20% distance)</span>
-                        </li>
-                    </ul>
-                    <div class="pt-2">
-                        <button onclick="switchWorkstationTab('telemetry')" class="btn-flat-secondary text-xs inline-flex items-center gap-1.5">
-                            <span>Open Minetti GAP Calculator</span>
-                            <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </button>
+                    <div class="pt-3 border-t border-border flex items-center justify-between text-xs font-mono">
+                        <span class="text-text-secondary">Athlete Access</span>
+                        <span class="text-flat-green font-bold">100% Free BYOK</span>
                     </div>
                 </div>
 
-                <div class="lg:col-span-6">
-                    <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 bg-flat-orange"></span>
-                                <span class="font-mono text-xs font-bold text-text-primary">STRAVA_PRO_GAP_TELEMETRY</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-flat-orange bg-flat-orange/10 px-2 py-0.5 border border-flat-orange font-bold">MINETTI POLYNOMIAL</span>
-                        </div>
-
-                        <!-- GAP Conversion Live Demo -->
-                        <div class="p-3 bg-surface-subtle border border-border space-y-2 font-mono text-xs">
-                            <div class="flex justify-between items-center text-[10px] text-text-secondary">
-                                <span>INCLINE RUNNING: 5:00 min/km @ +6.0% GRADIENT</span>
-                                <span class="text-flat-green font-bold">FLAT EQUIVALENT</span>
-                            </div>
-                            <div class="flex items-baseline justify-between">
-                                <div>
-                                    <span class="text-xs text-text-secondary">Actual Input:</span>
-                                    <span class="text-sm font-bold text-text-primary ml-1">05:00 /km</span>
-                                </div>
-                                <span class="text-text-secondary">&rarr;</span>
-                                <div>
-                                    <span class="text-xs text-text-secondary">Equivalent GAP:</span>
-                                    <span class="text-base font-extrabold text-flat-green ml-1">04:05 /km</span>
-                                </div>
-                            </div>
-                            <div class="text-[10px] text-text-secondary">
-                                Metabolic Cost Ratio: 1.22x &bull; Flat Speed: 14.69 km/h
-                            </div>
-                        </div>
-
-                        <!-- Suffer Score & Weekly Target -->
-                        <div class="grid grid-cols-2 gap-2 font-mono text-xs">
-                            <div class="p-3 bg-surface-subtle border border-border space-y-1">
-                                <div class="text-[10px] text-text-secondary">Suffer Score / Relative Effort</div>
-                                <div class="text-base font-extrabold text-flat-orange">248 <span class="text-[10px] text-text-secondary">pts</span></div>
-                                <div class="text-[9px] text-flat-orange font-bold">HIGH AEROBIC STIMULUS</div>
-                            </div>
-                            <div class="p-3 bg-surface-subtle border border-border space-y-1">
-                                <div class="text-[10px] text-text-secondary">Weekly Mileage Target</div>
-                                <div class="text-base font-extrabold text-text-primary">48.5 <span class="text-xs font-normal text-text-secondary">/ 50.0 km</span></div>
-                                <div class="w-full bg-border h-1.5 mt-1 overflow-hidden">
-                                    <div class="bg-flat-green h-full" style="width: 97%;"></div>
-                                </div>
-                                <div class="text-[9px] text-flat-green font-bold">97% COMPLETED</div>
-                            </div>
-                        </div>
-
-                        <!-- Pace Degradation -->
-                        <div class="p-2.5 bg-surface-subtle border border-border flex items-center justify-between font-mono text-xs">
-                            <span class="text-text-secondary">Final 20% Split Pace Degradation:</span>
-                            <span class="text-flat-green font-bold">+2.8% (Exceptional pacing discipline)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Feature 4: Coach Pro Gemini AI with Free BYOK (Card Left, Text Right) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8 border-t border-border">
-                <div class="lg:col-span-6 order-2 lg:order-1">
-                    <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-3">
-                            <span class="font-mono text-xs font-bold text-text-primary">AI_PROMPT_EXECUTION.LOG</span>
-                            <span class="text-[10px] font-mono text-flat-green bg-flat-green/10 px-1.5 py-0.5 border border-flat-green">200 OK &bull; GEMINI PRO</span>
-                        </div>
-                        <div class="space-y-3 font-mono text-xs">
-                            <div class="p-2.5 bg-surface-subtle border border-border text-text-secondary">
-                                <span class="text-tertiary font-bold">&gt; ATHLETE:</span> "ACWR is 1.16, but legs feel heavy on 4x2km threshold reps. Should I alter Sunday's 28km long run?"
-                            </div>
-                            <div class="p-2.5 bg-surface border border-tertiary text-text-primary leading-relaxed">
-                                <span class="text-flat-green font-bold">&gt; GOALIE COACH (PRO):</span> "Your ACWR is in the sweet spot (1.16), but ATL is +12 above CTL and Karvonen Z4 drift showed +4.2% decoupling. Do not drop the long run, but cap it strictly at Karvonen Z2 (135-149 bpm / 05:15 min/km) and subtract 4km. Prioritize sleep and 80g carb repletion within 45 minutes."
-                            </div>
-                        </div>
-                        <div class="p-2 bg-surface-subtle border border-dashed border-border font-mono text-[10px] text-text-secondary flex items-center justify-between">
-                            <span>Key Mode: FREE BYOK (Athlete Google AI Key)</span>
-                            <span class="text-flat-green font-bold">ZERO SUBSCRIPTION REQUIRED</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-6 order-1 lg:order-2 space-y-4">
-                    <span class="text-xs font-semibold text-flat-green">Adaptive Intelligence</span>
-                    <h3 class="text-xl sm:text-2xl font-bold text-text-primary">
-                        Dual-Tier Intelligence &amp; Free Bring-Your-Own-Key.
-                    </h3>
-                    <p class="text-sm text-text-secondary leading-relaxed">
-                        All telemetry features, ACWR meters, Karvonen matrices, and Minetti GAP calculators are <strong>100% free</strong> for every athlete. For deep AI periodization, unlock Coach (Pro) for free with your own Google Gemini API key, or choose managed hosted compute.
-                    </p>
-                    <ul class="space-y-2 text-xs font-semibold text-text-primary pt-1">
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-green"></span>
-                            <span>Pemula (Free): 100% Deterministic sports science calculations</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-green"></span>
-                            <span>Coach (Free): 10 daily conversations with Google Gemini 3.8 Flash</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-green"></span>
-                            <span>Coach (Pro): Unlimited periodization reasoning via Free BYOK or $19/mo</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-flat-green"></span>
-                            <span>Automatic fallback to deterministic sports engine if offline or rate limited</span>
-                        </li>
-                    </ul>
-                    <div class="pt-2 flex flex-wrap gap-2">
-                        <button onclick="openProPaymentModal()" class="btn-flat-primary text-xs inline-flex items-center gap-1.5">
-                            <span>Setup Free Gemini BYOK Key</span>
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-                        </button>
-                        <button onclick="switchWorkstationTab('chat')" class="btn-flat-secondary text-xs">
-                            Try Live Chat
-                        </button>
-                    </div>
-                </div>
             </div>
 
         </div>
