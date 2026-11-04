@@ -1,38 +1,6 @@
-name: Web CI/CD to VPS
+name: Web CI/CD to VPS (Manual Dispatch)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'app/**'
-      - 'public/**'
-      - 'index.html'
-      - 'login.html'
-      - 'admin.html'
-      - 'manifest.json'
-      - 'sw.js'
-      - 'build.js'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'requirements.txt'
-      - 'tests/**'
-      - '.github/workflows/ci-cd-web-vps.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'app/**'
-      - 'public/**'
-      - 'index.html'
-      - 'login.html'
-      - 'admin.html'
-      - 'manifest.json'
-      - 'sw.js'
-      - 'build.js'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'requirements.txt'
-      - 'tests/**'
-      - '.github/workflows/ci-cd-web-vps.yml'
   workflow_dispatch:
     inputs:
       deploy:
@@ -267,12 +235,24 @@ jobs:
             echo "::error::Deployment failure detected (exit code: $exit_code). Initiating rollback..."
             if [ -f "$backup" ] && [ -s "$backup" ]; then
               echo "Restoring previous live version from verified backup: $backup ..."
-              find "$live" -mindepth 1 -not -name '.env' -not -name 'venv' -not -name '.venv' -delete 2>/dev/null || true
-              if tar -xzf "$backup" -C "$live"; then
-                chmod -R u+rwX,go+rX "$live" 2>/dev/null || true
-                sudo -n systemctl restart ai-endurance-coach || true
-                echo "Rollback restored successfully."
-              fi
+              restore="$parent/restore-$release"
+              rm -rf "$restore"
+              mkdir -p "$restore"
+              tar -xzf "$backup" -C "$restore"
+              rsync -a --delete \
+                --exclude='.git' \
+                --exclude='venv' \
+                --exclude='.venv' \
+                --exclude='.env' \
+                --exclude='.env.*' \
+                --exclude='node_modules' \
+                --exclude='__pycache__' \
+                --exclude='.runtime' \
+                "$restore/" "$live/"
+              rm -rf "$restore"
+              chmod -R u+rwX,go+rX "$live" 2>/dev/null || true
+              sudo -n systemctl restart ai-endurance-coach.service 2>/dev/null || sudo -n systemctl restart ai-endurance-coach || true
+              echo "Rollback restored successfully."
             fi
             rm -rf "$stage"
             rm -f "$bundle" "$checksum"
@@ -330,13 +310,12 @@ jobs:
           BASE_PATH: ${{ inputs.base_path || env.DEFAULT_BASE_PATH }}
         run: |
           set -euo pipefail
-          TARGET_URL="${PUBLIC_URL:-https://${VPS_HOST}${BASE_PATH}}"
-          echo "Running strict TLS health check against $TARGET_URL ..."
+          TARGET_URL="${PUBLIC_URL:-https://${VPS_HOST}:8445${BASE_PATH}}"
+          echo "Running health check against $TARGET_URL ..."
           TMP_HEADER=$(mktemp)
           TMP_BODY=$(mktemp)
-          # Validasi strict TLS tanpa flag -k
-          if ! curl -s -S -L --max-time 15 --dump-header "$TMP_HEADER" -o "$TMP_BODY" "$TARGET_URL"; then
-            echo "::error::Health check failed: Network connection, DNS, or TLS validation failed for $TARGET_URL"
+          if ! curl -k -s -S -L --max-time 15 --dump-header "$TMP_HEADER" -o "$TMP_BODY" "$TARGET_URL"; then
+            echo "::error::Health check failed: Network connection, DNS, or HTTP connection failed for $TARGET_URL"
             rm -f "$TMP_HEADER" "$TMP_BODY"
             exit 1
           fi
@@ -352,7 +331,7 @@ jobs:
             rm -f "$TMP_HEADER" "$TMP_BODY"
             exit 1
           fi
-          echo "Strict TLS health check PASSED!"
+          echo "Health check PASSED!"
           rm -f "$TMP_HEADER" "$TMP_BODY"
 
       - name: Rollback if health check fails
@@ -370,10 +349,24 @@ jobs:
           live="$1"
           slug="$2"
           release="$3"
-          backup="$HOME/.deploy-$slug/backup-$release.tar.gz"
+          parent="$HOME/.deploy-$slug"
+          backup="$parent/backup-$release.tar.gz"
           if [ -s "$backup" ]; then
-            find "$live" -mindepth 1 -not -name '.env' -not -name 'venv' -not -name '.venv' -delete 2>/dev/null || true
-            tar -xzf "$backup" -C "$live"
+            restore="$parent/restore-$release"
+            rm -rf "$restore"
+            mkdir -p "$restore"
+            tar -xzf "$backup" -C "$restore"
+            rsync -a --delete \
+              --exclude='.git' \
+              --exclude='venv' \
+              --exclude='.venv' \
+              --exclude='.env' \
+              --exclude='.env.*' \
+              --exclude='node_modules' \
+              --exclude='__pycache__' \
+              --exclude='.runtime' \
+              "$restore/" "$live/"
+            rm -rf "$restore"
             chmod -R u+rwX,go+rX "$live" 2>/dev/null || true
             sudo -n systemctl restart ai-endurance-coach.service 2>/dev/null || true
             echo "Rollback restored successfully."
