@@ -368,14 +368,14 @@
             </a>
 
             <div class="flex items-center gap-1.5 sm:gap-3">
-                <a href="/admin" class="hidden sm:flex text-xs text-text-secondary hover:text-text-primary items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
+                <a href="/admin" class="flex text-xs text-text-secondary hover:text-text-primary items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" title="Admin Command Center">
                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    <span class="font-semibold">Admin Center</span>
+                    <span class="font-medium hidden xs:inline">Admin Center</span>
+                    <span class="font-medium xs:hidden">Admin</span>
                 </a>
                 <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 px-2.5 sm:px-3 py-1.5 hover:bg-surface-subtle rounded-full border border-transparent transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    <span class="hidden sm:inline">Back to Home</span>
-                    <span class="sm:hidden">Home</span>
+                    <span class="hidden sm:inline">Home</span>
                 </a>
                 <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Theme" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -392,12 +392,12 @@
             <!-- Left Column: Value Proposition (5 cols) -->
             <div class="hidden lg:block lg:col-span-5 space-y-6 pr-2">
                 <div class="space-y-3">
-                    <span class="text-[11px] font-mono uppercase tracking-wider text-tertiary font-bold">ISOLATED ATHLETE RECORD</span>
-                    <h1 class="text-3xl font-extrabold text-text-primary leading-tight">
-                        Sports Science Performance Engine.
+                    <span class="text-xs font-semibold text-tertiary">Deterministic Sports Science</span>
+                    <h1 class="text-3xl font-extrabold text-text-primary leading-tight tracking-tight">
+                        Precision Performance Modeling.
                     </h1>
                     <p class="text-xs text-text-secondary leading-relaxed">
-                        One protected athlete account to manage all physiological telemetry, macrocycle blocks, and deterministic load analytics.
+                        One unified athlete profile for physiological metrics, macrocycle periodization, and real-time Garmin and Strava telemetry.
                     </p>
                 </div>
 
@@ -457,7 +457,7 @@
 
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <label for="login-password" class="block text-[11px] font-mono text-text-secondary">Password</label>
+                                <label for="login-password" class="block text-[11px] text-text-secondary">Password</label>
                                 <button type="button" onclick="switchMode('forgot')" class="text-[11px] text-tertiary hover:underline">
                                     Forgot password?
                                 </button>
@@ -470,25 +470,25 @@
                             </div>
                         </div>
 
-                        <button type="submit" id="btn-login" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold mt-1">
-                            SIGN IN >
+                        <button type="submit" id="btn-login" class="btn-flat-primary w-full py-2.5 text-xs font-semibold mt-1">
+                            Sign in
                         </button>
                     </form>
 
                     <!-- Form 2: Register -->
                     <form id="form-register" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
                         <div>
-                            <label for="reg-name" class="block text-[11px] font-mono text-text-secondary mb-1">Athlete Full Name</label>
+                            <label for="reg-name" class="block text-[11px] text-text-secondary mb-1">Athlete Full Name</label>
                             <input type="text" id="reg-name" class="flat-input text-xs" placeholder="e.g. Eliud Kipchoge" required autocomplete="name">
                         </div>
 
                         <div>
-                            <label for="reg-email" class="block text-[11px] font-mono text-text-secondary mb-1">Email Address</label>
+                            <label for="reg-email" class="block text-[11px] text-text-secondary mb-1">Email Address</label>
                             <input type="email" id="reg-email" class="flat-input text-xs" placeholder="kipchoge@domain.com" required autocomplete="email">
                         </div>
 
                         <div>
-                            <label for="reg-password" class="block text-[11px] font-mono text-text-secondary mb-1">Password (6+ chars)</label>
+                            <label for="reg-password" class="block text-[11px] text-text-secondary mb-1">Password (6+ chars)</label>
                             <div class="relative">
                                 <input type="password" id="reg-password" class="flat-input text-xs pr-10" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password" aria-describedby="auth-alert">
                                 <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
@@ -506,8 +506,8 @@
                             </label>
                         </div>
 
-                        <button type="submit" id="btn-register" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold">
-                            CREATE ATHLETE ACCOUNT >
+                        <button type="submit" id="btn-register" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
+                            Create athlete account
                         </button>
                     </form>
 
@@ -517,11 +517,11 @@
                             Enter your registered email address. We will transmit a cryptographically secure reset link.
                         </p>
                         <div>
-                            <label class="block text-[11px] font-mono text-text-secondary mb-1">Registered Email</label>
+                            <label class="block text-[11px] text-text-secondary mb-1">Registered Email</label>
                             <input type="email" id="forgot-email" class="flat-input text-xs" placeholder="athlete@domain.com" required autocomplete="email">
                         </div>
-                        <button type="submit" id="btn-forgot" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold">
-                            SEND RESET LINK >
+                        <button type="submit" id="btn-forgot" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
+                            Send reset link
                         </button>
                         <button type="button" onclick="switchMode('login')" class="btn-flat-secondary w-full py-2 text-xs">
                             Cancel

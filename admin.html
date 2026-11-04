@@ -412,13 +412,13 @@
 
             <form onsubmit="handleAdminAuth(event)" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Master Passcode</label>
-                    <input type="password" id="admin-passcode" class="flat-input w-full mono" placeholder="Enter passcode (admin, admin123, or Apaya1234)" required autocomplete="current-password">
+                    <label class="block text-[11px] text-text-secondary mb-1">Master Passcode</label>
+                    <input type="password" id="admin-passcode" class="flat-input w-full" placeholder="Enter passcode (admin, admin123, or Apaya1234)" required autocomplete="current-password">
                 </div>
-                <div id="auth-error-msg" class="hidden text-xs text-flat-orange font-mono p-2 bg-flat-orange/10 border border-flat-orange"></div>
+                <div id="auth-error-msg" class="hidden text-xs text-flat-orange p-2 bg-flat-orange/10 border border-flat-orange rounded-md"></div>
 
-                <button type="submit" class="btn-flat-primary w-full py-2.5 font-mono">
-                    UNLOCK COMMAND CENTER >
+                <button type="submit" class="btn-flat-primary w-full py-2.5 font-semibold text-xs">
+                    Unlock Command Center
                 </button>
             </form>
 
@@ -887,7 +887,7 @@
 
             <!-- Governance Action Bar (Toggle Tier, Suspend, Impersonate, Delete) -->
             <div class="p-3.5 border border-border rounded-xl space-y-2">
-                <div class="text-xs font-mono font-bold text-text-primary uppercase tracking-wider">Aksi Tata Kelola Administrator</div>
+                <div class="text-xs font-semibold text-text-primary">Aksi Tata Kelola Administrator</div>
                 <div class="flex flex-wrap items-center gap-2 pt-1">
                     <button onclick="toggleSubscriptionFromModal()" id="btn-modal-toggle-tier" class="btn-flat-secondary text-xs">
                         Ubah ke PRO Tier
@@ -977,7 +977,7 @@
 
                 <div class="pt-3 flex justify-end gap-2">
                     <button type="button" onclick="closeSimulateWebhookModal()" class="btn-ghost text-xs">Batal</button>
-                    <button type="submit" class="btn-flat-primary text-xs font-mono">Kirim Simulasi Webhook</button>
+                    <button type="submit" class="btn-flat-primary text-xs font-semibold">Kirim Simulasi Webhook</button>
                 </div>
             </form>
         </div>
