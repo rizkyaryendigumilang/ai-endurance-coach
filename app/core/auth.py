@@ -195,12 +195,13 @@ async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = 
         pass
 
     # Fallback to Supabase Auth
-    try:
-        res = supabase.auth.get_user(token)
-        if res and res.user:
-            return str(res.user.id)
-    except Exception:
-        pass
+    if supabase is not None:
+        try:
+            res = supabase.auth.get_user(token)
+            if res and res.user:
+                return str(res.user.id)
+        except Exception:
+            pass
 
     return "sandbox_athlete_guest"
 

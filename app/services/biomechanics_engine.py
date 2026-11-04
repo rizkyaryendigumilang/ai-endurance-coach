@@ -52,6 +52,8 @@ class BiomechanicsEngine:
         hip, knee, ankle, shoulder = get_pt(24), get_pt(26), get_pt(28), get_pt(12)
 
         knee_angle = abs(math.degrees(math.atan2(ankle[1]-knee[1], ankle[0]-knee[0]) - math.atan2(hip[1]-knee[1], hip[0]-knee[0])))
+        if knee_angle > 180.0:
+            knee_angle = 360.0 - knee_angle
         lean_angle = abs(math.degrees(math.atan2(shoulder[1]-hip[1], shoulder[0]-hip[0])))
         
         score = 100

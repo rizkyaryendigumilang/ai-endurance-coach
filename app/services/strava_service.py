@@ -100,17 +100,21 @@ async def strava_callback(code: str, state: str):
         )
 
     athlete = data.get("athlete", {})
-    supabase.table("user_integrations").upsert({
-        "user_id": user_id,
-        "provider": "strava",
-        "external_user_id": str(athlete.get("id", "")),
-        "access_token": data["access_token"],
-        "refresh_token": data.get("refresh_token", ""),
-        "raw_data": {
-            "athlete_name": f"{athlete.get('firstname','')} {athlete.get('lastname','')}",
-            "athlete_profile": athlete.get("profile", ""),
-        }
-    }, on_conflict="user_id,provider").execute()
+    if supabase is not None:
+        try:
+            supabase.table("user_integrations").upsert({
+                "user_id": user_id,
+                "provider": "strava",
+                "external_user_id": str(athlete.get("id", "")),
+                "access_token": data["access_token"],
+                "refresh_token": data.get("refresh_token", ""),
+                "raw_data": {
+                    "athlete_name": f"{athlete.get('firstname','')} {athlete.get('lastname','')}",
+                    "athlete_profile": athlete.get("profile", ""),
+                }
+            }, on_conflict="user_id,provider").execute()
+        except Exception:
+            pass
 
     return RedirectResponse(url=f"{FRONTEND_URL}/?integration=strava_success")
 
