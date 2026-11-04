@@ -31,6 +31,23 @@
     <!-- Goalie Athlete IndexedDB Storage Layer -->
     <script src="/public/js/db.js"></script>
 
+    <!-- Instant Theme Anti-FOUC Initialization -->
+    <script>
+        (function() {
+            try {
+                var s = localStorage.getItem('theme');
+                var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (s === 'dark' || (!s && d)) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.classList.add('light');
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Design System Tokens (Strava Aesthetic + specs/components/button.md) -->
     <style>
         :root {
@@ -1033,6 +1050,19 @@
             setupAccessibleModals();
         });
 
+        // Modal Background Scroll Lock Manager (Mobile Native & Desktop)
+        function updateModalBodyLock() {
+            const athleteModal = document.getElementById('athlete-detail-modal');
+            const webhookModal = document.getElementById('simulate-webhook-modal');
+            const isAnyOpen = (athleteModal && !athleteModal.classList.contains('hidden')) ||
+                              (webhookModal && !webhookModal.classList.contains('hidden'));
+            if (isAnyOpen) {
+                document.body.classList.add('overflow-hidden');
+            } else {
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
         // Accessible Modal Escape & Scrim Dismiss
         function setupAccessibleModals() {
             const modals = [
@@ -1055,6 +1085,7 @@
                     });
                 }
             });
+            updateModalBodyLock();
         }
 
         function checkAdminAuth() {
@@ -1369,10 +1400,12 @@
             }
             renderAthleteDetailModal();
             document.getElementById('athlete-detail-modal').classList.remove('hidden');
+            updateModalBodyLock();
         }
 
         function closeAthleteDetail() {
             document.getElementById('athlete-detail-modal').classList.add('hidden');
+            updateModalBodyLock();
             currentAthleteDetail = null;
         }
 
@@ -1594,9 +1627,11 @@
         // Webhook Simulator Modal
         function openSimulateWebhookModal() {
             document.getElementById('simulate-webhook-modal').classList.remove('hidden');
+            updateModalBodyLock();
         }
         function closeSimulateWebhookModal() {
             document.getElementById('simulate-webhook-modal').classList.add('hidden');
+            updateModalBodyLock();
         }
 
         async function handleSimulateWebhook(e) {

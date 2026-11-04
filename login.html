@@ -31,6 +31,23 @@
     <!-- Goalie Athlete IndexedDB Storage Layer -->
     <script src="/public/js/db.js"></script>
 
+    <!-- Instant Theme Anti-FOUC Initialization -->
+    <script>
+        (function() {
+            try {
+                var s = localStorage.getItem('theme');
+                var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (s === 'dark' || (!s && d)) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.classList.add('light');
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Design System Tokens (Strava Aesthetic + specs/components/button.md) -->
     <style>
         :root {
@@ -278,6 +295,16 @@
             max-width: 380px;
             width: calc(100vw - 32px);
         }
+        @media screen and (max-width: 640px) {
+            #sonner-toaster {
+                top: 16px;
+                bottom: auto;
+                right: 16px;
+                left: 16px;
+                width: auto;
+                flex-direction: column;
+            }
+        }
         .sonner-toast {
             pointer-events: auto;
             background: var(--surface-color);
@@ -503,18 +530,18 @@
                     <!-- Quick OAuth Mock -->
                     <div class="mt-5 pt-4 border-t border-border">
                         <div class="text-[11px] font-mono text-text-secondary text-center mb-2.5">Or continue with third-party ID:</div>
-                        <div class="grid grid-cols-3 gap-2 text-xs font-mono">
-                            <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-                                <span>Google</span>
+                        <div class="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs font-mono">
+                            <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
+                                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                                <span class="truncate">Google</span>
                             </button>
-                            <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-                                <span>Telegram</span>
+                            <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
+                                <svg class="w-3.5 h-3.5 shrink-0 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                                <span class="truncate">Telegram</span>
                             </button>
-                            <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                                <span>GitHub</span>
+                            <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
+                                <svg class="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                                <span class="truncate">GitHub</span>
                             </button>
                         </div>
                     </div>
@@ -819,9 +846,11 @@
 
         function openLegalModal(tab) {
             document.getElementById('legal-modal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
         }
         function closeLegalModal() {
             document.getElementById('legal-modal').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }
 
         function initTheme() {

@@ -43,6 +43,23 @@
     <!-- Goalie Athlete IndexedDB Storage Layer -->
     <script src="/public/js/db.js"></script>
 
+    <!-- Instant Theme Anti-FOUC Initialization -->
+    <script>
+        (function() {
+            try {
+                var s = localStorage.getItem('theme');
+                var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (s === 'dark' || (!s && d)) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.classList.add('light');
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Design System CSS Tokens (Strava Aesthetic + specs/components/button.md) -->
     <style>
         :root {
@@ -3617,7 +3634,7 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- FULL FOOTER: 4 Columns, Flat 2D, Social & Compliance      -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <footer class="bg-surface py-12 text-xs text-text-secondary">
+    <footer class="bg-surface pt-12 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:py-12 text-xs text-text-secondary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-border">
             
             <!-- Col 1: Brand (4 cols) -->
@@ -4484,6 +4501,20 @@
             }
         }
 
+        // Modal Background Scroll Lock Manager (Mobile Native & Desktop)
+        function updateModalBodyLock() {
+            const modalIds = ['auth-modal', 'pro-payment-modal', 'legal-modal', 'activity-detail-modal', 'log-workout-modal'];
+            const isAnyOpen = modalIds.some(id => {
+                const el = document.getElementById(id);
+                return el && !el.classList.contains('hidden');
+            });
+            if (isAnyOpen) {
+                document.body.classList.add('overflow-hidden');
+            } else {
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
         // Universal Accessible Modal Management (Escape key, Scrim click, Focus return)
         function setupAccessibleModals() {
             const modalConfigs = [
@@ -4517,6 +4548,8 @@
                     });
                 }
             });
+
+            updateModalBodyLock();
         }
 
         // Tab Switcher for Workstation
@@ -4538,6 +4571,11 @@
             if (activeBtn) {
                 activeBtn.className = 'tab-btn px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary flex items-center gap-1.5';
                 activeBtn.setAttribute('aria-selected', 'true');
+                try {
+                    activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } catch (e) {
+                    activeBtn.scrollIntoView(false);
+                }
             }
 
             // Sync Mobile Native Bottom Navigation Bar state
@@ -4905,12 +4943,14 @@
 
             const modal = document.getElementById('activity-detail-modal');
             if (modal) modal.classList.remove('hidden');
+            updateModalBodyLock();
             if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
         }
 
         function closeActivityDetailModal() {
             const modal = document.getElementById('activity-detail-modal');
             if (modal) modal.classList.add('hidden');
+            updateModalBodyLock();
             if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
         }
 
@@ -5320,12 +5360,14 @@
         function openLogWorkoutModal() {
             const modal = document.getElementById('log-workout-modal');
             if (modal) modal.classList.remove('hidden');
+            updateModalBodyLock();
             if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
         }
 
         function closeLogWorkoutModal() {
             const modal = document.getElementById('log-workout-modal');
             if (modal) modal.classList.add('hidden');
+            updateModalBodyLock();
             if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
         }
 
@@ -5880,9 +5922,9 @@
 
             if (btnToday) {
                 if (offset === 0) {
-                    btnToday.className = 'px-3 py-1.5 bg-tertiary text-white font-bold text-[11px]';
+                    btnToday.className = 'px-3.5 h-9 flex items-center justify-center bg-tertiary text-white font-bold text-[11px] transition-colors';
                 } else {
-                    btnToday.className = 'px-3 py-1.5 hover:bg-surface font-bold text-[11px] text-text-secondary';
+                    btnToday.className = 'px-3.5 h-9 flex items-center justify-center hover:bg-surface font-bold text-[11px] text-text-secondary transition-colors';
                 }
             }
 
@@ -5939,11 +5981,11 @@
             }
 
             const zoneStyles = {
-                'Z1': 'bg-slate-500/10 text-slate-400 border-slate-500/30',
-                'Z2': 'bg-sky-500/10 text-sky-400 border-sky-500/30',
-                'Z3': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-                'Z4': 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-                'Z5': 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                'Z1': 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/30',
+                'Z2': 'bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/30',
+                'Z3': 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
+                'Z4': 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30',
+                'Z5': 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'
             };
 
             gridEl.innerHTML = days.map((day, idx) => {
@@ -5976,6 +6018,11 @@
 
                 return `
                     <div onclick="selectCalendarDay(${idx}, true)" 
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCalendarDay(${idx}, true);}"
+                         class="flat-card p-3 bg-surface ${cardBorder} flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-0.5 group min-h-[175px]"
+                         role="button"
+                         tabindex="0"
+                         aria-label="${day.day_name} ${day.title}">
                          class="flat-card p-3 bg-surface ${cardBorder} flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-0.5 group min-h-[175px]"
                          role="button"
                          tabindex="0"
@@ -6269,12 +6316,14 @@
             currentAuthMode = mode;
             const modal = document.getElementById('auth-modal');
             if (modal) modal.classList.remove('hidden');
+            updateModalBodyLock();
             switchAuthTab(mode);
         }
 
         function closeAuthModal() {
             const modal = document.getElementById('auth-modal');
             if (modal) modal.classList.add('hidden');
+            updateModalBodyLock();
         }
 
         function switchAuthTab(mode) {
@@ -6486,11 +6535,13 @@
             updateByokUI();
             const modal = document.getElementById('pro-payment-modal');
             if (modal) modal.classList.remove('hidden');
+            updateModalBodyLock();
         }
 
         function closeProPaymentModal() {
             const modal = document.getElementById('pro-payment-modal');
             if (modal) modal.classList.add('hidden');
+            updateModalBodyLock();
         }
 
         function updatePlanPrice(plan) {
@@ -6846,12 +6897,14 @@
         function openLegalModal(tab = 'terms') {
             const modal = document.getElementById('legal-modal');
             if (modal) modal.classList.remove('hidden');
+            updateModalBodyLock();
             switchLegalTab(tab);
         }
 
         function closeLegalModal() {
             const modal = document.getElementById('legal-modal');
             if (modal) modal.classList.add('hidden');
+            updateModalBodyLock();
         }
 
         function switchLegalTab(tab) {
