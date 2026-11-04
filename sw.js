@@ -1,5 +1,5 @@
-// Goalie — Production PWA Service Worker (v2.4.3)
-const CACHE_NAME = 'goalie-cache-v2.4.3';
+// Goalie — Production PWA Service Worker (v2.5.0)
+const CACHE_NAME = 'goalie-cache-v2.5.0';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -43,7 +43,7 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Fetch: Stale-While-Revalidate for UI assets, Network-First for API
+// Fetch: Network-First for HTML navigation, Stale-While-Revalidate for static assets
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
@@ -52,6 +52,32 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    const isHtmlNavigation = event.request.mode === 'navigate' || 
+        (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'));
+
+    if (isHtmlNavigation) {
+        // Network-First for HTML documents to guarantee freshest deploy, fallback to cache if offline
+        event.respondWith(
+            fetch(event.request)
+                .then((networkResponse) => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, responseClone);
+                        });
+                    }
+                    return networkResponse;
+                })
+                .catch(() => {
+                    return caches.match(event.request).then((cached) => {
+                        return cached || caches.match('/index.html') || caches.match('/');
+                    });
+                })
+        );
+        return;
+    }
+
+    // Stale-While-Revalidate for static assets (CSS, JS, fonts, icons)
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
             const fetchPromise = fetch(event.request).then((networkResponse) => {
@@ -62,12 +88,7 @@ self.addEventListener('fetch', (event) => {
                     });
                 }
                 return networkResponse;
-            }).catch(() => {
-                // If offline and request is an HTML page, fallback to cached index.html
-                if (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html')) {
-                    return caches.match('/index.html') || caches.match('/');
-                }
-            });
+            }).catch(() => null);
 
             return cachedResponse || fetchPromise;
         })

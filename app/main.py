@@ -77,6 +77,8 @@ async def add_cache_control_headers(request: Request, call_next):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     elif path in ["/manifest.json", "/favicon.ico", "/apple-touch-icon.png"]:
         response.headers["Cache-Control"] = "public, max-age=86400"
+    elif path in ["/", "/index.html", "/login", "/login.html", "/admin", "/admin.html"]:
+        response.headers["Cache-Control"] = "no-cache, must-revalidate"
     return response
 
 # Register routers
@@ -1186,7 +1188,7 @@ async def get_coach_recommendations(user_id: str = Depends(get_current_user)):
     3. Target race berikutnya
     Setiap output diverifikasi dan diikat pada data atlet terisolasi.
     """
-    user_data = dashboard(user_id)
+    user_data = await asyncio.to_thread(dashboard, user_id)
     workouts = user_data.get("recent_workouts", [])
     profile = user_data.get("profile", {})
     tsb_info = user_data.get("tsb", {})
@@ -1222,7 +1224,7 @@ async def suggest_training(payload: TrainingSuggestionInput, user_id: str = Depe
     Menghasilkan AI Training Suggestion harian lintas cabang olahraga (Lari, Sepeda, Renang, Triathlon).
     Menggabungkan status kesiapan atlet, metrik Garmin (Sleep/HRV/RHR), dan beban latihan TSB.
     """
-    user_data = dashboard(user_id)
+    user_data = await asyncio.to_thread(dashboard, user_id)
     workouts = user_data.get("recent_workouts", [])
     profile = user_data.get("profile", {})
     tsb_info = user_data.get("tsb", {})
