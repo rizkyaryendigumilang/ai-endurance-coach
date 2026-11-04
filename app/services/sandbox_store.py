@@ -2,7 +2,7 @@
 In-memory store for seamless sandbox/local demonstration when Supabase cloud is unreachable or paused.
 Preserves user data during testing session so full functional workflows work out-of-the-box.
 """
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import uuid
 
 _USERS_DB = {}
@@ -54,8 +54,8 @@ def get_subscription(user_id: str) -> dict:
 
 def set_subscription(user_id: str, plan: str = "monthly", order_id: str = None, payment_method: str = "qris") -> dict:
     store = _get_user_store(user_id)
-    from datetime import datetime, timedelta
-    now = datetime.utcnow()
+    from datetime import datetime, timedelta, timezone
+    now = datetime.now(timezone.utc)
     duration_days = 365 if plan == "annual" else 30
     expires = (now + timedelta(days=duration_days)).isoformat()
     sub_data = {
@@ -78,7 +78,7 @@ def add_race(user_id: str, race_data: dict):
         "id": race_id,
         "user_id": user_id,
         "status": "upcoming",
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         **race_data
     }
     store["races"].append(record)
@@ -95,7 +95,7 @@ def save_training_plan(user_id: str, race_id: str, plan_data: dict, workouts: li
         "id": plan_id,
         "user_id": user_id,
         "race_id": race_id,
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         **plan_data
     }
     store["training_plans"].append(plan_record)
@@ -107,7 +107,7 @@ def save_training_plan(user_id: str, race_id: str, plan_data: dict, workouts: li
             "id": wid,
             "training_plan_id": plan_id,
             "user_id": user_id,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             **w
         }
         store["planned_workouts"].append(w_rec)
@@ -136,14 +136,14 @@ def add_actual_workout(user_id: str, workout_data: dict, metrics_data: dict):
         "id": wid,
         "user_id": user_id,
         "source": workout_data.get("source", "manual"),
-        "started_at": datetime.utcnow().isoformat(),
-        "created_at": datetime.utcnow().isoformat(),
+        "started_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         **workout_data
     }
     m_rec = {
         "id": str(uuid.uuid4()),
         "actual_workout_id": wid,
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         **metrics_data
     }
     w_rec["activity_metrics"] = [m_rec]
@@ -161,7 +161,7 @@ def add_chat_message(user_id: str, role: str, content: str):
         "id": str(uuid.uuid4()),
         "role": role,
         "content": content,
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat()
     }
     store["chat_history"].append(msg)
     return msg
@@ -177,7 +177,7 @@ def save_garmin_health_metric(user_id: str, metric_data: dict):
         store["garmin_health"] = []
     record = {
         "id": str(uuid.uuid4()),
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
         **metric_data
     }
     store["garmin_health"].insert(0, record)
@@ -193,7 +193,7 @@ def save_garmin_session(user_id: str, email: str, session_data: dict = None):
     store = _get_user_store(user_id)
     store["garmin_session"] = {
         "email": email,
-        "connected_at": datetime.utcnow().isoformat(),
+        "connected_at": datetime.now(timezone.utc).isoformat(),
         "is_active": True,
         "session_data": session_data or {}
     }
@@ -482,7 +482,7 @@ def add_audit_log(action: str, target: str, detail: str, admin: str = "Superuser
     _seed_admin_logs()
     item = {
         "id": f"aud-{uuid.uuid4().hex[:6]}",
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "action": action,
         "target": target,
         "admin": admin,
@@ -499,7 +499,7 @@ def add_webhook_log(source: str, event_type: str, status: str, athlete_id: str, 
     _seed_admin_logs()
     item = {
         "id": f"whk-{uuid.uuid4().hex[:6]}",
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "source": source,
         "event_type": event_type,
         "status": status,
@@ -521,7 +521,7 @@ def set_system_broadcast(title: str, message: str, level: str = "info"):
         "title": title,
         "message": message,
         "level": level or "info",
-        "created_at": datetime.utcnow().isoformat() + "Z",
+        "created_at": datetime.now(timezone.utc).isoformat(),
         "active": True
     }
     add_audit_log("BROADCAST_PUBLISHED", f"Broadcast: {title}", f"Level: {level} • {message[:60]}...")
@@ -590,7 +590,7 @@ def update_athlete_subscription(user_id: str, is_pro: bool, plan: str = "monthly
     store["subscription"]["is_active"] = is_pro
     store["subscription"]["status"] = "pro" if is_pro else "free"
     store["subscription"]["plan"] = plan if is_pro else "free"
-    store["subscription"]["updated_at"] = datetime.utcnow().isoformat() + "Z"
+    store["subscription"]["updated_at"] = datetime.now(timezone.utc).isoformat()
     
     prof_name = store.get("profile", {}).get("full_name", user_id)
     add_audit_log(

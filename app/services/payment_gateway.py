@@ -2,7 +2,7 @@ import os
 import hmac
 import hashlib
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 PAYMENT_PROVIDER = os.getenv("PAYMENT_GATEWAY_PROVIDER", "mock").lower()
@@ -23,7 +23,7 @@ class MockPaymentGateway(BasePaymentGateway):
     Used until production Midtrans/Xendit credentials are provided.
     """
     def create_order(self, user_id: str, plan: str, amount: int, payment_method: str = "qris") -> Dict:
-        order_id = f"ORD-PRO-{datetime.utcnow().strftime('%y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+        order_id = f"ORD-PRO-{datetime.now(timezone.utc).strftime('%y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
         qris_code = f"00020101021226680016ID.CO.GOALIE.WWW0118936009999900010203510400005303360540{amount}5802ID5914GOALIE COACH6007JAKARTA62070703A016304ABCD"
         va_number = None
         if "va" in (payment_method or ""):
@@ -55,7 +55,7 @@ class MidtransPaymentGateway(BasePaymentGateway):
         self.server_key = server_key
 
     def create_order(self, user_id: str, plan: str, amount: int, payment_method: str = "qris") -> Dict:
-        order_id = f"MDT-{datetime.utcnow().strftime('%y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+        order_id = f"MDT-{datetime.now(timezone.utc).strftime('%y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
         # Midtrans API request placeholder
         return {
             "order_id": order_id,

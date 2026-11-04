@@ -210,6 +210,14 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertIn("zone", acwr)
         self.assertIn("injury_risk", acwr)
 
+        # 5. Heart rate drift edge cases (zero/negative values must return 0.0 without ZeroDivisionError)
+        self.assertEqual(SportsEngine.calculate_hr_drift(first_half_hr=140, first_half_pace=0, second_half_hr=150, second_half_pace=5.0), 0.0)
+        self.assertEqual(SportsEngine.calculate_hr_drift(first_half_hr=0, first_half_pace=5.0, second_half_hr=150, second_half_pace=5.0), 0.0)
+
+        # 6. Pace degradation edge cases (zero/empty splits must return 0.0 without ZeroDivisionError)
+        self.assertEqual(SportsEngine.calculate_pace_degradation([0.0, 0.0, 0.0, 5.0]), 0.0)
+        self.assertEqual(SportsEngine.calculate_pace_degradation([]), 0.0)
+
     def test_11_rate_limiter_proxy_ip_and_resilience(self):
         """Verify RateLimiter reverse proxy IP resolution and eviction."""
         from app.core.rate_limiter import chat_rate_limiter

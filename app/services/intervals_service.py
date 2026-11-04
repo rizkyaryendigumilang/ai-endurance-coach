@@ -1,7 +1,7 @@
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.responses import RedirectResponse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.core.config import (
     supabase, INTERVALS_API_KEY, INTERVALS_ATHLETE_ID,
     FRONTEND_URL, BACKEND_URL
@@ -49,7 +49,7 @@ async def fetch_intervals_activities(user_id: str = Depends(get_current_user), d
         )
 
     athlete_id = INTERVALS_ATHLETE_ID
-    oldest = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
+    oldest = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
 
     async with httpx.AsyncClient() as client:
         res = await client.get(
@@ -182,7 +182,7 @@ def sync_calendar(user_id: str = Depends(get_current_user)):
         lines += [
             "BEGIN:VEVENT",
             f"UID:{uid}@goalie.fit",
-            f"DTSTAMP:{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTAMP:{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
             f"DTSTART;VALUE=DATE:{dt}",
             f"DTEND;VALUE=DATE:{dt}",
             f"SUMMARY:{title}",

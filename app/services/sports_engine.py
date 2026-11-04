@@ -48,11 +48,14 @@ class SportsEngine:
         Menghitung Aerobic Decoupling (Heart Rate Drift).
         Nilai > 5% menandakan fondasi endurance mulai runtuh (kelelahan).
         """
-        if first_half_hr == 0 or second_half_hr == 0:
+        if first_half_hr <= 0 or second_half_hr <= 0 or first_half_pace <= 0 or second_half_pace <= 0:
             return 0.0
         
         ef_first = first_half_pace / first_half_hr
         ef_second = second_half_pace / second_half_hr
+        
+        if ef_first <= 0:
+            return 0.0
         
         drift_pct = ((ef_first - ef_second) / ef_first) * 100
         return round(drift_pct, 2)
@@ -70,8 +73,11 @@ class SportsEngine:
         if split_idx == 0: return 0.0
         
         avg_80_awal = sum(paces_per_km[:split_idx]) / split_idx
-        avg_20_akhir = sum(paces_per_km[split_idx:]) / len(paces_per_km[split_idx:])
+        remaining = paces_per_km[split_idx:]
+        if not remaining or avg_80_awal <= 0:
+            return 0.0
         
+        avg_20_akhir = sum(remaining) / len(remaining)
         degradation_pct = ((avg_20_akhir - avg_80_awal) / avg_80_awal) * 100
         return round(degradation_pct, 2)
 
@@ -169,13 +175,13 @@ class SportsEngine:
         """
         Menghitung fase periodisasi makrosiklus berdasarkan sisa minggu menuju race date.
         """
-        from datetime import datetime
+        from datetime import datetime, timezone
         if not target_race_date:
             return {"days_remaining": 0, "weeks_remaining": 0, "current_periodization_phase": "General Aerobic Conditioning"}
         try:
             clean_str = str(target_race_date)[:10]
             r_date = datetime.strptime(clean_str, "%Y-%m-%d").date()
-            today = datetime.utcnow().date()
+            today = datetime.now(timezone.utc).date()
             days_left = (r_date - today).days
             weeks_left = max(0, round(days_left / 7.0, 1))
 
@@ -211,7 +217,8 @@ class SportsEngine:
         if chronic_load_28d <= 0:
             return {"acwr_ratio": 1.0, "zone": "Sweet Spot (Optimal)", "injury_risk": "low"}
         
-        ratio = round(acute_load_7d / (chronic_load_28d / 4.0 if chronic_load_28d > acute_load_7d else chronic_load_28d), 2)
+        weekly_chronic = max(chronic_load_28d / 4.0, 0.1)
+        ratio = round(acute_load_7d / weekly_chronic, 2)
         if ratio < 0.8:
             zone, risk = "Under-training", "low"
         elif ratio <= 1.3:
