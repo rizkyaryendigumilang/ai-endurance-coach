@@ -413,7 +413,7 @@
             <form onsubmit="handleAdminAuth(event)" class="space-y-4 text-left">
                 <div>
                     <label class="block text-[11px] font-mono text-text-secondary mb-1">Master Passcode</label>
-                    <input type="password" id="admin-passcode" class="flat-input w-full mono" placeholder="Enter passcode (default: admin123)" required autocomplete="current-password">
+                    <input type="password" id="admin-passcode" class="flat-input w-full mono" placeholder="Enter passcode (admin, admin123, or Apaya1234)" required autocomplete="current-password">
                 </div>
                 <div id="auth-error-msg" class="hidden text-xs text-flat-orange font-mono p-2 bg-flat-orange/10 border border-flat-orange"></div>
 
@@ -424,7 +424,7 @@
 
             <div class="mt-6 pt-4 border-t border-border text-[11px] font-mono text-text-secondary flex items-center justify-between">
                 <span>Sandbox Dev Environment</span>
-                <span class="text-tertiary cursor-pointer hover:underline" onclick="document.getElementById('admin-passcode').value='admin123';">Passcode: admin123 / Apaya1234</span>
+                <span class="text-tertiary cursor-pointer hover:underline" onclick="document.getElementById('admin-passcode').value='admin';">Passcode: admin / admin123 / Apaya1234</span>
             </div>
         </div>
 
@@ -1094,8 +1094,24 @@
         }
 
         function checkAdminAuth() {
-            const token = sessionStorage.getItem('admin_jwt_token');
-            const isAuth = sessionStorage.getItem('admin_authenticated') === 'true' && Boolean(token);
+            let token = sessionStorage.getItem('admin_jwt_token');
+            if (!token) {
+                const localToken = localStorage.getItem('admin_jwt_token') || localStorage.getItem('access_token');
+                if (localToken) {
+                    try {
+                        const parts = localToken.split('.');
+                        if (parts.length === 3) {
+                            const payload = JSON.parse(atob(parts[1]));
+                            if (payload.role === 'admin' || payload.iss === 'goalie-admin') {
+                                token = localToken;
+                                sessionStorage.setItem('admin_jwt_token', token);
+                                sessionStorage.setItem('admin_authenticated', 'true');
+                            }
+                        }
+                    } catch (e) {}
+                }
+            }
+            const isAuth = (sessionStorage.getItem('admin_authenticated') === 'true' || Boolean(token)) && Boolean(token);
             const gatekeeper = document.getElementById('gatekeeper-view');
             const dashboard = document.getElementById('dashboard-view');
             const btnLock = document.getElementById('btn-lock');
@@ -1136,6 +1152,7 @@
                 if (res.ok && data.access_token) {
                     sessionStorage.setItem('admin_jwt_token', data.access_token);
                     sessionStorage.setItem('admin_authenticated', 'true');
+                    localStorage.setItem('admin_jwt_token', data.access_token);
                     err.classList.add('hidden');
                     if (passInput) passInput.value = '';
                     checkAdminAuth();
@@ -1156,6 +1173,7 @@
         function lockAdminSession() {
             sessionStorage.removeItem('admin_jwt_token');
             sessionStorage.removeItem('admin_authenticated');
+            localStorage.removeItem('admin_jwt_token');
             checkAdminAuth();
             showToast('Sesi Terkunci', 'Kredensial administrator telah dibersihkan.', 'info');
         }
@@ -1745,13 +1763,6 @@
         async function clearSystemCache() {
             try {
                 const res = await adminFetch(`${API_BASE}/admin/maintenance/clear-cache`, { method: 'POST' });
-                const data = await res.json();
-                showToast('Cache Cleared', data.message || 'Compute cache reset successfully.', 'success');
-                loadAdminData();
-            } catch (err) {
-                showToast('Cache Cleared', 'In-memory telemetry caches flushed.', 'success');
-            }
-        }
                 const data = await res.json();
                 showToast('Cache Cleared', data.message || 'Compute cache reset successfully.', 'success');
                 loadAdminData();

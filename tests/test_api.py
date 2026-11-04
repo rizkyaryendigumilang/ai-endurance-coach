@@ -140,13 +140,22 @@ class TestGoalieAPI(unittest.TestCase):
         bad_res = self.client.post("/api/v1/admin/auth/login", json={"passcode": "wrong_password"})
         self.assertEqual(bad_res.status_code, 401)
 
-        # 2. Valid passcode
+        # 2. Valid passcodes (admin123 and admin shortcut)
         good_res = self.client.post("/api/v1/admin/auth/login", json={"passcode": "admin123"})
         self.assertEqual(good_res.status_code, 200)
         admin_data = good_res.json()
         admin_token = admin_data.get("access_token")
         self.assertIsNotNone(admin_token)
         self.assertEqual(admin_data.get("role"), "admin")
+
+        admin_shortcut_res = self.client.post("/api/v1/admin/auth/login", json={"passcode": "admin"})
+        self.assertEqual(admin_shortcut_res.status_code, 200)
+
+        # 2b. Gateway login via /auth/login with admin email
+        gw_res = self.client.post("/api/v1/auth/login", json={"email": "admin", "password": "admin"})
+        self.assertEqual(gw_res.status_code, 200)
+        self.assertEqual(gw_res.json().get("role"), "admin")
+        self.assertEqual(gw_res.json().get("redirect_url"), "/admin")
 
         # 3. Verify admin token via auth/verify
         verify_res = self.client.get(

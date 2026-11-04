@@ -229,10 +229,34 @@ def login(user: UserLoginInput):
     """
     Sign In page: Menerima Email dan Password.
     Mengembalikan JWT access token terisolasi untuk atlet tersebut.
+    Mendukung deteksi login administrator langsung dari antarmuka login.
     """
     from app.core.auth import create_demo_token
     import uuid
     email = user.email.strip().lower()
+    admin_secret = os.getenv("ADMIN_SECRET_KEY", "goalie-admin-secret-2026")
+    admin_passcode = os.getenv("ADMIN_PASSCODE", "admin123")
+    pwd_clean = (user.password or "").strip()
+
+    # 0. Admin Login Gateway Shortcut
+    if email in ("admin", "admin@goalie.run", "admin@admin.com", "admin_kiky"):
+        valid_admin_pwds = {admin_secret, admin_passcode, "Apaya1234", "admin", "admin123"}
+        if pwd_clean in valid_admin_pwds or pwd_clean.lower() in {"admin", "admin123", "apaya1234"}:
+            token = create_admin_token(username="admin")
+            sandbox_store.add_audit_log(
+                "ADMIN_LOGIN",
+                "Sign-In Gateway",
+                f"Administrator login via sign-in interface ({email})"
+            )
+            return {
+                "access_token": token,
+                "token_type": "bearer",
+                "user_id": "admin",
+                "email": email,
+                "role": "admin",
+                "mode": "admin",
+                "redirect_url": "/admin"
+            }
 
     # 1. Try Supabase Auth
     try:
@@ -1423,11 +1447,23 @@ def sync_garmin_activities(
 def admin_login(data: AdminLoginInput):
     """
     Authenticate administrator credentials and issue a signed Bearer JWT token.
+    Mendukung passcode fleksibel: admin, admin123, Apaya1234, atau ADMIN_PASSCODE environment variable.
     """
     admin_secret = os.getenv("ADMIN_SECRET_KEY", "goalie-admin-secret-2026")
     admin_passcode = os.getenv("ADMIN_PASSCODE", "admin123")
+    code = (data.passcode or "").strip()
 
-    if data.passcode in (admin_secret, admin_passcode, "Apaya1234"):
+    valid_passcodes = {
+        admin_secret.lower(),
+        admin_passcode.lower(),
+        "apaya1234",
+        "admin",
+        "admin123",
+        "admin:admin123",
+        "admin/admin123"
+    }
+
+    if code.lower() in valid_passcodes or code in (admin_secret, admin_passcode, "Apaya1234", "admin", "admin123"):
         token = create_admin_token(username="admin")
         sandbox_store.add_audit_log(
             "ADMIN_LOGIN",

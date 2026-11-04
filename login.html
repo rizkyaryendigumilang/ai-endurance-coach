@@ -451,8 +451,8 @@
                     <!-- Form 1: Sign In -->
                     <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3.5">
                         <div>
-                            <label for="login-email" class="block text-[11px] font-mono text-text-secondary mb-1">Email Address</label>
-                            <input type="email" id="login-email" class="flat-input text-xs" placeholder="athlete@domain.com" required autocomplete="email">
+                            <label for="login-email" class="block text-[11px] font-mono text-text-secondary mb-1">Email or Username</label>
+                            <input type="text" id="login-email" class="flat-input text-xs" placeholder="athlete@domain.com or admin" required autocomplete="username">
                         </div>
 
                         <div>
@@ -549,7 +549,11 @@
 
                     <div class="mt-4 pt-3 border-t border-border flex justify-between text-[11px] font-mono text-text-secondary">
                         <span>Demo Sandbox</span>
-                        <span class="text-tertiary cursor-pointer hover:underline" onclick="fillTestAccount()">Fill Test Credentials</span>
+                        <div class="space-x-3">
+                            <span class="text-tertiary cursor-pointer hover:underline" onclick="fillTestAccount()">Athlete</span>
+                            <span>•</span>
+                            <span class="text-tertiary cursor-pointer hover:underline" onclick="fillAdminAccount()">Admin</span>
+                        </div>
                     </div>
 
                 </div>
@@ -675,6 +679,12 @@
             toast.info('Credentials Filled', 'Rizky Aryendi Gumilang (Apaya1234) loaded.');
         }
 
+        function fillAdminAccount() {
+            document.getElementById('login-email').value = 'admin';
+            document.getElementById('login-password').value = 'admin123';
+            toast.info('Admin Credentials Filled', 'admin (admin123) loaded.');
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -691,6 +701,17 @@
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.detail || 'Invalid email or password.');
+
+                if (data.role === 'admin' || data.redirect_url === '/admin') {
+                    sessionStorage.setItem('admin_jwt_token', data.access_token);
+                    sessionStorage.setItem('admin_authenticated', 'true');
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('admin_jwt_token', data.access_token);
+                    localStorage.setItem('user_email', email);
+                    toast.success('Admin Otorisasi Diberikan', 'Mengalihkan ke Admin Command Center...');
+                    setTimeout(() => window.location.href = '/admin', 600);
+                    return;
+                }
 
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('user_email', email);
