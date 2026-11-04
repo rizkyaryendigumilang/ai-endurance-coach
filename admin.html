@@ -20,10 +20,10 @@
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
     <meta name="color-scheme" content="light dark">
 
-    <!-- Fonts: System UI + JetBrains Mono -->
+    <!-- Fonts: Google Roboto + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS -->
     <link rel="stylesheet" href="/public/css/tailwind.min.css">
@@ -157,7 +157,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
             line-height: 1.6;
@@ -369,7 +369,7 @@
                     <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border">
                     <div class="flex items-baseline gap-2">
                         <span class="font-display font-bold text-base tracking-tight text-text-primary">Goalie Admin</span>
-                        <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-2 py-0.5 rounded-full border border-border">SUPERUSER</span>
+                        <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-2 py-0.5 rounded-full border border-border hidden xs:inline-block">SUPERUSER</span>
                     </div>
                 </a>
 
@@ -379,10 +379,11 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2.5">
-                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
+            <div class="flex items-center gap-2 sm:gap-2.5">
+                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span class="hidden sm:inline">Athlete Terminal</span>
+                    <span class="sm:hidden">App</span>
                 </a>
                 <button onclick="lockAdminSession()" id="btn-lock" class="hidden text-xs text-flat-orange hover:text-red-700 px-3 py-1.5 border border-flat-orange/30 rounded-full transition-colors touch-target-expand" title="Lock Admin Session">
                     <span>Lock Session</span>
@@ -475,7 +476,7 @@
             </div>
 
             <!-- Navigation Tabs (Pill style Strava aesthetic - Feature 7) -->
-            <div class="flex items-center gap-2 border-b-2 border-border pb-2 overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 border-b-2 border-border pb-2 overflow-x-auto no-scrollbar" role="tablist" style="touch-action: pan-y;">
                 <button onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab-btn active px-4 py-2 rounded-full font-mono text-xs font-bold transition-all flex items-center gap-2 bg-tertiary text-white shadow-sm">
                     <span>📊</span> <span>Overview & Telemetri</span>
                 </button>
@@ -625,7 +626,7 @@
 
                     <!-- Athletes Table -->
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-mono">
+                        <table class="w-full text-left text-xs font-mono min-w-[720px]">
                             <thead class="border-b-2 border-border text-text-secondary">
                                 <tr>
                                     <th class="py-2.5 pr-4">Identitas Atlet</th>
@@ -675,7 +676,7 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-mono">
+                        <table class="w-full text-left text-xs font-mono min-w-[640px]">
                             <thead class="border-b-2 border-border text-text-secondary">
                                 <tr>
                                     <th class="py-2 pr-3">Waktu</th>
@@ -705,7 +706,7 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs font-mono">
+                        <table class="w-full text-left text-xs font-mono min-w-[640px]">
                             <thead class="border-b-2 border-border text-text-secondary">
                                 <tr>
                                     <th class="py-2 pr-3">Waktu</th>
@@ -904,7 +905,7 @@
             <div class="space-y-2">
                 <div class="text-xs font-mono font-bold text-text-primary uppercase">Riwayat Sesi Latihan Terkini</div>
                 <div class="overflow-x-auto border border-border max-h-48 overflow-y-auto">
-                    <table class="w-full text-left text-xs font-mono">
+                    <table class="w-full text-left text-xs font-mono min-w-[420px]">
                         <thead class="bg-surface-subtle border-b border-border text-text-secondary">
                             <tr>
                                 <th class="py-2 px-3">Judul Sesi</th>

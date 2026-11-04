@@ -32,10 +32,10 @@
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
     <meta name="color-scheme" content="light dark">
 
-    <!-- Fonts: System UI + JetBrains Mono for numerical data -->
+    <!-- Fonts: Google Roboto + JetBrains Mono for numerical data -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS (25.8 KB) -->
     <link rel="stylesheet" href="/public/css/tailwind.min.css">
@@ -181,7 +181,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
             line-height: 1.6;
@@ -606,7 +606,7 @@
                     </div>
                     <div class="flex items-baseline gap-1.5">
                         <span class="font-display font-extrabold text-xl tracking-tight text-text-primary">GOALIE</span>
-                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-tertiary/15 text-tertiary">STRAVA AI</span>
+                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-tertiary/15 text-tertiary hidden sm:inline">STRAVA AI</span>
                     </div>
                 </a>
 
@@ -666,26 +666,26 @@
                 </a>
 
                 <!-- Unauthenticated State -->
-                <div id="nav-unauth-actions" class="flex items-center gap-2">
-                    <button onclick="openAuthModal('login')" class="h-8 px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-full transition-colors" data-i18n="nav_login">
+                <div id="nav-unauth-actions" class="flex items-center gap-1.5 sm:gap-2">
+                    <button onclick="openAuthModal('login')" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-full transition-colors" data-i18n="nav_login">
                         Log In
                     </button>
-                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-3 text-xs" data-i18n="nav_signup">
+                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-2.5 sm:px-3 text-xs hidden xs:inline-flex" data-i18n="nav_signup">
                         Sign Up
                     </button>
                 </div>
 
                 <!-- Authenticated State -->
-                <div id="nav-auth-actions" class="hidden flex items-center gap-2">
-                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2.5 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-full hover:bg-flat-amber/10 transition-colors flex items-center gap-1">
+                <div id="nav-auth-actions" class="hidden flex items-center gap-1.5 sm:gap-2">
+                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-full hover:bg-flat-amber/10 transition-colors flex items-center gap-1">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                        <span>SUMMIT PRO</span>
+                        <span class="hidden sm:inline">SUMMIT PRO</span>
                     </button>
 
                     <div class="relative" id="user-profile-menu-container">
-                        <button type="button" onclick="toggleUserDropdown(event)" id="user-dropdown-btn" aria-expanded="false" aria-haspopup="true" class="h-8 px-2.5 rounded-full border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary hover:border-text-primary transition-colors touch-target-expand">
+                        <button type="button" onclick="toggleUserDropdown(event)" id="user-dropdown-btn" aria-expanded="false" aria-haspopup="true" class="h-8 px-2 sm:px-2.5 rounded-full border border-border bg-surface-subtle flex items-center gap-1.5 sm:gap-2 text-xs font-semibold text-text-primary hover:border-text-primary transition-colors touch-target-expand">
                             <span id="user-avatar-initial" class="w-5 h-5 rounded-full bg-tertiary text-white flex items-center justify-center font-mono text-[10px] font-bold">RG</span>
-                            <span id="user-display-email" class="max-w-[110px] truncate">athlete</span>
+                            <span id="user-display-email" class="max-w-[70px] sm:max-w-[110px] truncate">athlete</span>
                         </button>
                         <div id="user-dropdown-menu" class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-lg p-1.5 hidden z-50 shadow-lg">
                             <div class="px-2 py-1.5 text-[11px] text-text-secondary border-b border-border mb-1" id="dropdown-email">user@domain.com</div>
@@ -1241,7 +1241,7 @@
                 </div>
 
                 <!-- Tabs (Mobile-native horizontal scrollable carousel without scrollbar) -->
-                <div class="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto no-scrollbar py-1 flex-nowrap -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" role="tablist" aria-label="Workstation View Navigation">
+                <div class="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto no-scrollbar py-1 flex-nowrap -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" role="tablist" aria-label="Workstation View Navigation" style="touch-action: pan-y;">
                     <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary" data-i18n="tab_cockpit">
                         Performance Cockpit
                     </button>
@@ -2361,14 +2361,14 @@
 
                             <!-- 3-Way Coach Tier Selector -->
                             <div class="flex items-center gap-1 bg-surface-subtle border border-border p-0.5 rounded-full font-mono text-[11px]">
-                                <button type="button" id="tier-btn-pemula" onclick="selectCoachTier('pemula')" class="px-2.5 py-1 rounded-full text-text-secondary hover:text-text-primary transition-colors touch-target-expand">
-                                    Pemula (Free)
+                                <button type="button" id="tier-btn-pemula" onclick="selectCoachTier('pemula')" class="px-2 py-1 rounded-full text-text-secondary hover:text-text-primary transition-colors touch-target-expand">
+                                    <span>Pemula</span><span class="hidden sm:inline"> (Free)</span>
                                 </button>
-                                <button type="button" id="tier-btn-free" onclick="selectCoachTier('free')" class="px-2.5 py-1 rounded-full bg-tertiary text-white font-bold transition-colors touch-target-expand">
-                                    Coach (Free)
+                                <button type="button" id="tier-btn-free" onclick="selectCoachTier('free')" class="px-2 py-1 rounded-full bg-tertiary text-white font-bold transition-colors touch-target-expand">
+                                    <span>Coach</span><span class="hidden sm:inline"> (Free)</span>
                                 </button>
-                                <button type="button" id="tier-btn-pro" onclick="selectCoachTier('pro')" class="px-2.5 py-1 rounded-full text-text-secondary hover:text-text-primary transition-colors touch-target-expand">
-                                    Coach (Pro)
+                                <button type="button" id="tier-btn-pro" onclick="selectCoachTier('pro')" class="px-2 py-1 rounded-full text-text-secondary hover:text-text-primary transition-colors touch-target-expand">
+                                    <span>Pro</span><span class="hidden sm:inline"> (Tier)</span>
                                 </button>
                             </div>
 
@@ -2569,7 +2569,7 @@
 
                         <!-- 4-Segment Flat 2D Gauge Bar -->
                         <div class="space-y-1.5 pt-1">
-                            <div class="grid grid-cols-4 gap-1 text-[10px] font-mono text-center">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-[10px] font-mono text-center">
                                 <div class="py-1 px-1 bg-surface-subtle border border-border text-text-secondary">
                                     &lt; 0.8 Under-training
                                 </div>
@@ -2583,7 +2583,7 @@
                                     &gt; 1.5 Danger Zone
                                 </div>
                             </div>
-                            <div class="flex justify-between text-[10px] font-mono text-text-secondary px-1">
+                            <div class="hidden sm:flex justify-between text-[10px] font-mono text-text-secondary px-1">
                                 <span>Low Fitness Decoupling</span>
                                 <span class="text-flat-green font-bold">Lowest Injury Risk (&lt;10%)</span>
                                 <span>Elevated Fatigue</span>
@@ -2651,20 +2651,20 @@
                                 <span class="font-bold text-text-primary">LIVE BIOMETRIC CUSTOMIZER</span>
                                 <div class="text-[11px] text-text-secondary">Current Heart Rate Reserve: <strong class="text-tertiary" id="icu-hrr-display">144 bpm (Max: 192 - Rest: 48)</strong></div>
                             </div>
-                            <div class="flex items-center gap-4">
+                            <div class="flex flex-wrap items-center gap-2 sm:gap-4">
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-[11px] text-text-secondary">Rest HR:</span>
-                                    <input type="number" id="sim-karvonen-rhr" value="48" min="30" max="95" oninput="customizeKarvonenLive()" class="flat-input w-16 text-xs text-center py-1">
+                                    <input type="number" id="sim-karvonen-rhr" value="48" min="30" max="95" inputmode="numeric" oninput="customizeKarvonenLive()" class="flat-input w-16 text-xs text-center py-1">
                                 </div>
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-[11px] text-text-secondary">Max HR:</span>
-                                    <input type="number" id="sim-karvonen-mhr" value="192" min="140" max="230" oninput="customizeKarvonenLive()" class="flat-input w-16 text-xs text-center py-1">
+                                    <input type="number" id="sim-karvonen-mhr" value="192" min="140" max="230" inputmode="numeric" oninput="customizeKarvonenLive()" class="flat-input w-16 text-xs text-center py-1">
                                 </div>
                             </div>
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs font-mono">
+                            <table class="w-full text-left text-xs font-mono min-w-[580px]">
                                 <thead class="border-b-2 border-border text-text-secondary">
                                     <tr>
                                         <th class="py-2.5">Zone</th>
@@ -2740,19 +2740,19 @@
                                 <div class="grid grid-cols-4 gap-1.5 text-[10px] font-mono">
                                     <div>
                                         <span class="text-[9px] text-text-secondary block">H1 Pace</span>
-                                        <input type="number" id="drift-h1-pace" value="5.00" step="0.05" class="flat-input text-center py-1 text-xs w-full">
+                                        <input type="number" id="drift-h1-pace" value="5.00" step="0.05" inputmode="decimal" class="flat-input text-center py-1 text-xs w-full">
                                     </div>
                                     <div>
                                         <span class="text-[9px] text-text-secondary block">H1 HR</span>
-                                        <input type="number" id="drift-h1-hr" value="145" class="flat-input text-center py-1 text-xs w-full">
+                                        <input type="number" id="drift-h1-hr" value="145" inputmode="numeric" class="flat-input text-center py-1 text-xs w-full">
                                     </div>
                                     <div>
                                         <span class="text-[9px] text-text-secondary block">H2 Pace</span>
-                                        <input type="number" id="drift-h2-pace" value="5.05" step="0.05" class="flat-input text-center py-1 text-xs w-full">
+                                        <input type="number" id="drift-h2-pace" value="5.05" step="0.05" inputmode="decimal" class="flat-input text-center py-1 text-xs w-full">
                                     </div>
                                     <div>
                                         <span class="text-[9px] text-text-secondary block">H2 HR</span>
-                                        <input type="number" id="drift-h2-hr" value="149" class="flat-input text-center py-1 text-xs w-full">
+                                        <input type="number" id="drift-h2-hr" value="149" inputmode="numeric" class="flat-input text-center py-1 text-xs w-full">
                                     </div>
                                 </div>
                                 <button onclick="calculateDecouplingLive()" class="btn-flat-secondary w-full py-1.5 text-[10px] font-mono font-bold">
@@ -2813,21 +2813,21 @@
                             <form onsubmit="calculateGapLive(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div>
                                     <label class="block text-[10px] font-mono text-text-secondary uppercase mb-1">Actual Pace (min/km)</label>
-                                    <input type="number" id="gap-input-pace" step="0.05" value="5.25" min="2.0" max="15.0" oninput="calculateGapLive()" class="flat-input w-full text-xs font-mono" required>
+                                    <input type="number" id="gap-input-pace" step="0.05" value="5.25" min="2.0" max="15.0" inputmode="decimal" oninput="calculateGapLive()" class="flat-input w-full text-xs font-mono" required>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-mono text-text-secondary uppercase mb-1">Elevation Gain (meters)</label>
-                                    <input type="number" id="gap-input-elev" step="5" value="80" min="-500" max="2000" oninput="calculateGapLive()" class="flat-input w-full text-xs font-mono" required>
+                                    <input type="number" id="gap-input-elev" step="5" value="80" min="-500" max="2000" inputmode="numeric" oninput="calculateGapLive()" class="flat-input w-full text-xs font-mono" required>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-mono text-text-secondary uppercase mb-1">Segment Distance (km)</label>
-                                    <input type="number" id="gap-input-dist" step="0.1" value="1.0" min="0.1" max="100.0" oninput="calculateGapLive()" class="flat-input w-full text-xs font-mono" required>
+                                    <input type="number" id="gap-input-dist" step="0.1" value="1.0" min="0.1" max="100.0" inputmode="decimal" oninput="calculateGapLive()" class="flat-input w-full text-xs font-mono" required>
                                 </div>
-                                <div class="sm:col-span-3 flex justify-between items-center pt-2">
-                                    <button type="submit" class="btn-flat-primary text-xs font-mono font-bold px-4 py-2">
+                                <div class="sm:col-span-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2">
+                                    <button type="submit" class="btn-flat-primary w-full sm:w-auto text-xs font-mono font-bold px-4 py-2">
                                         CALCULATE GRADE ADJUSTED PACE
                                     </button>
-                                    <div id="gap-result-display" class="text-right">
+                                    <div id="gap-result-display" class="text-left sm:text-right w-full sm:w-auto">
                                         <div class="text-tertiary font-bold text-lg font-mono">04:03 min/km</div>
                                         <div class="text-[11px] text-text-secondary mt-0.5">Effort datar setara (+8% gradien)</div>
                                     </div>
@@ -3006,12 +3006,12 @@
 
                     <!-- Selected Day Detail Flyout / Drawer (Expandable) -->
                     <div id="calendar-day-detail-panel" class="hidden p-4 bg-surface-subtle border border-border-strong space-y-3">
-                        <div class="flex items-center justify-between border-b border-border pb-2.5">
-                            <div class="flex items-center gap-2">
-                                <span id="detail-day-badge" class="px-2 py-0.5 font-mono text-[11px] font-bold border border-tertiary text-tertiary">MONDAY</span>
-                                <h4 id="detail-day-title" class="font-display font-bold text-sm text-text-primary">Zone 2 Aerobic Foundation Run</h4>
+                        <div class="flex items-start justify-between border-b border-border pb-2.5 gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span id="detail-day-badge" class="px-2 py-0.5 font-mono text-[11px] font-bold border border-tertiary text-tertiary shrink-0">MONDAY</span>
+                                <h4 id="detail-day-title" class="font-display font-bold text-sm text-text-primary truncate">Zone 2 Aerobic Foundation Run</h4>
                             </div>
-                            <button type="button" onclick="closeCalendarDayDetail()" class="text-text-secondary hover:text-text-primary text-xs font-mono py-1 px-2.5 rounded-md hover:bg-surface border border-transparent hover:border-border transition-colors touch-target-expand inline-flex items-center gap-1" aria-label="Close session details">
+                            <button type="button" onclick="closeCalendarDayDetail()" class="text-text-secondary hover:text-text-primary text-xs font-mono py-1 px-2.5 rounded-md hover:bg-surface border border-transparent hover:border-border transition-colors touch-target-expand inline-flex items-center gap-1 shrink-0" aria-label="Close session details">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 <span>CLOSE</span>
                             </button>
@@ -3091,7 +3091,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-[11px] text-text-secondary mb-1">Distance (km)</label>
-                                    <input type="number" step="0.1" id="plan-distance" class="flat-input text-xs" value="42.2" required>
+                                    <input type="number" step="0.1" id="plan-distance" inputmode="decimal" class="flat-input text-xs" value="42.2" required>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
@@ -3248,11 +3248,11 @@
                                 </div>
                                 <div>
                                     <label class="block font-mono text-[11px] text-text-secondary mb-1">Body Weight (kg)</label>
-                                    <input type="number" step="0.1" id="settings-weight" class="flat-input text-xs" placeholder="68.5" required>
+                                    <input type="number" step="0.1" id="settings-weight" inputmode="decimal" class="flat-input text-xs" placeholder="68.5" required>
                                 </div>
                                 <div>
                                     <label class="block font-mono text-[11px] text-text-secondary mb-1">Height (cm)</label>
-                                    <input type="number" step="0.5" id="settings-height" class="flat-input text-xs" placeholder="175" required>
+                                    <input type="number" step="0.5" id="settings-height" inputmode="decimal" class="flat-input text-xs" placeholder="175" required>
                                 </div>
                                 <div>
                                     <label class="block font-mono text-[11px] text-text-secondary mb-1">Gender / Bio Profile</label>
@@ -3270,21 +3270,21 @@
                                         <label class="font-mono text-[11px] text-text-secondary">Resting HR (bpm)</label>
                                         <span class="text-[10px] font-mono text-flat-green">40-60 bpm ideal</span>
                                     </div>
-                                    <input type="number" id="settings-resting-hr" class="flat-input text-xs" placeholder="48" required>
+                                    <input type="number" id="settings-resting-hr" inputmode="numeric" class="flat-input text-xs" placeholder="48" required>
                                 </div>
                                 <div>
                                     <div class="flex justify-between items-center mb-1">
                                         <label class="font-mono text-[11px] text-text-secondary">Max HR (bpm)</label>
                                         <span class="text-[10px] font-mono text-flat-orange">Max aerobic ceiling</span>
                                     </div>
-                                    <input type="number" id="settings-max-hr" class="flat-input text-xs" placeholder="192" required>
+                                    <input type="number" id="settings-max-hr" inputmode="numeric" class="flat-input text-xs" placeholder="192" required>
                                 </div>
                                 <div>
                                     <div class="flex justify-between items-center mb-1">
                                         <label class="font-mono text-[11px] text-text-secondary">Lactate Threshold HR (bpm)</label>
                                         <span class="text-[10px] font-mono text-tertiary">LT2 Threshold</span>
                                     </div>
-                                    <input type="number" id="settings-lt-hr" class="flat-input text-xs" placeholder="168">
+                                    <input type="number" id="settings-lt-hr" inputmode="numeric" class="flat-input text-xs" placeholder="168">
                                 </div>
                             </div>
                         </div>
@@ -3307,7 +3307,7 @@
                                 </div>
                                 <div>
                                     <label class="block font-mono text-[11px] text-text-secondary mb-1">Weekly Volume Target (km)</label>
-                                    <input type="number" step="1" id="settings-weekly-mileage" class="flat-input text-xs" placeholder="50">
+                                    <input type="number" step="1" id="settings-weekly-mileage" inputmode="numeric" class="flat-input text-xs" placeholder="50">
                                 </div>
                             </div>
 
@@ -3634,7 +3634,7 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- FULL FOOTER: 4 Columns, Flat 2D, Social & Compliance      -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <footer class="bg-surface pt-12 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:py-12 text-xs text-text-secondary">
+    <footer class="bg-surface py-12 text-xs text-text-secondary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-border">
             
             <!-- Col 1: Brand (4 cols) -->
@@ -3766,18 +3766,18 @@
             <!-- Quick Social Login (Gmail/Google, Telegram, GitHub) -->
             <div class="mt-4 pt-3 border-t border-border">
                 <div class="text-[11px] font-mono text-text-secondary text-center mb-2">Or continue with third-party ID:</div>
-                <div class="grid grid-cols-3 gap-2 text-xs font-mono">
-                    <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-                        <span>Google</span>
+                <div class="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs font-mono">
+                    <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 min-w-0 overflow-hidden">
+                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                        <span class="truncate">Google</span>
                     </button>
-                    <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-                        <span>Telegram</span>
+                    <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 min-w-0 overflow-hidden">
+                        <svg class="w-3.5 h-3.5 shrink-0 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        <span class="truncate">Telegram</span>
                     </button>
-                    <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                        <span>GitHub</span>
+                    <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 min-w-0 overflow-hidden">
+                        <svg class="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                        <span class="truncate">GitHub</span>
                     </button>
                 </div>
             </div>
@@ -4018,7 +4018,7 @@
                 </div>
                 <div class="border border-border rounded-lg overflow-hidden bg-surface">
                     <div class="max-h-48 overflow-y-auto overflow-x-auto">
-                        <table class="w-full text-left font-mono text-xs">
+                        <table class="w-full text-left font-mono text-xs min-w-[340px]">
                             <thead class="bg-surface-subtle border-b border-border text-[10px] text-text-secondary uppercase">
                                 <tr>
                                     <th class="py-1.5 px-3">Km</th>
@@ -4160,22 +4160,22 @@
                     </div>
                     <div>
                         <label for="log-distance" class="block text-[11px] text-text-secondary mb-1" data-i18n="log_distance_label">Distance (km)</label>
-                        <input type="number" step="0.1" id="log-distance" class="flat-input text-xs" value="10.5" required>
+                        <input type="number" step="0.1" id="log-distance" inputmode="decimal" class="flat-input text-xs" value="10.5" required>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
                     <div>
                         <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_duration_label">Duration (min)</label>
-                        <input type="number" id="log-duration-min" class="flat-input text-xs" value="48" required>
+                        <input type="number" id="log-duration-min" inputmode="numeric" class="flat-input text-xs" value="48" required>
                     </div>
                     <div>
                         <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_hr_label">Avg HR (bpm)</label>
-                        <input type="number" id="log-avg-hr" class="flat-input text-xs" value="156">
+                        <input type="number" id="log-avg-hr" inputmode="numeric" class="flat-input text-xs" value="156">
                     </div>
                     <div>
                         <label class="block text-[11px] text-text-secondary mb-1" data-i18n="log_cal_label">Calories (kcal)</label>
-                        <input type="number" id="log-calories" class="flat-input text-xs" value="720">
+                        <input type="number" id="log-calories" inputmode="numeric" class="flat-input text-xs" value="720">
                     </div>
                 </div>
 

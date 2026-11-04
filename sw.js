@@ -12,7 +12,7 @@ const STATIC_ASSETS = [
     '/public/icons/pwa/icon-512x512.png',
     '/public/css/tailwind.min.css',
     '/public/js/db.js',
-    'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap'
+    'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap'
 ];
 
 // Install: Cache shell assets
