@@ -196,22 +196,22 @@ class MultiTierAIProvider:
 
                 full_msg = f"Konteks Fisiologi Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"
                 chat = model.start_chat(history=chat_history)
-                response = chat.send_message(full_msg)
+                response = chat.send_message(full_msg, request_options={"timeout": 5})
                 if response and response.text:
                     return {"success": True, "text": response.text.strip()}
-            except Exception as e:
+            except Exception:
                 # Silently catch SDK issue and fallback to REST
                 pass
 
             # 2. Second attempt: Direct REST API
-            models_to_try = [model_name, "gemini-flash-latest", "gemini-pro-latest", "gemini-flash-lite-latest"]
+            models_to_try = [model_name, "gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash"]
             for m in models_to_try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={target_key}"
                 contents = [
                     {"role": "user", "parts": [{"text": f"{SYSTEM_PROMPT}\n\nKonteks Data Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"}]}
                 ]
                 try:
-                    res = requests.post(url, json={"contents": contents}, timeout=15)
+                    res = requests.post(url, json={"contents": contents}, timeout=5)
                     if res.status_code == 200:
                         data = res.json()
                         candidates = data.get("candidates", [])

@@ -324,5 +324,24 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertIn("token=", tg_res.headers["location"])
         self.assertIn("email=8503838227@telegram.athlete", tg_res.headers["location"])
 
+    def test_16_ai_coach_recommendations_and_suggestions(self):
+        """Verify AI Coach recommendations and training suggestions endpoints run cleanly without NameError."""
+        token = getattr(self.__class__, "token", None)
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+        # 1. Recommendations endpoint
+        rec_res = self.client.get("/api/v1/coach/recommendations", headers=headers)
+        self.assertEqual(rec_res.status_code, 200)
+        rec_data = rec_res.json()
+        self.assertEqual(rec_data.get("status"), "success")
+        self.assertIn("recommendations", rec_data)
+
+        # 2. Suggestion endpoint
+        sug_res = self.client.post("/api/v1/training/suggest", json={"sport_type": "run"}, headers=headers)
+        self.assertEqual(sug_res.status_code, 200)
+        sug_data = sug_res.json()
+        self.assertEqual(sug_data.get("status"), "success")
+        self.assertIn("suggestion", sug_data)
+
 if __name__ == "__main__":
     unittest.main()

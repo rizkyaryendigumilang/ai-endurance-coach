@@ -132,12 +132,11 @@ def verify_demo_token(token: str) -> dict:
     signing_input = f"{h_b64}.{p_b64}".encode('utf-8')
     expected_sig = hmac.new(DEMO_SECRET.encode('utf-8'), signing_input, hashlib.sha256).digest()
     
-    def pad(s): return s + '=' * (-len(s) % 4)
-    given_sig = base64.urlsafe_b64decode(pad(sig_b64))
+    given_sig = b64url_decode(sig_b64)
     if not hmac.compare_digest(expected_sig, given_sig):
         raise ValueError("Signature mismatch")
 
-    payload_json = base64.urlsafe_b64decode(pad(p_b64)).decode('utf-8')
+    payload_json = b64url_decode(p_b64).decode('utf-8')
     payload = json.loads(payload_json)
     if payload.get("exp", 0) < time.time():
         raise ValueError("Token expired")

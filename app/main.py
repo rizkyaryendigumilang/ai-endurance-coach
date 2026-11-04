@@ -1,18 +1,20 @@
+import os
+import re
+import uuid
+import asyncio
+from datetime import date, datetime, timezone
+from typing import Optional
+
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-import os
-import re
-import uuid
-from datetime import date, datetime, timezone
-from typing import Optional
+from fastapi.responses import FileResponse, RedirectResponse, Response
 
 from app.core.config import supabase, GEMINI_PRO_API_KEY
 from app.core.auth import (
     get_current_user, get_current_user_optional,
-    require_admin_role, create_admin_token
+    require_admin_role, create_admin_token, create_demo_token
 )
 from app.core.rate_limiter import chat_rate_limiter, vision_rate_limiter
 from app.schemas.models import (
@@ -29,19 +31,25 @@ from app.services.sports_engine import SportsEngine
 from app.services.training_engine import TrainingEngine
 from app.services.ai_provider import GeminiAIProvider
 from app.services.biomechanics_engine import BiomechanicsEngine
-from app.services.strava_service import router as strava_router
-from app.services.intervals_service import router as intervals_router
+from app.services.activity_parser import parse_activity_file
+from app.services.weekly_calendar_service import WeeklyCalendarService
+from app.services.strava_service import router as strava_router, strava_login
+from app.services.intervals_service import router as intervals_router, sync_calendar
 from app.services.social_auth_service import router as social_auth_router
+from app.services.garmin_service import garmin_service
 from app.services import sandbox_store
 
 # ─────────────────────────────────────────────
-# App Setup
+# App Setup & Engine Singletons
 # ─────────────────────────────────────────────
 app = FastAPI(
     title="Goalie API",
     description="Precision athletic performance platform: Strava, Intervals.icu, Gemini AI, Run Form Analysis",
     version="2.4.0",
 )
+
+ai_provider = GeminiAIProvider()
+biomechanics = BiomechanicsEngine()
 
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "").strip()
 if allowed_origins_env:
@@ -172,13 +180,6 @@ def serve_admin_page():
         return FileResponse(admin_path)
     return FileResponse(os.path.join(os.path.dirname(__file__), "..", "index.html"))
 
-# ─────────────────────────────────────────────
-# Lazy singletons
-# ─────────────────────────────────────────────
-ai_provider = GeminiAIProvider()
-biomechanics = BiomechanicsEngine()
-
-
 # ═══════════════════════════════════════════════
 # AUTH ENDPOINTS
 # ═══════════════════════════════════════════════
@@ -189,7 +190,6 @@ def register(user: UserRegisterInput):
     Sign Up page: Menerima Nama, Email, dan Password.
     Menerapkan User Isolation penuh pada DB dan Profile store.
     """
-    import uuid
     full_name = user.full_name.strip() or "Athlete"
     email = user.email.strip().lower()
 
@@ -231,8 +231,6 @@ def login(user: UserLoginInput):
     Mengembalikan JWT access token terisolasi untuk atlet tersebut.
     Mendukung deteksi login administrator langsung dari antarmuka login.
     """
-    from app.core.auth import create_demo_token
-    import uuid
     email = user.email.strip().lower()
     admin_secret = os.getenv("ADMIN_SECRET_KEY", "goalie-admin-secret-2026")
     admin_passcode = os.getenv("ADMIN_PASSCODE", "admin123")
@@ -317,9 +315,6 @@ def oauth_login(req: OAuthLoginInput):
     Social Login Gateway (Gmail / Google, Telegram, GitHub).
     Membuat sesi JWT terisolasi untuk akun sosial atlet.
     """
-    import uuid
-    from app.core.auth import create_demo_token
-
     provider = req.provider.lower()
     if provider not in ("google", "gmail", "github", "telegram"):
         raise HTTPException(status_code=400, detail="Provider tidak didukung. Gunakan google, github, atau telegram.")
@@ -555,7 +550,6 @@ def calculate_race_fueling_endpoint(data: RaceFuelingInput):
 @app.get("/api/v1/strava/authorize", tags=["Strava"])
 def strava_authorize_alias(request: Request, user_id: str = Depends(get_current_user_optional)):
     """Direct alias for Strava OAuth flow supporting both JSON and direct browser redirect."""
-    from app.services.strava_service import strava_login
     res = strava_login(user_id=user_id)
     if "text/html" in request.headers.get("accept", ""):
         return RedirectResponse(url=res["url"])
@@ -566,7 +560,6 @@ def strava_authorize_alias(request: Request, user_id: str = Depends(get_current_
 @app.get("/api/v1/workouts/ical", tags=["Intervals"])
 def intervals_feed_alias(user_id: str = Depends(get_current_user_optional)):
     """Direct alias for iCal feed to match frontend requested /intervals/calendar/feed.ics and /workouts/ical."""
-    from app.services.intervals_service import sync_calendar
     return sync_calendar(user_id=user_id)
 
 
@@ -742,7 +735,6 @@ async def get_weekly_calendar(
     Returns 7-day adaptive training calendar with AI recommendations (Mon - Sun).
     Seamless fallback for unauthenticated demo sessions.
     """
-    from app.services.weekly_calendar_service import WeeklyCalendarService
     effective_user_id = user_id or "athlete_demo_runner"
     schedule = await WeeklyCalendarService.get_or_generate_weekly_schedule(
         user_id=effective_user_id,
@@ -760,7 +752,6 @@ async def regenerate_weekly_calendar(
     """
     Regenerates the 7-day training plan using dual Gemini AI & sports physiology directives.
     """
-    from app.services.weekly_calendar_service import WeeklyCalendarService
     effective_user_id = user_id or "athlete_demo_runner"
     schedule = await WeeklyCalendarService.get_or_generate_weekly_schedule(
         user_id=effective_user_id,
@@ -779,7 +770,6 @@ def toggle_calendar_day(
     """
     Toggles completion status for a specific day in the weekly calendar.
     """
-    from app.services.weekly_calendar_service import WeeklyCalendarService
     effective_user_id = user_id or "athlete_demo_runner"
     return WeeklyCalendarService.toggle_day_completion(
         user_id=effective_user_id,
@@ -797,8 +787,6 @@ def export_weekly_calendar_ical(
     Exports the current weekly AI schedule as standard RFC 5545 iCalendar stream.
     Compatible with Apple Calendar, Google Calendar, and Intervals.icu.
     """
-    from fastapi.responses import Response
-    from app.services.weekly_calendar_service import WeeklyCalendarService
     effective_user_id = user_id or "athlete_demo_runner"
     ical_content = WeeklyCalendarService.generate_ical_stream(
         user_id=effective_user_id,
@@ -888,7 +876,6 @@ async def upload_activity_file(file: UploadFile = File(...), user_id: str = Depe
         raise HTTPException(status_code=413, detail="Ukuran file maksimal 25MB.")
 
     # 1. Parse raw data deterministically
-    from app.services.activity_parser import parse_activity_file
     try:
         parsed = parse_activity_file(filename, file_bytes)
     except Exception as e:
@@ -1136,7 +1123,6 @@ def create_subscription_order(
     """
     Membuat checkout order langganan Pro Plan (QRIS, VA, atau Kartu Kredit).
     """
-    import uuid
     plan = (order_req.plan or "monthly").lower()
     amount = 828000 if plan == "annual" else 89000
     order_id = f"ORD-PRO-{datetime.now(timezone.utc).strftime('%y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
@@ -1350,7 +1336,6 @@ def get_sports_analytics(days: int = 30, user_id: str = Depends(get_current_user
 # ─────────────────────────────────────────────
 # Garmin Connect (Non-API Direct Session Ingestion)
 # ─────────────────────────────────────────────
-from app.services.garmin_service import garmin_service
 
 @app.post("/api/v1/garmin/connect", tags=["Garmin Connect"])
 def connect_garmin_account(
@@ -1501,7 +1486,6 @@ def get_admin_telemetry(admin: dict = Depends(require_admin_role)):
     - Aggregated endurance volume (total km, total load/TRIMP)
     - Service health & latency (Sports Science Engine, Gemini AI, MediaPipe, Garmin)
     """
-    from datetime import datetime
     telemetry = sandbox_store.get_platform_telemetry()
     athletes = sandbox_store.get_all_athletes_summary()
     
@@ -1737,7 +1721,6 @@ def admin_export_data(format: str = "json", admin: dict = Depends(require_admin_
     """
     Export aggregated platform data for offline analytics and governance.
     """
-    from datetime import datetime
     telemetry = sandbox_store.get_platform_telemetry()
     athletes = sandbox_store.get_all_athletes_summary()
     audit_logs = sandbox_store.get_audit_logs(limit=100)
@@ -1761,7 +1744,6 @@ def admin_impersonate(data: AdminImpersonateInput, admin: dict = Depends(require
     Allows administrator to switch session directly into any athlete's perspective
     to inspect their workout logs, periodization plan, and physiological computations.
     """
-    from app.core.auth import create_demo_token
     user_id = data.user_id
     prof = sandbox_store.get_profile(user_id)
     email = prof.get("email") or f"{user_id[:8]}@endurance.local"
