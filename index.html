@@ -593,112 +593,112 @@
     <!-- NAVIGATION BAR: Flat 2D, 1.5px solid border, No Shadows  -->
     <!-- ══════════════════════════════════════════════════════════ -->
     <nav class="sticky top-0 z-[100] h-14 bg-surface border-b-2 border-border flex items-center">
-        <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
+        <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 flex justify-between items-center gap-3">
             
             <!-- Logo & Brand Badge (Strava Style) -->
-            <div class="flex items-center gap-6">
-                <a href="/" class="flex items-center gap-2 group">
-                    <div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white shadow-xs group-hover:bg-tertiary-hover transition-colors">
+            <div class="flex items-center gap-3 xl:gap-5 shrink-0">
+                <a href="/" class="flex items-center gap-2 group shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white shadow-xs group-hover:bg-tertiary-hover transition-colors shrink-0">
                         <!-- Athletic Chevron / Runner Icon -->
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                             <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.396 14.63h4.171"/>
                         </svg>
                     </div>
-                    <div class="flex items-baseline gap-1.5">
-                        <span class="font-display font-extrabold text-xl tracking-tight text-text-primary">GOALIE</span>
-                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-tertiary/15 text-tertiary hidden sm:inline">STRAVA AI</span>
+                    <div class="flex items-baseline gap-1.5 shrink-0">
+                        <span class="font-display font-extrabold text-xl tracking-tight text-text-primary whitespace-nowrap">GOALIE</span>
+                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-tertiary/15 text-tertiary whitespace-nowrap shrink-0 hidden sm:inline">STRAVA AI</span>
                     </div>
                 </a>
+            </div>
 
-                <!-- Main Navigation Links (Desktop) -->
-                <div class="hidden lg:flex items-center gap-6 text-sm font-semibold text-text-secondary">
-                    <a href="#workstation" onclick="switchWorkstationTab('cockpit')" class="hover:text-tertiary transition-colors flex items-center gap-1.5">
-                        <span data-i18n="nav_dashboard">Dashboard</span>
-                    </a>
-                    <a href="#workstation" onclick="switchWorkstationTab('schedule')" class="hover:text-tertiary transition-colors flex items-center gap-1.5">
-                        <span data-i18n="nav_training">Training</span>
-                    </a>
-                    <a href="#workstation" onclick="switchWorkstationTab('chat')" class="hover:text-tertiary transition-colors flex items-center gap-1.5 text-text-primary font-bold">
-                        <span data-i18n="nav_coach">AI Coach</span>
-                        <span class="px-1.5 py-0.2 text-[10px] font-mono font-bold rounded-full bg-tertiary text-white">AI</span>
-                    </a>
-                    <a href="#workstation" onclick="switchWorkstationTab('telemetry')" class="hover:text-tertiary transition-colors flex items-center gap-1.5">
-                        <span data-i18n="nav_telemetry">Telemetry</span>
-                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
-                    </a>
-                    <a href="#workstation" onclick="switchWorkstationTab('integrations')" class="hover:text-tertiary transition-colors">
-                        <span data-i18n="nav_integrations">Intervals / Strava</span>
-                    </a>
-                </div>
+            <!-- Main Navigation Segmented Tabs (Desktop) -->
+            <div class="hidden lg:flex items-center p-1 bg-surface-subtle border border-border rounded-xl gap-0.5 text-xs font-medium shrink-0" role="tablist" aria-label="Main Navigation">
+                <a href="#workstation" onclick="switchWorkstationTab('cockpit')" id="nav-tab-cockpit" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80" role="tab" aria-selected="true">
+                    <span data-i18n="nav_dashboard">Beranda</span>
+                </a>
+                <a href="#workstation" onclick="switchWorkstationTab('schedule')" id="nav-tab-schedule" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium" role="tab" aria-selected="false">
+                    <span data-i18n="nav_training">Rencana Latihan</span>
+                </a>
+                <a href="#workstation" onclick="switchWorkstationTab('chat')" id="nav-tab-chat" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium" role="tab" aria-selected="false">
+                    <span data-i18n="nav_coach">Pelatih AI</span>
+                    <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-tertiary text-white whitespace-nowrap">PRO</span>
+                </a>
+                <a href="#workstation" onclick="switchWorkstationTab('telemetry')" id="nav-tab-telemetry" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium" role="tab" aria-selected="false">
+                    <span data-i18n="nav_telemetry">Telemetri</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-flat-green shrink-0"></span>
+                </a>
+                <a href="#workstation" onclick="switchWorkstationTab('integrations')" id="nav-tab-integrations" class="nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium" role="tab" aria-selected="false">
+                    <span data-i18n="nav_integrations">Integrasi</span>
+                </a>
             </div>
 
             <!-- Action Controls -->
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2 shrink-0">
                 <!-- Global Quick Action (⌘K) -->
-                <button onclick="focusGlobalSearch()" class="hidden sm:flex items-center gap-2 h-8 px-2.5 text-xs text-text-secondary bg-surface-subtle border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" aria-label="Search athletes and workouts (Cmd+K)">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <span data-i18n="nav_search_label">Search athletes, workouts...</span>
-                    <kbd class="text-[10px] font-mono bg-surface px-1.5 py-0.5 border border-border rounded-md">⌘K</kbd>
+                <button onclick="focusGlobalSearch()" class="hidden md:flex items-center gap-2 h-8 px-2.5 text-xs text-text-secondary bg-surface-subtle border border-border rounded-lg hover:border-text-primary transition-colors whitespace-nowrap shrink-0 touch-target-expand" aria-label="Search athletes and workouts (Cmd+K)">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <span class="hidden 2xl:inline whitespace-nowrap" data-i18n="nav_search_label">Cari...</span>
+                    <kbd class="text-[10px] font-mono bg-surface px-1.5 py-0.5 border border-border rounded-md shrink-0">⌘K</kbd>
                 </button>
 
-                <!-- Quick Record / Upload Workout Button (Strava Orange Round CTA) -->
-                <button onclick="openLogWorkoutModal()" class="hidden sm:inline-flex btn-primary h-8 px-3 text-xs font-semibold rounded-full items-center gap-1.5 shadow-xs touch-target-expand" title="Record or Log Activity" aria-label="Record or Log Activity">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                    <span class="hidden sm:inline" data-i18n="nav_record">Record / Log</span>
+                <!-- Quick Record / Upload Workout Button (Strava Orange) -->
+                <button onclick="openLogWorkoutModal()" class="btn-primary h-8 px-3 text-xs font-semibold rounded-lg inline-flex items-center gap-1.5 shadow-xs whitespace-nowrap shrink-0 active:scale-97 transition-transform touch-target-expand" title="Record or Log Activity" aria-label="Record or Log Activity">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    <span class="whitespace-nowrap" data-i18n="nav_record">Catat Latihan</span>
                 </button>
 
                 <!-- Language Switcher Button (ID / EN) -->
-                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2.5 text-xs font-mono font-bold rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center gap-1.5 transition-colors touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
+                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2.5 text-xs font-mono font-bold rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                    <span id="nav-lang-label">ID</span>
+                    <span id="nav-lang-label" class="whitespace-nowrap">ID</span>
                 </button>
 
                 <!-- Theme Toggle Button -->
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors shrink-0 touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
                 <!-- Admin Link -->
-                <a href="/admin" class="hidden sm:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" aria-label="Open Admin Command Center">
-                    <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    <span>Admin</span>
+                <a href="/admin" class="hidden sm:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-lg hover:border-text-primary transition-colors whitespace-nowrap shrink-0 touch-target-expand" aria-label="Open Admin Command Center">
+                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <span class="whitespace-nowrap">Admin</span>
                 </a>
 
                 <!-- Unauthenticated State -->
-                <div id="nav-unauth-actions" class="flex items-center gap-1.5 sm:gap-2">
-                    <button onclick="openAuthModal('login')" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-full transition-colors" data-i18n="nav_login">
+                <div id="nav-unauth-actions" class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button onclick="openAuthModal('login')" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-lg transition-colors whitespace-nowrap shrink-0" data-i18n="nav_login">
                         Log In
                     </button>
-                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-2.5 sm:px-3 text-xs hidden xs:inline-flex" data-i18n="nav_signup">
+                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-2.5 sm:px-3 text-xs hidden xs:inline-flex rounded-lg whitespace-nowrap shrink-0" data-i18n="nav_signup">
                         Sign Up
                     </button>
                 </div>
 
                 <!-- Authenticated State -->
-                <div id="nav-auth-actions" class="hidden flex items-center gap-1.5 sm:gap-2">
-                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-full hover:bg-flat-amber/10 transition-colors flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                        <span class="hidden sm:inline">SUMMIT PRO</span>
+                <div id="nav-auth-actions" class="hidden flex items-center gap-2 shrink-0">
+                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2.5 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-lg hover:bg-flat-amber/10 transition-colors flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                        <span class="hidden sm:inline whitespace-nowrap">SUMMIT PRO</span>
                     </button>
 
-                    <div class="relative" id="user-profile-menu-container">
-                        <button type="button" onclick="toggleUserDropdown(event)" id="user-dropdown-btn" aria-expanded="false" aria-haspopup="true" class="h-8 px-2 sm:px-2.5 rounded-full border border-border bg-surface-subtle flex items-center gap-1.5 sm:gap-2 text-xs font-semibold text-text-primary hover:border-text-primary transition-colors touch-target-expand">
-                            <span id="user-avatar-initial" class="w-5 h-5 rounded-full bg-tertiary text-white flex items-center justify-center font-mono text-[10px] font-bold">RG</span>
-                            <span id="user-display-email" class="max-w-[70px] sm:max-w-[110px] truncate">athlete</span>
+                    <div class="relative shrink-0" id="user-profile-menu-container">
+                        <button type="button" onclick="toggleUserDropdown(event)" id="user-dropdown-btn" aria-expanded="false" aria-haspopup="true" class="h-8 px-2.5 rounded-lg border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary hover:border-text-primary transition-colors whitespace-nowrap shrink-0 touch-target-expand">
+                            <span id="user-avatar-initial" class="w-5 h-5 rounded-md bg-tertiary text-white flex items-center justify-center font-mono text-[10px] font-bold shrink-0">RG</span>
+                            <span id="user-display-email" class="max-w-[120px] truncate whitespace-nowrap">athlete</span>
                         </button>
-                        <div id="user-dropdown-menu" class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-lg p-1.5 hidden z-50 shadow-lg">
+                        <div id="user-dropdown-menu" class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-xl p-1.5 hidden z-50 shadow-lg">
                             <div class="px-2 py-1.5 text-[11px] text-text-secondary border-b border-border mb-1" id="dropdown-email">user@domain.com</div>
-                            <button onclick="openSettingsModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md flex items-center justify-between">
+                            <button onclick="openSettingsModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between">
                                 <span>Athlete Profile</span>
                                 <span class="text-[10px] font-mono text-tertiary font-bold flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     <span>SETTINGS</span>
                                 </span>
                             </button>
-                            <a href="#workstation" onclick="switchWorkstationTab('cockpit'); toggleUserDropdown();" class="block px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-md">Activity Feed &amp; Dashboard</a>
-                            <button onclick="openProPaymentModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-tertiary font-semibold hover:bg-surface-subtle rounded-md">Subscription Tier</button>
-                            <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-flat-orange font-semibold hover:bg-flat-orange/10 rounded-md border-t border-border mt-1">Sign Out</button>
+                            <a href="#workstation" onclick="switchWorkstationTab('cockpit'); toggleUserDropdown();" class="block px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg">Activity Feed &amp; Dashboard</a>
+                            <button onclick="openProPaymentModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-tertiary font-semibold hover:bg-surface-subtle rounded-lg">Subscription Tier</button>
+                            <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-flat-orange font-semibold hover:bg-flat-orange/10 rounded-lg border-t border-border mt-1">Sign Out</button>
                         </div>
                     </div>
                 </div>
@@ -1080,30 +1080,36 @@
                     </p>
                 </div>
 
-                <!-- Tabs (Mobile-native horizontal scrollable carousel without scrollbar) -->
-                <div class="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto no-scrollbar py-1 flex-nowrap -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" role="tablist" aria-label="Workstation View Navigation" style="touch-action: pan-y;">
-                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary" data-i18n="tab_cockpit">
-                        Performance Cockpit
+                <!-- Tabs (Segmented Control 21st.dev style) -->
+                <div class="p-1.5 bg-surface-subtle border border-border rounded-2xl inline-flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-2xs" role="tablist" aria-label="Workstation View Navigation">
+                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <span data-i18n="tab_cockpit">Kokpit Performa</span>
                     </button>
-                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_chat">
-                        Coach AI Chat
+                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                        <span data-i18n="tab_chat">Chat Pelatih AI</span>
                     </button>
-                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
-                        <span data-i18n="tab_telemetry">Telemetry Suite (TP / Intervals / Strava)</span>
-                        <span class="w-1.5 h-1.5 bg-flat-green rounded-full"></span>
+                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span data-i18n="tab_telemetry">Telemetri</span>
+                        <span class="w-1.5 h-1.5 bg-flat-green rounded-full shrink-0"></span>
                     </button>
-                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_biomechanics">
-                        Video Gait Analysis
+                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <span data-i18n="tab_biomechanics">Video Gait</span>
                     </button>
-                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_schedule">
-                        Schedule & iCal
+                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span data-i18n="tab_schedule">Jadwal & iCal</span>
                     </button>
-                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary" data-i18n="tab_integrations">
-                        Garmin & Strava
+                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span data-i18n="tab_integrations">Integrasi</span>
                     </button>
-                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span data-i18n="tab_settings">Athlete Settings</span>
+                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                        <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span data-i18n="tab_settings">Pengaturan</span>
                     </button>
                 </div>
             </div>
@@ -4403,8 +4409,28 @@
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (content) content.classList.add('hidden');
                 if (btn) {
-                    btn.className = 'tab-btn px-3 py-1.5 rounded-full bg-surface-subtle text-text-secondary border border-border hover:border-text-primary flex items-center gap-1.5';
+                    btn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97';
                     btn.setAttribute('aria-selected', 'false');
+                    const icon = btn.querySelector('svg');
+                    if (icon) {
+                        icon.classList.remove('text-tertiary');
+                        icon.classList.add('text-text-secondary');
+                    }
+                }
+            });
+
+            // Sync Desktop Top Navigation Tabs
+            const navTabs = ['cockpit', 'schedule', 'chat', 'telemetry', 'integrations'];
+            navTabs.forEach(t => {
+                const nTab = document.getElementById(`nav-tab-${t}`);
+                if (nTab) {
+                    if (t === tabName) {
+                        nTab.className = 'nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
+                        nTab.setAttribute('aria-selected', 'true');
+                    } else {
+                        nTab.className = 'nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
+                        nTab.setAttribute('aria-selected', 'false');
+                    }
                 }
             });
 
@@ -4412,8 +4438,13 @@
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeContent) activeContent.classList.remove('hidden');
             if (activeBtn) {
-                activeBtn.className = 'tab-btn px-3 py-1.5 rounded-full bg-tertiary text-white border-1.5 border-tertiary flex items-center gap-1.5';
+                activeBtn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97';
                 activeBtn.setAttribute('aria-selected', 'true');
+                const icon = activeBtn.querySelector('svg');
+                if (icon) {
+                    icon.classList.remove('text-text-secondary');
+                    icon.classList.add('text-tertiary');
+                }
                 try {
                     activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 } catch (e) {
@@ -4964,14 +4995,14 @@
                 nav_record: "Catat Latihan",
                 nav_login: "Masuk",
                 nav_signup: "Daftar",
-                nav_search_label: "Cari atlet, latihan, rute... (⌘K)",
+                nav_search_label: "Cari...",
                 tab_cockpit: "Kokpit Performa",
                 tab_chat: "Chat Pelatih AI",
-                tab_telemetry: "Suite Telemetri (TP / Intervals / Strava)",
-                tab_biomechanics: "Analisis Video Postur & Langkah",
-                tab_schedule: "Jadwal & Kalender iCal",
-                tab_integrations: "Garmin & Strava",
-                tab_settings: "Pengaturan Atlet",
+                tab_telemetry: "Telemetri",
+                tab_biomechanics: "Video Gait",
+                tab_schedule: "Jadwal & iCal",
+                tab_integrations: "Integrasi",
+                tab_settings: "Pengaturan",
                 feed_filter_all: "Semua Aktivitas",
                 feed_filter_runs: "Lari",
                 feed_filter_rides: "Sepeda",
@@ -5053,21 +5084,21 @@
             },
             en: {
                 nav_dashboard: "Dashboard",
-                nav_training: "Training",
+                nav_training: "Training Plan",
                 nav_coach: "AI Coach",
                 nav_telemetry: "Telemetry",
-                nav_integrations: "Intervals / Strava",
+                nav_integrations: "Strava / Sync",
                 nav_record: "Record / Log",
                 nav_login: "Log In",
                 nav_signup: "Sign Up",
-                nav_search_label: "Search athletes, workouts... (⌘K)",
-                tab_cockpit: "Performance Cockpit",
-                tab_chat: "Coach AI Chat",
-                tab_telemetry: "Telemetry Suite (TP / Intervals / Strava)",
-                tab_biomechanics: "Video Gait Analysis",
+                nav_search_label: "Search...",
+                tab_cockpit: "Cockpit",
+                tab_chat: "AI Coach",
+                tab_telemetry: "Telemetry",
+                tab_biomechanics: "Video Gait",
                 tab_schedule: "Schedule & iCal",
-                tab_integrations: "Garmin & Strava",
-                tab_settings: "Athlete Settings",
+                tab_integrations: "Integrations",
+                tab_settings: "Settings",
                 feed_filter_all: "All Feed",
                 feed_filter_runs: "Runs",
                 feed_filter_rides: "Rides",
