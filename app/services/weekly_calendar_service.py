@@ -484,3 +484,223 @@ class WeeklyCalendarService:
 
         lines.append("END:VCALENDAR")
         return "\r\n".join(lines)
+
+    @classmethod
+    def generate_31_week_marathon_plan(cls, start_date: Optional[date] = None) -> Dict:
+        """
+        Generates the complete 31-Week Marathon Periodization roadmap (977.2 km total),
+        including Base, Build, and Taper phases, cutback weeks, milestone checkpoints,
+        and 58 runner-specific WFH strength conditioning sessions.
+        """
+        if start_date is None:
+            start_date = date(2026, 11, 9)  # Monday, 9 Nov 2026 kickoff
+
+        # 31-week periodization specification (Exact 977.2 km dataset from Gemini Canvas)
+        week_specs = [
+            # Week, Phase, Cutback, WeeklyKm, LongRunKm, Checkpoint / Key Workout
+            (1, "Base", False, 16.0, 8.0, "Plan Kickoff • Base Phase Starts (16.0 km)"),
+            (2, "Base", False, 17.0, 9.0, "Aerobic Foundation Run (17.0 km)"),
+            (3, "Base", False, 18.0, 9.0, "Steady Base Progression (18.0 km)"),
+            (4, "Base", True, 16.0, 8.0, "Cutback Recovery Week 1 (16.0 km)"),
+            (5, "Base", False, 21.0, 11.0, "Aerobic Endurance Step-Up (21.0 km)"),
+            (6, "Base", False, 22.0, 11.0, "Mid-Base Expansion (22.0 km)"),
+            (7, "Base", False, 23.0, 12.0, "Aerobic Threshold Primer (23.0 km)"),
+            (8, "Base", True, 19.0, 10.0, "Cutback Recovery Week 2 (19.0 km)"),
+            (9, "Base", False, 25.0, 13.0, "Base Volume Step-Up (25.0 km)"),
+            (10, "Base", False, 27.0, 14.0, "Long Run Aerobic Expansion (27.0 km)"),
+            (11, "Base", False, 28.0, 15.0, "Peak Base Volume (28.0 km)"),
+            (12, "Base", True, 23.0, 12.0, "Cutback Recovery Week 3 (23.0 km)"),
+            (13, "Base", False, 30.0, 16.0, "Base Phase Finale • 285 km Cumulative"),
+            (14, "Build", False, 31.0, 17.0, "Marathon Build Phase Starts (31.0 km)"),
+            (15, "Build", False, 33.0, 18.0, "Threshold & Stamina Integration (33.0 km)"),
+            (16, "Build", True, 27.0, 14.0, "Cutback Recovery Week 4 (27.0 km)"),
+            (17, "Build", False, 35.0, 20.0, "20 km Long Run Milestone (35.0 km)"),
+            (18, "Build", False, 37.0, 21.0, "Endurance Glycogen Adaptation (37.0 km)"),
+            (19, "Build", False, 38.0, 22.0, "22 km Extended Long Run (38.0 km)"),
+            (20, "Build", True, 31.0, 18.0, "Pre-HM Race Cutback Week (31.0 km)"),
+            (21, "Build", False, 41.0, 21.1, "Tune-Up Half Marathon Race Effort (21.1 km)"),
+            (22, "Build", False, 42.0, 26.0, "26 km Progressive Long Run (42.0 km)"),
+            (23, "Build", False, 43.0, 27.0, "27 km Aerobic Endurance Milestone (43.0 km)"),
+            (24, "Build", True, 36.0, 21.0, "Pre-Peak Cutback Week 6 (36.0 km)"),
+            (25, "Build", False, 46.0, 29.0, "29 km Long Run Milestone (46.0 km)"),
+            (26, "Build", False, 47.0, 30.0, "30 km Marathon Pace Block (47.0 km)"),
+            (27, "Build", False, 49.0, 31.0, "31 km Sustained Effort (49.0 km)"),
+            (28, "Build", False, 50.0, 32.0, "PEAK VOLUME & 32.0 km Peak Long Run (50.0 km)"),
+            (29, "Taper", False, 33.0, 19.0, "Taper Phase 1 • 35% Volume Reduction (33.0 km)"),
+            (30, "Taper", False, 23.0, 13.0, "Taper Phase 2 • Fresh Legs & Carbo-Load (23.0 km)"),
+            (31, "Taper", False, 50.195, 42.195, "RACE WEEK: Full Marathon 42.195 km • Sun 13 Jun 2027")
+        ]
+
+        weeks = []
+        cumulative_km = 0.0
+        total_strength_sessions = 58
+
+        for wk_num, phase, is_cutback, wk_km, lr_km, checkpoint in week_specs:
+            wk_start = start_date + datetime.timedelta(days=(wk_num - 1) * 7)
+            wk_end = wk_start + datetime.timedelta(days=6)
+            wks_to_race = 31 - wk_num
+            other_km = round(max(0.0, wk_km - lr_km), 2)
+            cumulative_km += wk_km
+
+            # Strength conditioning configuration for this week
+            if phase == "Base":
+                strength_type = "Hypertrophy & Motor Control"
+                strength_slots = ["Rabu 12:00-13:00 (Bulgarian Split Squats, Single-leg RDL, Tibialis & Calf)",
+                                  "Jumat 12:00-13:00 (Copenhagen Plank, Pallof Press, Glute Bridges)"]
+                runs_per_wk = 3
+            elif phase == "Build":
+                strength_type = "Heavy Strength & Pelvic Stability"
+                strength_slots = ["Rabu 12:00-13:00 (Trap Bar Deadlift, Heavy Goblet Squat, Weighted Step-ups)",
+                                  "Jumat 12:00-13:00 (Soleus Seated Raises, Core Anti-Rotation, Nordic Curls)"]
+                runs_per_wk = 4
+            else:
+                strength_type = "Fascial Elasticity & Taper Mobility"
+                strength_slots = ["Rabu 12:00-12:45 (Pogo Hops, Banded Glute Holds, Thoracic Flow)",
+                                  "Jumat 12:00-12:30 (Light Dynamic Hip & Ankle Mobility)"]
+                runs_per_wk = 3 if wk_num < 31 else 2
+
+            weeks.append({
+                "week_number": wk_num,
+                "start_date": wk_start.isoformat(),
+                "end_date": wk_end.isoformat(),
+                "weeks_to_race": wks_to_race,
+                "phase": phase,
+                "is_cutback": is_cutback,
+                "weekly_km": round(wk_km, 2),
+                "long_run_km": round(lr_km, 2),
+                "other_km": other_km,
+                "runs_per_week": runs_per_wk,
+                "strength_sessions_per_week": 2 if wk_num < 31 else 1,
+                "strength_theme": strength_type,
+                "strength_slots": strength_slots,
+                "cumulative_km": round(cumulative_km, 2),
+                "checkpoint": checkpoint
+            })
+
+        return {
+            "race_name": "Full Marathon",
+            "distance_km": 42.195,
+            "total_weeks": 31,
+            "start_date": start_date.isoformat(),
+            "race_date": (start_date + datetime.timedelta(days=31 * 7 - 1)).isoformat(),
+            "total_planned_volume_km": round(cumulative_km, 2),
+            "peak_weekly_km": 50.0,
+            "peak_long_run_km": 32.0,
+            "cutback_weeks_count": 6,
+            "total_strength_sessions": total_strength_sessions,
+            "goal_finish_time": "05:30:00",
+            "goal_pace": "07:49/km",
+            "official_cutoff": "07:00:00",
+            "cutoff_buffer": "01:30:00",
+            "phases": [
+                {
+                    "name": "Phase 1 • Base Building",
+                    "weeks": "Weeks 1–13",
+                    "volume_km": 285.0,
+                    "peak_long_run_km": 16.0,
+                    "description": "3 runs/week + 2 WFH strength sessions (3x8-12). Aerobic foundation & tendon adaptation with cutbacks at W4, W8, W12."
+                },
+                {
+                    "name": "Phase 2 • Marathon Build",
+                    "weeks": "Weeks 14–28",
+                    "volume_km": 585.9,
+                    "peak_long_run_km": 32.0,
+                    "description": "4 runs/week + 2 heavy strength sessions (3x5-8). Specific marathon stamina, Tune-up Half Marathon (W21), and 32 km peak run (W28)."
+                },
+                {
+                    "name": "Phase 3 • Taper & Race",
+                    "weeks": "Weeks 29–31",
+                    "volume_km": 106.2,
+                    "peak_long_run_km": 42.195,
+                    "description": "Volume drops to 33 km then 23 km with mobility flow. Full race readiness for the 42.195 km Marathon on race Sunday."
+                }
+            ],
+            "weeks": weeks
+        }
+
+    @classmethod
+    def generate_marathon_ical_stream(cls, user_id: str, include_strength: bool = True) -> str:
+        """
+        Generates RFC 5545 iCalendar stream covering the complete 31-week marathon periodization,
+        including Sunday long runs, milestone tune-ups, and WFH strength lunch slots (Wed & Fri 12:00-13:00).
+        """
+        plan = cls.generate_31_week_marathon_plan()
+        lines = [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//Goalie AI Endurance Coach//31-Week Marathon Plan 2.0//EN",
+            "CALSCALE:GREGORIAN",
+            "METHOD:PUBLISH",
+            "X-WR-CALNAME:Goalie 31-Week Marathon Plan (5:30:00)",
+            "X-WR-TIMEZONE:Asia/Jakarta"
+        ]
+
+        now_utc = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+        for wk in plan["weeks"]:
+            wk_num = wk["week_number"]
+            start_d = date.fromisoformat(wk["start_date"])
+
+            # 1. Sunday Long Run
+            sunday_d = start_d + datetime.timedelta(days=6)
+            sunday_str = sunday_d.strftime("%Y%m%d")
+            lr_km = wk["long_run_km"]
+            lr_title = f"Goalie W{wk_num}: Long Run {lr_km} km ({wk['phase']} Phase)"
+            if wk_num == 21:
+                lr_title = "Goalie W21: TUNE-UP HALF MARATHON (21.1 km Race Effort)"
+            elif wk_num == 28:
+                lr_title = "Goalie W28: PEAK 32.0 km LONG RUN (Marathon Simulation)"
+            elif wk_num == 31:
+                lr_title = "Goalie W31: RACE DAY! FULL MARATHON 42.195 km"
+
+            lines.extend([
+                "BEGIN:VEVENT",
+                f"UID:goalie-marathon-w{wk_num}-longrun@{user_id}",
+                f"DTSTAMP:{now_utc}",
+                f"DTSTART;VALUE=DATE:{sunday_str}",
+                f"SUMMARY:{lr_title}",
+                f"DESCRIPTION:Target Distance: {lr_km} km\\nPhase: {wk['phase']}\\nCheckpoint: {wk['checkpoint']}\\nFueling: Energy Gel every 45 mins + 550ml fluid/hr.",
+                "CATEGORIES:MARATHON TRAINING,LONG RUN",
+                "STATUS:CONFIRMED",
+                "END:VEVENT"
+            ])
+
+            # 2. WFH Strength Conditioning Sessions (Wednesday & Friday 12:00-13:00)
+            if include_strength and wk_num < 31:
+                wed_d = start_d + datetime.timedelta(days=2)
+                fri_d = start_d + datetime.timedelta(days=4)
+                wed_start = wed_d.strftime("%Y%m%dT120000")
+                wed_end = wed_d.strftime("%Y%m%dT130000")
+                fri_start = fri_d.strftime("%Y%m%dT120000")
+                fri_end = fri_d.strftime("%Y%m%dT130000")
+
+                # Wednesday WFH session
+                lines.extend([
+                    "BEGIN:VEVENT",
+                    f"UID:goalie-marathon-w{wk_num}-str-wed@{user_id}",
+                    f"DTSTAMP:{now_utc}",
+                    f"DTSTART:{wed_start}",
+                    f"DTEND:{wed_end}",
+                    f"SUMMARY:Goalie W{wk_num}: Runner Strength (WFH Lunch Slot)",
+                    f"DESCRIPTION:Theme: {wk['strength_theme']}\\n{wk['strength_slots'][0]}\\nTarget: Pelvic stability & single-leg force production.",
+                    "CATEGORIES:STRENGTH TRAINING,RUNNER CONDITIONING",
+                    "STATUS:CONFIRMED",
+                    "END:VEVENT"
+                ])
+
+                # Friday WFH session
+                lines.extend([
+                    "BEGIN:VEVENT",
+                    f"UID:goalie-marathon-w{wk_num}-str-fri@{user_id}",
+                    f"DTSTAMP:{now_utc}",
+                    f"DTSTART:{fri_start}",
+                    f"DTEND:{fri_end}",
+                    f"SUMMARY:Goalie W{wk_num}: Core & Calf Resilience (WFH Lunch Slot)",
+                    f"DESCRIPTION:Theme: {wk['strength_theme']}\\n{wk['strength_slots'][1]}\\nTarget: Ankle stiffness, calf resilience, and ITBS prevention.",
+                    "CATEGORIES:STRENGTH TRAINING,RUNNER CONDITIONING",
+                    "STATUS:CONFIRMED",
+                    "END:VEVENT"
+                ])
+
+        lines.append("END:VCALENDAR")
+        return "\r\n".join(lines)

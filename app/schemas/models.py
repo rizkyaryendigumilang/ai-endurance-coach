@@ -151,3 +151,16 @@ class RaceFuelingInput(BaseModel):
     expected_duration_hours: float = 3.5
     sport_type: Optional[str] = "run"  # 'run' | 'trail' | 'ultra' | 'cycling' | 'triathlon'
     weight_kg: Optional[float] = 68.0
+
+# ── 31-Week Marathon & Pacing Strategy Models ─────────────────────────────────
+class MarathonSplitsInput(BaseModel):
+    target_time_seconds: Optional[int] = 19800  # Default 5:30:00 (5.5 hrs)
+    baseline_hm_seconds: Optional[int] = 9274   # Baseline HM 2:34:34
+    target_distance_km: Optional[float] = 42.195
+    athlete_weight_kg: Optional[float] = 68.0
+
+class MarathonPlanAdaptInput(BaseModel):
+    current_week: Optional[int] = 1
+    feedback: Optional[str] = "Kaki terasa sedikit lelah setelah long run minggu lalu"
+    completed_volume_km: Optional[float] = 20.0
+    target_time_str: Optional[str] = "05:30:00"

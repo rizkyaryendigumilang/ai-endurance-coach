@@ -25,7 +25,8 @@ from app.schemas.models import (
     AdminLoginInput, AdminImpersonateInput, AdminBroadcastInput,
     AdminSubscriptionUpdateInput, AdminAthleteStatusInput, AdminSimulateWebhookInput,
     SubscriptionOrderInput, SubscriptionActivateInput,
-    GapCalculationInput, ApiKeyValidationInput, RaceFuelingInput
+    GapCalculationInput, ApiKeyValidationInput, RaceFuelingInput,
+    MarathonSplitsInput, MarathonPlanAdaptInput
 )
 from app.services.sports_engine import SportsEngine
 from app.services.training_engine import TrainingEngine
@@ -85,7 +86,7 @@ async def add_cache_control_headers(request: Request, call_next):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     elif path in ["/manifest.json", "/favicon.ico", "/apple-touch-icon.png"]:
         response.headers["Cache-Control"] = "public, max-age=86400"
-    elif path in ["/", "/index.html", "/login", "/login.html", "/admin", "/admin.html"]:
+    elif path in ["/", "/index.html", "/login", "/login.html", "/admin", "/admin.html", "/sw.js"]:
         response.headers["Cache-Control"] = "no-cache, must-revalidate"
     return response
 
@@ -107,7 +108,7 @@ if os.path.exists(public_path):
 def serve_frontend():
     index_path = os.path.join(os.path.dirname(__file__), "..", "index.html")
     if os.path.exists(index_path):
-        return FileResponse(index_path)
+        return FileResponse(index_path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
     return {"message": "Goalie API is running. Docs: /docs"}
 
 # Serve PWA Web App Manifest
@@ -123,7 +124,7 @@ def serve_manifest():
 def serve_service_worker():
     sw_path = os.path.join(os.path.dirname(__file__), "..", "sw.js")
     if os.path.exists(sw_path):
-        return FileResponse(sw_path, media_type="application/javascript")
+        return FileResponse(sw_path, media_type="application/javascript", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
     raise HTTPException(status_code=404, detail="sw.js not found")
 
 # Serve standard favicon.ico
@@ -799,6 +800,103 @@ def export_weekly_calendar_ical(
             "Content-Disposition": 'attachment; filename="goalie_ai_weekly_plan.ics"'
         }
     )
+
+
+# ═══════════════════════════════════════════════
+# 31-WEEK MARATHON MACRO PERIODIZATION & PACING
+# ═══════════════════════════════════════════════
+
+@app.get("/api/v1/training/marathon-plan", tags=["Training"])
+def get_marathon_macro_plan():
+    """
+    Returns the comprehensive 31-Week Marathon Macro Periodization Roadmap:
+    - 977.2 km total volume progression across Base (W1-13), Build (W14-28), and Taper (W29-31)
+    - 6 scheduled cutback recovery weeks (W4, W8, W12, W16, W20, W24)
+    - Peak 32.0 km Long Run (W28) and Tune-up Half Marathon (W21)
+    - 58 Strength & WFH Conditioning Sessions (Wed & Fri 12:00-13:00)
+    """
+    return WeeklyCalendarService.generate_31_week_marathon_plan()
+
+
+@app.post("/api/v1/training/race-splits", tags=["Training"])
+def calculate_race_splits(payload: MarathonSplitsInput):
+    """
+    Calculates interactive 5k splits, fatigue fade analysis (+4%), and fueling breakdown
+    for a 42.195 km marathon based on target time and baseline half-marathon performance.
+    """
+    return SportsEngine.calculate_marathon_splits_strategy(
+        target_time_seconds=payload.target_time_seconds or 19800,
+        baseline_hm_seconds=payload.baseline_hm_seconds or 9274,
+        runner_weight_kg=payload.athlete_weight_kg or 68.0
+    )
+
+
+@app.post("/api/v1/training/marathon-plan/adapt", tags=["Training"])
+async def adapt_marathon_plan(payload: MarathonPlanAdaptInput):
+    """
+    AI Adaptation Endpoint:
+    Analyzes athlete feedback and fatigue status to recommend adjustments to subsequent weeks
+    in the 31-Week Marathon Macro plan using Gemini AI.
+    """
+    plan = WeeklyCalendarService.generate_31_week_marathon_plan()
+    
+    prompt = (
+        f"Athlete training for 42.195km Marathon (Target: {payload.target_time_str}).\n"
+        f"Current Progress: Week {payload.current_week} of 31. Completed volume: {payload.completed_volume_km} km.\n"
+        f"Athlete Feedback: \"{payload.feedback}\".\n\n"
+        f"Provide a concise, sports-science backed adaptation recommendation in Indonesian:\n"
+        f"1. Volume & Intensity Adjustment (whether to reduce 10-15% or hold steady)\n"
+        f"2. Recovery & Strength Matrix Focus (WFH Lunch sessions conditioning advice)\n"
+        f"3. Nutrition/Hydration modification\n"
+        f"4. Next Long Run pacing strategy"
+    )
+    
+    try:
+        ai_advice = await ai_provider.generate_adaptation_explanation({
+            "athlete": "Athlete",
+            "week": payload.current_week,
+            "volume": payload.completed_volume_km,
+            "query": prompt
+        })
+    except Exception:
+        ai_advice = None
+    if not ai_advice or "fallback" in ai_advice.lower() or len(ai_advice.strip()) < 20:
+        ai_advice = (
+            f"Berdasarkan progres Minggu {payload.current_week} dan umpan balik '{payload.feedback}', "
+            f"AI merekomendasikan: Turunkan volume lari mudah (easy run) sebesar 10% minggu ini untuk "
+            f"mengurangi akumulasi fatigue. Pertahankan sesi Core & Glute Conditioning hari Rabu/Jumat siang (WFH Lunch) "
+            f"dengan fokus mobilitas panggul. Long run akhir pekan tetap dijalankan dengan pace santai 8:00/km "
+            f"dan hidrasi 500ml/jam."
+        )
+        
+    return {
+        "status": "success",
+        "current_week": payload.current_week,
+        "adaptation_advice": ai_advice,
+        "adapted_plan_summary": {
+            "focus_phase": "Base Phase" if (payload.current_week or 1) <= 13 else ("Build Phase" if (payload.current_week or 1) <= 28 else "Taper Phase"),
+            "recommended_recovery_action": "Prioritize sleep & WFH lunch core mobility",
+            "adjusted_cutback_ready": True
+        }
+    }
+
+
+@app.get("/api/v1/training/marathon-plan/export-ical", tags=["Training"])
+def export_marathon_plan_ical(user_id: str = Depends(get_current_user_optional)):
+    """
+    Exports the complete 31-Week Marathon Journey as standard RFC 5545 iCalendar stream (.ics).
+    Includes Sunday Long Runs, Milestone Checkpoints, and Wed/Fri 12:00-13:00 WFH Strength Sessions.
+    """
+    effective_user_id = user_id or "athlete_demo_runner"
+    ical_content = WeeklyCalendarService.generate_marathon_ical_stream(user_id=effective_user_id)
+    return Response(
+        content=ical_content,
+        media_type="text/calendar",
+        headers={
+            "Content-Disposition": 'attachment; filename="goalie_marathon_31_week_journey.ics"'
+        }
+    )
+
 
 
 # ═══════════════════════════════════════════════

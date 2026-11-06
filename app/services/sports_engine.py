@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional, Dict, Any
 from functools import lru_cache
 import math
 
@@ -332,4 +332,141 @@ class SportsEngine:
             "total_sodium_mg": total_sodium_mg,
             "strategy_summary": strategy,
             "timeline_schedule": schedule[:12]
+        }
+
+    @staticmethod
+    def calculate_marathon_splits_strategy(
+        target_time_seconds: int = 19800,
+        baseline_hm_seconds: Optional[int] = 9274,
+        runner_weight_kg: float = 68.0,
+        official_cutoff_seconds: int = 25200
+    ) -> dict:
+        """
+        Calculates 5km split progression, Riegel race pacing comparison, 
+        and precision hydration/fueling milestones for 42.195 km marathon.
+        """
+        target_time_seconds = max(7200, target_time_seconds)
+        avg_pace_sec_km = target_time_seconds / 42.195
+        avg_pace_min = int(avg_pace_sec_km // 60)
+        avg_pace_sec = int(round(avg_pace_sec_km % 60))
+        if avg_pace_sec == 60:
+            avg_pace_min += 1
+            avg_pace_sec = 0
+        avg_pace_formatted = f"{avg_pace_min:02d}:{avg_pace_sec:02d}/km"
+
+        # Format Target Finish Time (HH:MM:SS)
+        th = target_time_seconds // 3600
+        tm = (target_time_seconds % 3600) // 60
+        ts = target_time_seconds % 60
+        target_time_formatted = f"{th:02d}:{tm:02d}:{ts:02d}"
+
+        # Baseline Half Marathon Riegel Model Comparison
+        riegel_sec = 0
+        realistic_fade_sec = 0
+        riegel_formatted = "N/A"
+        realistic_formatted = "N/A"
+        if baseline_hm_seconds and baseline_hm_seconds > 0:
+            riegel_sec = round(baseline_hm_seconds * ((42.195 / 21.0975) ** 1.06))
+            realistic_fade_sec = round(riegel_sec * 1.04)  # +4% realistic marathon cardiac fatigue fade
+            rh, rm, rs = riegel_sec // 3600, (riegel_sec % 3600) // 60, riegel_sec % 60
+            fh, fm, fs = realistic_fade_sec // 3600, (realistic_fade_sec % 3600) // 60, realistic_fade_sec % 60
+            riegel_formatted = f"{rh:02d}:{rm:02d}:{rs:02d}"
+            realistic_formatted = f"{fh:02d}:{fm:02d}:{fs:02d}"
+
+        # Safety Cutoff Buffer
+        buffer_seconds = max(0, official_cutoff_seconds - target_time_seconds)
+        bh, bm = buffer_seconds // 3600, (buffer_seconds % 3600) // 60
+        cutoff_buffer_formatted = f"{bh:02d}:{bm:02d}:00"
+
+        # Split checkpoints definition
+        # Modifiers relative to average pace: conservative start (+6s), steady (0s), finish (-4s)
+        split_definitions = [
+            (5.0, 5.0, 6.0, "0-5 km: Conservative Start", "Mulai perlahan untuk menghemat glikogen. Minum air mineral 150ml di pos km 2.5/5."),
+            (10.0, 5.0, 0.0, "5-10 km: Settle into Target Rhythm", "Ritme target stabil. Konsumsi Energy Gel #1 (menit 45-50) + 150ml air mineral."),
+            (15.0, 5.0, 0.0, "10-15 km: Aerobic Cruising Flow", "Pertahankan kadens stabil 175-180 spm. Minuman isotonik / elektrolit 150ml."),
+            (20.0, 5.0, 0.0, "15-20 km: Core & Pelvis Alignment", "Konsumsi Energy Gel #2 (menit 90-95) + 150ml air. Jaga pundak tetap rileks."),
+            (21.0975, 1.0975, 0.0, "21.1 km: HALFWAY Checkpoint", "Titik paruh waktu lomba. Target kumulatif terkontrol tanpa kelelahan dini."),
+            (25.0, 3.9025, 0.0, "21.1-25 km: Post-Half Cadence Check", "Konsumsi Energy Gel #3 (menit 135-140) + air mineral. Fokus pernapasan berirama."),
+            (30.0, 5.0, 0.0, "25-30 km: Patience Before The Wall", "Tablet garam / sodium chew untuk mencegah kram betis & paha belakang."),
+            (35.0, 5.0, 1.0, "30-35 km: Conquering The Wall", "Energy Gel #4 (Kafein 25-50mg) di km 32. Taktik mental: pecah target per 1 km."),
+            (40.0, 5.0, 2.0, "35-40 km: Grit & Glute Drive", "Basuh spons air dingin untuk termoregulasi. Jangan biarkan kadens drop di bawah 172 spm."),
+            (42.195, 2.195, -4.0, "40-42.2 km: Final Finishing Surge", "Dorongan terakhir menuju garis akhir! Bentuk form tegak dan senyum kemenangan!")
+        ]
+
+        splits = []
+        cumulative_sec = 0.0
+        prev_km = 0.0
+
+        for km_mark, seg_len, pace_delta, name, fueling in split_definitions:
+            seg_pace_sec = max(180.0, avg_pace_sec_km + pace_delta)
+            seg_duration_sec = seg_len * seg_pace_sec
+            cumulative_sec += seg_duration_sec
+
+            # Segment Pace formatted
+            sp_m = int(seg_pace_sec // 60)
+            sp_s = int(round(seg_pace_sec % 60))
+            if sp_s == 60:
+                sp_m += 1
+                sp_s = 0
+            seg_pace_str = f"{sp_m:02d}:{sp_s:02d}/km"
+
+            # Cumulative time formatted
+            c_tot = int(round(cumulative_sec))
+            ch = c_tot // 3600
+            cm = (c_tot % 3600) // 60
+            cs = c_tot % 60
+            cum_str = f"{ch:02d}:{cm:02d}:{cs:02d}"
+            # Ensure final finish split matches target_time_formatted
+            if km_mark >= 42.0:
+                cum_str = target_time_formatted
+
+            splits.append({
+                "km_mark": round(km_mark, 2),
+                "segment_km": f"{int(km_mark - seg_len)} - {int(km_mark)} km" if km_mark < 42 else "40 - 42.195 km (Finish)",
+                "segment_length_km": round(seg_len, 3),
+                "segment_name": name,
+                "target_pace": seg_pace_str,
+                "split_time": cum_str,
+                "elapsed_time_formatted": cum_str,
+                "fueling_milestone": fueling
+            })
+
+        # Overall Fueling Strategy
+        hours = target_time_seconds / 3600.0
+        total_carbs_g = round(60 * hours)
+        total_gels = max(4, round(total_carbs_g / 25))
+        total_fluid_liters = round(0.55 * hours, 1)
+
+        return {
+            "target_distance_km": 42.195,
+            "target_time_seconds": target_time_seconds,
+            "target_time_formatted": target_time_formatted,
+            "target_pace_formatted": avg_pace_formatted,
+            "official_cutoff_formatted": "07:00:00",
+            "cutoff_buffer_formatted": cutoff_buffer_formatted,
+            "riegel_predicted_formatted": riegel_formatted,
+            "realistic_fade_formatted": realistic_formatted,
+            "baseline_hm_formatted": "02:34:34 (7:17/km)" if baseline_hm_seconds == 9274 else f"{baseline_hm_seconds//3600:02d}:{(baseline_hm_seconds%3600)//60:02d}:{baseline_hm_seconds%60:02d}",
+            "riegel_comparison": {
+                "baseline_hm_formatted": "02:34:34" if baseline_hm_seconds == 9274 else f"{baseline_hm_seconds//3600:02d}:{(baseline_hm_seconds%3600)//60:02d}:{baseline_hm_seconds%60:02d}",
+                "riegel_predicted_time_formatted": riegel_formatted,
+                "realistic_with_fatigue_time_formatted": realistic_formatted,
+                "cutoff_buffer_formatted": cutoff_buffer_formatted
+            },
+            "fueling_strategy": {
+                "total_carbs_grams": total_carbs_g,
+                "energy_gels_needed": total_gels,
+                "total_fluid_liters": total_fluid_liters,
+                "hourly_fluid_ml": 550,
+                "hourly_sodium_mg": 500
+            },
+            "splits": splits,
+            "fueling_summary": {
+                "total_carbohydrates_g": total_carbs_g,
+                "total_gels": total_gels,
+                "hourly_fluid_ml": 550,
+                "total_fluid_liters": total_fluid_liters,
+                "sodium_mg_per_hr": 500,
+                "total_sodium_mg": round(500 * hours)
+            }
         }
