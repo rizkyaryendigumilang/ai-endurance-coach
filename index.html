@@ -28,14 +28,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F7F8">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#efefec">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0b0b">
     <meta name="color-scheme" content="light dark">
 
-    <!-- Fonts: Google Roboto + JetBrains Mono for numerical data -->
+    <!-- Fonts: Cadra Urbanist + JetBrains Mono for numerical data -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS (25.8 KB) -->
     <link rel="stylesheet" href="/public/css/tailwind.min.css">
@@ -60,36 +60,46 @@
         })();
     </script>
 
-    <!-- Design System CSS Tokens (Strava Aesthetic + specs/components/button.md) -->
+    <!-- Design System CSS Tokens (Cadra Scandinavian Athletic Modernism) -->
     <style>
         :root {
-            --bg-color: #F7F7F8;
-            --surface-color: #FFFFFF;
-            --surface-subtle: #F0F0F2;
-            --text-primary: #242428;
-            --text-secondary: #656570;
-            --border-color: #E5E5E9;
-            --border-strong: #C8C8D0;
+            --bg-color: #efefec;
+            --surface-color: #fbfbf9;
+            --surface-subtle: #f5f5f1;
+            --raised: #ffffff;
+            --text-primary: #111111;
+            --text-secondary: #5c5c5a;
+            --faint: #73736f;
+            --border-color: rgba(17, 17, 17, 0.08);
+            --border-strong: rgba(17, 17, 17, 0.16);
             --tertiary: #FC4C02;
             --tertiary-text: #D03B00; /* WCAG AA 4.54:1 contrast on white */
             --tertiary-hover: #E34402;
             --tertiary-active: #C93B00;
-            --tertiary-subtle: #FFF3ED;
+            --tertiary-subtle: rgba(252, 76, 2, 0.08);
             --action-color: #FC4C02;
             --action-hover: #E34402;
-            --flat-green: #10B981;
-            --flat-orange: #FC4C02;
-            --flat-amber: #F59E0B;
+            --flat-green: #237a48;
+            --flat-orange: #c9542b;
+            --flat-amber: #a87406;
+            --sky: #2d6cb0;
+            --r-card: 22px;
+            --r-tile: 16px;
+            --r-ctl: 9999px;
+            --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 16px 36px -20px rgba(0, 0, 0, 0.06);
+            --shadow-pop: 0 20px 48px -16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
         }
 
         html.dark {
-            --bg-color: #121214;
-            --surface-color: #1E1E22;
-            --surface-subtle: #2A2A32;
-            --text-primary: #F4F4F6;
-            --text-secondary: #A6A6B2;
-            --border-color: #2E2E36;
-            --border-strong: #444450;
+            --bg-color: #0b0b0b;
+            --surface-color: #151515;
+            --surface-subtle: #1c1c1c;
+            --raised: #222222;
+            --text-primary: #f2f2f0;
+            --text-secondary: #a8a8a5;
+            --faint: #8a8a86;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.16);
             --tertiary: #FC5200;
             --tertiary-text: #FF7026; /* WCAG AA 5.1:1 contrast on dark surface */
             --tertiary-hover: #FF6A1A;
@@ -97,9 +107,12 @@
             --tertiary-subtle: rgba(252, 76, 2, 0.15);
             --action-color: #FC5200;
             --action-hover: #FF6A1A;
-            --flat-green: #34D399;
-            --flat-orange: #FC5200;
-            --flat-amber: #FBBF24;
+            --flat-green: #5cc58b;
+            --flat-orange: #f08a5d;
+            --flat-amber: #e2ad45;
+            --sky: #6aa6e8;
+            --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 20px 40px -22px rgba(0, 0, 0, 0.8);
+            --shadow-pop: 0 24px 60px -18px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
         /* WCAG 2.2 AA text contrast guarantee for small tertiary text */
@@ -181,11 +194,12 @@
         }
 
         body {
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.55;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             transition: background-color 150ms ease, color 150ms ease;
         }
 
@@ -197,8 +211,9 @@
         }
 
         h1, h2, h3, h4, .font-display {
+            font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             font-weight: 700;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.025em;
             text-wrap: balance;
         }
 
@@ -208,13 +223,57 @@
             letter-spacing: -0.01em;
         }
 
-        /* Modern Clean Cards (Strava style) */
+        /* Modern Clean Squircles (Cadra style) */
         .flat-card {
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-            transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+            border-radius: var(--r-card, 22px);
+            box-shadow: var(--shadow-card);
+            transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease, transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Cadra Status Spills (Capsule Pills) */
+        .spill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: var(--r-ctl, 9999px);
+            border: 1px solid transparent;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        .spill--teal {
+            background-color: rgba(35, 122, 72, 0.12);
+            color: var(--flat-green);
+            border-color: rgba(35, 122, 72, 0.2);
+        }
+
+        .spill--coral {
+            background-color: rgba(201, 84, 43, 0.12);
+            color: var(--flat-orange);
+            border-color: rgba(201, 84, 43, 0.2);
+        }
+
+        .spill--amber {
+            background-color: rgba(168, 116, 6, 0.12);
+            color: var(--flat-amber);
+            border-color: rgba(168, 116, 6, 0.2);
+        }
+
+        .spill--sky {
+            background-color: rgba(45, 108, 176, 0.12);
+            color: var(--sky);
+            border-color: rgba(45, 108, 176, 0.2);
+        }
+
+        .spill--neutral {
+            background-color: var(--surface-subtle);
+            color: var(--text-secondary);
+            border-color: var(--border-color);
         }
 
         /* ══════════════════════════════════════════════════════════ */
@@ -393,30 +452,31 @@
         @media (hover: hover) and (pointer: fine) {
             .flat-card:hover {
                 border-color: var(--border-strong);
-                box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+                box-shadow: var(--shadow-pop);
+                transform: translateY(-1px);
             }
             .btn-primary:hover, .btn-flat-primary:hover, .btn-action:hover {
                 background-color: #E34402;
                 box-shadow: 0 2px 4px 0 rgba(252, 76, 2, 0.25);
             }
             .btn-outline:hover, .btn-flat-secondary:hover {
-                background-color: #FFF3ED;
-                color: #E34402;
-                border-color: #E34402;
-                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                background-color: var(--surface-subtle);
+                color: var(--text-primary);
+                border-color: var(--border-strong);
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
             }
             html.dark .btn-outline:hover, html.dark .btn-flat-secondary:hover {
-                background-color: rgba(252, 76, 2, 0.15);
-                color: #FF7026;
-                border-color: #FF7026;
+                background-color: rgba(255, 255, 255, 0.08);
+                color: var(--text-primary);
+                border-color: var(--border-strong);
             }
             .btn-ghost:hover {
-                background-color: #FFE5D6;
-                color: #E34402;
+                background-color: var(--surface-subtle);
+                color: var(--text-primary);
             }
             html.dark .btn-ghost:hover {
-                background-color: rgba(252, 76, 2, 0.25);
-                color: #FFA066;
+                background-color: rgba(255, 255, 255, 0.08);
+                color: var(--text-primary);
             }
             .btn-link:hover {
                 color: #E34402;
@@ -446,17 +506,27 @@
             font-size: 0.8125rem !important;
         }
 
-        /* Inputs: Modern Soft Rounded (8px) & Anti-Zoom 16px */
+        /* Inputs: Modern Squircle (12px) & Anti-Zoom 16px */
         .flat-input {
             border: 1px solid var(--border-color);
             background-color: var(--surface-color);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 10px 14px;
             font-size: 16px;
             color: var(--text-primary);
             outline: none;
-            transition: border-color 150ms ease, box-shadow 150ms ease;
+            transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
             width: 100%;
+        }
+
+        .flat-input:focus {
+            border-color: var(--tertiary);
+            box-shadow: 0 0 0 3px var(--tertiary-subtle);
+        }
+
+        /* Modern Navigation and Subtab Pill Radii (Cadra Capsule System) */
+        .nav-tab, .tab-btn, .schedule-subtab {
+            border-radius: var(--r-ctl, 9999px) !important;
         }
 
         .flat-input:focus {
@@ -523,15 +593,16 @@
         .sonner-toast {
             pointer-events: auto;
             background: var(--surface-color);
-            border: 1.5px solid var(--border-strong);
-            border-radius: 2px;
-            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--r-tile, 16px);
+            padding: 12px 16px;
             display: flex;
             align-items: flex-start;
             gap: 10px;
             font-size: 13px;
             color: var(--text-primary);
-            animation: flat-fade-in 150ms ease-out forwards;
+            box-shadow: var(--shadow-pop);
+            animation: flat-fade-in 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes flat-fade-in {
@@ -611,23 +682,23 @@
                 </a>
             </div>
 
-            <!-- Main Navigation Segmented Tabs (Desktop) -->
-            <div class="hidden lg:flex items-center p-1 bg-surface-subtle border border-border rounded-xl gap-0.5 text-xs font-medium shrink-0 shadow-2xs" role="tablist" aria-label="Main Navigation">
-                <a href="#workstation" onclick="switchWorkstationTab('cockpit')" id="nav-tab-cockpit" class="nav-tab px-2.5 xl:px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80 shrink-0" role="tab" aria-selected="true">
+            <!-- Main Navigation Segmented Tabs (Desktop Cadra Pill Track) -->
+            <div class="hidden lg:flex items-center p-1 bg-surface-subtle border border-border rounded-full gap-0.5 text-xs font-medium shrink-0 shadow-xs" role="tablist" aria-label="Main Navigation">
+                <a href="#workstation" onclick="switchWorkstationTab('cockpit')" id="nav-tab-cockpit" class="nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80 shrink-0" role="tab" aria-selected="true">
                     <span data-i18n="nav_dashboard" class="whitespace-nowrap">Beranda</span>
                 </a>
-                <a href="#workstation" onclick="switchWorkstationTab('schedule')" id="nav-tab-schedule" class="nav-tab px-2.5 xl:px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
+                <a href="#workstation" onclick="switchWorkstationTab('schedule')" id="nav-tab-schedule" class="nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
                     <span data-i18n="nav_training" class="whitespace-nowrap">Rencana</span>
                 </a>
-                <a href="#workstation" onclick="switchWorkstationTab('chat')" id="nav-tab-chat" class="nav-tab px-2.5 xl:px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
+                <a href="#workstation" onclick="switchWorkstationTab('chat')" id="nav-tab-chat" class="nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
                     <span data-i18n="nav_coach" class="whitespace-nowrap">Pelatih AI</span>
                     <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-tertiary text-white whitespace-nowrap shrink-0">PRO</span>
                 </a>
-                <a href="#workstation" onclick="switchWorkstationTab('telemetry')" id="nav-tab-telemetry" class="nav-tab px-2.5 xl:px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
+                <a href="#workstation" onclick="switchWorkstationTab('telemetry')" id="nav-tab-telemetry" class="nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
                     <span data-i18n="nav_telemetry" class="whitespace-nowrap">Telemetri</span>
                     <span class="w-1.5 h-1.5 rounded-full bg-flat-green shrink-0"></span>
                 </a>
-                <a href="#workstation" onclick="switchWorkstationTab('integrations')" id="nav-tab-integrations" class="nav-tab px-2.5 xl:px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
+                <a href="#workstation" onclick="switchWorkstationTab('integrations')" id="nav-tab-integrations" class="nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium shrink-0" role="tab" aria-selected="false">
                     <span data-i18n="nav_integrations" class="whitespace-nowrap">Integrasi</span>
                 </a>
             </div>
@@ -990,34 +1061,34 @@
                     </p>
                 </div>
 
-                <!-- Tabs (Segmented Control 21st.dev style) -->
-                <div class="p-1.5 bg-surface-subtle border border-border rounded-2xl inline-flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-2xs" role="tablist" aria-label="Workstation View Navigation">
-                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97">
+                <!-- Tabs (Cadra Floating Capsule Track) -->
+                <div class="p-1.5 bg-surface-subtle border border-border rounded-full inline-flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-xs" role="tablist" aria-label="Workstation View Navigation">
+                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97">
                         <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         <span data-i18n="tab_cockpit">Kokpit Performa</span>
                     </button>
-                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                         <span data-i18n="tab_chat">Chat Pelatih AI</span>
                     </button>
-                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         <span data-i18n="tab_telemetry">Telemetri</span>
                         <span class="w-1.5 h-1.5 bg-flat-green rounded-full shrink-0"></span>
                     </button>
-                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span data-i18n="tab_biomechanics">Video Gait</span>
                     </button>
-                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         <span data-i18n="tab_schedule">Jadwal & iCal</span>
                     </button>
-                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         <span data-i18n="tab_integrations">Integrasi</span>
                     </button>
-                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         <span data-i18n="tab_settings">Pengaturan</span>
                     </button>
@@ -2704,22 +2775,22 @@
                         <p class="text-xs text-text-secondary font-mono" data-i18n="marathon_master_sub">Progresi Makrosiklus &bull; Matriks Kekuatan WFH &bull; Split &bull; Mesin Adaptif AI</p>
                     </div>
 
-                    <!-- Sub-Tab Segmented Controls (21st.dev Style) -->
-                    <div class="p-1 bg-surface-subtle border border-border rounded-xl inline-flex items-center gap-0.5 text-xs font-medium shrink-0 overflow-x-auto no-scrollbar shadow-2xs" role="tablist" aria-label="Marathon Schedule Views">
-                        <button type="button" onclick="switchScheduleSubtab('macro')" id="subtab-btn-macro" role="tab" aria-selected="true" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80">
+                    <!-- Sub-Tab Segmented Controls (Cadra Pill Track) -->
+                    <div class="p-1 bg-surface-subtle border border-border rounded-full inline-flex items-center gap-0.5 text-xs font-medium shrink-0 overflow-x-auto no-scrollbar shadow-xs" role="tablist" aria-label="Marathon Schedule Views">
+                        <button type="button" onclick="switchScheduleSubtab('macro')" id="subtab-btn-macro" role="tab" aria-selected="true" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80">
                             <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                             <span data-i18n="subtab_macro">Makro (31-Mgg)</span>
                         </button>
-                        <button type="button" onclick="switchScheduleSubtab('weekly')" id="subtab-btn-weekly" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
+                        <button type="button" onclick="switchScheduleSubtab('weekly')" id="subtab-btn-weekly" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             <span data-i18n="subtab_weekly">Mingguan (7-Hari)</span>
                         </button>
-                        <button type="button" onclick="switchScheduleSubtab('strength')" id="subtab-btn-strength" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
+                        <button type="button" onclick="switchScheduleSubtab('strength')" id="subtab-btn-strength" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                             <span data-i18n="subtab_strength">Kekuatan &amp; WFH</span>
                             <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-tertiary/15 text-tertiary" data-i18n="subtab_strength_count">58 Sesi</span>
                         </button>
-                        <button type="button" onclick="switchScheduleSubtab('splits')" id="subtab-btn-splits" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
+                        <button type="button" onclick="switchScheduleSubtab('splits')" id="subtab-btn-splits" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <span data-i18n="subtab_splits">Split &amp; Nutrisi</span>
                             <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-flat-green/15 text-flat-green">42.2k</span>
@@ -4735,7 +4806,7 @@
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (content) content.classList.add('hidden');
                 if (btn) {
-                    btn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97';
+                    btn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97';
                     btn.setAttribute('aria-selected', 'false');
                     const icon = btn.querySelector('svg');
                     if (icon) {
@@ -4751,10 +4822,10 @@
                 const nTab = document.getElementById(`nav-tab-${t}`);
                 if (nTab) {
                     if (t === tabName) {
-                        nTab.className = 'nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
+                        nTab.className = 'nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
                         nTab.setAttribute('aria-selected', 'true');
                     } else {
-                        nTab.className = 'nav-tab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
+                        nTab.className = 'nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
                         nTab.setAttribute('aria-selected', 'false');
                     }
                 }
@@ -4764,7 +4835,7 @@
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeContent) activeContent.classList.remove('hidden');
             if (activeBtn) {
-                activeBtn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97';
+                activeBtn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97';
                 activeBtn.setAttribute('aria-selected', 'true');
                 const icon = activeBtn.querySelector('svg');
                 if (icon) {
@@ -6555,7 +6626,7 @@
                 const view = document.getElementById(`subtab-view-${t}`);
                 if (view) view.classList.add('hidden');
                 if (btn) {
-                    btn.className = 'schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
+                    btn.className = 'schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
                     btn.setAttribute('aria-selected', 'false');
                     const icon = btn.querySelector('svg');
                     if (icon) icon.classList.remove('text-tertiary');
@@ -6566,7 +6637,7 @@
             const activeView = document.getElementById(`subtab-view-${tab}`);
             if (activeView) activeView.classList.remove('hidden');
             if (activeBtn) {
-                activeBtn.className = 'schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
+                activeBtn.className = 'schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
                 activeBtn.setAttribute('aria-selected', 'true');
                 const icon = activeBtn.querySelector('svg');
                 if (icon) icon.classList.add('text-tertiary');
