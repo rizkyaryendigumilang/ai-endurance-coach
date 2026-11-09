@@ -724,50 +724,34 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- HERO SECTION: Clean Centered Intro + Bento Telemetry Canvas -->
+    <!-- HERO SECTION: Compact Telemetry HUD & Live Console         -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <header class="border-b border-border bg-surface py-14 sm:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
+    <header class="border-b border-border bg-surface pt-6 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
             
-            <!-- Hero Top Header (Centered, Clean, Breathing Room) -->
-            <div class="max-w-3xl mx-auto text-center space-y-5">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium border border-border bg-surface-subtle text-text-secondary">
-                    <span class="w-2 h-2 rounded-full bg-flat-green"></span>
-                    <span>Garmin FIT &amp; Strava Direct Sync &bull; Banister TRIMP Engine</span>
+            <!-- Compact Hero HUD Strip -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium border border-border bg-surface-subtle text-text-secondary">
+                        <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
+                        <span data-i18n="hero_badge">Garmin FIT &bull; Strava Sync &bull; Banister TRIMP</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-text-primary tracking-tight font-display" data-i18n="hero_title">
+                        Train with verifiable metrics.
+                    </h1>
+                    <p class="text-xs text-text-secondary font-mono" data-i18n="hero_subtitle">
+                        LT2 &bull; ACWR &bull; GAP &bull; 31-Wk Marathon Periodization
+                    </p>
                 </div>
 
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary tracking-tight leading-[1.15]">
-                    Train with verifiable metrics.
-                </h1>
-
-                <p class="text-xs sm:text-sm text-text-secondary font-mono max-w-xl mx-auto">
-                    LT2 &bull; ACWR &bull; GAP &bull; 31-Wk Marathon Periodization
-                </p>
-
-                <!-- Action CTA Group -->
-                <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
-                    <a href="#workstation" class="btn-flat-primary px-6 py-3 text-sm">
-                        <span>Launch Live Terminal</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                <div class="flex items-center gap-2 shrink-0">
+                    <a href="#workstation" class="btn-flat-primary px-4 py-2 text-xs inline-flex items-center gap-1.5 font-mono">
+                        <span data-i18n="hero_cta_terminal">TERMINAL KOKPIT</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </a>
-                    <button onclick="openAuthModal('register')" class="btn-flat-secondary px-6 py-3 text-sm">
-                        <span>Create Free Athlete Profile</span>
+                    <button onclick="openAuthModal('register')" class="btn-flat-secondary px-4 py-2 text-xs font-mono">
+                        <span data-i18n="hero_cta_register">AKUN ATLET</span>
                     </button>
-                </div>
-
-                <!-- Trust Micro Spec Line -->
-                <div class="pt-3 flex flex-wrap items-center justify-center gap-6 text-xs text-text-secondary font-mono">
-                    <span class="flex items-center gap-1.5">
-                        <span class="text-text-primary font-bold">100%</span> RLS Data Isolation
-                    </span>
-                    <span class="hidden sm:inline text-border">&bull;</span>
-                    <span class="flex items-center gap-1.5">
-                        <span class="text-tertiary font-bold">0.2 ms</span> Compute Latency
-                    </span>
-                    <span class="hidden sm:inline text-border">&bull;</span>
-                    <span class="flex items-center gap-1.5">
-                        <span class="text-flat-green font-bold">Gemini 3.8</span> Dual-Tier AI
-                    </span>
                 </div>
             </div>
 
@@ -987,84 +971,6 @@
 
         </div>
     </header>
-
-    <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- FEATURES SECTION: Clean 3-Pillar Architectural Framework   -->
-    <!-- ══════════════════════════════════════════════════════════ -->
-    <section id="features" class="py-14 sm:py-20 border-b border-border bg-bg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
-            
-            <!-- Section Header -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 max-w-4xl">
-                <div>
-                    <span class="flat-badge border-text-primary text-text-primary mb-2">SYSTEM ARCHITECTURE</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
-                        Engineered for Rigorous Periodization.
-                    </h2>
-                </div>
-                <p class="text-xs font-mono text-text-secondary">
-                    Deterministic Physiological Engine &bull; Automated Ingestion &bull; Verifiable AI
-                </p>
-            </div>
-
-            <!-- 3 Clean Architectural Pillar Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
-                <!-- Pillar 1: Deterministic Sports Science -->
-                <div class="p-4 bg-surface border border-border rounded-xl space-y-3 flex flex-col justify-between">
-                    <div class="space-y-1.5">
-                        <div class="w-8 h-8 rounded-lg bg-surface-subtle border border-border flex items-center justify-center text-tertiary">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        </div>
-                        <h3 class="text-sm font-bold text-text-primary">100% Deterministic Math</h3>
-                        <div class="text-xs text-text-secondary font-mono">
-                            TRIMP &bull; ACWR &bull; GAP &bull; Karvonen
-                        </div>
-                    </div>
-                    <div class="pt-2 border-t border-border flex items-center justify-between text-xs font-mono">
-                        <span class="text-text-secondary">Latency</span>
-                        <span class="text-flat-green font-bold">&lt; 0.2 ms</span>
-                    </div>
-                </div>
-
-                <!-- Pillar 2: Hardware & Ecosystem Ingestion -->
-                <div class="p-4 bg-surface border border-border rounded-xl space-y-3 flex flex-col justify-between">
-                    <div class="space-y-1.5">
-                        <div class="w-8 h-8 rounded-lg bg-surface-subtle border border-border flex items-center justify-center text-flat-orange">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <h3 class="text-sm font-bold text-text-primary">Ecosystem Ingest</h3>
-                        <div class="text-xs text-text-secondary font-mono">
-                            Garmin &bull; Strava &bull; Intervals.icu &bull; iCal
-                        </div>
-                    </div>
-                    <div class="pt-2 border-t border-border flex items-center justify-between text-xs font-mono">
-                        <span class="text-text-secondary">Formats</span>
-                        <span class="text-tertiary font-bold">FIT, TCX, GPX, ICS</span>
-                    </div>
-                </div>
-
-                <!-- Pillar 3: Adaptive Dual-Tier AI & Free BYOK -->
-                <div class="p-4 bg-surface border border-border rounded-xl space-y-3 flex flex-col justify-between">
-                    <div class="space-y-1.5">
-                        <div class="w-8 h-8 rounded-lg bg-surface-subtle border border-border flex items-center justify-center text-flat-green">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                        </div>
-                        <h3 class="text-sm font-bold text-text-primary">Dual-Tier AI &amp; BYOK</h3>
-                        <div class="text-xs text-text-secondary font-mono">
-                            Gemini 3.8 Flash &bull; Pro Macrocycles &bull; BYOK
-                        </div>
-                    </div>
-                    <div class="pt-2 border-t border-border flex items-center justify-between text-xs font-mono">
-                        <span class="text-text-secondary">Access</span>
-                        <span class="text-flat-green font-bold">Free Tier + Pro</span>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
 
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- INTERACTIVE ATHLETIC WORKSTATION (Live Functional App)     -->
@@ -2238,9 +2144,9 @@
                         <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3.5 pr-2 text-xs leading-relaxed">
                             <!-- Welcome Message -->
                             <div class="p-3 bg-surface-subtle border border-border rounded-xl max-w-[92%]">
-                                <div class="font-bold text-[11px] text-tertiary font-mono mb-1">GOALIE COACH // SYSTEM READY</div>
-                                <p class="text-text-primary font-mono text-[11px]">
-                                    Active Telemetry: CTL/ATL/TSB &bull; Target Pace &bull; Cardiac Drift. Ask a question or select a prompt below.
+                                <div class="font-bold text-[11px] text-tertiary font-mono mb-1" data-i18n="chat_welcome_title">PELATIH GOALIE // SISTEM SIAP</div>
+                                <p class="text-text-primary font-mono text-[11px]" data-i18n="chat_welcome_desc">
+                                    Telemetri Aktif: CTL/ATL/TSB &bull; Target Pace &bull; Cardiac Drift. Tanyakan strategi latihan atau pilih salah satu prompt di bawah.
                                 </p>
                             </div>
                         </div>
@@ -2249,27 +2155,27 @@
                         <div class="pt-3 border-t border-border flex flex-wrap gap-1.5 text-[11px]">
                             <button onclick="sendQuickPrompt('Rekomendasikan menu latihan preskriptif untuk besok berdasarkan fatigue form TSB +8 dan target maraton.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                <span>Prescribe Tomorrow's Workout</span>
+                                <span data-i18n="chip_prescribe">Preskripsi Latihan Besok</span>
                             </button>
                             <button onclick="sendQuickPrompt('Evaluasi status ACWR saya di angka 1.16 dan form TSB -11.9. Apakah saya berada di Sweet Spot atau ada risiko cedera?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
-                                TP ACWR 1.16 &amp; TSB
+                                <span data-i18n="chip_acwr">Evaluasi ACWR &amp; TSB</span>
                             </button>
                             <button onclick="sendQuickPrompt('Berdasarkan HRR 144 bpm (RHR 48, Max 192), bagaimana saya harus membagi waktu di Zona 2 Karvonen (135-149 bpm) untuk maraton?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-tertiary text-text-secondary hover:text-text-primary transition-colors">
-                                Karvonen 5-Zone HR Matrix
+                                <span data-i18n="chip_karvonen">Matriks Karvonen 5-Zona</span>
                             </button>
                             <button onclick="sendQuickPrompt('Hitung Minetti Grade-Adjusted Pace jika saya lari di tanjakan elevasi 60 meter dengan pace 05:00 min/km.')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
-                                Strava Minetti GAP
+                                <span data-i18n="chip_gap">Kalkulator Strava GAP</span>
                             </button>
                             <button onclick="sendQuickPrompt('Cardiac drift saya tercatat +1.7% (decoupling) dan efisiensi 1.36 m/beat. Apakah fondasi aerobik saya sudah cukup solid?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
-                                Aerobic Decoupling Drift +1.7%
+                                <span data-i18n="chip_drift">Decoupling Aerobik +1.7%</span>
                             </button>
                         </div>
 
                         <!-- Input Bar -->
                         <form onsubmit="handleChatSubmit(event)" class="mt-3 flex gap-2">
-                            <input type="text" id="chat-input" class="flat-input flex-1 text-xs" placeholder="Ask about target pace, recovery protocols, interval structure..." required autocomplete="off">
-                            <button type="submit" id="chat-submit-btn" class="btn-flat-primary px-4 text-xs font-mono font-bold">
-                                SEND &gt;
+                            <input type="text" id="chat-input" class="flat-input flex-1 text-xs" placeholder="Tanyakan target pace, protokol pemulihan, interval..." required autocomplete="off" data-i18n-ph="chat_input_ph">
+                            <button type="submit" id="chat-submit-btn" class="btn-flat-primary px-4 text-xs font-mono font-bold" data-i18n="chat_send_btn">
+                                KIRIM &gt;
                             </button>
                         </form>
                     </div>
@@ -2278,24 +2184,24 @@
                     <div class="lg:col-span-4 space-y-4">
                         <div class="flat-card border-2 border-border p-4 bg-surface-subtle space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
-                                <span class="font-mono text-xs font-bold text-text-primary">ATHLETE PROFILE</span>
-                                <span class="flat-badge border-flat-green text-flat-green">SYNCED</span>
+                                <span class="font-mono text-xs font-bold text-text-primary" data-i18n="sidebar_profile">PROFIL ATLET</span>
+                                <span class="flat-badge border-flat-green text-flat-green" data-i18n="status_synced">TERSINKRON</span>
                             </div>
                             <div class="space-y-2 text-xs font-mono">
                                 <div class="flex justify-between">
-                                    <span class="text-text-secondary">Weekly Mileage:</span>
+                                    <span class="text-text-secondary" data-i18n="sidebar_mileage">Volume Mingguan:</span>
                                     <span class="font-bold text-text-primary">48.5 km</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-text-secondary">Recent 10K PB:</span>
+                                    <span class="text-text-secondary" data-i18n="sidebar_pb">PB 10K Terakhir:</span>
                                     <span class="font-bold text-text-primary">42:15</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-text-secondary">Resting Heart Rate:</span>
+                                    <span class="text-text-secondary" data-i18n="sidebar_rhr">Detak Jantung Istirahat:</span>
                                     <span class="font-bold text-text-primary">48 bpm</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-text-secondary">Target Race:</span>
+                                    <span class="text-text-secondary" data-i18n="sidebar_race">Target Lomba:</span>
                                     <span class="font-bold text-tertiary">Berlin Marathon 2026</span>
                                 </div>
                             </div>
@@ -2306,16 +2212,16 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 bg-tertiary"></span>
-                                    <span class="font-bold text-xs text-text-primary">COACH (PRO)</span>
+                                    <span class="font-bold text-xs text-text-primary" data-i18n="sidebar_coach_pro">PELATIH (PRO)</span>
                                 </div>
                                 <span id="sidebar-byok-status" class="text-[10px] font-mono text-text-secondary truncate">BYOK API KEY</span>
                             </div>
-                            <p class="text-[11px] font-mono text-text-secondary">
-                                Gemini 3.8 Flash Pro &bull; Macrocycle Planning &bull; Drift Alerts
+                            <p class="text-[11px] font-mono text-text-secondary" data-i18n="sidebar_byok_desc">
+                                Gemini 3.8 Flash Pro &bull; Perencanaan Makrosiklus &bull; Peringatan Drift
                             </p>
                             <div class="pt-1">
-                                <button onclick="openProPaymentModal()" id="sidebar-byok-btn" class="btn-flat-primary w-full py-2 text-xs font-bold font-mono">
-                                    ENTER GEMINI API KEY (BYOK)
+                                <button onclick="openProPaymentModal()" id="sidebar-byok-btn" class="btn-flat-primary w-full py-2 text-xs font-bold font-mono" data-i18n="sidebar_byok_btn">
+                                    MASUKKAN GEMINI API KEY (BYOK)
                                 </button>
                             </div>
                         </div>
@@ -2331,22 +2237,22 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-border pb-4">
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="flat-badge border-tertiary text-tertiary font-mono">CORE SPORTS SCIENCE</span>
-                            <span class="text-xs font-mono text-flat-green font-bold">FREE ATHLETE ACCESS</span>
+                            <span class="flat-badge border-tertiary text-tertiary font-mono" data-i18n="telemetry_badge_core">SAINS OLAHRAGA UTAMA</span>
+                            <span class="text-xs font-mono text-flat-green font-bold" data-i18n="telemetry_badge_access">AKSES ATLET GRATIS</span>
                         </div>
-                        <h2 class="font-display font-bold text-xl text-text-primary tracking-tight mt-1">Unified Endurance Telemetry Suite</h2>
-                        <p class="text-xs font-mono text-text-secondary mt-0.5">
+                        <h2 class="font-display font-bold text-xl text-text-primary tracking-tight mt-1" data-i18n="telemetry_suite_title">Rangkaian Telemetri Ketahanan Terpadu</h2>
+                        <p class="text-xs font-mono text-text-secondary mt-0.5" data-i18n="telemetry_suite_sub">
                             TrainingPeaks PMC/ACWR &bull; Intervals.icu Karvonen HR &bull; Strava Pro Minetti GAP
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="syncTelemetrySuite(); toast.info('Telemetry Synced', 'Refreshed metrics from backend Sports Engine.');" class="btn-flat-secondary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
+                        <button onclick="syncTelemetrySuite(); toast.info('Telemetri Disinkronkan', 'Metrik diperbarui dari mesin sains backend.');" class="btn-flat-secondary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                            <span>RECALCULATE</span>
+                            <span data-i18n="telemetry_btn_recalc">HITUNG ULANG</span>
                         </button>
                         <button onclick="copyIcalUrl()" class="btn-flat-primary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span>COPY ICAL FEED</span>
+                            <span data-i18n="telemetry_btn_ical">SALIN FEED ICAL</span>
                         </button>
                     </div>
                 </div>
@@ -2358,9 +2264,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 bg-flat-orange"></span>
-                            <h3 class="font-display font-bold text-base text-text-primary">TrainingPeaks™ Telemetry Hub</h3>
+                            <h3 class="font-display font-bold text-base text-text-primary" data-i18n="telemetry_tp_hub">Hub Telemetri TrainingPeaks™</h3>
                         </div>
-                        <span class="text-[11px] font-mono text-text-secondary">Banister Impulse-Response & Gabbett ACWR</span>
+                        <span class="text-[11px] font-mono text-text-secondary" data-i18n="telemetry_tp_sub">Respons Impuls Banister &amp; ACWR Gabbett</span>
                     </div>
 
                     <!-- 4 PMC Metric Cards -->
@@ -2792,30 +2698,30 @@
                     <div>
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="w-2.5 h-2.5 bg-tertiary"></span>
-                            <h3 class="font-display font-extrabold text-lg text-text-primary">31-Week Marathon Master System</h3>
-                            <span class="flat-badge border-tertiary text-tertiary text-[10px]">STAGES 1–3</span>
+                            <h3 class="font-display font-extrabold text-lg text-text-primary" data-i18n="marathon_master_title">Sistem Master Maraton 31-Minggu</h3>
+                            <span class="flat-badge border-tertiary text-tertiary text-[10px]" data-i18n="marathon_master_stage">TAHAP 1–3</span>
                         </div>
-                        <p class="text-xs text-text-secondary font-mono">Macrocycle Progression, WFH Strength Matrix, Splits &amp; AI Adaptive Engine</p>
+                        <p class="text-xs text-text-secondary font-mono" data-i18n="marathon_master_sub">Progresi Makrosiklus &bull; Matriks Kekuatan WFH &bull; Split &bull; Mesin Adaptif AI</p>
                     </div>
 
                     <!-- Sub-Tab Segmented Controls (21st.dev Style) -->
                     <div class="p-1 bg-surface-subtle border border-border rounded-xl inline-flex items-center gap-0.5 text-xs font-medium shrink-0 overflow-x-auto no-scrollbar shadow-2xs" role="tablist" aria-label="Marathon Schedule Views">
                         <button type="button" onclick="switchScheduleSubtab('macro')" id="subtab-btn-macro" role="tab" aria-selected="true" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80">
                             <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            <span>Macro (31-Wk)</span>
+                            <span data-i18n="subtab_macro">Makro (31-Mgg)</span>
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('weekly')" id="subtab-btn-weekly" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span>Mingguan (7-Day)</span>
+                            <span data-i18n="subtab_weekly">Mingguan (7-Hari)</span>
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('strength')" id="subtab-btn-strength" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            <span>Strength &amp; WFH</span>
-                            <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-tertiary/15 text-tertiary">58 Sesi</span>
+                            <span data-i18n="subtab_strength">Kekuatan &amp; WFH</span>
+                            <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-tertiary/15 text-tertiary" data-i18n="subtab_strength_count">58 Sesi</span>
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('splits')" id="subtab-btn-splits" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-lg whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>Splits &amp; Nutrisi</span>
+                            <span data-i18n="subtab_splits">Split &amp; Nutrisi</span>
                             <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-flat-green/15 text-flat-green">42.2k</span>
                         </button>
                     </div>
@@ -2829,20 +2735,20 @@
                     <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
                             <div>
-                                <span class="flat-badge border-tertiary text-tertiary mb-1">STAGE 1: MACRO PERIODIZATION</span>
-                                <h3 class="font-display font-extrabold text-xl text-text-primary tracking-tight">31-Week Full Marathon Roadmap</h3>
-                                <p class="text-xs text-text-secondary mt-0.5 font-mono">
-                                    Kickoff: Sen, 9 Nov 2026 • Race Day: Min, 13 Jun 2027 • Target: 42.195 km • Finish 05:30:00 (7:49/km)
+                                <span class="flat-badge border-tertiary text-tertiary mb-1" data-i18n="macro_stage_badge">TAHAP 1: PERIODISASI MAKRO</span>
+                                <h3 class="font-display font-extrabold text-xl text-text-primary tracking-tight" data-i18n="macro_title">Roadmap 31-Minggu Maraton Penuh</h3>
+                                <p class="text-xs text-text-secondary mt-0.5 font-mono" data-i18n="macro_desc">
+                                    Mulai: Sen, 9 Nov 2026 &bull; Lomba: Min, 13 Jun 2027 &bull; Target: 42.195 km &bull; Finis 05:30:00 (7:49/km)
                                 </p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
                                 <button type="button" onclick="openAdaptPlanModal()" class="btn-flat-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 text-tertiary border-tertiary/40 hover:bg-tertiary/10">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                    <span>MINTA AI ADAPTASI RENCANA</span>
+                                    <span data-i18n="btn_adapt_ai">MINTA AI ADAPTASI RENCANA</span>
                                 </button>
                                 <button type="button" onclick="downloadMarathonICS()" class="btn-flat-primary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 font-bold">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    <span>SYNC 31-WK ICAL (.ICS)</span>
+                                    <span data-i18n="btn_sync_ical">SINKRON 31-MGG ICAL (.ICS)</span>
                                 </button>
                             </div>
                         </div>
@@ -2850,23 +2756,26 @@
                         <!-- 4 KPI Metrics -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
                             <div class="p-3 bg-surface-subtle border border-border">
-                                <div class="text-[10px] text-text-secondary uppercase">Total Planned Volume</div>
+                                <div class="text-[10px] text-text-secondary uppercase" data-i18n="kpi_total_volume">Total Volume Terencana</div>
                                 <div class="text-xl font-extrabold text-tertiary mt-1" id="macro-kpi-total-km">977.2 km</div>
-                                <div class="text-[10px] text-text-secondary mt-0.5">Mean: 31.5 • Max: 50.2 km/wk</div>
+                                <div class="text-[10px] text-text-secondary mt-0.5">Rata-rata: 31.5 &bull; Maks: 50.2 km/mgg</div>
                             </div>
                             <div class="p-3 bg-surface-subtle border border-border">
-                                <div class="text-[10px] text-text-secondary uppercase">Duration &amp; Streak</div>
-                                <div class="text-xl font-extrabold text-text-primary mt-1">31 Wks / 217 Hari</div>
+                                <div class="text-[10px] text-text-secondary uppercase" data-i18n="kpi_duration_streak">Durasi &amp; Rentang</div>
+                                <div class="text-xl font-extrabold text-text-primary mt-1">31 Mgg / 217 Hari</div>
                                 <div class="text-[10px] text-text-secondary mt-0.5">9 Nov 2026 – 13 Jun 2027</div>
                             </div>
                             <div class="p-3 bg-surface-subtle border border-border">
-                                <div class="text-[10px] text-text-secondary uppercase">Target Finish Pace</div>
+                                <div class="text-[10px] text-text-secondary uppercase" data-i18n="kpi_target_finish">Target Waktu Finis</div>
                                 <div class="text-xl font-extrabold text-flat-green mt-1">05:30:00</div>
                                 <div class="text-[10px] text-text-secondary mt-0.5">Target Pace: 7:49 / km</div>
                             </div>
                             <div class="p-3 bg-surface-subtle border border-border">
-                                <div class="text-[10px] text-text-secondary uppercase">Official Cutoff Buffer</div>
+                                <div class="text-[10px] text-text-secondary uppercase" data-i18n="kpi_cutoff_buffer">Batas Cutoff Resmi</div>
                                 <div class="text-xl font-extrabold text-flat-amber mt-1">01:30:00</div>
+                                <div class="text-[10px] text-text-secondary mt-0.5">Cutoff Resmi: 07:00:00</div>
+                            </div>
+                        </div>
                                 <div class="text-[10px] text-text-secondary mt-0.5">Batas Cutoff Resmi: 07:00:00</div>
                             </div>
                         </div>
@@ -2875,37 +2784,37 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div class="p-3 bg-surface-subtle border-2 border-border space-y-1.5">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-mono text-xs font-bold text-text-primary">Phase 1 • Base (W1–13)</span>
+                                    <span class="font-mono text-xs font-bold text-text-primary">Fase 1 • Pondasi (M1–13)</span>
                                     <span class="flat-badge border-border text-text-secondary text-[10px]">285.0 KM (29%)</span>
                                 </div>
                                 <div class="text-[11px] font-mono text-text-secondary space-y-0.5">
-                                    <div><strong class="text-text-primary font-sans">Fokus:</strong> Aerobik Zone 2 &amp; adaptasi tendon</div>
-                                    <div><strong class="text-text-primary font-sans">Sesi:</strong> 3x Lari/mgg + 2x WFH Strength</div>
-                                    <div><strong class="text-text-primary font-sans">Milestone:</strong> LR 8&rarr;16 km • Cutback W4, W8, W12</div>
+                                    <div><strong class="text-text-primary font-sans">Fokus:</strong> Aerobik Zona 2 &amp; adaptasi tendon</div>
+                                    <div><strong class="text-text-primary font-sans">Sesi:</strong> 3x Lari/mgg + 2x Kekuatan WFH</div>
+                                    <div><strong class="text-text-primary font-sans">Milestone:</strong> LR 8&rarr;16 km • Cutback M4, M8, M12</div>
                                 </div>
                             </div>
 
                             <div class="p-3 bg-surface-subtle border-2 border-tertiary/40 bg-tertiary/5 space-y-1.5">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-mono text-xs font-bold text-tertiary">Phase 2 • Build (W14–28)</span>
+                                    <span class="font-mono text-xs font-bold text-tertiary">Fase 2 • Bangun (M14–28)</span>
                                     <span class="flat-badge border-tertiary text-tertiary text-[10px]">585.9 KM (60%)</span>
                                 </div>
                                 <div class="text-[11px] font-mono text-text-secondary space-y-0.5">
-                                    <div><strong class="text-text-primary font-sans">Fokus:</strong> Stamina laktat &amp; pacing marathon</div>
-                                    <div><strong class="text-text-primary font-sans">Sesi:</strong> 4x Lari/mgg + 2x Heavy Strength</div>
-                                    <div><strong class="text-text-primary font-sans">Milestone:</strong> W21 HM Tune-up • W28 Peak 32k</div>
+                                    <div><strong class="text-text-primary font-sans">Fokus:</strong> Ketahanan laktat &amp; pacing maraton</div>
+                                    <div><strong class="text-text-primary font-sans">Sesi:</strong> 4x Lari/mgg + 2x Kekuatan Beban</div>
+                                    <div><strong class="text-text-primary font-sans">Milestone:</strong> M21 Uji HM • M28 Puncak 32k</div>
                                 </div>
                             </div>
 
                             <div class="p-3 bg-surface-subtle border-2 border-flat-green/40 bg-flat-green/5 space-y-1.5">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-mono text-xs font-bold text-flat-green">Phase 3 • Taper (W29–31)</span>
+                                    <span class="font-mono text-xs font-bold text-flat-green">Fase 3 • Taper (M29–31)</span>
                                     <span class="flat-badge border-flat-green text-flat-green text-[10px]">106.2 KM (11%)</span>
                                 </div>
                                 <div class="text-[11px] font-mono text-text-secondary space-y-0.5">
-                                    <div><strong class="text-text-primary font-sans">Fokus:</strong> Restorasi glikogen &amp; perbaikan otot</div>
+                                    <div><strong class="text-text-primary font-sans">Fokus:</strong> Restorasi glikogen &amp; pemulihan otot</div>
                                     <div><strong class="text-text-primary font-sans">Sesi:</strong> Penurunan volume (-35%, -55%)</div>
-                                    <div><strong class="text-text-primary font-sans">Race Day:</strong> 42.195 km • Min, 13 Jun 2027</div>
+                                    <div><strong class="text-text-primary font-sans">Hari Lomba:</strong> 42.195 km • Min, 13 Jun 2027</div>
                                 </div>
                             </div>
                         </div>
@@ -2914,11 +2823,15 @@
                         <div class="space-y-2 pt-2">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-mono font-bold text-text-primary">Weekly Volume &amp; Long Run Progression</span>
-                                    <span class="text-[11px] text-text-secondary font-mono">(Klik batang minggu untuk inspect)</span>
+                                    <span class="text-xs font-mono font-bold text-text-primary" data-i18n="macro_chart_title">Progresi Volume Mingguan &amp; Long Run</span>
+                                    <span class="text-[11px] text-text-secondary font-mono" data-i18n="macro_chart_hint">(Klik batang minggu untuk cek detail)</span>
                                 </div>
                                 <div class="flex items-center gap-3 text-[11px] font-mono">
                                     <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-tertiary inline-block"></span> Long Run km</span>
+                                    <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-text-secondary/40 inline-block"></span> Volume Lainnya</span>
+                                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-flat-green bg-flat-green/30 inline-block"></span> Cutback</span>
+                                </div>
+                            </div>
                                     <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-text-secondary/40 inline-block"></span> Other Volume</span>
                                     <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-flat-green bg-flat-green/30 inline-block"></span> Cutback</span>
                                 </div>
@@ -3691,71 +3604,6 @@
     </main>
 
     <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- TESTIMONIALS SECTION: 3 Flat Cards, Real Athletes          -->
-    <!-- ══════════════════════════════════════════════════════════ -->
-    <section id="testimonials" class="py-16 border-b-2 border-border bg-bg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
-            
-            <div class="max-w-xl space-y-2">
-                <span class="flat-badge border-text-primary text-text-primary">FIELD PROVEN</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
-                    Trusted on the Tarmac & Trail.
-                </h2>
-                <p class="text-xs font-mono text-text-secondary">
-                    Boston &bull; Berlin &bull; UTMB Athletes &bull; Deterministic Load Control
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Testimonial 1 -->
-                <div class="flat-card border-2 border-border p-6 bg-surface flex flex-col justify-between space-y-4">
-                    <p class="text-xs font-mono text-text-secondary leading-relaxed">
-                        Cardiac drift warning detected overreaching 3 weeks before Berlin. Threshold adjusted; secured sub-2:45 PB without fatigue spikes.
-                    </p>
-                    <div class="border-t border-border pt-3 flex items-center justify-between text-xs">
-                        <div>
-                            <div class="font-bold text-text-primary">Marcus Vance</div>
-                            <div class="text-[11px] text-text-secondary">Marathoner (2:43:18 PB)</div>
-                        </div>
-                        <span class="flat-badge border-flat-green text-flat-green font-mono">SUB-2:45</span>
-                    </div>
-                </div>
-
-                <!-- Testimonial 2 -->
-                <div class="flat-card border-2 border-border p-6 bg-surface flex flex-col justify-between space-y-4">
-                    <p class="text-xs font-mono text-text-secondary leading-relaxed">
-                        Deterministic carbohydrate grams and gait pelvic drop alerts from video clips. Precise data without generic chatbot fluff.
-                    </p>
-                    <div class="border-t border-border pt-3 flex items-center justify-between text-xs">
-                        <div>
-                            <div class="font-bold text-text-primary">Elena Rostova</div>
-                            <div class="text-[11px] text-text-secondary">Ironman Triathlete</div>
-                        </div>
-                        <span class="flat-badge border-tertiary text-tertiary font-mono">KONA AG</span>
-                    </div>
-                </div>
-
-                <!-- Testimonial 3 -->
-                <div class="flat-card border-2 border-border p-6 bg-surface flex flex-col justify-between space-y-4">
-                    <p class="text-xs font-mono text-text-secondary leading-relaxed">
-                        Minetti GAP polynomial pacing on 1,500m trail climbs matches physiological cost perfectly. Replaced custom spreadsheets completely.
-                    </p>
-                    <div class="border-t border-border pt-3 flex items-center justify-between text-xs">
-                        <div>
-                            <div class="font-bold text-text-primary">David Chen</div>
-                            <div class="text-[11px] text-text-secondary">Ultrarunner (100-Miler)</div>
-                        </div>
-                        <span class="flat-badge border-flat-amber text-flat-amber font-mono">WESTERN STS</span>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ══════════════════════════════════════════════════════════ -->
     <!-- PRICING SECTION: 3 Tiers, Middle Highlighted (2D Flat)    -->
     <!-- ══════════════════════════════════════════════════════════ -->
     <section id="pricing" class="py-16 lg:py-24 border-b-2 border-border bg-surface">
@@ -3892,31 +3740,6 @@
 
             </div>
 
-        </div>
-    </section>
-
-    <!-- ══════════════════════════════════════════════════════════ -->
-    <!-- FINAL CTA: Bold Flat Block, High Contrast                  -->
-    <!-- ══════════════════════════════════════════════════════════ -->
-    <section class="py-16 bg-surface-subtle border-b-2 border-border">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
-            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-primary tracking-tight">
-                Train with verifiable metrics.
-            </h2>
-            <p class="text-sm text-text-secondary max-w-xl mx-auto">
-                Track fatigue, recovery, and race pacing with deterministic physiological models.
-            </p>
-            <div class="flex flex-wrap justify-center items-center gap-3">
-                <button onclick="openAuthModal('register')" class="btn-flat-primary px-8 py-3 text-sm font-semibold">
-                    Create athlete account
-                </button>
-                <a href="#workstation" class="btn-flat-secondary px-6 py-3 text-sm font-semibold">
-                    Open Live Workstation
-                </a>
-            </div>
-            <div class="text-[11px] text-text-secondary">
-                Row-Level Security encryption &bull; Direct Garmin sync &bull; Cancel anytime
-            </div>
         </div>
     </section>
 
@@ -5586,7 +5409,57 @@
                 mobile_nav_feed: "Feed",
                 mobile_nav_training: "Latihan",
                 mobile_nav_coach: "Pelatih AI",
-                mobile_nav_telemetry: "Telemetri"
+                mobile_nav_telemetry: "Telemetri",
+                hero_badge: "Garmin FIT • Strava Sync • Banister TRIMP",
+                hero_title: "Berlatih dengan metrik terverifikasi.",
+                hero_subtitle: "LT2 • ACWR • GAP • Periodisasi Maraton 31-Minggu",
+                hero_cta_terminal: "TERMINAL KOKPIT",
+                hero_cta_register: "AKUN ATLET",
+                chat_welcome_title: "PELATIH GOALIE // SISTEM SIAP",
+                chat_welcome_desc: "Telemetri Aktif: CTL/ATL/TSB • Target Pace • Cardiac Drift. Tanyakan strategi latihan atau pilih salah satu prompt di bawah.",
+                chip_prescribe: "Preskripsi Latihan Besok",
+                chip_acwr: "Evaluasi ACWR & TSB",
+                chip_karvonen: "Matriks Karvonen 5-Zona",
+                chip_gap: "Kalkulator Strava GAP",
+                chip_drift: "Decoupling Aerobik +1.7%",
+                chat_input_ph: "Tanyakan target pace, protokol pemulihan, interval...",
+                chat_send_btn: "KIRIM >",
+                sidebar_profile: "PROFIL ATLET",
+                status_synced: "TERSINKRON",
+                sidebar_mileage: "Volume Mingguan:",
+                sidebar_pb: "PB 10K Terakhir:",
+                sidebar_rhr: "Detak Jantung Istirahat:",
+                sidebar_race: "Target Lomba:",
+                sidebar_coach_pro: "PELATIH (PRO)",
+                sidebar_byok_desc: "Gemini 3.8 Flash Pro • Perencanaan Makrosiklus • Peringatan Drift",
+                sidebar_byok_btn: "MASUKKAN GEMINI API KEY (BYOK)",
+                marathon_master_title: "Sistem Master Maraton 31-Minggu",
+                marathon_master_stage: "TAHAP 1–3",
+                marathon_master_sub: "Progresi Makrosiklus • Matriks Kekuatan WFH • Split • Mesin Adaptif AI",
+                subtab_macro: "Makro (31-Mgg)",
+                subtab_weekly: "Mingguan (7-Hari)",
+                subtab_strength: "Kekuatan & WFH",
+                subtab_strength_count: "58 Sesi",
+                subtab_splits: "Split & Nutrisi",
+                macro_stage_badge: "TAHAP 1: PERIODISASI MAKRO",
+                macro_title: "Roadmap 31-Minggu Maraton Penuh",
+                macro_desc: "Mulai: Sen, 9 Nov 2026 • Lomba: Min, 13 Jun 2027 • Target: 42.195 km • Finis 05:30:00 (7:49/km)",
+                btn_adapt_ai: "MINTA AI ADAPTASI RENCANA",
+                btn_sync_ical: "SINKRON 31-MGG ICAL (.ICS)",
+                kpi_total_volume: "Total Volume Terencana",
+                kpi_duration_streak: "Durasi & Rentang",
+                kpi_target_finish: "Target Waktu Finis",
+                kpi_cutoff_buffer: "Batas Cutoff Resmi",
+                macro_chart_title: "Progresi Volume Mingguan & Long Run",
+                macro_chart_hint: "(Klik batang minggu untuk cek detail)",
+                telemetry_badge_core: "SAINS OLAHRAGA UTAMA",
+                telemetry_badge_access: "AKSES ATLET GRATIS",
+                telemetry_suite_title: "Rangkaian Telemetri Ketahanan Terpadu",
+                telemetry_suite_sub: "TrainingPeaks PMC/ACWR • Intervals.icu Karvonen HR • Strava Pro Minetti GAP",
+                telemetry_btn_recalc: "HITUNG ULANG",
+                telemetry_btn_ical: "SALIN FEED ICAL",
+                telemetry_tp_hub: "Hub Telemetri TrainingPeaks™",
+                telemetry_tp_sub: "Respons Impuls Banister & ACWR Gabbett"
             },
             en: {
                 nav_dashboard: "Dashboard",
@@ -5682,7 +5555,57 @@
                 mobile_nav_feed: "Feed",
                 mobile_nav_training: "Training",
                 mobile_nav_coach: "AI Coach",
-                mobile_nav_telemetry: "Telemetry"
+                mobile_nav_telemetry: "Telemetry",
+                hero_badge: "Garmin FIT • Strava Sync • Banister TRIMP",
+                hero_title: "Train with verifiable metrics.",
+                hero_subtitle: "LT2 • ACWR • GAP • 31-Wk Marathon Periodization",
+                hero_cta_terminal: "LIVE COCKPIT",
+                hero_cta_register: "ATHLETE PROFILE",
+                chat_welcome_title: "GOALIE COACH // SYSTEM READY",
+                chat_welcome_desc: "Active Telemetry: CTL/ATL/TSB • Target Pace • Cardiac Drift. Ask a question or select a prompt below.",
+                chip_prescribe: "Prescribe Tomorrow's Workout",
+                chip_acwr: "Evaluate ACWR & TSB",
+                chip_karvonen: "Karvonen 5-Zone Matrix",
+                chip_gap: "Strava Minetti GAP Calculator",
+                chip_drift: "Aerobic Decoupling +1.7%",
+                chat_input_ph: "Ask about target pace, recovery protocols, interval structure...",
+                chat_send_btn: "SEND >",
+                sidebar_profile: "ATHLETE PROFILE",
+                status_synced: "SYNCED",
+                sidebar_mileage: "Weekly Mileage:",
+                sidebar_pb: "Recent 10K PB:",
+                sidebar_rhr: "Resting Heart Rate:",
+                sidebar_race: "Target Race:",
+                sidebar_coach_pro: "COACH (PRO)",
+                sidebar_byok_desc: "Gemini 3.8 Flash Pro • Macrocycle Planning • Drift Alerts",
+                sidebar_byok_btn: "ENTER GEMINI API KEY (BYOK)",
+                marathon_master_title: "31-Week Marathon Master System",
+                marathon_master_stage: "STAGES 1–3",
+                marathon_master_sub: "Macrocycle Progression • WFH Strength Matrix • Splits • AI Adaptive Engine",
+                subtab_macro: "Macro (31-Wk)",
+                subtab_weekly: "Weekly (7-Day)",
+                subtab_strength: "Strength & WFH",
+                subtab_strength_count: "58 Sessions",
+                subtab_splits: "Splits & Nutrition",
+                macro_stage_badge: "STAGE 1: MACRO PERIODIZATION",
+                macro_title: "31-Week Full Marathon Roadmap",
+                macro_desc: "Kickoff: Mon, Nov 9, 2026 • Race Day: Sun, Jun 13, 2027 • Target: 42.195 km • Finish 05:30:00 (7:49/km)",
+                btn_adapt_ai: "ASK AI TO ADAPT PLAN",
+                btn_sync_ical: "SYNC 31-WK ICAL (.ICS)",
+                kpi_total_volume: "Total Planned Volume",
+                kpi_duration_streak: "Duration & Range",
+                kpi_target_finish: "Target Finish Time",
+                kpi_cutoff_buffer: "Official Cutoff Buffer",
+                macro_chart_title: "Weekly Volume & Long Run Progression",
+                macro_chart_hint: "(Click any week bar to inspect)",
+                telemetry_badge_core: "CORE SPORTS SCIENCE",
+                telemetry_badge_access: "FREE ATHLETE ACCESS",
+                telemetry_suite_title: "Unified Endurance Telemetry Suite",
+                telemetry_suite_sub: "TrainingPeaks PMC/ACWR • Intervals.icu Karvonen HR • Strava Pro Minetti GAP",
+                telemetry_btn_recalc: "RECALCULATE",
+                telemetry_btn_ical: "COPY ICAL FEED",
+                telemetry_tp_hub: "TrainingPeaks™ Telemetry Hub",
+                telemetry_tp_sub: "Banister Impulse-Response & Gabbett ACWR"
             }
         };
 
@@ -5723,6 +5646,12 @@
                 const key = el.getAttribute('data-i18n');
                 if (dict[key]) {
                     el.textContent = dict[key];
+                }
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) {
+                    el.setAttribute('placeholder', dict[key]);
                 }
             });
         }
