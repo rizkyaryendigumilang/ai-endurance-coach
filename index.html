@@ -4739,8 +4739,16 @@
                 dateInput.value = d.toISOString().split('T')[0];
             }
 
-            // Service worker
+            // Service worker with automatic controller change refresh
             if ('serviceWorker' in navigator) {
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        refreshing = true;
+                        window.location.reload();
+                    }
+                });
+
                 navigator.serviceWorker.register('/sw.js')
                     .then(r => {
                         console.log('[PWA] Service Worker active:', r.scope);

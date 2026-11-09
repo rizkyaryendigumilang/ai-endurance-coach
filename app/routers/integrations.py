@@ -1,0 +1,115 @@
+"""
+Goalie — Integrations Router
+Manages Strava OAuth redirect alias, Intervals.icu iCal feed alias, and Garmin Connect session synchronization.
+"""
+
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import RedirectResponse
+
+from app.services import sandbox_store
+from app.schemas.models import GarminConnectLoginInput
+from app.services.strava_service import strava_login
+from app.services.intervals_service import sync_calendar
+from app.services.garmin_service import garmin_service
+from app.core.auth import get_current_user, get_current_user_optional
+
+router = APIRouter(tags=["Integrations"])
+
+
+@router.get("/api/v1/strava/authorize", tags=["Strava"])
+def strava_authorize_alias(request: Request, user_id: str = Depends(get_current_user_optional)):
+    """Direct alias for Strava OAuth flow supporting both JSON and direct browser redirect."""
+    res = strava_login(user_id=user_id)
+    if "text/html" in request.headers.get("accept", ""):
+        return RedirectResponse(url=res["url"])
+    return res
+
+
+@router.get("/api/v1/intervals/calendar/feed.ics", tags=["Intervals"])
+@router.get("/api/v1/workouts/ical", tags=["Intervals"])
+def intervals_feed_alias(user_id: str = Depends(get_current_user_optional)):
+    """Direct alias for iCal feed to match frontend requested /intervals/calendar/feed.ics and /workouts/ical."""
+    return sync_calendar(user_id=user_id)
+
+
+# ── Garmin Connect ───────────────────────────────────────────────────
+
+@router.post("/api/v1/garmin/connect", tags=["Garmin Connect"])
+def connect_garmin_account(
+    payload: GarminConnectLoginInput,
+    user_id: str = Depends(get_current_user)
+):
+    """
+    Direct connection to Garmin Connect using credentials.
+    """
+    try:
+        res = garmin_service.authenticate_and_connect(user_id, payload.email, payload.password)
+        return res
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/v1/garmin/status", tags=["Garmin Connect"])
+def get_garmin_status(user_id: str = Depends(get_current_user)):
+    """Checks Garmin Connect session status."""
+    session = sandbox_store.get_garmin_session(user_id)
+    if not session:
+        return {"connected": False, "message": "Belum terhubung ke Garmin Connect"}
+    return {
+        "connected": True,
+        "email": session.get("email"),
+        "connected_at": session.get("connected_at")
+    }
+
+
+@router.post("/api/v1/garmin/sync-health", tags=["Garmin Connect"])
+def sync_garmin_health(
+    target_date: Optional[str] = None,
+    user_id: str = Depends(get_current_user)
+):
+    """
+    Retrieves daily health metrics from Garmin Connect: RHR, Sleep Score, HRV, Body Battery.
+    """
+    try:
+        data = garmin_service.sync_daily_health(user_id, target_date)
+        return {
+            "status": "success",
+            "message": f"Data Garmin berhasil disinkronkan untuk tanggal {data.get('date')}",
+            "health_metrics": data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/v1/garmin/health-history", tags=["Garmin Connect"])
+def get_garmin_health_history(
+    limit: int = 14,
+    user_id: str = Depends(get_current_user)
+):
+    """Retrieves synced resting HR, sleep, and HRV history."""
+    history = sandbox_store.get_garmin_health_metrics(user_id, limit)
+    return {
+        "status": "success",
+        "count": len(history),
+        "history": history
+    }
+
+
+@router.post("/api/v1/garmin/sync-activities", tags=["Garmin Connect"])
+def sync_garmin_activities(
+    limit: int = 5,
+    user_id: str = Depends(get_current_user)
+):
+    """
+    Syncs recent workout sessions directly from Garmin Connect.
+    """
+    try:
+        activities = garmin_service.sync_recent_activities(user_id, limit)
+        return {
+            "status": "success",
+            "message": f"Berhasil menyinkronkan {len(activities)} sesi Garmin",
+            "activities": activities
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

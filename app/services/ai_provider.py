@@ -180,31 +180,32 @@ class MultiTierAIProvider:
             return {"success": False, "error": "Gemini key not configured"}
 
         def _execute_sync_gemini():
-            # 1. First attempt: google.generativeai SDK
+            # 1. Primary: Official Google GenAI SDK (google-genai 3.x)
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=target_key)
-                model = genai.GenerativeModel(
-                    model_name=model_name,
-                    system_instruction=SYSTEM_PROMPT
+                from google import genai
+                from google.genai import types
+                client = genai.Client(api_key=target_key)
+                target_model = model_name if "gemini" in model_name else "gemini-2.5-flash"
+                if target_model == "gemini-3.8-flash":
+                    target_model = "gemini-2.5-flash"
+                cfg = types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    temperature=0.4,
+                    max_output_tokens=600,
                 )
-                chat_history = []
-                if history:
-                    for h in history[-8:]:
-                        role = "user" if h.get("role") == "user" else "model"
-                        chat_history.append({"role": role, "parts": [h.get("content", "")]})
-
                 full_msg = f"Konteks Fisiologi Atlet:\n{context}\n\nPertanyaan Atlet:\n{message}"
-                chat = model.start_chat(history=chat_history)
-                response = chat.send_message(full_msg, request_options={"timeout": 5})
+                response = client.models.generate_content(
+                    model=target_model,
+                    contents=full_msg,
+                    config=cfg
+                )
                 if response and response.text:
                     return {"success": True, "text": response.text.strip()}
             except Exception:
-                # Silently catch SDK issue and fallback to REST
                 pass
 
-            # 2. Second attempt: Direct REST API
-            models_to_try = [model_name, "gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash"]
+            # 2. Secondary attempt: Direct REST API (Reliable fallback with multiple model options)
+            models_to_try = [model_name, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
             for m in models_to_try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={target_key}"
                 contents = [
@@ -279,5 +280,6 @@ class MultiTierAIProvider:
         return res["text"]
 
 
-# Backward Compatibility Alias
+# Backward Compatibility Alias & Singleton
 GeminiAIProvider = MultiTierAIProvider
+ai_provider = MultiTierAIProvider()
