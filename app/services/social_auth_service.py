@@ -285,6 +285,9 @@ async def social_oauth_callback(
         "auth_provider": provider
     })
 
+    if email.lower() == "rizkyaryendigumilang@gmail.com":
+        sandbox_store.update_athlete_subscription(user_id, is_pro=True, plan="full")
+
     token = create_demo_token(user_id, email)
     _, frontend_url = resolve_base_urls(request, provider)
     return RedirectResponse(

@@ -7,14 +7,26 @@ import uuid
 
 _USERS_DB = {}
 
+def _is_owner_user(user_id: str, profile_data: dict = None) -> bool:
+    if not user_id:
+        return False
+    u = str(user_id).lower()
+    if "rizkyaryendigumilang" in u or u == "c698122d-1fe3-5620-820c-23682e4f844a":
+        return True
+    if profile_data and "rizkyaryendigumilang@gmail.com" in str(profile_data.get("email", "")).lower():
+        return True
+    return False
+
 def _get_user_store(user_id: str):
     if user_id not in _USERS_DB:
+        is_owner = _is_owner_user(user_id)
         _USERS_DB[user_id] = {
             "profile": {
                 "id": user_id,
-                "full_name": "Endurance Athlete",
+                "full_name": "Rizky Aryendi Gumilang" if is_owner else "Endurance Athlete",
+                "email": "rizkyaryendigumilang@gmail.com" if is_owner else "",
                 "sport_focus": "running",
-                "fitness_level": "intermediate",
+                "fitness_level": "advanced" if is_owner else "intermediate",
                 "weight_kg": 68.5,
                 "height_cm": 175.0,
                 "resting_hr": 48,
@@ -22,9 +34,17 @@ def _get_user_store(user_id: str):
                 "lactate_threshold_hr": 168,
                 "target_race_name": "Berlin Marathon 2026",
                 "target_race_date": "2026-09-27",
-                "weekly_mileage_target_km": 50.0,
-                "preferred_coach_tier": "free",
+                "weekly_mileage_target_km": 60.0 if is_owner else 50.0,
+                "preferred_coach_tier": "pro" if is_owner else "free",
+                "subscription_tier": "pro" if is_owner else "free",
                 "unit_preference": "metric"
+            },
+            "subscription": {
+                "status": "pro" if is_owner else "free",
+                "plan": "full" if is_owner else "free",
+                "tier_name": "RECOMMENDED // FULL COACH" if is_owner else "Free",
+                "is_active": True if is_owner else False,
+                "expires_at": "2030-12-31T23:59:59Z" if is_owner else None
             },
             "races": [],
             "training_plans": [],
@@ -41,10 +61,27 @@ def get_profile(user_id: str):
 def update_profile(user_id: str, data: dict):
     store = _get_user_store(user_id)
     store["profile"].update(data)
+    if _is_owner_user(user_id, store["profile"]):
+        store["subscription"] = {
+            "status": "pro",
+            "plan": "full",
+            "tier_name": "RECOMMENDED // FULL COACH",
+            "is_active": True,
+            "expires_at": "2030-12-31T23:59:59Z"
+        }
+        store["profile"]["subscription_tier"] = "pro"
     return store["profile"]
 
 def get_subscription(user_id: str) -> dict:
     store = _get_user_store(user_id)
+    if _is_owner_user(user_id, store.get("profile")):
+        return {
+            "status": "pro",
+            "plan": "full",
+            "tier_name": "RECOMMENDED // FULL COACH",
+            "is_active": True,
+            "expires_at": "2030-12-31T23:59:59Z"
+        }
     return store.get("subscription", {
         "status": "free",
         "plan": "free",
@@ -313,6 +350,37 @@ def _ensure_seed_data():
                 "activity_metrics": [{"training_load": 74, "aerobic_te": 3.1, "avg_hr": 158}]
             }
         ]
+
+    # Seed Account: Rizky Aryendi Gumilang (RECOMMENDED // FULL COACH)
+    uid_owner = "c698122d-1fe3-5620-820c-23682e4f844a"
+    if uid_owner not in _USERS_DB:
+        store_owner = _get_user_store(uid_owner)
+        store_owner["profile"] = {
+            "id": uid_owner,
+            "full_name": "Rizky Aryendi Gumilang",
+            "email": "rizkyaryendigumilang@gmail.com",
+            "sport_focus": "running",
+            "fitness_level": "advanced",
+            "weight_kg": 68.5,
+            "height_cm": 175,
+            "resting_hr": 48,
+            "max_hr": 192,
+            "lactate_threshold_hr": 168,
+            "target_race_name": "Berlin Marathon 2026",
+            "target_race_date": "2026-09-27",
+            "weekly_mileage_target_km": 60.0,
+            "subscription_tier": "pro",
+            "preferred_coach_tier": "pro",
+            "unit_preference": "metric",
+            "created_at": "2026-01-01T00:00:00Z"
+        }
+        store_owner["subscription"] = {
+            "status": "pro",
+            "plan": "full",
+            "tier_name": "RECOMMENDED // FULL COACH",
+            "is_active": True,
+            "expires_at": "2030-12-31T23:59:59Z"
+        }
 
 
 def get_all_athletes_summary():
@@ -624,5 +692,14 @@ def delete_athlete(user_id: str):
         )
         return True
     return False
+
+def get_strava_integration(user_id: str):
+    store = _get_user_store(user_id)
+    return store.get("strava_integration")
+
+def set_strava_integration(user_id: str, data: dict):
+    store = _get_user_store(user_id)
+    store["strava_integration"] = data
+    return store["strava_integration"]
 
 

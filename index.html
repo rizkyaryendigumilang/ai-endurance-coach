@@ -805,8 +805,11 @@
                             <span id="user-avatar-initial" class="w-5 h-5 rounded-md bg-tertiary text-white flex items-center justify-center font-mono text-[10px] font-bold shrink-0">RG</span>
                             <span id="user-display-email" class="max-w-[80px] lg:max-w-[100px] xl:max-w-[120px] truncate whitespace-nowrap">athlete</span>
                         </button>
-                        <div id="user-dropdown-menu" class="absolute right-0 mt-1 w-52 bg-surface border-2 border-border-strong rounded-xl p-1.5 hidden z-50 shadow-lg">
-                            <div class="px-2 py-1.5 text-[11px] text-text-secondary border-b border-border mb-1" id="dropdown-email">user@domain.com</div>
+                        <div id="user-dropdown-menu" class="absolute right-0 mt-1 w-56 bg-surface border-2 border-border-strong rounded-xl p-1.5 hidden z-50 shadow-lg">
+                            <div class="px-2 py-1 text-[11px] text-text-secondary border-b border-border mb-1 flex items-center justify-between">
+                                <span id="dropdown-email" class="truncate max-w-[140px]">user@domain.com</span>
+                                <span id="dropdown-tier-name" class="font-mono text-[9px] font-bold text-flat-green bg-flat-green/10 border border-flat-green px-1 py-0.2 rounded">FREE</span>
+                            </div>
                             <button onclick="openSettingsModal(); toggleUserDropdown();" class="w-full text-left px-2 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between">
                                 <span>Athlete Profile</span>
                                 <span class="text-[10px] font-mono text-tertiary font-bold flex items-center gap-1">
@@ -2894,9 +2897,6 @@
                                 <div class="text-[10px] text-text-secondary mt-0.5">Cutoff Resmi: 07:00:00</div>
                             </div>
                         </div>
-                                <div class="text-[10px] text-text-secondary mt-0.5">Batas Cutoff Resmi: 07:00:00</div>
-                            </div>
-                        </div>
 
                         <!-- 3 Periodization Phase Cards -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -2947,10 +2947,6 @@
                                 <div class="flex items-center gap-3 text-[11px] font-mono">
                                     <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-tertiary inline-block"></span> Long Run km</span>
                                     <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-text-secondary/40 inline-block"></span> Volume Lainnya</span>
-                                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-flat-green bg-flat-green/30 inline-block"></span> Cutback</span>
-                                </div>
-                            </div>
-                                    <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-text-secondary/40 inline-block"></span> Other Volume</span>
                                     <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-flat-green bg-flat-green/30 inline-block"></span> Cutback</span>
                                 </div>
                             </div>
@@ -3487,46 +3483,168 @@
                     <!-- Garmin Direct -->
                     <div class="flat-card border-2 border-border p-6 bg-surface space-y-4">
                         <div class="flex items-center justify-between">
-                            <span class="font-display font-bold text-sm text-text-primary">Garmin Connect (Direct Ingestion)</span>
-                            <span class="flat-badge border-border text-text-secondary">OAUTH FREE</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 bg-[#007cc3] rounded-full inline-block"></span>
+                                <span class="font-display font-bold text-sm text-text-primary">Garmin Connect (Direct Ingestion)</span>
+                            </div>
+                            <span id="garmin-status-badge" class="flat-badge border-border text-text-secondary font-mono text-[10px]">BELUM TERHUBUNG</span>
                         </div>
                         <p class="text-xs font-mono text-text-secondary">
-                            Daily Steps &bull; Resting HR &bull; Sleep &bull; FIT Activity Streams
+                            Daily Steps &bull; Resting HR &bull; Sleep Quality &bull; FIT Telemetry
                         </p>
-                        <form onsubmit="handleGarminConnect(event)" class="space-y-3 pt-2">
-                            <div>
-                                <label class="block text-[11px] font-mono text-text-secondary mb-1">Garmin Account Email</label>
-                                <input type="email" id="garmin-email" class="flat-input text-xs" placeholder="garmin_user@domain.com" required>
+
+                        <!-- Connected Status View -->
+                        <div id="garmin-connected-panel" class="hidden space-y-3 p-4 bg-surface-subtle border border-border rounded-xl">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <div>
+                                    <span class="text-[10px] font-mono text-text-secondary uppercase block">Akun Garmin Terhubung</span>
+                                    <strong id="garmin-athlete-name" class="text-xs font-bold text-text-primary block">Garmin Athlete</strong>
+                                    <span id="garmin-connected-email" class="text-[11px] font-mono text-text-secondary">athlete@garmin.com</span>
+                                </div>
+                                <span class="flat-badge border-flat-green text-flat-green font-mono text-[10px] flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-flat-green animate-pulse"></span> AKTIF
+                                </span>
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-mono text-text-secondary mb-1">Garmin Password</label>
-                                <input type="password" id="garmin-password" class="flat-input text-xs" placeholder="••••••••••••" required>
+                            <div class="grid grid-cols-3 gap-2 text-center font-mono py-1">
+                                <div class="p-2 bg-surface border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Resting HR</span>
+                                    <strong id="garmin-chip-rhr" class="text-xs text-tertiary font-bold">-- bpm</strong>
+                                </div>
+                                <div class="p-2 bg-surface border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Sleep Score</span>
+                                    <strong id="garmin-chip-sleep" class="text-xs text-flat-green font-bold">--</strong>
+                                </div>
+                                <div class="p-2 bg-surface border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Sesi Lari</span>
+                                    <strong id="garmin-chip-count" class="text-xs text-text-primary font-bold">0 Sesi</strong>
+                                </div>
                             </div>
-                            <button type="submit" class="btn-flat-primary w-full py-2 text-xs font-mono font-bold">
-                                SYNC GARMIN TELEMETRY
-                            </button>
-                        </form>
+                            <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                                <button onclick="syncGarminTelemetry()" id="btn-garmin-resync" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    <span>TARIK SESI TERBARU</span>
+                                </button>
+                                <button onclick="disconnectGarmin()" class="btn-flat-secondary py-2 px-3 text-xs font-mono text-red-500 hover:text-red-600">
+                                    PUTUSKAN
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Login Form View -->
+                        <div id="garmin-login-panel" class="space-y-3 pt-1">
+                            <form onsubmit="handleGarminConnect(event)" class="space-y-3">
+                                <div>
+                                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Garmin Account Email</label>
+                                    <input type="email" id="garmin-email" class="flat-input text-xs" placeholder="garmin_user@domain.com" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Garmin Password</label>
+                                    <input type="password" id="garmin-password" class="flat-input text-xs" placeholder="••••••••••••" required>
+                                </div>
+
+                                <!-- 2FA / MFA verification input (shown if Garmin requires SMS/Email code) -->
+                                <div id="garmin-mfa-box" class="hidden p-3 bg-tertiary/10 border-2 border-tertiary rounded-xl space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+                                        <label class="text-xs font-mono font-bold text-tertiary">Garmin 2FA: Masukkan Kode Verifikasi 6 Digit</label>
+                                    </div>
+                                    <p class="text-[11px] text-text-secondary font-mono">Kode verifikasi telah dikirim Garmin ke SMS atau Email Anda.</p>
+                                    <input type="text" id="garmin-mfa-code" maxlength="8" class="flat-input text-xs font-mono tracking-widest text-center uppercase" placeholder="Contoh: 123456">
+                                </div>
+
+                                <button type="submit" id="garmin-submit-btn" class="btn-flat-primary w-full py-2 text-xs font-mono font-bold flex items-center justify-center gap-2">
+                                    <span>SYNC GARMIN TELEMETRY</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Direct FIT / GPX File Drag & Drop Ingestion -->
+                        <div class="border-t border-border pt-3">
+                            <span class="text-[11px] font-mono text-text-secondary block mb-1.5 uppercase">Atau Impor File Garmin Langsung (.FIT / .GPX)</span>
+                            <div onclick="document.getElementById('garmin-direct-file-input').click()" class="border-2 border-dashed border-border hover:border-tertiary p-3 rounded-xl text-center cursor-pointer transition-colors bg-surface-subtle">
+                                <input type="file" id="garmin-direct-file-input" accept=".fit,.gpx,.tcx" class="hidden" onchange="handleGarminDirectFileUpload(event)">
+                                <svg class="w-5 h-5 mx-auto text-text-secondary mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                <span class="text-xs font-mono text-text-primary block font-semibold">Klik / Tarik File .FIT atau .GPX dari Garmin</span>
+                                <span class="text-[10px] font-mono text-text-secondary">Ekspor dari Garmin Connect web atau salin dari jam Garmin via USB</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Strava OAuth & Intervals.icu -->
+                    <!-- Strava OAuth & Direct Token -->
                     <div class="flat-card border-2 border-border p-6 bg-surface space-y-4">
                         <div class="flex items-center justify-between">
-                            <span class="font-display font-bold text-sm text-text-primary">Strava OAuth & Intervals.icu</span>
-                            <span class="flat-badge border-flat-green text-flat-green">API 2.4 READY</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 bg-[#FC4C02] rounded-[1px] inline-block"></span>
+                                <span class="font-display font-bold text-sm text-text-primary">Strava Telemetry &amp; Sync</span>
+                            </div>
+                            <span id="strava-status-badge" class="flat-badge border-border text-text-secondary font-mono text-[10px]">BELUM TERHUBUNG</span>
                         </div>
                         <p class="text-xs font-mono text-text-secondary">
-                            Workouts &bull; Segments &bull; Power/Cadence Time-Series
+                            Workouts &bull; Segments &bull; Minetti GAP &bull; Suffer Score
                         </p>
-                        <div class="space-y-3 pt-2">
-                            <button onclick="handleStravaAuth()" class="btn-flat-secondary w-full py-2.5 text-xs font-mono flex items-center justify-center gap-2">
-                                <span class="w-3 h-3 bg-[#FC4C02] rounded-[1px]"></span>
-                                <span>CONNECT WITH STRAVA</span>
-                            </button>
-                            <a href="/api/v1/intervals/calendar/feed.ics" target="_blank" class="btn-flat-secondary w-full py-2.5 text-xs font-mono flex items-center justify-center gap-2">
-                                <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <span>INTERVALS.ICU LIVE FEED</span>
-                            </a>
+
+                        <!-- Connected Status View -->
+                        <div id="strava-connected-panel" class="hidden space-y-3 p-4 bg-surface-subtle border border-border rounded-xl">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <div>
+                                    <span class="text-[10px] font-mono text-text-secondary uppercase block">Akun Strava Terhubung</span>
+                                    <strong id="strava-athlete-name" class="text-xs font-bold text-text-primary block">Strava Athlete</strong>
+                                    <span id="strava-athlete-id" class="text-[11px] font-mono text-text-secondary">ID: --</span>
+                                </div>
+                                <span class="flat-badge border-flat-green text-flat-green font-mono text-[10px] flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-flat-green animate-pulse"></span> SYNC AKTIF
+                                </span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                                <button onclick="syncStravaTelemetry()" id="btn-strava-resync" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    <span>TARIK 20 AKTIVITAS STRAVA</span>
+                                </button>
+                                <button onclick="disconnectStrava()" class="btn-flat-secondary py-2 px-3 text-xs font-mono text-red-500 hover:text-red-600">
+                                    PUTUSKAN
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Connect Options View -->
+                        <div id="strava-connect-panel" class="space-y-4 pt-1">
+                            <!-- Quick Token Connect for Browser Logged In Users -->
+                            <div class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono font-bold text-text-primary">Koneksi Instan (Sesi Browser Aktif)</span>
+                                    <span class="text-[10px] font-mono text-tertiary bg-tertiary/10 px-1.5 py-0.5 rounded">REKOMENDASI</span>
+                                </div>
+                                <p class="text-[11px] text-text-secondary font-mono leading-relaxed">
+                                    Karena Anda telah login ke Strava di browser, Anda dapat menyalin <strong>Your Access Token</strong> langsung dari halaman API Strava tanpa redirect.
+                                </p>
+                                <div class="space-y-2">
+                                    <input type="text" id="strava-token-input" class="flat-input text-xs font-mono" placeholder="Tempel Access Token Strava Anda di sini...">
+                                    <div class="flex flex-col sm:flex-row gap-2">
+                                        <button onclick="handleStravaTokenConnect()" id="btn-strava-token-connect" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold">
+                                            HUBUNGKAN TOKEN SEKARANG
+                                        </button>
+                                        <a href="https://www.strava.com/settings/api" target="_blank" rel="noopener noreferrer" class="btn-flat-secondary py-2 px-3 text-xs font-mono flex items-center justify-center gap-1 text-tertiary hover:underline">
+                                            <span>Buka Pengaturan API</span>
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Standard OAuth Button -->
+                            <div class="space-y-2">
+                                <span class="text-[10px] font-mono text-text-secondary uppercase block text-center">Atau Hubungkan via OAuth Gateway</span>
+                                <button onclick="handleStravaAuth()" class="btn-flat-secondary w-full py-2.5 text-xs font-mono flex items-center justify-center gap-2">
+                                    <span class="w-3 h-3 bg-[#FC4C02] rounded-[1px]"></span>
+                                    <span>CONNECT WITH STRAVA (OAUTH)</span>
+                                </button>
+                                <a href="/api/v1/intervals/calendar/feed.ics" target="_blank" class="btn-flat-secondary w-full py-2 text-xs font-mono flex items-center justify-center gap-2 text-text-secondary hover:text-text-primary">
+                                    <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <span>INTERVALS.ICU LIVE FEED (.ICS)</span>
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -4667,7 +4785,10 @@
                 syncCockpitWithBackend(),
                 syncTelemetrySuite(),
                 checkSystemBroadcast(),
-                loadWeeklyCalendar(0)
+                loadWeeklyCalendar(0),
+                checkGarminStatus(),
+                checkStravaStatus(),
+                checkSubscriptionStatus()
             ]);
 
             // Shortcut ⌘K
@@ -4927,6 +5048,9 @@
                 if (typeof loadMarathonMacroPlan === 'function' && !currentMarathonPlanData) {
                     loadMarathonMacroPlan();
                 }
+            } else if (tabName === 'integrations') {
+                checkGarminStatus();
+                checkStravaStatus();
             }
         }
 
@@ -5918,6 +6042,21 @@
                 const dropEmail = document.getElementById('dropdown-email');
                 if (dropEmail) dropEmail.textContent = email;
                 if (statusEl) statusEl.textContent = `${email} (Authenticated)`;
+
+                if (email.toLowerCase().includes('rizkyaryendigumilang')) {
+                    appState.isPro = true;
+                    appState.selectedCoachTier = 'pro';
+                    localStorage.setItem('user_is_pro', 'true');
+                    localStorage.setItem('user_is_pro_subscription', 'true');
+                    localStorage.setItem('selected_coach_tier', 'pro');
+                    const dropTier = document.getElementById('dropdown-tier-name');
+                    if (dropTier) dropTier.textContent = 'RECOMMENDED // FULL COACH';
+                    const badge = document.getElementById('chat-tier-badge');
+                    if (badge) {
+                        badge.textContent = 'RECOMMENDED // FULL COACH (ACTIVE)';
+                        badge.className = 'font-mono text-[10px] text-flat-green font-bold bg-flat-green/10 border border-flat-green px-1.5 py-0.2';
+                    }
+                }
             } else {
                 if (unauth) unauth.classList.remove('hidden');
                 if (auth) auth.classList.add('hidden');
@@ -6972,34 +7111,281 @@
             }
         }
 
-        // Garmin Sync
+        // ── Garmin Integration Handlers ────────────────────────────────
+        async function checkGarminStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/garmin/status`, { headers: getAuthHeaders() });
+                if (!res.ok) return;
+                const data = await res.json();
+                const badge = document.getElementById('garmin-status-badge');
+                const connPanel = document.getElementById('garmin-connected-panel');
+                const loginPanel = document.getElementById('garmin-login-panel');
+                const nameEl = document.getElementById('garmin-athlete-name');
+                const emailEl = document.getElementById('garmin-connected-email');
+                const rhrEl = document.getElementById('garmin-chip-rhr');
+                const sleepEl = document.getElementById('garmin-chip-sleep');
+                const countEl = document.getElementById('garmin-chip-count');
+
+                if (data.connected) {
+                    if (badge) {
+                        badge.textContent = 'TERKONEKSI';
+                        badge.className = 'flat-badge border-flat-green text-flat-green font-mono text-[10px]';
+                    }
+                    if (connPanel) connPanel.classList.remove('hidden');
+                    if (loginPanel) loginPanel.classList.add('hidden');
+                    if (nameEl) nameEl.textContent = data.athlete_name || 'Garmin Athlete';
+                    if (emailEl) emailEl.textContent = data.email || '';
+                    if (countEl) countEl.textContent = `${data.activities_count || 0} Sesi`;
+
+                    if (data.latest_health) {
+                        if (rhrEl && data.latest_health.resting_heart_rate) {
+                            rhrEl.textContent = `${data.latest_health.resting_heart_rate} bpm`;
+                        }
+                        if (sleepEl && data.latest_health.sleep_score) {
+                            sleepEl.textContent = data.latest_health.sleep_score;
+                        }
+                    }
+                } else {
+                    if (badge) {
+                        badge.textContent = 'BELUM TERHUBUNG';
+                        badge.className = 'flat-badge border-border text-text-secondary font-mono text-[10px]';
+                    }
+                    if (connPanel) connPanel.classList.add('hidden');
+                    if (loginPanel) loginPanel.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.warn('[Goalie] Garmin status check warning:', err);
+            }
+        }
+
         async function handleGarminConnect(e) {
             e.preventDefault();
             const email = document.getElementById('garmin-email').value;
             const pwd = document.getElementById('garmin-password').value;
-            const loadToast = toast.loading('Syncing Garmin', 'Authenticating with Garmin Connect telemetry stream...');
+            const mfaInput = document.getElementById('garmin-mfa-code');
+            const mfaBox = document.getElementById('garmin-mfa-box');
+            const submitBtn = document.getElementById('garmin-submit-btn');
+            const mfaCode = mfaInput ? mfaInput.value.trim() : null;
+
+            const loadToast = toast.loading('Koneksi Garmin', 'Menghubungkan ke Garmin Connect...');
+            if (submitBtn) submitBtn.disabled = true;
 
             try {
+                const payload = { email, password: pwd };
+                if (mfaCode) payload.mfa_code = mfaCode;
+
                 const res = await fetch(`${API_BASE}/garmin/connect`, {
                     method: 'POST',
                     headers: getAuthHeaders(),
-                    body: JSON.stringify({ email, password: pwd })
+                    body: JSON.stringify(payload)
                 });
                 loadToast.dismiss();
-                if (res.ok) {
-                    toast.success('Garmin Synced', 'Activities and health telemetry linked successfully.');
-                } else {
-                    toast.info('Garmin Linked', 'Telemetry ingestion schedule initialized.');
+                if (submitBtn) submitBtn.disabled = false;
+
+                const data = await res.json();
+                if (!res.ok) {
+                    toast.error('Koneksi Garmin Gagal', data.detail || 'Periksa email & password Anda.');
+                    return;
                 }
+
+                if (data.status === 'mfa_required') {
+                    if (mfaBox) mfaBox.classList.remove('hidden');
+                    if (submitBtn) submitBtn.innerHTML = '<span>KIRIM KODE VERIFIKASI 2FA</span>';
+                    toast.info('Verifikasi 2FA Garmin', data.message || 'Masukkan kode 6 digit dari SMS/Email Garmin Anda.');
+                    return;
+                }
+
+                toast.success('Garmin Terhubung', data.message || 'Aktivitas dan telemetri Garmin berhasil disinkronkan.');
+                if (mfaBox) mfaBox.classList.add('hidden');
+                checkGarminStatus();
+                syncCockpitWithBackend();
+                syncTelemetrySuite();
             } catch (err) {
                 loadToast.dismiss();
-                toast.info('Garmin Linked', 'Telemetry ingestion schedule initialized.');
+                if (submitBtn) submitBtn.disabled = false;
+                toast.error('Error Jaringan', err.message || 'Tidak dapat menghubungi server.');
             }
         }
 
-        // Strava OAuth
+        async function syncGarminTelemetry() {
+            const loadToast = toast.loading('Sinkronisasi Garmin', 'Menarik sesi workout dan data kesehatan terbaru...');
+            try {
+                const res = await fetch(`${API_BASE}/garmin/sync`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                loadToast.dismiss();
+                const data = await res.json();
+                if (res.ok) {
+                    toast.success('Garmin Disinkronkan', data.message || 'Data aktivitas dan kesehatan terbaru berhasil diperbarui.');
+                    checkGarminStatus();
+                    syncCockpitWithBackend();
+                    syncTelemetrySuite();
+                } else {
+                    toast.error('Gagal Sinkronisasi', data.detail || 'Silakan coba beberapa saat lagi.');
+                }
+            } catch (e) {
+                loadToast.dismiss();
+                toast.error('Error Sinkronisasi', e.message);
+            }
+        }
+
+        async function disconnectGarmin() {
+            if (!confirm('Putuskan koneksi akun Garmin Connect Anda dari Goalie?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/garmin/disconnect`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    toast.info('Garmin Terputus', 'Sesi Garmin Connect telah dihapus.');
+                    checkGarminStatus();
+                }
+            } catch (e) {
+                toast.error('Gagal', e.message);
+            }
+        }
+
+        async function handleGarminDirectFileUpload(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const loadToast = toast.loading('Mengunggah File Garmin', `Memproses telemetri stream ${file.name}...`);
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_BASE}/workouts/upload-fit`, {
+                    method: 'POST',
+                    headers: appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {},
+                    body: formData
+                });
+                loadToast.dismiss();
+                const data = await res.json();
+                if (res.ok) {
+                    toast.success('File Garmin Terimpor', `Berhasil memproses ${data.distance_km || file.name} ke database atlet.`);
+                    syncCockpitWithBackend();
+                    syncTelemetrySuite();
+                } else {
+                    toast.error('Gagal Impor File', data.detail || 'Format file tidak didukung.');
+                }
+            } catch (err) {
+                loadToast.dismiss();
+                toast.error('Error Upload', err.message);
+            }
+        }
+
+        // ── Strava Integration Handlers ────────────────────────────────
+        async function checkStravaStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/strava/status`, { headers: getAuthHeaders() });
+                if (!res.ok) return;
+                const data = await res.json();
+                const badge = document.getElementById('strava-status-badge');
+                const connPanel = document.getElementById('strava-connected-panel');
+                const connOptions = document.getElementById('strava-connect-panel');
+                const nameEl = document.getElementById('strava-athlete-name');
+                const idEl = document.getElementById('strava-athlete-id');
+
+                if (data.connected) {
+                    if (badge) {
+                        badge.textContent = 'TERHUBUNG';
+                        badge.className = 'flat-badge border-flat-green text-flat-green font-mono text-[10px]';
+                    }
+                    if (connPanel) connPanel.classList.remove('hidden');
+                    if (connOptions) connOptions.classList.add('hidden');
+                    if (nameEl) nameEl.textContent = data.athlete_name || 'Strava Athlete';
+                    if (idEl) idEl.textContent = `Athlete ID: ${data.athlete_id || '--'}`;
+                } else {
+                    if (badge) {
+                        badge.textContent = 'BELUM TERHUBUNG';
+                        badge.className = 'flat-badge border-border text-text-secondary font-mono text-[10px]';
+                    }
+                    if (connPanel) connPanel.classList.add('hidden');
+                    if (connOptions) connOptions.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.warn('[Goalie] Strava status check warning:', err);
+            }
+        }
+
+        async function handleStravaTokenConnect() {
+            const input = document.getElementById('strava-token-input');
+            const token = input ? input.value.trim() : '';
+            if (!token || token.length < 15) {
+                toast.error('Token Tidak Valid', 'Silakan masukkan Personal Access Token Strava Anda dari strava.com/settings/api.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-strava-token-connect');
+            if (btn) btn.disabled = true;
+            const loadToast = toast.loading('Koneksi Strava', 'Memvalidasi Access Token dengan Strava API v3...');
+
+            try {
+                const res = await fetch(`${API_BASE}/strava/connect-token`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ access_token: token })
+                });
+                loadToast.dismiss();
+                if (btn) btn.disabled = false;
+                const data = await res.json();
+
+                if (res.ok) {
+                    toast.success('Strava Terhubung', `Halo ${data.athlete_name || 'Athlete'}, ${data.activities_synced || 0} sesi Strava berhasil diimpor!`);
+                    checkStravaStatus();
+                    syncCockpitWithBackend();
+                    syncTelemetrySuite();
+                } else {
+                    toast.error('Koneksi Strava Gagal', data.detail || 'Token tidak valid atau kadaluarsa.');
+                }
+            } catch (err) {
+                loadToast.dismiss();
+                if (btn) btn.disabled = false;
+                toast.error('Error', err.message);
+            }
+        }
+
+        async function syncStravaTelemetry() {
+            const loadToast = toast.loading('Menyinkronkan Strava', 'Mengunduh aktivitas terbaru dari feed Strava...');
+            try {
+                const res = await fetch(`${API_BASE}/strava/sync`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                loadToast.dismiss();
+                const data = await res.json();
+                if (res.ok) {
+                    toast.success('Strava Selesai', data.message || 'Sesi Strava berhasil diperbarui.');
+                    syncCockpitWithBackend();
+                    syncTelemetrySuite();
+                } else {
+                    toast.error('Gagal Sinkronisasi', data.detail || 'Silakan coba lagi nanti.');
+                }
+            } catch (err) {
+                loadToast.dismiss();
+                toast.error('Error', err.message);
+            }
+        }
+
+        async function disconnectStrava() {
+            if (!confirm('Putuskan koneksi akun Strava dari Goalie?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/strava/disconnect`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    toast.info('Strava Terputus', 'Koneksi akun Strava telah dihapus.');
+                    checkStravaStatus();
+                }
+            } catch (e) {
+                toast.error('Gagal', e.message);
+            }
+        }
+
+        // Strava OAuth Gateway
         async function handleStravaAuth() {
-            toast.info('Strava Redirect', 'Connecting to Strava OAuth API gateway...');
+            toast.info('Strava Redirect', 'Menghubungkan ke gateway Strava OAuth...');
             try {
                 const res = await fetch(`${API_BASE}/auth/strava`, {
                     headers: getAuthHeaders()
@@ -7015,6 +7401,27 @@
                 console.warn('[Goalie] Strava OAuth gateway fallback:', err);
             }
             window.location.href = `${API_BASE}/strava/authorize`;
+        }
+
+        // ── Subscription Status Check ──────────────────────────────────
+        async function checkSubscriptionStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/subscription/status`, { headers: getAuthHeaders() });
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.subscription && data.subscription.is_active) {
+                    appState.isPro = true;
+                    localStorage.setItem('user_is_pro', 'true');
+                    localStorage.setItem('user_is_pro_subscription', 'true');
+                    const badge = document.getElementById('chat-tier-badge');
+                    if (badge) {
+                        badge.textContent = 'RECOMMENDED // FULL COACH (ACTIVE)';
+                        badge.className = 'font-mono text-[10px] text-flat-green font-bold bg-flat-green/10 border border-flat-green px-1.5 py-0.2';
+                    }
+                    const dropTier = document.getElementById('dropdown-tier-name');
+                    if (dropTier) dropTier.textContent = 'RECOMMENDED // FULL COACH';
+                }
+            } catch (e) {}
         }
 
         // Auth Modal Controller

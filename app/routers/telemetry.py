@@ -90,24 +90,54 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
     target_race_name = profile.get("target_race_name") or "Berlin Marathon 2026"
     weekly_target_km = profile.get("weekly_mileage_target_km") or 60.0
 
+    recent_workouts = sandbox_store.get_recent_workouts(user_id, 50)
+    garmin_health = sandbox_store.get_garmin_health_metrics(user_id, 7)
+
+    # Ingest real Garmin health metrics if available
+    sleep_hrs = 7.8
+    if garmin_health and len(garmin_health) > 0:
+        latest_h = garmin_health[0]
+        if latest_h.get("resting_heart_rate"):
+            resting_hr = int(latest_h["resting_heart_rate"])
+        if latest_h.get("sleep_duration_seconds"):
+            sleep_hrs = round(latest_h["sleep_duration_seconds"] / 3600.0, 1)
+
     karvonen_zones = SportsEngine.calculate_karvonen_zones(resting_hr, max_hr)
     periodization = SportsEngine.calculate_macrocycle_countdown(str(target_race_date))
 
-    ctl = 74.2
-    atl = 86.1
-    tsb = round(ctl - atl, 1)
-    acwr = SportsEngine.calculate_acwr(acute_load_7d=atl, chronic_load_28d=ctl * 4.0)
+    # Calculate deterministic metrics from actual workouts
+    if recent_workouts:
+        current_mileage_km = round(sum(w.get("distance_km", 0.0) for w in recent_workouts[:7]), 1)
+        total_load_acute = sum(
+            (w.get("activity_metrics", [{}])[0].get("training_load", 0) if w.get("activity_metrics") else int(w.get("duration_seconds", 0) / 60 * 0.8))
+            for w in recent_workouts[:7]
+        )
+        total_load_chronic = sum(
+            (w.get("activity_metrics", [{}])[0].get("training_load", 0) if w.get("activity_metrics") else int(w.get("duration_seconds", 0) / 60 * 0.8))
+            for w in recent_workouts[:28]
+        )
+        atl = round(total_load_acute / 7.0, 1)
+        ctl = round(max(total_load_chronic / 28.0, 1.0), 1)
+        tsb = round(ctl - atl, 1)
+        acwr = SportsEngine.calculate_acwr(acute_load_7d=max(total_load_acute, 1.0), chronic_load_28d=max(total_load_chronic, 1.0))
+        relative_suffer_score = int(total_load_acute)
+    else:
+        current_mileage_km = 0.0
+        atl = 0.0
+        ctl = 0.0
+        tsb = 0.0
+        acwr = {"acwr_ratio": 0.0, "zone": "fresh", "injury_risk": "low"}
+        relative_suffer_score = 0
+
+    weekly_progress_pct = round((current_mileage_km / weekly_target_km) * 100, 1) if weekly_target_km > 0 else 0
 
     first_half_hr, first_half_pace = 145.0, 5.0
     second_half_hr, second_half_pace = 149.0, 5.05
     hr_drift_pct = SportsEngine.calculate_hr_drift(first_half_hr, first_half_pace, second_half_hr, second_half_pace)
-    aerobic_eff = SportsEngine.calculate_aerobic_efficiency(distance_km=10.0, duration_seconds=3000, avg_hr=147)
+    aerobic_eff = SportsEngine.calculate_aerobic_efficiency(distance_km=10.0, duration_seconds=3000, avg_hr=resting_hr + 40)
 
     gap_reference = SportsEngine.calculate_gap(actual_pace_min_km=5.0, elevation_gain_m=60.0, distance_km=1.0)
-    current_mileage_km = 48.5
-    weekly_progress_pct = round((current_mileage_km / weekly_target_km) * 100, 1) if weekly_target_km > 0 else 0
-
-    readiness = SportsEngine.calculate_readiness_score(sleep_hours=7.8, soreness_1_5=2, stress_1_5=2, resting_hr_delta=0)
+    readiness = SportsEngine.calculate_readiness_score(sleep_hours=sleep_hrs, soreness_1_5=2, stress_1_5=2, resting_hr_delta=0)
 
     return {
         "status": "success",
@@ -125,7 +155,7 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
             "ctl_fitness": ctl,
             "atl_fatigue": atl,
             "tsb_form": tsb,
-            "tsb_interpretation": "Productive Training Block (-10 to -30 optimal for building)",
+            "tsb_interpretation": "Productive Training Block (-10 to -30 optimal for building)" if tsb < 0 else "Fresh Form (Ready for hard efforts)",
             "acwr_ratio": acwr["acwr_ratio"],
             "acwr_zone": acwr["zone"],
             "injury_risk": acwr["injury_risk"],
@@ -144,8 +174,8 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
                 "incline_pct": "+6%",
                 "equivalent_flat_pace": f"{int(gap_reference):02d}:{int((gap_reference % 1) * 60):02d} min/km"
             },
-            "relative_suffer_score": 248,
-            "suffer_interpretation": "Hard Stimulus (Zone 3-4 tempo overload)",
+            "relative_suffer_score": relative_suffer_score,
+            "suffer_interpretation": "Workload Sesuai Aktivitas Terkoneksi" if relative_suffer_score > 0 else "Menunggu Sinkronisasi Aktivitas Pertama (Garmin/Strava)",
             "weekly_mileage_progress": {
                 "current_km": current_mileage_km,
                 "target_km": weekly_target_km,

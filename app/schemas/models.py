@@ -94,6 +94,7 @@ class ChatMessageInput(BaseModel):
 class GarminConnectLoginInput(BaseModel):
     email: str
     password: str
+    mfa_code: Optional[str] = None
 
 class GarminSyncQuery(BaseModel):
     target_date: Optional[str] = None  # YYYY-MM-DD
