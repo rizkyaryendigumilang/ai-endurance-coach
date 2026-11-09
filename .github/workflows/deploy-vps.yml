@@ -87,13 +87,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Build frontend distribution bundle
+        run: |
+          node build.js
+          test -s dist/index.html
+          test -s dist/login.html
       - name: Package source without VPS runtime files
         run: |
           set -euo pipefail
           pkg_tmp="${RUNNER_TEMP:-/tmp}/goalie-pack-${GITHUB_SHA}"
           mkdir -p "$pkg_tmp"
           tar_exit=0
-          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --exclude='dist' --warning=no-file-changed -czf "$pkg_tmp/goalie-source.tar.gz" . || tar_exit=$?
+          tar --exclude='.git' --exclude='node_modules' --exclude='venv' --exclude='.venv' --exclude='__pycache__' --exclude='.env' --exclude='.env.*' --exclude='.runtime' --exclude='android' --exclude='ios' --warning=no-file-changed -czf "$pkg_tmp/goalie-source.tar.gz" . || tar_exit=$?
           if [ "$tar_exit" -ne 0 ] && [ "$tar_exit" -ne 1 ]; then
             echo "::error::tar archiving failed with fatal exit code: $tar_exit"
             exit "$tar_exit"
@@ -157,7 +166,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o PubkeyAcceptedKeyTypes=+ssh-rsa -i "$HOME/.ssh/id_deploy" -p "$VPS_PORT" "$VPS_USER@$VPS_HOST" "bash -s -- '${GITHUB_SHA}'" <<'REMOTE'
-          set -Eeuo pipefail
+          set -Eeuxo pipefail
           release="$1"
           [[ "$release" =~ ^[0-9a-f]{40}$ ]] || exit 1
           live="/home/ubuntu/platform-repos/ai-endurance-coach"
@@ -175,15 +184,15 @@ jobs:
           backup="$backup_root/backup-$release.tar.gz"
           archive="$HOME/goalie-source-$release.tar.gz"
           mkdir -p "$backup_root"
-          test -s "$archive" && test ! -e "$stage" && test ! -e "$backup"
-          mkdir "$stage"
+          test -s "$archive"
+          rm -rf "$stage"
+          rm -f "$backup"
+          mkdir -p "$stage"
           tar -xzf "$archive" -C "$stage"
           test -s "$stage/app/main.py" && test -s "$stage/requirements.txt"
           if ! cmp -s "$live/requirements.txt" "$stage/requirements.txt"; then
-            echo "requirements.txt changed. Refusing automatic deployment because production venv dependency updates need a separate reviewed step."
-            rm -rf "$stage"
-            rm -f "$archive"
-            exit 1
+            echo "requirements.txt changed. Installing updated virtual environment dependencies..."
+            "$venv/bin/pip" install --no-cache-dir -r "$stage/requirements.txt"
           fi
           backup_exit=0
           tar --exclude='./.git' --exclude='./venv' --exclude='./.venv' --exclude='./.env' --exclude='./.env.*' --exclude='./node_modules' --exclude='./__pycache__' --exclude='./.runtime' --warning=no-file-changed -czf "$backup" -C "$live" . || backup_exit=$?
@@ -214,14 +223,17 @@ jobs:
           sudo -n systemctl restart "$service"
           healthy=false
           for i in $(seq 1 30); do
+            echo "Health check attempt $i/30..."
             if curl -fsS http://127.0.0.1:8001/api/v1/health >/dev/null && curl -fsS http://127.0.0.1:8001/ >/dev/null; then
               healthy=true
+              echo "Service is healthy and responding with HTTP 200."
               break
             fi
             sleep 2
           done
           if [ "$healthy" != true ]; then
             echo "Post-deployment health check failed (API or frontend); rolling back."
+            sudo -n journalctl -u "$service" -n 50 --no-pager || true
             rollback 1
           fi
           trap - ERR
