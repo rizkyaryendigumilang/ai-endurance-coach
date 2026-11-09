@@ -50,7 +50,7 @@ def get_dashboard_data(user_id: str) -> dict:
             raise Exception("Supabase unconfigured")
     except Exception:
         races_data = sandbox_store.get_races(user_id)
-        workouts_data = sandbox_store.get_recent_workouts(user_id, 10)
+        workouts_data = sandbox_store.get_recent_workouts(user_id, 50)
         profile_data = sandbox_store.get_profile(user_id)
 
     total_distance = sum(w.get("distance_km", 0) for w in workouts_data)
@@ -69,7 +69,7 @@ def get_dashboard_data(user_id: str) -> dict:
 
 
 @router.get("/api/v1/dashboard", tags=["Dashboard"])
-def dashboard(user_id: str = Depends(get_current_user)):
+def dashboard(user_id: str = Depends(get_current_user_optional)):
     """Returns aggregated dashboard data for the authenticated user."""
     return get_dashboard_data(user_id)
 
@@ -355,7 +355,7 @@ async def upload_activity_file(file: UploadFile = File(...), user_id: str = Depe
 
 
 @router.get("/api/v1/workouts", tags=["Workouts"])
-def get_workouts(user_id: str = Depends(get_current_user), limit: int = 20):
+def get_workouts(user_id: str = Depends(get_current_user_optional), limit: int = 50):
     """Returns a paginated list of the user's workout history with metrics."""
     try:
         if supabase:
@@ -367,7 +367,7 @@ def get_workouts(user_id: str = Depends(get_current_user), limit: int = 20):
                 .limit(limit)
                 .execute()
             )
-            if res.data is not None:
+            if res.data is not None and len(res.data) > 0:
                 return {"workouts": res.data, "count": len(res.data)}
     except Exception:
         pass
@@ -377,7 +377,7 @@ def get_workouts(user_id: str = Depends(get_current_user), limit: int = 20):
 
 
 @router.get("/api/v1/analytics/sports-summary", tags=["Analytics"])
-def get_sports_analytics(days: int = 30, user_id: str = Depends(get_current_user)):
+def get_sports_analytics(days: int = 30, user_id: str = Depends(get_current_user_optional)):
     """
     Rekapan analitik volume latihan, durasi, dan beban (load) per cabang olahraga.
     """

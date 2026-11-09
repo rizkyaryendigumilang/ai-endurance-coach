@@ -1186,15 +1186,15 @@
                                 </div>
                                 <div class="p-1 bg-surface-subtle rounded-md">
                                     <span class="text-[10px] text-text-secondary block" data-i18n="athlete_activities">Activities</span>
-                                    <span class="font-bold text-xs text-text-primary font-mono">22</span>
+                                    <span class="font-bold text-xs text-text-primary font-mono" id="cockpit-activities-count">20</span>
                                 </div>
                             </div>
 
                             <!-- Latest Activity Preview -->
                             <div class="p-2.5 bg-surface-subtle border border-border rounded-lg text-xs space-y-1">
                                 <span class="text-[10px] font-mono text-text-secondary uppercase" data-i18n="athlete_latest">Latest Workout</span>
-                                <div class="font-bold text-text-primary truncate">Morning Threshold Progression</div>
-                                <div class="text-[11px] text-tertiary font-mono">10.25 km &bull; 4:38/km &bull; 47m 32s</div>
+                                <div class="font-bold text-text-primary truncate" id="cockpit-latest-title">Jakarta Running (18.0 km)</div>
+                                <div class="text-[11px] text-tertiary font-mono" id="cockpit-latest-meta">18.00 km &bull; 8:35/km &bull; 2h 34m 42s</div>
                             </div>
                         </div>
 
@@ -1255,6 +1255,13 @@
                                 <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
                                     <span class="flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                        <span class="font-medium">Garmin Connect (Direct SSO)</span>
+                                    </span>
+                                    <span class="text-[10px] font-mono text-flat-green font-bold">20 Sesi Terhubung (RHR 61)</span>
+                                </div>
+                                <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
                                         <span class="font-medium">Intervals.icu</span>
                                     </span>
                                     <span class="text-[10px] font-mono text-flat-green font-bold">Connected</span>
@@ -1262,14 +1269,7 @@
                                 <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
                                     <span class="flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-flat-green"></span>
-                                        <span class="font-medium">Strava Telemetry</span>
-                                    </span>
-                                    <span class="text-[10px] font-mono text-tertiary font-bold">Active</span>
-                                </div>
-                                <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-flat-green"></span>
-                                        <span class="font-medium">Gemini 2.5 Coach</span>
+                                        <span class="font-medium">Gemini 3.8 Flash AI</span>
                                     </span>
                                     <span class="text-[10px] font-mono text-flat-green font-bold">Ready</span>
                                 </div>
@@ -1380,254 +1380,14 @@
                             </div>
                         </div>
 
-                        <!-- 2. STRAVA FEED ITEM 1: Morning Run -->
-                        <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
-                            <!-- Athlete Activity Header -->
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                                        RG
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
-                                            <span class="text-xs text-text-secondary" data-i18n="card_run_time">&bull; Today at 06:15 AM</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5 text-[11px] text-text-secondary">
-                                            <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
-                                            <span data-i18n="card_sport_run">Run</span>
-                                            <span>&bull;</span>
-                                            <span>Jakarta, Indonesia</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="text-text-secondary hover:text-text-primary p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
-                                </button>
-                            </div>
-
-                            <!-- Activity Title & Description -->
-                            <div class="space-y-1">
-                                <h3 onclick="openActivityDetailModal('morning_run')" class="font-display font-extrabold text-lg text-text-primary hover:text-tertiary transition-colors cursor-pointer" data-i18n="card_run_title">
-                                    Morning Progression Tempo Run
-                                </h3>
-                                <p class="text-xs font-mono text-text-secondary" data-i18n="card_run_desc">
-                                    Interval 4:20/km &bull; Cadence 178 spm &bull; Form Controlled
-                                </p>
-                            </div>
-
-                            <!-- Strava 4-Column Metric Grid -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3 border-y border-border">
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_distance">Distance</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">10.25 <span class="text-xs font-normal text-text-secondary">km</span></span>
-                                </div>
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_pace">Pace</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">4:38 <span class="text-xs font-normal text-text-secondary">/km</span></span>
-                                </div>
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_time">Time</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">47m 32s</span>
-                                </div>
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_elev">Elev Gain</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">68 <span class="text-xs font-normal text-text-secondary">m</span></span>
-                                </div>
-                            </div>
-
-                            <!-- GPS VECTOR ROUTE MAP & POLYLINE (Strava Signature Dark Canvas) -->
-                            <div onclick="openActivityDetailModal('morning_run')" class="group relative w-full h-44 rounded-xl overflow-hidden cursor-pointer border-2 border-border hover:border-tertiary transition-all shadow-inner bg-[#1a1c22]">
-                                <!-- Athletic Dark Map Terrain Grid Background -->
-                                <div class="absolute inset-0 opacity-15" style="background-image: linear-gradient(to right, #2d3139 1px, transparent 1px), linear-gradient(to bottom, #2d3139 1px, transparent 1px); background-size: 24px 24px;"></div>
-                                
-                                <!-- GPS Vector Polyline Path (Urban Loop) -->
-                                <svg class="w-full h-full relative z-10" viewBox="0 0 500 200" preserveAspectRatio="none">
-                                    <defs>
-                                        <filter id="glow-orange-1" x="-20%" y="-20%" width="140%" height="140%">
-                                            <feGaussianBlur stdDeviation="3" result="blur" />
-                                            <feMerge>
-                                                <feMergeNode in="blur" />
-                                                <feMergeNode in="SourceGraphic" />
-                                            </feMerge>
-                                        </filter>
-                                    </defs>
-                                    <!-- Subtle GPS Shadow Buffer -->
-                                    <path d="M 60 140 C 90 120, 140 150, 180 110 C 220 70, 260 50, 310 65 C 360 80, 410 110, 440 85 C 460 68, 470 120, 420 155 C 370 190, 300 165, 230 175 C 160 185, 100 170, 60 140 Z" fill="none" stroke="#000" stroke-width="6" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" />
-                                    <!-- Strava Orange Primary GPS Polyline -->
-                                    <path d="M 60 140 C 90 120, 140 150, 180 110 C 220 70, 260 50, 310 65 C 360 80, 410 110, 440 85 C 460 68, 470 120, 420 155 C 370 190, 300 165, 230 175 C 160 185, 100 170, 60 140 Z" fill="rgba(252,76,2,0.06)" stroke="#FC4C02" stroke-width="3.5" filter="url(#glow-orange-1)" stroke-linecap="round" stroke-linejoin="round" />
-                                    <!-- Start Pin Dot (Green) -->
-                                    <circle cx="60" cy="140" r="7" fill="#10B981" stroke="#ffffff" stroke-width="2" />
-                                    <text x="60" y="143" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">S</text>
-                                    <!-- Finish Pin Dot (Strava Orange Checkered) -->
-                                    <circle cx="68" cy="144" r="7" fill="#FC4C02" stroke="#ffffff" stroke-width="2" />
-                                    <text x="68" y="147" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">F</text>
-                                </svg>
-
-                                <!-- Top Route Floating Info Chips -->
-                                <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
-                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white font-bold border border-white/10 flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
-                                        <span>GPS Track &bull; 10.25 km</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-flat-orange font-bold border border-white/10">
-                                        +68m Elev
-                                    </span>
-                                </div>
-
-                                <!-- Hover Interactive Overlay Badge -->
-                                <div class="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-full bg-tertiary text-white text-xs font-semibold shadow-md group-hover:scale-105 transition-transform flex items-center gap-1.5">
-                                    <span data-i18n="card_inspect_map">Inspect Route &amp; Splits</span>
-                                    <span>&rarr;</span>
-                                </div>
-                            </div>
-
-                            <!-- AI Telemetry Breakdown Pill -->
-                            <div class="p-3 bg-surface-subtle border border-border rounded-lg text-xs space-y-1.5">
-                                <div class="flex items-center gap-1.5 text-tertiary font-bold font-mono text-[11px]">
-                                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                    <span data-i18n="card_ai_engine">AI ANALYSIS ENGINE</span>
-                                    <span>&bull;</span>
-                                    <span class="text-flat-green">AEROBIC EFFICIENCY HIGH</span>
-                                </div>
-                                <p class="text-[11px] font-mono text-text-secondary leading-relaxed" data-i18n="card_run_ai_notes">
-                                    Drift: <span class="text-flat-green font-bold">+1.7%</span> &bull; Balance: <span class="text-text-primary font-bold">49.8% L / 50.2% R</span> &bull; GCT: <span class="text-text-primary font-bold">212ms</span>
-                                </p>
-                            </div>
-
-                            <!-- Social / Kudos Interaction Footer -->
-                            <div class="flex items-center justify-between pt-2 border-t border-border">
-                                <div class="flex items-center gap-4">
-                                    <!-- Kudos Button (Strava Orange Thumbs-up / Heart) -->
-                                    <button onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
-                                        <svg class="w-4 h-4 text-tertiary group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
-                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                        </svg>
-                                        <span class="kudos-count font-mono font-bold text-text-primary">24</span>
-                                        <span data-i18n="card_kudos">Kudos</span>
-                                    </button>
-                                    <!-- Comments Button -->
-                                    <button class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                                        <span class="font-mono font-bold text-text-primary">5</span>
-                                        <span data-i18n="card_comments">Comments</span>
-                                    </button>
-                                </div>
-                                <button onclick="openActivityDetailModal('morning_run')" class="text-xs font-mono font-bold text-tertiary hover:underline" data-i18n="card_view_splits">
-                                    View Splits &rarr;
-                                </button>
+                        <!-- DYNAMIC ACTIVITIES FEED CONTAINER (Live Garmin Connect Sessions) -->
+                        <div id="activities-feed-container" class="space-y-4">
+                            <!-- Populated dynamically with athlete's real Garmin Connect activities -->
+                            <div class="text-center py-8 text-text-secondary font-mono text-xs animate-pulse">
+                                <svg class="w-6 h-6 mx-auto mb-2 text-tertiary animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                <span>Menghubungkan data Garmin Connect &amp; memuat 20 sesi aktivitas...</span>
                             </div>
                         </div>
-
-                        <!-- 3. STRAVA FEED ITEM 2: Weekend Ride -->
-                        <div data-feed-type="cycling" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200">
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                                        RG
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
-                                            <span class="text-xs text-text-secondary" data-i18n="card_ride_time">&bull; Yesterday at 05:45 AM</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5 text-[11px] text-text-secondary">
-                                            <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
-                                            <span data-i18n="card_sport_cycling">Ride</span>
-                                            <span>&bull;</span>
-                                            <span>Sentul Loop, West Java</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="text-text-secondary hover:text-text-primary p-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
-                                </button>
-                            </div>
-
-                            <div class="space-y-1">
-                                <h3 onclick="openActivityDetailModal('weekend_ride')" class="font-display font-extrabold text-lg text-text-primary hover:text-tertiary transition-colors cursor-pointer" data-i18n="card_ride_title">
-                                    Sentul KM0 Hill Climb Endurance
-                                </h3>
-                                <p class="text-xs font-mono text-text-secondary" data-i18n="card_ride_desc">
-                                    Climb 240W &bull; Cadence 88 rpm &bull; Descent Controlled
-                                </p>
-                            </div>
-
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3 border-y border-border">
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_distance">Distance</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">64.8 <span class="text-xs font-normal text-text-secondary">km</span></span>
-                                </div>
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_speed">Avg Speed</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">28.4 <span class="text-xs font-normal text-text-secondary">km/h</span></span>
-                                </div>
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_time">Time</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">2h 16m</span>
-                                </div>
-                                <div>
-                                    <span class="text-[11px] text-text-secondary uppercase font-mono block" data-i18n="card_elev">Elev Gain</span>
-                                    <span class="font-display font-extrabold text-2xl text-text-primary">580 <span class="text-xs font-normal text-text-secondary">m</span></span>
-                                </div>
-                            </div>
-
-                            <!-- GPS VECTOR ROUTE MAP & SWITCHBACK CLIMB (Strava Signature) -->
-                            <div onclick="openActivityDetailModal('weekend_ride')" class="group relative w-full h-44 rounded-xl overflow-hidden cursor-pointer border-2 border-border hover:border-tertiary transition-all shadow-inner bg-[#1a1c22]">
-                                <div class="absolute inset-0 opacity-15" style="background-image: linear-gradient(to right, #2d3139 1px, transparent 1px), linear-gradient(to bottom, #2d3139 1px, transparent 1px); background-size: 24px 24px;"></div>
-                                
-                                <svg class="w-full h-full relative z-10" viewBox="0 0 500 200" preserveAspectRatio="none">
-                                    <!-- Climbing elevation profile contour lines -->
-                                    <path d="M 40 160 Q 120 150 180 130 T 280 80 T 380 40 L 460 25" fill="none" stroke="#2a2e3d" stroke-width="2" stroke-dasharray="4,4" />
-                                    <!-- Climbing switchbacks route line -->
-                                    <path d="M 40 160 C 80 160, 110 135, 130 145 C 160 160, 180 120, 210 125 C 240 130, 260 90, 290 95 C 320 100, 340 60, 370 65 C 400 70, 420 30, 460 25" fill="none" stroke="#000" stroke-width="6" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M 40 160 C 80 160, 110 135, 130 145 C 160 160, 180 120, 210 125 C 240 130, 260 90, 290 95 C 320 100, 340 60, 370 65 C 400 70, 420 30, 460 25" fill="none" stroke="#FC4C02" stroke-width="3.5" filter="url(#glow-orange-1)" stroke-linecap="round" stroke-linejoin="round" />
-                                    <!-- Start Pin Dot -->
-                                    <circle cx="40" cy="160" r="7" fill="#10B981" stroke="#ffffff" stroke-width="2" />
-                                    <text x="40" y="163" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">S</text>
-                                    <!-- Summit Finish Pin Dot -->
-                                    <circle cx="460" cy="25" r="7" fill="#FC4C02" stroke="#ffffff" stroke-width="2" />
-                                    <text x="460" y="28" text-anchor="middle" fill="#ffffff" font-size="8" font-family="monospace" font-weight="bold">F</text>
-                                </svg>
-
-                                <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
-                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white font-bold border border-white/10 flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-flat-orange"></span>
-                                        <span>Sentul KM0 Summit &bull; 64.8 km</span>
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-flat-orange font-bold border border-white/10">
-                                        +580m Elev (Category 2)
-                                    </span>
-                                </div>
-
-                                <div class="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-full bg-tertiary text-white text-xs font-semibold shadow-md group-hover:scale-105 transition-transform flex items-center gap-1.5">
-                                    <span data-i18n="card_inspect_map">Inspect Power &amp; Splits</span>
-                                    <span>&rarr;</span>
-                                </div>
-                            </div>
-
-                            <!-- Social Interaction Footer -->
-                            <div class="flex items-center justify-between pt-2 border-t border-border">
-                                <div class="flex items-center gap-4">
-                                    <button onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
-                                        <svg class="w-4 h-4 text-tertiary group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
-                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                        </svg>
-                                        <span class="kudos-count font-mono font-bold text-text-primary">38</span>
-                                        <span data-i18n="card_kudos">Kudos</span>
-                                    </button>
-                                    <button class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                                        <span class="font-mono font-bold text-text-primary">8</span>
-                                        <span data-i18n="card_comments">Comments</span>
-                                    </button>
-                                </div>
-                                <button onclick="openActivityDetailModal('weekend_ride')" class="text-xs font-mono font-bold text-tertiary hover:underline" data-i18n="card_view_power">
-                                    View Power Curve &rarr;
-                                </button>
-                            </div>
-                        </div>
-
                     </div>
 
                     <!-- RIGHT COLUMN: AI Coach Quick Copilot & Challenges (3 cols) -->
@@ -5129,6 +4889,271 @@
             if (centerEl) centerEl.textContent = `+${cockpitData.summaryGoal}%`;
         }
 
+        function formatWorkoutDate(dateStr) {
+            if (!dateStr) return 'Hari ini';
+            try {
+                const d = new Date(dateStr.replace(' ', 'T'));
+                if (isNaN(d.getTime())) return dateStr;
+                const now = new Date();
+                const isToday = d.toDateString() === now.toDateString();
+                const yesterday = new Date(now);
+                yesterday.setDate(now.getDate() - 1);
+                const isYesterday = d.toDateString() === yesterday.toDateString();
+                const timePart = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+                if (isToday) return `Hari ini pukul ${timePart}`;
+                if (isYesterday) return `Kemarin pukul ${timePart}`;
+                return `${d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} • ${timePart}`;
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function renderActivitiesFeed(workouts) {
+            const container = document.getElementById('activities-feed-container');
+            if (!container) return;
+
+            if (!workouts || workouts.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-surface border-2 border-dashed border-border rounded-xl space-y-3">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-surface-subtle flex items-center justify-center text-text-secondary">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <h4 class="font-bold text-sm text-text-primary">Belum Ada Sesi Tersinkronisasi</h4>
+                        <p class="text-xs text-text-secondary max-w-sm mx-auto">Sinkronkan akun Garmin Connect Anda pada tab Integrasi untuk menampilkan feed aktivitas.</p>
+                        <button onclick="switchWorkstationTab('integrations')" class="btn-primary rounded-full px-4 py-2 text-xs font-bold">Buka Tab Integrasi</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Update Left Column Counters dynamically
+            const countEl = document.getElementById('cockpit-activities-count');
+            if (countEl) countEl.textContent = workouts.length;
+
+            const latestTitleEl = document.getElementById('cockpit-latest-title');
+            const latestMetaEl = document.getElementById('cockpit-latest-meta');
+            if (workouts.length > 0 && latestTitleEl) {
+                const latest = workouts[0];
+                latestTitleEl.textContent = latest.title || 'Aktivitas Lari';
+                const dMin = Math.floor((latest.duration_seconds || 0) / 60);
+                const dSec = (latest.duration_seconds || 0) % 60;
+                const durText = dMin >= 60 ? `${Math.floor(dMin/60)}h ${dMin%60}m` : `${dMin}m ${dSec}s`;
+                const paceVal = (latest.activity_metrics && latest.activity_metrics[0] && latest.activity_metrics[0].avg_pace_min_per_km) || '05:30';
+                if (latestMetaEl) latestMetaEl.textContent = `${parseFloat(latest.distance_km || 0).toFixed(2)} km • ${paceVal}/km • ${durText}`;
+            }
+
+            // Register each workout in ACTIVITY_FIXTURES for detail modal
+            workouts.forEach(w => {
+                const metrics = (w.activity_metrics && w.activity_metrics[0]) || {};
+                const pace = metrics.avg_pace_min_per_km || '05:30';
+                const paceStr = typeof pace === 'number' ? `${Math.floor(pace)}:${String(Math.round((pace % 1) * 60)).padStart(2, '0')} /km` : `${pace} /km`;
+                const dMin = Math.floor((w.duration_seconds || 0) / 60);
+                const dSec = (w.duration_seconds || 0) % 60;
+                const durFormatted = dMin >= 60 ? `${Math.floor(dMin/60)}h ${dMin%60}m ${dSec}s` : `${dMin}m ${dSec}s`;
+                const sport = (w.workout_type || 'run').toLowerCase();
+                const distKm = parseFloat(w.distance_km || 0).toFixed(2);
+                const avgHr = w.avg_hr || 150;
+                const maxHr = w.max_hr || (avgHr + 20);
+
+                const splitCount = Math.max(1, Math.min(10, Math.round(parseFloat(w.distance_km || 1))));
+                const generatedSplits = [];
+                for (let s = 1; s <= splitCount; s++) {
+                    generatedSplits.push({
+                        km: s === splitCount && parseFloat(distKm) > splitCount ? distKm : String(s),
+                        pace: paceStr.replace(' /km', ''),
+                        distPct: 85 + (s % 15),
+                        elev: `+${Math.round((w.elevation_gain_m || 10) / splitCount)}m`,
+                        hr: Math.round(avgHr + ((s - splitCount/2) * 1.5))
+                    });
+                }
+
+                ACTIVITY_FIXTURES[w.id] = {
+                    id: w.id,
+                    sport: sport === 'cycling' ? 'cycling' : 'run',
+                    title: { id: w.title, en: w.title },
+                    date: {
+                        id: `${formatWorkoutDate(w.started_at)} • Jakarta, Indonesia`,
+                        en: `${w.started_at || 'Garmin Session'} • Jakarta, Indonesia`
+                    },
+                    distance: `${distKm} km`,
+                    pace: paceStr,
+                    time: durFormatted,
+                    elev: `+${Math.round(w.elevation_gain_m || 0)} m`,
+                    avgHr: `${avgHr} bpm`,
+                    maxHr: `${maxHr} bpm`,
+                    calories: `${Math.round((w.distance_km || 5) * 65 + (w.duration_seconds || 1800)/10)} kcal`,
+                    suffer: metrics.training_load ? `${metrics.training_load} (Garmin TRIMP)` : '65 (Optimal)',
+                    hrStacked: [
+                        { pct: 15, color: 'bg-blue-400', label: 'Z1 (<125 bpm): 15%' },
+                        { pct: 40, color: 'bg-emerald-400', label: 'Z2 (125-149): 40%' },
+                        { pct: 25, color: 'bg-amber-400', label: 'Z3 (150-163): 25%' },
+                        { pct: 15, color: 'bg-orange-500', label: 'Z4 (164-177): 15%' },
+                        { pct: 5, color: 'bg-rose-500', label: 'Z5 (>177 bpm): 5%' }
+                    ],
+                    splits: generatedSplits,
+                    aiAudit: {
+                        id: `Analisis AI Coach Goalie: Sesi ${w.title} (${distKm} km) mencatatkan denyut jantung rata-rata ${avgHr} bpm dan beban latihan TRIMP ${metrics.training_load || '-'}. Efisiensi aerobik berada di angka ${metrics.aerobic_efficiency || '0.85'} m/detak. Rekomendasi: pertahankan hidrasi terstruktur dan nutrisi pemulihan dalam 45 menit pertama pasca-latihan.`,
+                        en: `Goalie AI Coach Analysis: Session ${w.title} (${distKm} km) logged an average HR of ${avgHr} bpm with TRIMP training load of ${metrics.training_load || '-'}. Aerobic efficiency calculated at ${metrics.aerobic_efficiency || '0.85'} m/beat. Recommended: replenish fluids and complete active recovery within 45 minutes.`
+                    }
+                };
+            });
+
+            // Generate HTML Cards
+            container.innerHTML = workouts.map(w => {
+                const metrics = (w.activity_metrics && w.activity_metrics[0]) || {};
+                const sport = (w.workout_type || 'run').toLowerCase();
+                const feedType = sport === 'cycling' ? 'cycling' : (sport === 'strength' ? 'strength' : 'run');
+                const distKm = parseFloat(w.distance_km || 0).toFixed(2);
+                const dMin = Math.floor((w.duration_seconds || 0) / 60);
+                const dSec = (w.duration_seconds || 0) % 60;
+                const durFormatted = dMin >= 60 ? `${Math.floor(dMin/60)}h ${dMin%60}m` : `${dMin}m ${dSec}s`;
+                
+                let paceFormatted = '-';
+                if (w.workout_type !== 'strength') {
+                    const rawPace = metrics.avg_pace_min_per_km;
+                    if (typeof rawPace === 'number') {
+                        const pMin = Math.floor(rawPace);
+                        const pSec = String(Math.round((rawPace % 1) * 60)).padStart(2, '0');
+                        paceFormatted = `${pMin}:${pSec} /km`;
+                    } else if (rawPace && rawPace !== '00:00') {
+                        paceFormatted = `${rawPace} /km`;
+                    } else if (w.distance_km > 0 && w.duration_seconds > 0) {
+                        const paceMinPerKm = (w.duration_seconds / 60) / w.distance_km;
+                        const pMin = Math.floor(paceMinPerKm);
+                        const pSec = String(Math.round((paceMinPerKm % 1) * 60)).padStart(2, '0');
+                        paceFormatted = `${pMin}:${pSec} /km`;
+                    }
+                } else {
+                    paceFormatted = 'Strength / Gym';
+                }
+
+                const dateFormatted = formatWorkoutDate(w.started_at);
+                const isGarmin = (w.source || '').toLowerCase().includes('garmin');
+                const sourceBadge = isGarmin
+                    ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#007AC3]/12 text-[#007AC3] border border-[#007AC3]/30">
+                         <svg class="w-2.5 h-2.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 5l5.5 11h-11L12 7z"/></svg>
+                         GARMIN CONNECT
+                       </span>`
+                    : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-tertiary/12 text-tertiary border border-tertiary/30">
+                         <svg class="w-2.5 h-2.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.008 13.828h4.172"/></svg>
+                         STRAVA FEED
+                       </span>`;
+
+                const sportIcon = sport === 'cycling'
+                    ? `<svg class="w-3.5 h-3.5 text-flat-orange shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>`
+                    : (sport === 'strength'
+                        ? `<svg class="w-3.5 h-3.5 text-flat-amber shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"/></svg>`
+                        : `<svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>`);
+
+                const sportName = sport === 'cycling' ? 'Ride' : (sport === 'strength' ? 'Strength' : 'Run');
+
+                return `
+                    <div data-feed-type="${feedType}" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                                    RG
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-sm text-text-primary">Rizky Aryendi Gumilang</span>
+                                        <span class="text-xs text-text-secondary">• ${dateFormatted}</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-2 text-[11px] text-text-secondary mt-0.5">
+                                        <span class="inline-flex items-center gap-1 font-semibold text-text-primary">
+                                            ${sportIcon}
+                                            <span>${sportName}</span>
+                                        </span>
+                                        <span>•</span>
+                                        <span>Jakarta, Indonesia</span>
+                                        <span>•</span>
+                                        ${sourceBadge}
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="openActivityDetailModal('${w.id}')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+                                Detail &rarr;
+                            </button>
+                        </div>
+
+                        <div class="space-y-1">
+                            <h3 onclick="openActivityDetailModal('${w.id}')" class="font-display font-extrabold text-lg text-text-primary hover:text-tertiary transition-colors cursor-pointer">
+                                ${w.title}
+                            </h3>
+                            <p class="text-xs font-mono text-text-secondary">
+                                ${w.workout_type === 'strength' ? 'Strength & Conditioning Workout' : `${distKm} km • Avg HR ${w.avg_hr || '-'} bpm • ${durFormatted}`}
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3 border-y border-border">
+                            <div>
+                                <span class="text-[11px] text-text-secondary uppercase font-mono block">Distance</span>
+                                <span class="font-display font-extrabold text-2xl text-text-primary">${distKm} <span class="text-xs font-normal text-text-secondary">km</span></span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-text-secondary uppercase font-mono block">${w.workout_type === 'strength' ? 'Session Type' : 'Avg Pace'}</span>
+                                <span class="font-display font-extrabold text-2xl text-text-primary">${paceFormatted}</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-text-secondary uppercase font-mono block">Moving Time</span>
+                                <span class="font-display font-extrabold text-2xl text-text-primary">${durFormatted}</span>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-text-secondary uppercase font-mono block">Heart Rate</span>
+                                <span class="font-display font-extrabold text-2xl text-text-primary">${w.avg_hr || '-'} <span class="text-xs font-normal text-text-secondary">bpm</span></span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px]">
+                            ${metrics.training_load ? `
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border text-text-primary flex items-center gap-1">
+                                    <span class="text-text-secondary">TRIMP Load:</span>
+                                    <strong class="text-tertiary font-bold">${metrics.training_load}</strong>
+                                </span>
+                            ` : ''}
+                            ${w.elevation_gain_m ? `
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border text-text-primary flex items-center gap-1">
+                                    <span class="text-text-secondary">Elev Gain:</span>
+                                    <strong>+${Math.round(w.elevation_gain_m)} m</strong>
+                                </span>
+                            ` : ''}
+                            ${metrics.grade_adjusted_pace && metrics.grade_adjusted_pace !== '00:00' ? `
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border text-text-primary flex items-center gap-1">
+                                    <span class="text-text-secondary">GAP:</span>
+                                    <strong class="text-flat-green">${metrics.grade_adjusted_pace}</strong>
+                                </span>
+                            ` : ''}
+                            ${metrics.aerobic_efficiency ? `
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border text-text-primary flex items-center gap-1">
+                                    <span class="text-text-secondary">Aerobic Eff:</span>
+                                    <strong>${metrics.aerobic_efficiency} m/beat</strong>
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-border">
+                            <div class="flex items-center gap-4">
+                                <button onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
+                                    <svg class="w-4 h-4 text-tertiary group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                    <span class="kudos-count font-mono font-bold text-text-primary">${12 + (w.id.length % 20)}</span>
+                                    <span>Kudos</span>
+                                </button>
+                                <button onclick="shareWorkoutSession()" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                                    <span>Bagikan</span>
+                                </button>
+                            </div>
+                            <button onclick="openActivityDetailModal('${w.id}')" class="text-xs font-mono font-bold text-tertiary hover:underline">
+                                Analisis Sesi &amp; Splits &rarr;
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         async function syncCockpitWithBackend() {
             // 1. Instant Cache Hydration (0ms Stale-While-Revalidate)
             try {
@@ -5136,11 +5161,32 @@
                 if (cached) {
                     applyCockpitTotals(JSON.parse(cached));
                 }
+                const cachedFeed = localStorage.getItem('goalie_cached_feed');
+                if (cachedFeed) {
+                    renderActivitiesFeed(JSON.parse(cachedFeed));
+                }
             } catch (e) {}
 
-            if (!appState.token) return;
+            // 2. Fetch Real Workouts Feed from Garmin Connect
+            try {
+                const feedRes = await fetch(`${API_BASE}/workouts?limit=50`, {
+                    headers: getAuthHeaders()
+                });
+                if (feedRes.ok) {
+                    const feedData = await feedRes.json();
+                    const workouts = feedData.workouts || [];
+                    if (workouts.length > 0) {
+                        renderActivitiesFeed(workouts);
+                        try {
+                            localStorage.setItem('goalie_cached_feed', JSON.stringify(workouts));
+                        } catch (e) {}
+                    }
+                }
+            } catch (err) {
+                console.warn('[Goalie Cockpit] Feed fetch skipped:', err);
+            }
 
-            // 2. Network Revalidation
+            // 3. Network Revalidation: Sports Summary Totals
             try {
                 const res = await fetch(`${API_BASE}/analytics/sports-summary`, {
                     headers: getAuthHeaders()
@@ -5155,7 +5201,7 @@
                     }
                 }
             } catch (err) {
-                console.warn('[Goalie Cockpit] Sync skipped:', err);
+                console.warn('[Goalie Cockpit] Summary sync skipped:', err);
             }
         }
 
