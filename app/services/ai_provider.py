@@ -7,15 +7,15 @@ from app.core.config import GEMINI_API_KEY, GEMINI_FREE_API_KEY, GEMINI_PRO_API_
 SYSTEM_PROMPT = """Kamu adalah Lead Sports Scientist dan Head Performance Coach untuk platform analitik atletik GOALIE.
 
 Karakter Komunikasi:
-- Berbicaralah seperti pelatih endurance veteran: langsung pada inti masalah, lugas, profesional, dan berbasis data fisiologi.
-- Jangan pernah menggunakan basa-basi pembuka khas chatbot seperti "Tentu saja!", "Halo atlet hebat!", "Pertanyaan yang luar biasa!", atau "Saya siap membantu Anda". Langsung sajikan analisis dan instruksi.
-- Dilarang keras menggunakan emoji apa pun (tanpa api, roket, jempol, kilat, atau sejenisnya).
-- Gunakan terminologi olahraga yang tepat (fase aerobik, ambang laktat/threshold, TSB, cardiac drift, form fatigue, kadens, GAP, TRIMP).
+- Berbicaralah seperti pelatih endurance veteran: langsung pada data dan instruksi, super ringkas, tanpa narasi panjang.
+- Maksimal 2-3 poin ringkas per jawaban. Dilarang membuat paragraf panjang, basa-basi, atau esai.
+- Jangan pernah menggunakan basa-basi pembuka khas chatbot seperti "Tentu saja!", "Halo!", "Pertanyaan bagus!". Langsung angka dan tindakan.
+- Dilarang keras menggunakan emoji apa pun.
+- Format: bullet points ringkas berbasis metrik (Pace, Heart Rate, Zona, Cadence, TSB, Rekomendasi).
 
 ATURAN ARSITEKTUR:
-1. Angka metrik fisiologis (Pace, Training Load, Aerobic Efficiency, HR Drift, GAP, TSB) adalah hasil komputasi deterministik Sports Engine backend. Jadikan sebagai rujukan faktual.
-2. Bertindak sebagai penasihat strategi atlet, bukan pengubah basis data langsung.
-3. Gunakan Bahasa Indonesia yang ringkas, berbobot, dan dapat diterapkan langsung di lapangan."""
+1. Angka metrik fisiologis (Pace, Training Load, Aerobic Efficiency, HR Drift, GAP, TSB) adalah hasil komputasi deterministik Sports Engine backend.
+2. Gunakan Bahasa Indonesia teknis yang sangat padat dan langsung dapat dieksekusi atlet di lapangan."""
 
 
 class MultiTierAIProvider:
@@ -239,31 +239,31 @@ class MultiTierAIProvider:
 
         if any(w in msg_lower for w in ["recovery", "lelah", "istirahat", "rest", "capek"]):
             return (
-                "Rekomendasi Recovery Fisiologis:\n"
-                "- Status kardiovaskular menunjukkan akumulasi beban latihan aktif. Utamakan tidur malam 7-8 jam untuk pemulihan glikogen dan sintesis protein otot.\n"
-                "- Jika resting heart rate (RHR) pagi naik >5 bpm di atas baseline, lakukan active recovery (jalan santai/sepeda ringan Zona 1) maksimal 30 menit atau jadwalkan full rest day.\n"
-                "- Pertahankan hidrasi 500ml per jam pasca-sesi latihan ditambah asupan elektrolit sodium."
+                "Rekomendasi Pemulihan:\n"
+                "- Tidur 7-8 jam; rehidrasi 500ml + elektrolit pasca-latihan.\n"
+                "- RHR naik >5 bpm: jadwalkan Rest Day atau Easy Spin Zona 1 (max 30m).\n"
+                "- TSB pasca-sesi berat: kembali ke zona netral (-10 s/d 0) dalam 48 jam."
             )
         elif any(w in msg_lower for w in ["pace", "kecepatan", "tempo", "interval", "target"]):
             return (
-                "Strategi Pacing & Distribusi Zona Latihan:\n"
-                "- 80% dari total volume mingguan wajib dijalankan di Zona 2 Aerobic Base (bisa berbicara tanpa terengah-engah) untuk memperbesar densitas mitokondria.\n"
-                "- Sesi tempo/threshold dialokasikan 1x per minggu pada batas laktat (RPE 7/10) untuk meningkatkan ambang batas ketahanan laktat.\n"
-                "- Gunakan Grade Adjusted Pace (GAP) pada rute berkontur tanjakan guna mencegah kelelahan dini akibat lonjakan daya mekanik."
+                "Strategi Pacing & Zona:\n"
+                "- 80% volume di Zona 2 Aerobic Base (FatMax, percakapan nyaman).\n"
+                "- 20% volume di Zona 4 Threshold (1x per minggu, RPE 7-8/10).\n"
+                "- Rute tanjakan: ikuti Grade-Adjusted Pace (GAP) agar daya tetap stabil."
             )
         elif any(w in msg_lower for w in ["tsb", "fitness", "fatigue", "form"]):
             return (
-                "Analisis Training Stress Balance (TSB):\n"
-                "- TSB dihitung dari Chronic Training Load (CTL / Fitness) dikurangi Acute Training Load (ATL / Fatigue).\n"
-                "- Nilai TSB di rentang -10 s/d -30 menandakan fase produktif penumpukan beban latihan (overreaching terukur).\n"
-                "- Jelang race day / lomba utama, kurangi volume 40-50% selama 10-14 hari agar TSB naik ke rentang +5 s/d +15 (peak freshness / race ready)."
+                "Status Beban & TSB:\n"
+                "- TSB = CTL (Fitness) - ATL (Fatigue).\n"
+                "- Fase Bangun: TSB -10 s/d -25 (overreaching terukur).\n"
+                "- Fase Lomba: Taper 10-14 hari hingga TSB +5 s/d +15 (Freshness)."
             )
         else:
             return (
-                f"Evaluasi Latihan Atletik:\n"
-                f"- Berdasarkan data fisiologi saat ini ({context.strip()[:140] if context else 'Data tersimpan'}), "
-                "kunci peningkatan performa endurance adalah konsistensi beban mingguan (progressive overload) tanpa lonjakan volume mendadak >10% per minggu.\n"
-                "- Pantau indikator dekompensasi seperti kenaikan detak jantung pada pace yang sama (cardiac drift) untuk mencegah sindrom overtraining."
+                "Evaluasi Latihan:\n"
+                f"- Metrik: {context.strip()[:80] if context else 'Nominal'}.\n"
+                "- Batasi lonjakan beban mingguan maksimal +10% (ACWR 0.8 - 1.3).\n"
+                "- Jaga cardiac drift <5% untuk stabilitas efisiensi aerobik."
             )
 
     async def generate_adaptation_explanation(self, context_dict: Dict, tier: str = "pro") -> str:
