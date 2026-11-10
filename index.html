@@ -3518,11 +3518,11 @@
                                 </div>
                                 <div>
                                     <label data-i18n="settings_tier_level_label" class="block text-[11px] text-text-secondary mb-1">Tingkat Atletik Saat Ini</label>
-                                    <select id="settings-fitness-level" class="flat-input text-xs">
-                                        <option value="beginner">Pemula / Base Builder (&lt; 30 km/wk)</option>
-                                        <option value="intermediate" selected>Intermediate Competitive (30-70 km/wk)</option>
-                                        <option value="advanced">Advanced Sub-Elite (70-120 km/wk)</option>
-                                        <option value="elite">Elite / Masters Podium (&gt; 120 km/wk)</option>
+                                    <select id="settings-fitness-level" class="flat-input text-xs font-sans">
+                                        <option value="beginner" data-i18n="fitness_level_beginner">Pemula / Fondasi Dasar (&lt; 30 km/minggu)</option>
+                                        <option value="intermediate" selected data-i18n="fitness_level_intermediate">Menengah Kompetitif (30-70 km/minggu)</option>
+                                        <option value="advanced" data-i18n="fitness_level_advanced">Mahir / Sub-Elite (70-120 km/minggu)</option>
+                                        <option value="elite" data-i18n="fitness_level_elite">Elite / Podium Utama (&gt; 120 km/minggu)</option>
                                     </select>
                                 </div>
                             </div>
@@ -3537,24 +3537,24 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-[11px] text-text-secondary mb-1" data-i18n="settings_coach_engine">Default AI Coach Engine</label>
-                                    <select id="settings-coach-tier" class="flat-input text-xs" onchange="selectCoachTier(this.value)">
-                                        <option value="pemula">Pemula (Free) - Deterministic Offline</option>
-                                        <option value="free" selected>Coach (Free) - Google Gemini 3.8 Flash</option>
-                                        <option value="pro">Coach (Pro) - Google Gemini 3.8 Flash Pro</option>
+                                    <select id="settings-coach-tier" class="flat-input text-xs font-sans" onchange="selectCoachTier(this.value)">
+                                        <option value="pemula" data-i18n="coach_tier_pemula">Pemula (Gratis) - Deterministik Offline</option>
+                                        <option value="free" selected data-i18n="coach_tier_free">Coach (Gratis) - Google Gemini 3.8 Flash</option>
+                                        <option value="pro" data-i18n="coach_tier_pro">Coach (Pro) - Google Gemini 3.8 Flash Pro</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_units_label">Measurement System</label>
-                                    <select id="settings-units" class="flat-input text-xs">
-                                        <option value="metric" selected>Metric (km, kg, pace min/km, °C)</option>
-                                        <option value="imperial">Imperial (miles, lbs, pace min/mi, °F)</option>
+                                    <select id="settings-units" class="flat-input text-xs font-sans">
+                                        <option value="metric" selected data-i18n="units_metric">Metrik (km, kg, pace min/km, °C)</option>
+                                        <option value="imperial" data-i18n="units_imperial">Imperial (mil, lbs, pace min/mil, °F)</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_theme_label">Color Theme</label>
-                                    <select id="settings-theme" class="flat-input text-xs" onchange="applyTheme(this.value)">
-                                        <option value="light">Flat Light (Pure Paper)</option>
-                                        <option value="dark">Flat Dark (Charcoal 2D)</option>
+                                    <select id="settings-theme" class="flat-input text-xs font-sans" onchange="applyTheme(this.value)">
+                                        <option value="light" data-i18n="theme_light">Mode Terang</option>
+                                        <option value="dark" data-i18n="theme_dark">Mode Gelap</option>
                                     </select>
                                 </div>
                                 <div>
@@ -6017,7 +6017,18 @@
                 settings_tier_level_label: "Tingkat Atletik Saat Ini",
                 footer_telemetry_modeling: "Pemodelan Telemetri",
                 footer_pro_sub: "Langganan Pro",
-                footer_api_health: "Status Server & API"
+                footer_api_health: "Status Server & API",
+                theme_light: "Mode Terang",
+                theme_dark: "Mode Gelap",
+                units_metric: "Metrik (km, kg, pace min/km, °C)",
+                units_imperial: "Imperial (mil, lbs, pace min/mil, °F)",
+                coach_tier_pemula: "Pemula (Gratis) - Deterministik Offline",
+                coach_tier_free: "Coach (Gratis) - Google Gemini 3.8 Flash",
+                coach_tier_pro: "Coach (Pro) - Google Gemini 3.8 Flash Pro",
+                fitness_level_beginner: "Pemula / Fondasi Dasar (< 30 km/minggu)",
+                fitness_level_intermediate: "Menengah Kompetitif (30-70 km/minggu)",
+                fitness_level_advanced: "Mahir / Sub-Elite (70-120 km/minggu)",
+                fitness_level_elite: "Elite / Podium Utama (> 120 km/minggu)"
             },
             en: {
                 nav_dashboard: "Dashboard",
@@ -6267,7 +6278,18 @@
                 settings_tier_level_label: "Current Athletic Tier / Level",
                 footer_telemetry_modeling: "Telemetry Modeling",
                 footer_pro_sub: "Pro Subscription",
-                footer_api_health: "API Health Status"
+                footer_api_health: "API Health Status",
+                theme_light: "Light Mode",
+                theme_dark: "Dark Mode",
+                units_metric: "Metric (km, kg, pace min/km, °C)",
+                units_imperial: "Imperial (miles, lbs, pace min/mi, °F)",
+                coach_tier_pemula: "Pemula (Free) - Deterministic Offline",
+                coach_tier_free: "Coach (Free) - Google Gemini 3.8 Flash",
+                coach_tier_pro: "Coach (Pro) - Google Gemini 3.8 Flash Pro",
+                fitness_level_beginner: "Beginner / Base Builder (< 30 km/wk)",
+                fitness_level_intermediate: "Intermediate Competitive (30-70 km/wk)",
+                fitness_level_advanced: "Advanced Sub-Elite (70-120 km/wk)",
+                fitness_level_elite: "Elite / Masters Podium (> 120 km/wk)"
             }
         };
 
