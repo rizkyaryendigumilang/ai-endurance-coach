@@ -455,5 +455,29 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertEqual(err.get("feature"), "garmin_auto_ingest")
         self.assertIn("BYOK", str(err.get("options")))
 
+    def test_22_run_analyzer_form_photo_and_video(self):
+        """Verify Run Analyzer vision endpoint accepts photo (JPG/PNG) and returns biomechanics metrics."""
+        import io
+        import cv2
+        import numpy as np
+
+        # 1. Create a dummy test image
+        img = np.zeros((100, 100, 3), dtype=np.uint8)
+        _, img_buf = cv2.imencode(".jpg", img)
+        file_payload = {"file": ("runner_pose.jpg", io.BytesIO(img_buf.tobytes()), "image/jpeg")}
+
+        res = self.client.post("/api/v1/analysis/run-form", files=file_payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("metrics", data)
+        self.assertIn("score", data["metrics"])
+        self.assertIn("knee_angle", data["metrics"])
+        self.assertIn("lean_angle", data["metrics"])
+
+        # 2. Reject non-media file
+        bad_payload = {"file": ("document.txt", io.BytesIO(b"Hello world"), "text/plain")}
+        bad_res = self.client.post("/api/v1/analysis/run-form", files=bad_payload)
+        self.assertEqual(bad_res.status_code, 400)
+
 if __name__ == "__main__":
     unittest.main()
