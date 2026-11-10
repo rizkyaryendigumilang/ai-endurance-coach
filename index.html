@@ -2857,6 +2857,163 @@
                 <!-- SUB-TAB 1: 31-WEEK MACRO PERIODIZATION ROADMAP (STAGE 1)     -->
                 <!-- ════════════════════════════════════════════════════════════ -->
                 <div id="subtab-view-macro" class="space-y-6">
+
+                    <!-- ══════════════════════════════════════════════════════ -->
+                    <!-- TARGET RACE & COURSE GPX TERRAIN INTELLIGENCE STUDIO   -->
+                    <!-- ══════════════════════════════════════════════════════ -->
+                    <div class="flat-card border-2 border-border p-5 bg-surface space-y-5 shadow-xs">
+                        <!-- Top Header with Badge & AI Tag -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 bg-tertiary rounded-xs"></span>
+                                    <h3 class="font-display font-extrabold text-lg text-text-primary">Target Lomba &amp; Profil Medan Lintasan</h3>
+                                    <span class="flat-badge border-flat-green text-flat-green text-[10px] font-mono">AI TERRAIN ENGINE</span>
+                                </div>
+                                <p class="text-xs text-text-secondary font-mono">
+                                    Masukkan nama event, tanggal dan jam lomba dengan detail untuk menghitung sisa hari, serta unggah file rute GPX agar AI Pelatih memetakan profil tanjakan dan strategi nutrisi.
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="document.getElementById('race-gpx-file-input').click()" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono font-bold inline-flex items-center gap-1.5 text-tertiary border-tertiary/40 hover:bg-tertiary/10">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                    <span>UNGGAH GPX RUTE</span>
+                                </button>
+                                <input type="file" id="race-gpx-file-input" accept=".gpx,.xml,.fit,.tcx" class="hidden" onchange="handleRaceGpxUpload(event)">
+                            </div>
+                        </div>
+
+                        <!-- 1. Input Event & Detail Waktu -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-surface-subtle p-3.5 border border-border rounded-xl">
+                            <div class="md:col-span-1">
+                                <label class="block text-[11px] font-mono text-text-secondary mb-1">Nama Event / Lomba</label>
+                                <input type="text" id="target-race-input-name" class="flat-input text-xs font-bold" placeholder="Maybank Marathon Bali 2027" value="Maybank Marathon Bali 2027" oninput="updateTargetRaceCountdown()">
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-[11px] font-mono text-text-secondary mb-1">Tanggal &amp; Jam Lomba (Detail)</label>
+                                <input type="datetime-local" id="target-race-input-datetime" class="flat-input text-xs font-mono" value="2027-08-29T05:00" oninput="updateTargetRaceCountdown()">
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-[11px] font-mono text-text-secondary mb-1">Target Waktu (JJ:MM:DD)</label>
+                                <input type="text" id="target-race-input-time" class="flat-input text-xs font-mono font-bold text-tertiary" placeholder="05:30:00" value="05:30:00" oninput="calculateRaceTargetPace()">
+                            </div>
+                            <div class="md:col-span-1 flex items-end gap-2">
+                                <div class="flex-1">
+                                    <label class="block text-[11px] font-mono text-text-secondary mb-1">Target Pace</label>
+                                    <input type="text" id="target-race-input-pace" readonly class="flat-input text-xs font-mono bg-surface font-bold text-flat-green" value="07:49 /km">
+                                </div>
+                                <button type="button" onclick="saveRaceTargetFromSchedule()" class="btn-flat-primary py-2 px-3 text-xs font-mono font-bold shrink-0">
+                                    SIMPAN
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Dynamic Real-time Countdown Cards (Apple / Strava High-Density HUD) -->
+                        <div class="space-y-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs font-mono">
+                                <span class="text-text-secondary flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-flat-green animate-pulse"></span>
+                                    <span>Hitung Mundur Waktu Lomba (Real-time Live Ticking)</span>
+                                </span>
+                                <span id="target-race-status-date" class="font-bold text-text-primary">Minggu, 29 Agustus 2027 • Flag-off 05:00 WIB</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="p-3 bg-surface-subtle border-2 border-border text-center rounded-xl space-y-0.5">
+                                    <div class="text-[10px] font-mono uppercase text-text-secondary tracking-wider">HARI</div>
+                                    <div id="race-cd-days" class="font-mono text-2xl sm:text-3xl font-extrabold text-text-primary">292</div>
+                                    <div id="race-cd-weeks-sub" class="text-[9px] font-mono text-text-secondary">41 Minggu Persiapan</div>
+                                </div>
+                                <div class="p-3 bg-surface-subtle border-2 border-border text-center rounded-xl space-y-0.5">
+                                    <div class="text-[10px] font-mono uppercase text-text-secondary tracking-wider">JAM</div>
+                                    <div id="race-cd-hours" class="font-mono text-2xl sm:text-3xl font-extrabold text-text-primary">14</div>
+                                    <div class="text-[9px] font-mono text-text-secondary">Jam Tersisa</div>
+                                </div>
+                                <div class="p-3 bg-surface-subtle border-2 border-border text-center rounded-xl space-y-0.5">
+                                    <div class="text-[10px] font-mono uppercase text-text-secondary tracking-wider">MENIT</div>
+                                    <div id="race-cd-mins" class="font-mono text-2xl sm:text-3xl font-extrabold text-text-primary">28</div>
+                                    <div class="text-[9px] font-mono text-text-secondary">Menit Menuju Lomba</div>
+                                </div>
+                                <div class="p-3 bg-surface-subtle border-2 border-tertiary/40 bg-tertiary/5 text-center rounded-xl space-y-0.5">
+                                    <div class="text-[10px] font-mono uppercase text-tertiary font-bold tracking-wider">DETIK</div>
+                                    <div id="race-cd-secs" class="font-mono text-2xl sm:text-3xl font-extrabold text-tertiary">45</div>
+                                    <div class="text-[9px] font-mono text-tertiary">Detik Berjalan</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Course GPX Intelligence Panel (Interactive Leaflet Map + Terrain Analysis) -->
+                        <div id="race-course-gpx-panel" class="space-y-4 pt-2 border-t border-border">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-flat-orange"></span>
+                                    <h4 class="font-display font-bold text-sm text-text-primary">Peta Rute &amp; Analisis Medan Lintasan GPX</h4>
+                                    <span id="race-gpx-filename-badge" class="font-mono text-[10px] px-2 py-0.5 rounded-full border border-border text-text-secondary bg-surface-subtle">Maybank_Marathon_Bali_42K.gpx</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 font-mono text-xs">
+                                    <button type="button" onclick="changeRaceCourseMapLayer('dark')" id="btn-race-layer-dark" class="px-2 py-0.5 rounded bg-surface border border-border text-text-primary font-bold">Gelap</button>
+                                    <button type="button" onclick="changeRaceCourseMapLayer('outdoor')" id="btn-race-layer-outdoor" class="px-2 py-0.5 rounded bg-surface border border-border text-text-secondary">Outdoor</button>
+                                    <button type="button" onclick="changeRaceCourseMapLayer('satellite')" id="btn-race-layer-sat" class="px-2 py-0.5 rounded bg-surface border border-border text-text-secondary">Satelit</button>
+                                    <button type="button" onclick="recenterRaceCourseMap()" class="px-2 py-0.5 rounded bg-surface border border-border text-text-secondary" title="Recenter Rute">⌖</button>
+                                </div>
+                            </div>
+
+                            <!-- Leaflet Map Container for GPX Course -->
+                            <div class="relative w-full h-64 sm:h-72 rounded-xl border-2 border-border overflow-hidden bg-[#111] shadow-inner">
+                                <div id="race-course-map" class="w-full h-full z-10"></div>
+                                <div class="absolute bottom-2 left-2 z-20 bg-surface/90 backdrop-blur-md border border-border px-2.5 py-1 rounded text-[11px] font-mono text-text-primary shadow-xs flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
+                                    <span id="race-course-map-hud-dist">42.20 km</span>
+                                    <span class="text-border">•</span>
+                                    <span id="race-course-map-hud-elev">+284.0m Elevasi</span>
+                                </div>
+                            </div>
+
+                            <!-- Terrain Metrics Grid -->
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 font-mono text-xs">
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Total Jarak GPX</span>
+                                    <strong id="race-gpx-total-dist" class="text-sm font-bold text-text-primary">42.20 km</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Kenaikan Elevasi</span>
+                                    <strong id="race-gpx-elev-gain" class="text-sm font-bold text-flat-amber">+284.0 m</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Penurunan Elevasi</span>
+                                    <strong id="race-gpx-elev-loss" class="text-sm font-bold text-flat-green">-281.0 m</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary block">Ketinggian Min/Maks</span>
+                                    <strong id="race-gpx-elev-range" class="text-sm font-bold text-text-primary">12 / 148 m dpl</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg col-span-2 sm:col-span-1">
+                                    <span class="text-[10px] text-text-secondary block">Karakter Medan</span>
+                                    <strong id="race-gpx-terrain-type" class="text-xs font-bold text-tertiary">72% Datar • 16% Tanjakan</strong>
+                                </div>
+                            </div>
+
+                            <!-- AI Terrain Insights & Fueling Strategy Bar -->
+                            <div class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2.5">
+                                <div class="flex items-center gap-1.5 text-xs font-semibold text-tertiary">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <span>AI Pelatih: Analisis Medan Tanjakan &amp; Strategi Minetti GAP</span>
+                                </div>
+                                <p id="race-gpx-ai-insight" class="text-xs text-text-secondary leading-relaxed font-sans">
+                                    Terdeteksi segmen tanjakan utama pada KM 16.5 – 22.0 (Gradien rata-rata +3.6%). Rekomendasi Pacing: Turunkan pace 15–20 dtk/km pada tanjakan ini agar detak jantung tetap berada di Zone 3 dan tidak memicu penumpukan asam laktat dini. Konsumsi Energy Gel ke-2 di KM 14 sebelum memasuki tanjakan.
+                                </p>
+                                <div class="pt-2 border-t border-border flex flex-wrap items-center gap-2 text-[11px] font-mono">
+                                    <span class="text-text-secondary">Jadwal Energy Gel:</span>
+                                    <span class="px-2 py-0.5 rounded bg-surface border border-border text-text-primary font-bold">KM 7</span>
+                                    <span class="px-2 py-0.5 rounded bg-surface border border-flat-amber text-flat-amber font-bold">KM 14 (Pra-Tanjakan)</span>
+                                    <span class="px-2 py-0.5 rounded bg-surface border border-border text-text-primary font-bold">KM 21</span>
+                                    <span class="px-2 py-0.5 rounded bg-surface border border-border text-text-primary font-bold">KM 28</span>
+                                    <span class="px-2 py-0.5 rounded bg-surface border border-border text-text-primary font-bold">KM 35</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                     <!-- Macro Overview Header Card -->
                     <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
@@ -5202,6 +5359,23 @@
             selectCoachTier(appState.selectedCoachTier, false);
             switchWorkstationTab('cockpit');
             setupAccessibleModals();
+
+            // Hydrate Target Race Countdown & GPX Course Inputs
+            try {
+                const targetCfg = getTargetRaceConfig();
+                const rName = document.getElementById('target-race-input-name');
+                const rDt = document.getElementById('target-race-input-datetime');
+                const rTime = document.getElementById('target-race-input-time');
+                const rPace = document.getElementById('target-race-input-pace');
+                if (rName && targetCfg.event_name) rName.value = targetCfg.event_name;
+                if (rDt && targetCfg.event_datetime) rDt.value = targetCfg.event_datetime;
+                if (rTime && targetCfg.target_time) rTime.value = targetCfg.target_time;
+                if (rPace && targetCfg.target_pace) rPace.value = targetCfg.target_pace;
+                updateTargetRaceUI();
+                updateTargetRaceCountdown();
+            } catch (e) {
+                console.warn('[Goalie] Race target init warning:', e);
+            }
             
             if (tokenParam) {
                 toast.success('Signed In', `Authenticated via ${providerParam ? providerParam.toUpperCase() : 'Social ID'}`);
@@ -5394,6 +5568,72 @@
         }
 
         // Tab Switcher for Workstation
+        function switchScheduleSubtab(subtabName) {
+
+            const subtabs = ['macro', 'weekly', 'strength', 'splits'];
+
+            subtabs.forEach(st => {
+
+                const viewEl = document.getElementById(`subtab-view-${st}`);
+
+                const btnEl = document.getElementById(`subtab-btn-${st}`);
+
+                if (viewEl) {
+
+                    if (st === subtabName) {
+
+                        viewEl.classList.remove('hidden');
+
+                    } else {
+
+                        viewEl.classList.add('hidden');
+
+                    }
+
+                }
+
+                if (btnEl) {
+
+                    if (st === subtabName) {
+
+                        btnEl.className = 'schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
+
+                        btnEl.setAttribute('aria-selected', 'true');
+
+                    } else {
+
+                        btnEl.className = 'schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
+
+                        btnEl.setAttribute('aria-selected', 'false');
+
+                    }
+
+                }
+
+            });
+
+
+
+            if (subtabName === 'macro') {
+
+                if (typeof updateTargetRaceCountdown === 'function') updateTargetRaceCountdown();
+
+                if (typeof renderRaceCourseMap === 'function') {
+
+                    setTimeout(() => {
+
+                        renderRaceCourseMap(currentRaceCourseCoords);
+
+                    }, 200);
+
+                }
+
+            }
+
+        }
+
+
+
         function switchWorkstationTab(tabName) {
             const tabs = ['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'];
             tabs.forEach(t => {
@@ -5474,6 +5714,14 @@
                 loadWeeklyCalendar(currentCalendarWeekOffset);
                 if (typeof loadMarathonMacroPlan === 'function' && !currentMarathonPlanData) {
                     loadMarathonMacroPlan();
+                }
+                if (typeof updateTargetRaceCountdown === 'function') {
+                    updateTargetRaceCountdown();
+                }
+                if (typeof renderRaceCourseMap === 'function') {
+                    setTimeout(() => {
+                        renderRaceCourseMap(currentRaceCourseCoords);
+                    }, 200);
                 }
             } else if (tabName === 'integrations') {
                 checkGarminStatus();
@@ -5666,6 +5914,383 @@
 
         // Initialize target race countdown interval (every 60s)
         setInterval(updateTargetRaceUI, 60000);
+
+        // ══════════════════════════════════════════════════════════════
+        // RACE TARGET COUNTDOWN & GPX ELEVATION INTELLIGENCE ENGINE
+        // ══════════════════════════════════════════════════════════════
+        let raceCourseMapInstance = null;
+        let raceCourseMapTileLayer = null;
+        let raceCourseMapPolyline = null;
+        let raceCourseMapGlow = null;
+        let raceCourseMapMarkers = [];
+        let activeRaceCourseStyle = 'dark';
+        let currentRaceCourseCoords = null;
+
+        // Maybank Marathon Bali 42.2K Sample Polyline Coordinates (Gianyar - Lebih - Pantai Siyut loop)
+        const DEFAULT_BALI_MARATHON_COORDS = [
+            [-8.5833, 115.3400], [-8.5815, 115.3432], [-8.5790, 115.3465], [-8.5760, 115.3502],
+            [-8.5720, 115.3530], [-8.5675, 115.3555], [-8.5620, 115.3570], [-8.5570, 115.3582],
+            [-8.5520, 115.3590], [-8.5470, 115.3602], [-8.5420, 115.3615], [-8.5370, 115.3628],
+            [-8.5320, 115.3635], [-8.5280, 115.3640], [-8.5240, 115.3638], [-8.5200, 115.3625],
+            [-8.5160, 115.3600], [-8.5130, 115.3565], [-8.5110, 115.3520], [-8.5100, 115.3470],
+            [-8.5105, 115.3420], [-8.5125, 115.3370], [-8.5160, 115.3325], [-8.5210, 115.3285],
+            [-8.5265, 115.3255], [-8.5320, 115.3235], [-8.5380, 115.3225], [-8.5440, 115.3228],
+            [-8.5500, 115.3240], [-8.5560, 115.3262], [-8.5620, 115.3290], [-8.5680, 115.3325],
+            [-8.5740, 115.3365], [-8.5790, 115.3385], [-8.5833, 115.3400]
+        ];
+
+        function calculateRaceTargetPace() {
+            const timeInput = document.getElementById('target-race-input-time');
+            const paceInput = document.getElementById('target-race-input-pace');
+            if (!timeInput || !paceInput) return;
+
+            const timeStr = timeInput.value.trim() || '05:30:00';
+            const parts = timeStr.split(':').map(Number);
+            let sec = 19800;
+            if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+                sec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+            } else if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                sec = parts[0] * 60 + parts[1];
+            }
+
+            const paceSecKm = sec / 42.195;
+            const pm = Math.floor(paceSecKm / 60);
+            const ps = Math.round(paceSecKm % 60);
+            const paceStr = `${pm < 10 ? '0' : ''}${pm}:${ps < 10 ? '0' : ''}${ps} /km`;
+            paceInput.value = paceStr;
+        }
+
+        function updateTargetRaceCountdown() {
+            const nameInput = document.getElementById('target-race-input-name');
+            const dtInput = document.getElementById('target-race-input-datetime');
+            const daysEl = document.getElementById('race-cd-days');
+            const hoursEl = document.getElementById('race-cd-hours');
+            const minsEl = document.getElementById('race-cd-mins');
+            const secsEl = document.getElementById('race-cd-secs');
+            const statusDateEl = document.getElementById('target-race-status-date');
+            const weeksSubEl = document.getElementById('race-cd-weeks-sub');
+
+            if (!dtInput || !dtInput.value) return;
+
+            const targetDt = new Date(dtInput.value);
+            const now = new Date();
+            const diffMs = targetDt - now;
+
+            if (diffMs > 0) {
+                const totalSec = Math.floor(diffMs / 1000);
+                const days = Math.floor(totalSec / 86400);
+                const hours = Math.floor((totalSec % 86400) / 3600);
+                const mins = Math.floor((totalSec % 3600) / 60);
+                const secs = Math.floor(totalSec % 60);
+                const weeks = Math.round(days / 7);
+
+                if (daysEl) daysEl.textContent = days;
+                if (hoursEl) hoursEl.textContent = hours;
+                if (minsEl) minsEl.textContent = mins;
+                if (secsEl) secsEl.textContent = secs;
+                if (weeksSubEl) weeksSubEl.textContent = `${weeks} Minggu Persiapan`;
+            } else {
+                if (daysEl) daysEl.textContent = '0';
+                if (hoursEl) hoursEl.textContent = '0';
+                if (minsEl) minsEl.textContent = '0';
+                if (secsEl) secsEl.textContent = '0';
+                if (weeksSubEl) weeksSubEl.textContent = 'Lomba Selesai';
+            }
+
+            if (statusDateEl && !isNaN(targetDt.getTime())) {
+                const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const optionsTime = { hour: '2-digit', minute: '2-digit' };
+                const dayStr = targetDt.toLocaleDateString('id-ID', optionsDate);
+                const timeStr = targetDt.toLocaleTimeString('id-ID', optionsTime);
+                const eventName = nameInput ? nameInput.value.trim() : 'Target Lomba';
+                statusDateEl.textContent = `${dayStr} • Flag-off ${timeStr} WIB (${eventName})`;
+            }
+        }
+
+        function saveRaceTargetFromSchedule() {
+            const nameInput = document.getElementById('target-race-input-name');
+            const dtInput = document.getElementById('target-race-input-datetime');
+            const timeInput = document.getElementById('target-race-input-time');
+            const paceInput = document.getElementById('target-race-input-pace');
+
+            if (!nameInput || !dtInput || !dtInput.value) {
+                toast.error('Data Kurang Lengkap', 'Silakan masukkan nama event dan tanggal jam pelaksanaan.');
+                return;
+            }
+
+            const cfg = {
+                event_name: nameInput.value.trim(),
+                event_datetime: dtInput.value,
+                target_time: timeInput ? timeInput.value.trim() : '05:30:00',
+                target_pace: paceInput ? paceInput.value.trim() : '07:49 /km'
+            };
+
+            saveTargetRaceConfig(cfg);
+
+            fetch(`${API_BASE}/training/race-course/target`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(cfg)
+            }).then(() => {
+                toast.success('Target Lomba Disimpan', `Target event ${cfg.event_name} berhasil disimpan dan disinkronkan ke AI Pelatih!`);
+            }).catch(err => {
+                console.warn('[Goalie] Save race target error:', err);
+                toast.success('Target Tersimpan Lokal', `Target event ${cfg.event_name} tersimpan di peramban.`);
+            });
+
+            updateTargetRaceUI();
+            updateTargetRaceCountdown();
+        }
+
+        function renderRaceCourseMap(coords, metrics = {}) {
+            const mapContainer = document.getElementById('race-course-map');
+            if (!mapContainer || typeof L === 'undefined') return;
+
+            const routeCoords = (coords && coords.length > 1) ? coords : DEFAULT_BALI_MARATHON_COORDS;
+            currentRaceCourseCoords = routeCoords;
+
+            const distHud = document.getElementById('race-course-map-hud-dist');
+            const elevHud = document.getElementById('race-course-map-hud-elev');
+            if (distHud && metrics.distance_km) distHud.textContent = `${metrics.distance_km} km`;
+            if (elevHud && metrics.elevation_gain_m) elevHud.textContent = `+${metrics.elevation_gain_m}m Elevasi`;
+
+            if (!raceCourseMapInstance) {
+                raceCourseMapInstance = L.map('race-course-map', {
+                    zoomControl: true,
+                    attributionControl: false,
+                    scrollWheelZoom: false,
+                    dragging: true
+                });
+                applyRaceCourseTileLayer(activeRaceCourseStyle);
+            }
+
+            if (raceCourseMapGlow) {
+                raceCourseMapInstance.removeLayer(raceCourseMapGlow);
+                raceCourseMapGlow = null;
+            }
+            if (raceCourseMapPolyline) {
+                raceCourseMapInstance.removeLayer(raceCourseMapPolyline);
+                raceCourseMapPolyline = null;
+            }
+            if (raceCourseMapMarkers && raceCourseMapMarkers.length > 0) {
+                raceCourseMapMarkers.forEach(m => raceCourseMapInstance.removeLayer(m));
+                raceCourseMapMarkers = [];
+            }
+
+            raceCourseMapGlow = L.polyline(routeCoords, {
+                color: '#000000',
+                weight: 6,
+                opacity: 0.8,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }).addTo(raceCourseMapInstance);
+
+            raceCourseMapPolyline = L.polyline(routeCoords, {
+                color: '#FC4C02',
+                weight: 3.5,
+                opacity: 0.95,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }).addTo(raceCourseMapInstance);
+
+            const startPt = routeCoords[0];
+            const finishPt = routeCoords[routeCoords.length - 1];
+
+            const startIcon = L.divIcon({
+                className: 'garmin-map-pin garmin-pin-start',
+                html: '<div class="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-md"></div>',
+                iconSize: [14, 14],
+                iconAnchor: [7, 7]
+            });
+            const finishIcon = L.divIcon({
+                className: 'garmin-map-pin garmin-pin-finish',
+                html: '<div class="w-4 h-4 rounded-full bg-white border-2 border-black flex items-center justify-center text-[9px] shadow-md font-bold">🏁</div>',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8]
+            });
+
+            const mStart = L.marker(startPt, { icon: startIcon }).addTo(raceCourseMapInstance);
+            const mFinish = L.marker(finishPt, { icon: finishIcon }).addTo(raceCourseMapInstance);
+            raceCourseMapMarkers.push(mStart, mFinish);
+
+            raceCourseMapInstance.fitBounds(raceCourseMapPolyline.getBounds(), { padding: [25, 25] });
+            setTimeout(() => {
+                if (raceCourseMapInstance) raceCourseMapInstance.invalidateSize();
+            }, 150);
+        }
+
+        function applyRaceCourseTileLayer(style) {
+            if (!raceCourseMapInstance) return;
+            if (raceCourseMapTileLayer) {
+                raceCourseMapInstance.removeLayer(raceCourseMapTileLayer);
+            }
+
+            activeRaceCourseStyle = style;
+            let tileUrl, attribution;
+
+            if (style === 'outdoor') {
+                tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                attribution = '&copy; OpenStreetMap';
+            } else if (style === 'satellite') {
+                tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+                attribution = '&copy; Esri World Imagery';
+            } else {
+                tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+                attribution = '&copy; CartoDB Dark';
+            }
+
+            raceCourseMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 19, attribution }).addTo(raceCourseMapInstance);
+
+            ['dark', 'outdoor', 'sat'].forEach(s => {
+                const btn = document.getElementById(`btn-race-layer-${s}`);
+                if (btn) {
+                    const match = (s === 'sat' && style === 'satellite') || s === style;
+                    btn.classList.toggle('font-bold', match);
+                    btn.classList.toggle('text-text-primary', match);
+                    btn.classList.toggle('text-text-secondary', !match);
+                }
+            });
+        }
+
+        function changeRaceCourseMapLayer(style) {
+            applyRaceCourseTileLayer(style);
+        }
+
+        function recenterRaceCourseMap() {
+            if (raceCourseMapInstance && raceCourseMapPolyline) {
+                raceCourseMapInstance.fitBounds(raceCourseMapPolyline.getBounds(), { padding: [25, 25] });
+            }
+        }
+
+        function haversineDistanceKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function handleRaceGpxUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const loadToast = toast.loading('Menganalisis GPX', `Membaca rute medan ${file.name}...`);
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(content, 'text/xml');
+                    const trkpts = xml.querySelectorAll('trkpt');
+
+                    if (trkpts.length === 0) {
+                        toast.error('File Tidak Valid', 'Tidak ditemukan trackpoint koordinat dalam file GPX ini.');
+                        return;
+                    }
+
+                    const coords = [];
+                    const elevations = [];
+                    let prevCoord = null;
+                    let totalDistKm = 0.0;
+                    let elevGain = 0.0;
+                    let elevLoss = 0.0;
+
+                    trkpts.forEach((pt) => {
+                        const lat = parseFloat(pt.getAttribute('lat'));
+                        const lon = parseFloat(pt.getAttribute('lon'));
+                        const eleNode = pt.querySelector('ele');
+                        const ele = eleNode ? parseFloat(eleNode.textContent) : 0.0;
+
+                        if (!isNaN(lat) && !isNaN(lon)) {
+                            coords.push([lat, lon]);
+                            elevations.push(ele);
+
+                            if (prevCoord) {
+                                totalDistKm += haversineDistanceKm(prevCoord[0], prevCoord[1], lat, lon);
+                            }
+                            prevCoord = [lat, lon];
+                        }
+                    });
+
+                    for (let i = 1; i < elevations.length; i++) {
+                        const diff = elevations[i] - elevations[i - 1];
+                        if (diff > 0) elevGain += diff;
+                        else if (diff < 0) elevLoss += Math.abs(diff);
+                    }
+
+                    const minEle = elevations.length ? Math.min(...elevations).toFixed(0) : '0';
+                    const maxEle = elevations.length ? Math.max(...elevations).toFixed(0) : '0';
+                    const distFormatted = totalDistKm.toFixed(2);
+                    const gainFormatted = elevGain.toFixed(1);
+                    const lossFormatted = elevLoss.toFixed(1);
+
+                    const badgeEl = document.getElementById('race-gpx-filename-badge');
+                    const distEl = document.getElementById('race-gpx-total-dist');
+                    const gainEl = document.getElementById('race-gpx-elev-gain');
+                    const lossEl = document.getElementById('race-gpx-elev-loss');
+                    const rangeEl = document.getElementById('race-gpx-elev-range');
+                    const terrainEl = document.getElementById('race-gpx-terrain-type');
+                    const insightEl = document.getElementById('race-gpx-ai-insight');
+
+                    if (badgeEl) badgeEl.textContent = file.name;
+                    if (distEl) distEl.textContent = `${distFormatted} km`;
+                    if (gainEl) gainEl.textContent = `+${gainFormatted} m`;
+                    if (lossEl) lossEl.textContent = `-${lossFormatted} m`;
+                    if (rangeEl) rangeEl.textContent = `${minEle} / ${maxEle} m dpl`;
+                    if (terrainEl) terrainEl.textContent = `Elevasi +${gainFormatted}m • Kontur Nyata`;
+
+                    if (insightEl) {
+                        insightEl.innerHTML = `<strong>AI Pelatih:</strong> File <em>${escapeHTML(file.name)}</em> berhasil dipetakan. Total jarak ${distFormatted} km dengan elevasi +${gainFormatted}m / -${lossFormatted}m. Rekomendasi: Waspadai akumulasi tanjakan pada paruh kedua rute dan pertahankan HR di Zone 2-3 untuk mencegah kram otot.`;
+                    }
+
+                    const step = Math.max(1, Math.floor(coords.length / 500));
+                    const sampledCoords = coords.filter((_, idx) => idx % step === 0);
+                    renderRaceCourseMap(sampledCoords, {
+                        distance_km: distFormatted,
+                        elevation_gain_m: gainFormatted
+                    });
+
+                    // Send to backend
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const nameInput = document.getElementById('target-race-input-name');
+                    const dtInput = document.getElementById('target-race-input-datetime');
+                    const timeInput = document.getElementById('target-race-input-time');
+                    const paceInput = document.getElementById('target-race-input-pace');
+
+                    if (nameInput) formData.append('event_name', nameInput.value.trim());
+                    if (dtInput) formData.append('event_datetime', dtInput.value);
+                    if (timeInput) formData.append('target_time', timeInput.value.trim());
+                    if (paceInput) formData.append('target_pace', paceInput.value.trim());
+
+                    fetch(`${API_BASE}/training/race-course/upload-gpx`, {
+                        method: 'POST',
+                        headers: {
+                            ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                        },
+                        body: formData
+                    }).then(res => res.json()).then(data => {
+                        toast.success('Rute GPX Terpetakan', `File ${file.name} (${distFormatted} km) siap digunakan sebagai konteks AI Pelatih!`);
+                    }).catch(err => {
+                        console.warn('[Goalie] Upload GPX backend sync:', err);
+                        toast.success('Rute GPX Terpetakan Lokal', `Rute ${file.name} berhasil dimuat di antarmuka.`);
+                    });
+
+                } catch (err) {
+                    console.error('[Goalie] GPX parse error:', err);
+                    toast.error('Gagal Membaca GPX', 'Terjadi kesalahan saat mem-parsing file koordinat GPX.');
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Real-time ticking interval for second-by-second countdown
+        setInterval(updateTargetRaceCountdown, 1000);
 
 
         // GOALIE FEED & QUICK AI ASSISTANT HELPERS

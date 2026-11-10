@@ -85,11 +85,116 @@ def parse_gpx(file_bytes: bytes) -> Dict[str, Any]:
     if duration_sec <= 0:
         duration_sec = len(points) # fallback approx 1s interval
 
-    # Calculate elevation gain
+    # Calculate elevation gain & loss
     elev_gain = 0.0
+    elev_loss = 0.0
     for i in range(1, len(elevations)):
         diff = elevations[i] - elevations[i-1]
-        if diff > 0: elev_gain += diff
+        if diff > 0:
+            elev_gain += diff
+        elif diff < 0:
+            elev_loss += abs(diff)
+
+    min_ele = round(min(elevations), 1) if elevations else 0.0
+    max_ele = round(max(elevations), 1) if elevations else 0.0
+
+    # Downsample points for Leaflet map (max 600 points)
+    step = max(1, len(points) // 600)
+    sampled_points = [[round(p['lat'], 6), round(p['lon'], 6)] for p in points[::step]]
+    if points and sampled_points and sampled_points[-1] != [round(points[-1]['lat'], 6), round(points[-1]['lon'], 6)]:
+        sampled_points.append([round(points[-1]['lat'], 6), round(points[-1]['lon'], 6)])
+
+    # Sample elevation profile across distance
+    cum_dist = 0.0
+    ele_profile = []
+    p_prev = None
+    step_ele = max(1, len(points) // 100)
+    for idx, p in enumerate(points):
+        if p_prev is not None:
+            cum_dist += haversine_km(p_prev['lat'], p_prev['lon'], p['lat'], p['lon'])
+        p_prev = p
+        if idx % step_ele == 0 or idx == len(points) - 1:
+            ele_profile.append({
+                "km": round(cum_dist, 2),
+                "ele": round(p['ele'], 1)
+            })
+
+    # Detect climb segments & terrain breakdown
+    flat_dist = 0.0
+    climb_dist = 0.0
+    descent_dist = 0.0
+    climb_segments = []
+    in_climb = False
+    climb_start_km = 0.0
+    climb_start_ele = 0.0
+    c_prev = None
+    c_dist = 0.0
+
+    for p in points:
+        if c_prev is not None:
+            d_km = haversine_km(c_prev['lat'], c_prev['lon'], p['lat'], p['lon'])
+            c_dist += d_km
+            if d_km > 0.001:
+                grade_pct = ((p['ele'] - c_prev['ele']) / (d_km * 1000.0)) * 100.0
+                if grade_pct >= 2.0:
+                    climb_dist += d_km
+                    if not in_climb:
+                        in_climb = True
+                        climb_start_km = c_dist
+                        climb_start_ele = c_prev['ele']
+                elif grade_pct <= -2.0:
+                    descent_dist += d_km
+                    if in_climb and (c_dist - climb_start_km) >= 0.4:
+                        climb_gain = round(p['ele'] - climb_start_ele, 1)
+                        if climb_gain >= 10.0:
+                            climb_segments.append({
+                                "start_km": round(climb_start_km, 1),
+                                "end_km": round(c_dist, 1),
+                                "gain_m": climb_gain,
+                                "avg_grade": round((climb_gain / ((c_dist - climb_start_km) * 1000.0)) * 100.0, 1)
+                            })
+                    in_climb = False
+                else:
+                    flat_dist += d_km
+                    if in_climb and (c_dist - climb_start_km) >= 0.5:
+                        climb_gain = round(p['ele'] - climb_start_ele, 1)
+                        if climb_gain >= 12.0:
+                            climb_segments.append({
+                                "start_km": round(climb_start_km, 1),
+                                "end_km": round(c_dist, 1),
+                                "gain_m": climb_gain,
+                                "avg_grade": round((climb_gain / ((c_dist - climb_start_km) * 1000.0)) * 100.0, 1)
+                            })
+                        in_climb = False
+        c_prev = p
+
+    total_valid_d = max(0.1, flat_dist + climb_dist + descent_dist)
+    terrain_breakdown = {
+        "flat_pct": round((flat_dist / total_valid_d) * 100.0),
+        "climb_pct": round((climb_dist / total_valid_d) * 100.0),
+        "descent_pct": round((descent_dist / total_valid_d) * 100.0)
+    }
+
+    # Fueling schedule based on distance
+    fueling_schedule = []
+    gel_km = 7.0
+    while gel_km < total_dist:
+        fueling_schedule.append({
+            "km": round(gel_km, 1),
+            "type": "Energy Gel + Air Putih",
+            "carbs_g": 25,
+            "instruction": f"Konsumsi Gel ke-{len(fueling_schedule)+1} di KM {round(gel_km, 1)} (sebelum memasuki segmen berikutnya)."
+        })
+        gel_km += 7.0
+
+    # AI Course Summary string
+    climb_str = ", ".join([f"KM {c['start_km']}-{c['end_km']} (+{c['gain_m']}m, {c['avg_grade']}%)" for c in climb_segments[:3]]) or "Relatif Datar Tanpa Tanjakan Signifikan"
+    ai_summary = (
+        f"Lintasan {round(total_dist, 1)} km dengan elevasi total +{round(elev_gain, 1)}m / -{round(elev_loss, 1)}m "
+        f"(Ketinggian {min_ele}m - {max_ele}m dpl). Komposisi rute: {terrain_breakdown['flat_pct']}% datar, "
+        f"{terrain_breakdown['climb_pct']}% tanjakan, {terrain_breakdown['descent_pct']}% turunan. "
+        f"Segmen tanjakan utama: {climb_str}."
+    )
 
     avg_hr = int(sum(hr_list) / len(hr_list)) if hr_list else None
     max_hr = max(hr_list) if hr_list else None
@@ -99,9 +204,18 @@ def parse_gpx(file_bytes: bytes) -> Dict[str, Any]:
         "distance_km": round(total_dist, 2),
         "duration_seconds": max(duration_sec, 1),
         "elevation_gain_m": round(elev_gain, 1),
+        "elevation_loss_m": round(elev_loss, 1),
+        "min_elevation_m": min_ele,
+        "max_elevation_m": max_ele,
         "avg_hr": avg_hr,
         "max_hr": max_hr,
-        "trackpoints_count": len(points)
+        "trackpoints_count": len(points),
+        "sampled_points": sampled_points,
+        "elevation_profile": ele_profile,
+        "climb_segments": climb_segments[:6],
+        "terrain_breakdown": terrain_breakdown,
+        "fueling_schedule": fueling_schedule,
+        "ai_summary": ai_summary
     }
 
 def parse_tcx(file_bytes: bytes) -> Dict[str, Any]:

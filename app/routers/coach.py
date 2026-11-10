@@ -66,6 +66,10 @@ async def chat(chat_input: ChatMessageInput, request: Request, user_id: str = De
     hr_zones = SportsEngine.calculate_karvonen_zones(resting_hr, max_hr)
     race_date = prof.get('target_race_date') or "2026-09-27"
     periodization = SportsEngine.calculate_macrocycle_countdown(str(race_date))
+    race_course = sandbox_store.get_race_course(user_id)
+    course_context_str = ""
+    if race_course:
+        course_context_str = f"\nProfil Medan Lintasan Lomba (GPX Terunggah): {race_course.get('ai_summary', '')}\nSegmen Tanjakan: {race_course.get('climb_segments', [])}\nJadwal Fueling: {race_course.get('fueling_schedule', [])}"
 
     context = f"""
 Profil Atlet: {prof}
@@ -74,6 +78,7 @@ Fase Makrosiklus: {periodization}
 Stats workout: {user_data.get('stats', {})}
 Race mendatang: {user_data.get('upcoming_races', [])}
 Workout terbaru: {[{'title': w.get('title'), 'distance': w.get('distance_km'), 'pace': w.get('avg_pace_min_per_km')} for w in (user_data.get('recent_workouts') or [])[:3]]}
+{course_context_str}
     """.strip()
 
     # Check subscription & BYOK status

@@ -6,7 +6,7 @@ Manages race plan generation, weekly AI calendar, 31-week marathon periodization
 import asyncio
 from datetime import date
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File, Form
 from pydantic import BaseModel, Field
 
 from app.core.config import supabase
@@ -395,4 +395,96 @@ Gunakan bahasa Indonesia yang profesional, presisi, tanpa jargon berlebihan atau
         "target_date": str(payload.target_date or date.today()),
         "readiness_score": payload.readiness_override or (g_info.get("sleep_score") or 80),
         "suggestion": ai_suggestion
+    }
+
+
+
+# ── Race Target & GPX Course Elevation Intelligence ─────────────────
+
+class TargetRaceInput(BaseModel):
+    event_name: str
+    event_datetime: str
+    target_time: Optional[str] = "05:30:00"
+    target_pace: Optional[str] = "07:49 /km"
+
+
+@router.post("/api/v1/training/race-course/target")
+def set_race_target(payload: TargetRaceInput, user_id: str = Depends(get_current_user_optional)):
+    uid = user_id or "demo-athlete-budi"
+    existing = sandbox_store.get_race_course(uid) or {}
+    existing.update({
+        "event_name": payload.event_name,
+        "event_datetime": payload.event_datetime,
+        "target_time": payload.target_time,
+        "target_pace": payload.target_pace
+    })
+    sandbox_store.save_race_course(uid, existing)
+    return {
+        "status": "success",
+        "race_course": existing
+    }
+
+
+@router.get("/api/v1/training/race-course")
+def get_active_race_course(user_id: str = Depends(get_current_user_optional)):
+    uid = user_id or "demo-athlete-budi"
+    course = sandbox_store.get_race_course(uid)
+    if not course:
+        return {
+            "status": "success",
+            "has_gpx": False,
+            "event_name": "Maybank Marathon Bali 2027",
+            "event_datetime": "2027-08-29T05:00",
+            "target_time": "05:30:00",
+            "target_pace": "07:49 /km"
+        }
+    return {
+        "status": "success",
+        "has_gpx": True,
+        **course
+    }
+
+
+@router.post("/api/v1/training/race-course/upload-gpx")
+async def upload_race_gpx(
+    file: UploadFile = File(...),
+    event_name: Optional[str] = Form(None),
+    event_datetime: Optional[str] = Form(None),
+    target_time: Optional[str] = Form(None),
+    target_pace: Optional[str] = Form(None),
+    user_id: str = Depends(get_current_user_optional)
+):
+    uid = user_id or "demo-athlete-budi"
+    file_bytes = await file.read()
+    if not file_bytes:
+        raise HTTPException(status_code=400, detail="File GPX kosong.")
+    
+    filename = (file.filename or "").lower()
+    if not (filename.endswith('.gpx') or filename.endswith('.xml') or filename.endswith('.fit') or filename.endswith('.tcx')):
+        raise HTTPException(status_code=400, detail="Format file harus berekstensi .GPX, .FIT, atau .TCX.")
+
+    try:
+        from app.services.activity_parser import parse_gpx, parse_fit, parse_tcx
+        if filename.endswith('.fit'):
+            parsed = parse_fit(file_bytes)
+        elif filename.endswith('.tcx'):
+            parsed = parse_tcx(file_bytes)
+        else:
+            parsed = parse_gpx(file_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Gagal mem-parsing file GPX: {str(e)}")
+
+    course_data = {
+        "event_name": event_name or "Target Marathon",
+        "event_datetime": event_datetime or "2027-08-29T05:00",
+        "target_time": target_time or "05:30:00",
+        "target_pace": target_pace or "07:49 /km",
+        "filename": file.filename,
+        **parsed
+    }
+    sandbox_store.save_race_course(uid, course_data)
+    return {
+        "status": "success",
+        "message": f"File rute GPX {file.filename} berhasil dianalisis!",
+        "course": course_data
     }

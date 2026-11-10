@@ -376,6 +376,17 @@ def get_garmin_session(user_id: str):
     return store.get("garmin_session")
 
 
+def save_race_course(user_id: str, course_data: dict):
+    store = _get_user_store(user_id)
+    store["race_course"] = course_data
+    return store["race_course"]
+
+
+def get_race_course(user_id: str):
+    store = _get_user_store(user_id)
+    return store.get("race_course")
+
+
 def _ensure_seed_data():
     if "demo-athlete-budi" in _USERS_DB:
         return

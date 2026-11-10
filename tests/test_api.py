@@ -516,5 +516,67 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertIn("marathon_pace", data_cal["vdot_data"])
         self.assertIn("easy_pace_range", data_cal["vdot_data"])
 
+    def test_24_race_target_countdown_and_gpx_course_intelligence(self):
+        """Verify Target Race Event configuration and GPX elevation course upload."""
+        import io
+        from app.core.auth import create_demo_token
+
+        user_id = "target_race_athlete"
+        token = create_demo_token(user_id, "athlete_race@goalie.fit")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 1. Set Race Target Event & Flag-off datetime
+        target_payload = {
+            "event_name": "Maybank Marathon Bali 2027",
+            "event_datetime": "2027-08-29T05:00",
+            "target_time": "05:30:00",
+            "target_pace": "07:49 /km"
+        }
+        res_target = self.client.post("/api/v1/training/race-course/target", json=target_payload, headers=headers)
+        self.assertEqual(res_target.status_code, 200)
+        self.assertEqual(res_target.json()["status"], "success")
+
+        # 2. Get active race target
+        res_get = self.client.get("/api/v1/training/race-course", headers=headers)
+        self.assertEqual(res_get.status_code, 200)
+        data_get = res_get.json()
+        self.assertEqual(data_get["event_name"], "Maybank Marathon Bali 2027")
+
+        # 3. Upload sample GPX track
+        sample_gpx = '''<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Goalie Test" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Bali Marathon 42K</name>
+    <trkseg>
+      <trkpt lat="-8.5833" lon="115.3400"><ele>12.0</ele></trkpt>
+      <trkpt lat="-8.5700" lon="115.3500"><ele>28.0</ele></trkpt>
+      <trkpt lat="-8.5500" lon="115.3600"><ele>55.0</ele></trkpt>
+      <trkpt lat="-8.5300" lon="115.3650"><ele>95.0</ele></trkpt>
+      <trkpt lat="-8.5100" lon="115.3500"><ele>142.0</ele></trkpt>
+      <trkpt lat="-8.5300" lon="115.3250"><ele>80.0</ele></trkpt>
+      <trkpt lat="-8.5600" lon="115.3300"><ele>35.0</ele></trkpt>
+      <trkpt lat="-8.5833" lon="115.3400"><ele>12.0</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>'''
+        file_payload = {"file": ("Maybank_Bali_42K.gpx", io.BytesIO(sample_gpx.encode('utf-8')), "application/gpx+xml")}
+        form_data = {
+            "event_name": "Maybank Marathon Bali 2027",
+            "event_datetime": "2027-08-29T05:00",
+            "target_time": "05:30:00",
+            "target_pace": "07:49 /km"
+        }
+        res_upload = self.client.post("/api/v1/training/race-course/upload-gpx", files=file_payload, data=form_data, headers=headers)
+        self.assertEqual(res_upload.status_code, 200)
+        data_upload = res_upload.json()
+        self.assertEqual(data_upload["status"], "success")
+        course = data_upload["course"]
+        self.assertGreater(course["distance_km"], 5.0)
+        self.assertGreater(course["elevation_gain_m"], 50.0)
+        self.assertIn("sampled_points", course)
+        self.assertIn("terrain_breakdown", course)
+        self.assertIn("fueling_schedule", course)
+        self.assertIn("ai_summary", course)
+
 if __name__ == "__main__":
     unittest.main()
