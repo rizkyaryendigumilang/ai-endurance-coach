@@ -487,6 +487,30 @@ class SmartRouteGenerateInput(BaseModel):
     route_type: str = Field("loop", description="loop atau out_and_back")
 
 
+@router.get("/api/v1/telemetry/live-weather", tags=["Telemetry"])
+def get_live_weather_endpoint(
+    lat: float = -6.2088,
+    lon: float = 106.8456,
+    base_pace_sec: int = 300,
+    workout_type: str = "long_run",
+    is_heat_acclimatized: bool = True,
+    direct_sunlight: bool = False
+):
+    """
+    Mengambil kondisi cuaca real-time bebas biaya via Open-Meteo API
+    dan menghitung penyesuaian pace fisiologis deterministik (Magnus-Tetens Dew Point).
+    """
+    from app.services.weather_service import WeatherService
+    return WeatherService.get_live_weather(
+        lat=lat,
+        lon=lon,
+        base_pace_sec=base_pace_sec,
+        workout_type=workout_type,
+        is_heat_acclimatized=is_heat_acclimatized,
+        direct_sunlight=direct_sunlight
+    )
+
+
 @router.post("/api/v1/telemetry/weather-adjust", tags=["Telemetry"])
 def adjust_pace_weather_endpoint(data: WeatherPaceAdjustInput):
     """
