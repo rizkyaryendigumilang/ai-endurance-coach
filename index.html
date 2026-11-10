@@ -1080,7 +1080,7 @@
                         </button>
                         <button onclick="switchWorkstationTab('biomechanics')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-flat-orange"></span>
-                            <span>Biomechanics Video</span>
+                            <span data-i18n="tab_biomechanics">Run Analyzer</span>
                         </button>
                         <button onclick="switchWorkstationTab('chat')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-tertiary font-mono font-bold text-[11px] transition-colors flex items-center gap-1.5">
                             <span>Gemini AI Coach &rarr;</span>
@@ -1128,7 +1128,7 @@
                     </button>
                     <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        <span data-i18n="tab_biomechanics">Video Gait</span>
+                        <span data-i18n="tab_biomechanics">Run Analyzer</span>
                     </button>
                     <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -1167,27 +1167,17 @@
                                 </div>
                                 <div class="min-w-0">
                                     <h3 class="font-display font-bold text-sm text-text-primary truncate">Rizky Aryendi Gumilang</h3>
-                                    <div class="flex items-center gap-1.5 text-[11px] text-text-secondary">
-                                        <span>Marathoner &bull; Triathlete</span>
+                                    <div class="flex items-center gap-1.5 text-[11px] text-flat-green font-mono">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-flat-green animate-pulse"></span>
+                                        <span>Garmin Direct Connected</span>
                                     </div>
-                                    <div class="text-[10px] font-mono text-tertiary font-semibold">ID: i744617</div>
                                 </div>
                             </div>
 
-                            <!-- Social / Activity Stats Row -->
-                            <div class="grid grid-cols-3 gap-1 pt-2 border-t border-border text-center">
-                                <div class="p-1 bg-surface-subtle rounded-md">
-                                    <span class="text-[10px] text-text-secondary block" data-i18n="athlete_following">Following</span>
-                                    <span class="font-bold text-xs text-text-primary font-mono">142</span>
-                                </div>
-                                <div class="p-1 bg-surface-subtle rounded-md">
-                                    <span class="text-[10px] text-text-secondary block" data-i18n="athlete_followers">Followers</span>
-                                    <span class="font-bold text-xs text-text-primary font-mono">388</span>
-                                </div>
-                                <div class="p-1 bg-surface-subtle rounded-md">
-                                    <span class="text-[10px] text-text-secondary block" data-i18n="athlete_activities">Activities</span>
-                                    <span class="font-bold text-xs text-text-primary font-mono" id="cockpit-activities-count">20</span>
-                                </div>
+                            <!-- Activity Stats Row -->
+                            <div class="p-2 bg-surface-subtle border border-border rounded-lg text-xs flex items-center justify-between">
+                                <span class="text-[11px] font-mono text-text-secondary uppercase" data-i18n="athlete_activities">Total Aktivitas</span>
+                                <span class="font-bold text-xs text-text-primary font-mono"><span id="cockpit-activities-count">20</span> Sesi</span>
                             </div>
 
                             <!-- Latest Activity Preview -->
@@ -2525,10 +2515,10 @@
 
             </div>
 
-            <!-- TAB 3: VIDEO GAIT ANALYSIS -->
+            <!-- TAB 3: RUN ANALYZER -->
             <div id="tab-content-biomechanics" class="hidden space-y-6">
                 <div class="flat-card border-2 border-border-strong p-6 bg-surface">
-                    <h3 class="font-display font-bold text-base text-text-primary mb-1">Automated Run Form Gait Ingestion</h3>
+                    <h3 class="font-display font-bold text-base text-text-primary mb-1">Automated Run Analyzer &amp; Form Ingestion</h3>
                     <p class="text-xs font-mono text-text-secondary mb-4">
                         Sagittal / Posterior Video Clip (5-15s &bull; Max 50MB)
                     </p>
@@ -5792,7 +5782,7 @@
                 tab_cockpit: "Kokpit Performa",
                 tab_chat: "Chat Pelatih AI",
                 tab_telemetry: "Telemetri",
-                tab_biomechanics: "Video Gait",
+                tab_biomechanics: "Run Analyzer",
                 tab_schedule: "Jadwal & iCal",
                 tab_integrations: "Integrasi",
                 tab_settings: "Pengaturan",
@@ -6042,7 +6032,7 @@
                 tab_cockpit: "Cockpit",
                 tab_chat: "AI Coach",
                 tab_telemetry: "Telemetry",
-                tab_biomechanics: "Video Gait",
+                tab_biomechanics: "Run Analyzer",
                 tab_schedule: "Schedule & iCal",
                 tab_integrations: "Integrations",
                 tab_settings: "Settings",
