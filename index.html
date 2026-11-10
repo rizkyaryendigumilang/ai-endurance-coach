@@ -964,7 +964,7 @@
                             </button>
 
                             <!-- Helpdesk SSO Handoff in Profile Dropdown -->
-                            <button onclick="openHelpdeskTicket(); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-flat-orange hover:bg-flat-orange/10 rounded-lg flex items-center justify-between transition-colors font-bold">
+                            <button onclick="openHelpdeskModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-flat-orange hover:bg-flat-orange/10 rounded-lg flex items-center justify-between transition-colors font-bold">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                                     <span>Bantuan &amp; Laporkan Kendala</span>
@@ -4856,7 +4856,7 @@
                                         <span id="helpdesk-session-user">Rizky Aryendi Gumilang (Pro Coach)</span>
                                     </strong>
                                 </div>
-                                <button type="button" onclick="openHelpdeskTicket()" class="btn-flat-primary py-2 px-4 text-xs font-mono font-bold inline-flex items-center gap-2 shadow-xs hover:scale-[1.01] active:scale-98">
+                                <button type="button" onclick="openHelpdeskModal()" class="btn-flat-primary py-2 px-4 text-xs font-mono font-bold inline-flex items-center gap-2 shadow-xs hover:scale-[1.01] active:scale-98">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                                     <span>🆘 Bantuan / Laporkan Kendala</span>
                                 </button>
@@ -5112,6 +5112,107 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- AI MARATHON PLAN ADAPTATION MODAL (STAGE 1 & 2 AI ENGINE)  -->
     <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- MODAL: HELPDESK TICKET (KELUHAN & LAMPIRAN FOTO KENDALA)     -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <div id="modal-helpdesk-ticket" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/70 p-3 sm:p-4 overflow-y-auto backdrop-blur-xs" role="dialog" aria-modal="true" aria-labelledby="helpdesk-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-lg w-full p-5 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 space-y-4 shadow-2xl">
+            
+            <div class="flex justify-between items-center border-b-2 border-border pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-flat-orange rounded-xs animate-pulse"></span>
+                    <h3 id="helpdesk-modal-title" class="font-display font-bold text-base text-text-primary">Bantuan &amp; Laporkan Kendala</h3>
+                </div>
+                <button type="button" onclick="closeHelpdeskModal()" class="text-text-secondary hover:text-text-primary p-1 rounded-md" aria-label="Close modal">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Sesi Info Banner -->
+            <div class="p-2.5 bg-surface-subtle border border-border rounded-lg flex items-center justify-between text-[11px] font-mono">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                    <span class="text-text-secondary">Sesi Atlet:</span>
+                    <strong class="text-text-primary" id="helpdesk-modal-user">Rizky Aryendi Gumilang</strong>
+                </div>
+                <span class="text-[9px] font-bold text-flat-green bg-flat-green/10 border border-flat-green/30 px-1.5 py-0.2 rounded">SSO READY</span>
+            </div>
+
+            <form onsubmit="handleHelpdeskSubmit(event)" class="space-y-3.5 font-mono text-xs">
+                <div>
+                    <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">1. Kategori Kendala</label>
+                    <select id="helpdesk-ticket-category" class="flat-input text-xs font-sans font-medium w-full">
+                        <option value="Telemetri Garmin & Jam">Telemetri Garmin &amp; Sensor Jam</option>
+                        <option value="Calculator Pace & Cuaca" selected>Calculator Pace, Cuaca &amp; Pacing Lomba</option>
+                        <option value="Rute GPX & Elevasi">Rute GPX, Elevasi &amp; Peta</option>
+                        <option value="Biomekanika & Form Lari">Biomekanika &amp; Analisis Form Lari</option>
+                        <option value="Jadwal Kalender 31 Minggu">Jadwal Kalender &amp; Makrosiklus 31 Minggu</option>
+                        <option value="Akun & Kunci AI">Akun, BYOK Kunci AI &amp; Integrasi</option>
+                        <option value="Kendala Lainnya">Kendala Lainnya / Pertanyaan Umum</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">2. Ringkasan Judul Kendala</label>
+                    <input type="text" id="helpdesk-ticket-subject" class="flat-input text-xs font-sans font-bold" placeholder="Contoh: Garmin sync terhenti atau target pace cuaca" required>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">3. Rincian Keluhan</label>
+                    <textarea id="helpdesk-ticket-description" rows="3" class="flat-input text-xs font-sans leading-relaxed" placeholder="Ceritakan detail kendala yang dialami, pesan error yang muncul, atau langkah yang dicoba..." required></textarea>
+                </div>
+
+                <!-- 4. Foto / Tangkapan Layar Masalah (Tidak Mandatory / Opsional) -->
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-[11px] text-text-secondary uppercase font-bold">4. Foto / Screenshot Masalah</label>
+                        <span class="text-[10px] text-text-secondary font-mono italic">(Opsional / Tidak Wajib)</span>
+                    </div>
+
+                    <div id="helpdesk-photo-dropzone" class="border-2 border-dashed border-border rounded-xl p-3 text-center hover:border-tertiary transition-colors bg-surface-subtle cursor-pointer" onclick="document.getElementById('helpdesk-ticket-photo').click()">
+                        <input type="file" id="helpdesk-ticket-photo" accept="image/*" class="hidden" onchange="handleHelpdeskPhotoSelect(event)">
+                        
+                        <div id="helpdesk-photo-empty" class="space-y-1 py-1">
+                            <svg class="w-6 h-6 mx-auto text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <div class="text-[11px] text-text-primary font-bold">Pilih foto tangkapan layar atau seret ke sini</div>
+                            <div class="text-[10px] text-text-secondary">PNG, JPG, WebP hingga 5MB</div>
+                        </div>
+
+                        <!-- Preview Area when Photo Selected -->
+                        <div id="helpdesk-photo-preview" class="hidden flex items-center justify-between gap-3 text-left">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <img id="helpdesk-photo-img" src="" alt="Preview Kendala" class="w-12 h-12 object-cover rounded-lg border border-border shrink-0">
+                                <div class="min-w-0 text-[11px]">
+                                    <div id="helpdesk-photo-name" class="font-bold text-text-primary truncate">screenshot.png</div>
+                                    <div id="helpdesk-photo-size" class="text-[10px] text-text-secondary">120 KB</div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeHelpdeskPhoto(event)" class="btn-flat-secondary text-[10px] py-1 px-2 text-rose-500 hover:border-rose-500 shrink-0">
+                                Hapus Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnostic Metadata (Auto-attached) -->
+                <div class="p-2 bg-surface-subtle border border-border rounded-lg text-[10px] text-text-secondary space-y-0.5">
+                    <div>&bull; Halaman terkait: <span id="helpdesk-from-url" class="text-text-primary truncate inline-block max-w-[280px] align-bottom"></span></div>
+                    <div>&bull; Otomatis diarahkan ke formulir pembuatan tiket VPS Helpdesk (SSO Handoff).</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-border">
+                    <button type="button" onclick="closeHelpdeskModal()" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono">
+                        Batal
+                    </button>
+                    <button type="submit" id="btn-submit-helpdesk" class="btn-flat-primary py-1.5 px-4 text-xs font-mono font-bold flex items-center gap-1.5">
+                        <span>Kirim ke Aplikasi Helpdesk &gt;</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ════════════════════════════════════════════════════════════ -->
     <!-- MODAL: SET FULL MARATHON TARGET EVENT & DETAILED DATE-TIME  -->
     <!-- ════════════════════════════════════════════════════════════ -->
@@ -10105,9 +10206,120 @@
         }
 
         // ══════════════════════════════════════════════════════════════════
+        // HELPDESK SSO JUST-IN-TIME HANDOFF INTEGRATION WITH PHOTO & COMPLAINT
+        // ══════════════════════════════════════════════════════════════════
+        let currentHelpdeskPhotoData = null;
+
+        function openHelpdeskModal() {
+            const modal = document.getElementById('modal-helpdesk-ticket');
+            const urlEl = document.getElementById('helpdesk-from-url');
+            const userEl = document.getElementById('helpdesk-modal-user');
+            const subjectInput = document.getElementById('helpdesk-ticket-subject');
+
+            const email = appState.userEmail || localStorage.getItem('user_email') || 'rizkyaryendigumilang@gmail.com';
+            const fullName = email.toLowerCase().includes('rizkyaryendigumilang') ? 'Rizky Aryendi Gumilang' : (email.split('@')[0] || 'Atlet Goalie');
+
+            if (urlEl) urlEl.textContent = window.location.href;
+            if (userEl) userEl.textContent = `${fullName} (${appState.isPro ? 'Pro Coach' : 'Pemula'})`;
+
+            // Suggest subject based on active tab if empty
+            if (subjectInput && !subjectInput.value) {
+                const activeTab = document.querySelector('.tab-btn[aria-selected="true"]')?.textContent?.trim() || 'Kokpit';
+                subjectInput.value = `Kendala pada menu ${activeTab}`;
+            }
+
+            if (modal) modal.classList.remove('hidden');
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
+        }
+
+        function closeHelpdeskModal() {
+            const modal = document.getElementById('modal-helpdesk-ticket');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleHelpdeskPhotoSelect(e) {
+            const file = e.target?.files?.[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error('Ukuran Terlalu Besar', 'Maksimal ukuran foto adalah 5MB.');
+                e.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                currentHelpdeskPhotoData = {
+                    name: file.name,
+                    sizeStr: `${Math.round(file.size / 1024)} KB`,
+                    dataUrl: event.target.result
+                };
+
+                const emptyBox = document.getElementById('helpdesk-photo-empty');
+                const prevBox = document.getElementById('helpdesk-photo-preview');
+                const imgEl = document.getElementById('helpdesk-photo-img');
+                const nameEl = document.getElementById('helpdesk-photo-name');
+                const sizeEl = document.getElementById('helpdesk-photo-size');
+
+                if (emptyBox) emptyBox.classList.add('hidden');
+                if (prevBox) prevBox.classList.remove('hidden');
+                if (imgEl) imgEl.src = event.target.result;
+                if (nameEl) nameEl.textContent = file.name;
+                if (sizeEl) sizeEl.textContent = `${Math.round(file.size / 1024)} KB`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeHelpdeskPhoto(e) {
+            if (e) e.stopPropagation();
+            currentHelpdeskPhotoData = null;
+            const input = document.getElementById('helpdesk-ticket-photo');
+            if (input) input.value = '';
+
+            const emptyBox = document.getElementById('helpdesk-photo-empty');
+            const prevBox = document.getElementById('helpdesk-photo-preview');
+            const imgEl = document.getElementById('helpdesk-photo-img');
+
+            if (emptyBox) emptyBox.classList.remove('hidden');
+            if (prevBox) prevBox.classList.add('hidden');
+            if (imgEl) imgEl.src = '';
+        }
+
+        function handleHelpdeskSubmit(e) {
+            e.preventDefault();
+
+            const catEl = document.getElementById('helpdesk-ticket-category');
+            const subEl = document.getElementById('helpdesk-ticket-subject');
+            const descEl = document.getElementById('helpdesk-ticket-description');
+
+            const category = catEl ? catEl.value : 'Kendala Teknis';
+            const subject = subEl ? subEl.value.trim() : 'Laporan Kendala';
+            let description = descEl ? descEl.value.trim() : '';
+
+            if (!description) {
+                toast.error('Keluhan Belum Diisi', 'Silakan tuliskan rincian keluhan yang dihadapi.');
+                return;
+            }
+
+            // Append photo metadata note if photo was attached
+            if (currentHelpdeskPhotoData) {
+                description += `\n\n[Lampiran Foto Terlampir: ${currentHelpdeskPhotoData.name} (${currentHelpdeskPhotoData.sizeStr})]`;
+            }
+
+            openHelpdeskTicket({
+                category: category,
+                subject: subject,
+                description: description
+            });
+
+            closeHelpdeskModal();
+            toast.success('Tiket Dialihkan', 'Keluhan dan data kendala berhasil dikirim ke VPS Helpdesk!');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
         // HELPDESK SSO JUST-IN-TIME HANDOFF INTEGRATION
         // ══════════════════════════════════════════════════════════════════
-        function openHelpdeskTicket() {
+        function openHelpdeskTicket(customData = {}) {
             const HELPDESK_BASE = 'https://43.156.236.102/helpdesk/handoff';
             const APP_SLUG = 'ai-endurance';
 
@@ -10125,14 +10337,20 @@
             const uid = email || ('guest_' + Math.random().toString(36).slice(2, 9));
             const fromUrl = window.location.href;
 
-            const params = new URLSearchParams({
+            const paramObj = {
                 app: APP_SLUG,
                 uid: String(uid).slice(0, 200),
                 name: String(name).slice(0, 100),
                 role: String(role).slice(0, 50),
                 from_url: fromUrl,
                 new: '1'
-            });
+            };
+
+            if (customData.subject) paramObj.subject = String(customData.subject).slice(0, 200);
+            if (customData.description) paramObj.description = String(customData.description).slice(0, 4000);
+            if (customData.category) paramObj.category = String(customData.category).slice(0, 100);
+
+            const params = new URLSearchParams(paramObj);
 
             if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
             const targetUrl = `${HELPDESK_BASE}?${params.toString()}`;
