@@ -147,6 +147,9 @@ class GapCalculationInput(BaseModel):
 class ApiKeyValidationInput(BaseModel):
     api_key: str
 
+class ByokRegisterInput(BaseModel):
+    api_key: Optional[str] = ""
+
 class RaceFuelingInput(BaseModel):
     distance_km: float = 42.195
     expected_duration_hours: float = 3.5

@@ -89,22 +89,139 @@ def update_profile(user_id: str, data: dict):
         store["profile"]["subscription_tier"] = "pro"
     return store["profile"]
 
+def get_daily_chat_count(user_id: str) -> int:
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    store = _get_user_store(user_id)
+    tracker = store.get("daily_chat_tracker", {})
+    if tracker.get("date") == today:
+        return int(tracker.get("count", 0))
+    return 0
+
+def increment_daily_chat_count(user_id: str) -> int:
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    store = _get_user_store(user_id)
+    tracker = store.get("daily_chat_tracker", {})
+    if tracker.get("date") != today:
+        tracker = {"date": today, "count": 1}
+    else:
+        tracker["count"] = tracker.get("count", 0) + 1
+    store["daily_chat_tracker"] = tracker
+    return tracker["count"]
+
+def reset_daily_chat_count(user_id: str):
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    store = _get_user_store(user_id)
+    store["daily_chat_tracker"] = {"date": today, "count": 0}
+
+def set_byok_key(user_id: str, api_key: str) -> dict:
+    store = _get_user_store(user_id)
+    clean_key = (api_key or "").strip()
+    if not clean_key:
+        store["byok_api_key"] = None
+        if store.get("subscription", {}).get("plan") == "byok":
+            store["subscription"] = {
+                "status": "free",
+                "plan": "coach_free",
+                "tier_name": "Coach (Free)",
+                "is_active": False,
+                "expires_at": None
+            }
+        return {"is_active": False, "byok_key": None}
+    
+    store["byok_api_key"] = clean_key
+    sub_data = {
+        "status": "pro",
+        "plan": "byok",
+        "tier_name": "RECOMMENDED // FULL COACH (BYOK)",
+        "is_active": True,
+        "is_byok": True,
+        "activated_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": "2099-12-31T23:59:59Z"
+    }
+    store["subscription"] = sub_data
+    store["profile"]["subscription_tier"] = "pro"
+    return {
+        "is_active": True,
+        "byok_key": f"{clean_key[:6]}...{clean_key[-4:]}",
+        "subscription": sub_data
+    }
+
+def get_byok_key(user_id: str):
+    store = _get_user_store(user_id)
+    return store.get("byok_api_key")
+
 def get_subscription(user_id: str) -> dict:
     store = _get_user_store(user_id)
-    if _is_owner_user(user_id, store.get("profile")):
+    is_owner = _is_owner_user(user_id, store.get("profile"))
+    daily_used = get_daily_chat_count(user_id)
+    if is_owner:
         return {
             "status": "pro",
             "plan": "full",
             "tier_name": "RECOMMENDED // FULL COACH",
             "is_active": True,
+            "is_owner": True,
+            "daily_chat_limit": None,
+            "daily_chat_used": 0,
+            "features": {
+                "unlimited_chat": True,
+                "garmin_auto_ingest": True,
+                "cardiac_drift_alarms": True,
+                "macrocycle_planning": True
+            },
             "expires_at": "2030-12-31T23:59:59Z"
         }
-    return store.get("subscription", {
+    
+    byok_key = store.get("byok_api_key")
+    if byok_key:
+        return {
+            "status": "pro",
+            "plan": "byok",
+            "tier_name": "RECOMMENDED // FULL COACH (BYOK)",
+            "is_active": True,
+            "is_byok": True,
+            "daily_chat_limit": None,
+            "daily_chat_used": daily_used,
+            "features": {
+                "unlimited_chat": True,
+                "garmin_auto_ingest": True,
+                "cardiac_drift_alarms": True,
+                "macrocycle_planning": True
+            },
+            "expires_at": "2099-12-31T23:59:59Z"
+        }
+        
+    sub = store.get("subscription")
+    if sub and sub.get("is_active") and sub.get("status") == "pro":
+        return {
+            **sub,
+            "tier_name": "RECOMMENDED // FULL COACH",
+            "daily_chat_limit": None,
+            "daily_chat_used": daily_used,
+            "features": {
+                "unlimited_chat": True,
+                "garmin_auto_ingest": True,
+                "cardiac_drift_alarms": True,
+                "macrocycle_planning": True
+            }
+        }
+        
+    return {
         "status": "free",
-        "plan": "free",
+        "plan": "coach_free",
+        "tier_name": "Coach (Free)",
         "is_active": False,
+        "daily_chat_limit": 10,
+        "daily_chat_used": daily_used,
+        "features": {
+            "unlimited_chat": False,
+            "garmin_auto_ingest": False,
+            "cardiac_drift_alarms": False,
+            "macrocycle_planning": False,
+            "deterministic_engine": True
+        },
         "expires_at": None
-    })
+    }
 
 def set_subscription(user_id: str, plan: str = "monthly", order_id: str = None, payment_method: str = "qris") -> dict:
     store = _get_user_store(user_id)

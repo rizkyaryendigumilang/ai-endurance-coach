@@ -2003,6 +2003,13 @@
                                 <span class="w-2.5 h-2.5 bg-flat-green rounded-[1px]"></span>
                                 <span class="font-display font-bold text-xs text-text-primary">Goalie AI Assistant</span>
                                 <span id="chat-tier-badge" class="font-mono text-[10px] text-tertiary font-bold bg-surface-subtle border border-border px-1.5 py-0.2">COACH (FREE)</span>
+                                
+                                <!-- Dynamic Daily Quota Indicator -->
+                                <div id="coach-quota-pill" class="flex items-center gap-1.5 font-mono text-[10px] bg-surface-subtle border border-border px-2 py-0.5 rounded-full cursor-pointer hover:border-tertiary transition-colors" onclick="openProPaymentModal()" title="Klik untuk lihat paket atau aktifkan BYOK">
+                                    <span id="coach-quota-dot" class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
+                                    <span id="coach-quota-text" class="text-text-secondary">Kuota: <strong class="text-text-primary">0/10</strong></span>
+                                    <span id="coach-quota-upgrade-tag" class="text-flat-orange font-bold text-[9px] hover:underline ml-1">BYOK GRATIS</span>
+                                </div>
                             </div>
 
                             <!-- 3-Way Coach Tier Selector -->
@@ -3952,107 +3959,276 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- PRO PAYMENT MODAL (Flat 2D)                                -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="pro-payment-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
-        <div class="flat-card border-2 border-tertiary max-w-lg w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150">
-            <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 bg-tertiary"></span>
-                    <h3 id="pro-modal-title" class="font-display font-bold text-base text-text-primary">Unlock Coach (Pro) Access</h3>
-                </div>
-                <button onclick="closeProPaymentModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close Pro dialog">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+    <div id="pro-payment-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="pro-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-4xl w-full p-4 sm:p-7 bg-surface relative my-auto animate-in fade-in duration-150 max-h-[92vh] overflow-y-auto">
+            
+            <!-- Close Button -->
+            <button onclick="closeProPaymentModal()" class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-1 rounded-full border border-border bg-surface-subtle" aria-label="Close dialog">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <!-- Header Section matching visual spec -->
+            <div class="text-center mb-6 space-y-1.5 max-w-xl mx-auto">
+                <span class="inline-block px-3 py-0.5 text-[10px] font-mono font-bold tracking-wider rounded-full border border-primary/40 text-primary bg-primary/10 uppercase">TRANSPARENT VALUE</span>
+                <h2 id="pro-modal-title" class="text-2xl sm:text-3xl font-display font-extrabold text-text-primary tracking-tight">Simple, Predictable Plans.</h2>
+                <p class="text-xs text-text-secondary font-mono leading-relaxed">
+                    Free Forever Deterministic Core &bull; BYOK Gemini 3.8 Flash Pro &bull; Zero Dark Patterns
+                </p>
             </div>
 
-            <div class="space-y-5">
-
-                <!-- OPTION 1: BYOK (BRING YOUR OWN API KEY) - RECOMMENDED & FREE -->
-                <div class="flat-card border-2 border-flat-green p-4 bg-surface-subtle space-y-3">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
-                            <span class="flat-badge border-flat-green text-flat-green font-mono text-[9px]">RECOMMENDED // ZERO COST</span>
-                            <span class="font-mono text-xs font-bold text-text-primary">OPTION 1: BYOK GEMINI API KEY</span>
-                        </div>
+            <!-- Founder / Owner Alert Banner (shown only for owner) -->
+            <div id="owner-perk-banner" class="hidden mb-6 p-3.5 bg-flat-green/10 border-2 border-flat-green rounded-xl flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-3 h-3 rounded-full bg-flat-green shrink-0"></span>
+                    <div class="text-xs font-mono">
+                        <strong class="text-flat-green font-bold uppercase">FOUNDER ACCOUNT ACTIVE // RIZKY ARYENDI GUMILANG</strong>
+                        <div class="text-text-secondary text-[11px]">Status Coach (Pro) aktif selamanya. Akses Garmin sync, reasoning Gemini Pro, dan kuota tidak terbatas aktif permanen.</div>
                     </div>
-                    <p class="text-[11px] font-mono text-text-secondary">
-                        Bring your Google Gemini API key. Stored locally in browser &bull; Zero subscription fees.
+                </div>
+                <span class="px-2.5 py-1 bg-flat-green text-black font-mono font-bold text-[10px] rounded uppercase shrink-0">LIFETIME PRO</span>
+            </div>
+
+            <!-- 3 Pricing Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-stretch">
+                
+                <!-- CARD 1: Pemula (Free) -->
+                <div class="flat-card border-2 border-border p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl hover:border-tertiary/50 transition-colors">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display font-bold text-sm text-text-primary">Pemula (Free)</h3>
+                            <span class="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-border text-text-secondary">PEMULA // FREE</span>
+                        </div>
+                        <div>
+                            <div class="flex items-baseline gap-1">
+                                <span class="font-display font-extrabold text-2xl sm:text-3xl text-text-primary">$0</span>
+                                <span class="text-xs font-mono text-text-secondary">/ forever</span>
+                            </div>
+                            <p class="text-[11px] text-text-secondary mt-2 leading-relaxed">
+                                Deterministic sports science engine, Jack Daniels VDOT, and Banister impulse modeling.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 text-[11px] text-text-secondary font-mono border-t border-border pt-4">
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>100% Deterministic Sports Science Engine</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Jack Daniels VDOT pace &amp; race predictor</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Manual workout, distance &amp; duration logger</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Banister impulse response (CTL / ATL / TSB)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Exportable .ICS training calendar sync</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pt-5">
+                        <button onclick="selectCoachTier('pemula'); closeProPaymentModal();" class="btn-flat-secondary w-full py-2 text-xs font-mono font-bold rounded-xl border border-border hover:bg-surface-subtle">
+                            START PEMULA (FREE)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CARD 2: Coach (Free) -->
+                <div class="flat-card border-2 border-border p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl hover:border-tertiary transition-colors">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display font-bold text-sm text-text-primary">Coach (Free)</h3>
+                            <span class="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-primary text-primary bg-primary/5">FREE COACH</span>
+                        </div>
+                        <div>
+                            <div class="flex items-baseline gap-1">
+                                <span class="font-display font-extrabold text-2xl sm:text-3xl text-text-primary">$0</span>
+                                <span class="text-xs font-mono text-text-secondary">/ forever</span>
+                            </div>
+                            <p class="text-[11px] text-text-secondary mt-2 leading-relaxed">
+                                Gemini 3.8 Flash AI coaching, daily pacing guidance, and fatigue assessment.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 text-[11px] text-text-secondary font-mono border-t border-border pt-4">
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span><strong>10 Daily AI Coaching chats</strong> via Gemini 3.8 Flash</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Post-workout recovery analysis &amp; fatigue assessment</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Dynamic workout feedback &amp; target adjustments</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Aerobic Decoupling &amp; Grade Adjusted Pace (GAP)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Community telemetry sharing &amp; basic chat history</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pt-5">
+                        <button onclick="selectCoachTier('free'); switchWorkstationTab('chat'); closeProPaymentModal();" class="btn-flat-secondary w-full py-2 text-xs font-mono font-bold rounded-xl border border-primary text-primary hover:bg-primary/10">
+                            CHAT WITH COACH (FREE)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CARD 3: Coach (Pro) - Highlighted Recommended -->
+                <div class="flat-card border-2 border-flat-orange p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl shadow-lg ring-1 ring-flat-orange/30">
+                    <!-- Top Ribbon -->
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <span class="px-2.5 py-0.5 rounded-full bg-flat-orange text-white font-mono font-extrabold text-[9px] uppercase tracking-wider shadow-xs">
+                            RECOMMENDED // FULL COACH
+                        </span>
+                    </div>
+
+                    <div class="space-y-4 pt-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display font-bold text-sm text-text-primary">Coach (Pro)</h3>
+                            <span class="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-flat-orange text-flat-orange bg-flat-orange/10">PRO COACH</span>
+                        </div>
+                        <div>
+                            <div class="flex items-baseline gap-1 flex-wrap">
+                                <span class="font-display font-extrabold text-2xl sm:text-3xl text-flat-orange">FREE (BYOK)</span>
+                            </div>
+                            <div class="text-[11px] font-mono text-text-secondary mt-0.5">or $19/mo / Rp 89.000 Managed</div>
+                            <p class="text-[11px] text-text-secondary mt-2 leading-relaxed">
+                                Gemini 3.8 Flash Pro reasoning, automated cardiac drift alarms, and video biomechanics.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 text-[11px] text-text-secondary font-mono border-t border-border pt-4">
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-orange font-bold">✓</span>
+                                <span class="text-text-primary font-bold">Bring-Your-Own-Key (BYOK) Supported: 100% Free</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span><strong>Unlimited Gemini 3.8 Flash Pro</strong> macrocycle reasoning</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Automated Cardiac Drift &amp; Decoupling alarms</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span><strong>Direct Garmin Connect &amp; Strava</strong> auto-ingest</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-flat-green font-bold">✓</span>
+                                <span>Periodized macrocycle generation &amp; priority compute</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pt-5">
+                        <button onclick="scrollToActivationSection()" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold rounded-xl bg-flat-orange text-white hover:brightness-110 shadow-md">
+                            UNLOCK COACH (PRO) (FREE BYOK OR $19/MO)
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Interactive Activation Tabs Section -->
+            <div id="pro-activation-section" class="border-t-2 border-border pt-5 space-y-4">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <span class="font-mono text-xs font-bold text-text-primary">AKTIVASI TIER PRO:</span>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="switchActivationTab('byok')" id="act-tab-byok" class="px-3 py-1 text-xs font-mono font-bold rounded-lg border-2 border-flat-green bg-flat-green/10 text-flat-green">
+                            OPSI 1: BYOK (100% GRATIS)
+                        </button>
+                        <button type="button" onclick="switchActivationTab('managed')" id="act-tab-managed" class="px-3 py-1 text-xs font-mono font-semibold rounded-lg border border-border text-text-secondary hover:text-text-primary">
+                            OPSI 2: MANAGED PRO (RP 89.000)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB 1: BYOK GEMINI API KEY -->
+                <div id="activation-panel-byok" class="p-4 bg-surface-subtle border-2 border-flat-green/60 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-bold text-flat-green">GOOGLE GEMINI API KEY (100% GRATIS)</span>
+                        <span class="text-[10px] font-mono text-text-secondary">Aman &bull; Disimpan di Akun Anda</span>
+                    </div>
+                    <p class="text-[11px] text-text-secondary leading-relaxed font-mono">
+                        Dapatkan Gemini API Key gratis tanpa kartu kredit di Google AI Studio, lalu masukkan di bawah. Anda langsung mendapatkan akses Coach (Pro) tanpa biaya berlangganan sepeser pun.
                     </p>
 
-                    <!-- Case A: Key Already Active -->
-                    <div id="byok-active-box" class="hidden p-3 bg-flat-green/10 border border-flat-green space-y-2">
+                    <!-- Active Key Box -->
+                    <div id="byok-active-box" class="hidden p-3 bg-flat-green/10 border border-flat-green rounded-lg space-y-2">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 bg-flat-green"></span>
-                                <span class="text-xs font-mono font-bold text-flat-green">COACH (PRO) UNLOCKED</span>
+                                <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                <span class="text-xs font-mono font-bold text-flat-green">COACH (PRO) BYOK AKTIF</span>
                             </div>
                             <span id="byok-masked-key" class="text-xs font-mono font-bold text-text-primary">AIzaSy...</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="closeProPaymentModal()" class="btn-flat-primary flex-1 py-1.5 text-xs font-mono font-bold">
-                                CONTINUE COACHING
+                            <button onclick="closeProPaymentModal(); selectCoachTier('pro');" class="btn-flat-primary flex-1 py-1.5 text-xs font-mono font-bold rounded-lg">
+                                LANJUTKAN DENGAN PRO
                             </button>
-                            <button onclick="removeByokApiKey()" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono text-flat-orange">
-                                REMOVE KEY
+                            <button onclick="removeByokApiKey()" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono text-flat-orange rounded-lg">
+                                HAPUS KEY
                             </button>
                         </div>
                     </div>
 
-                    <!-- Case B: Key Input Box -->
+                    <!-- Input Form -->
                     <div id="byok-input-box" class="space-y-2">
                         <div class="flex gap-2">
-                            <input type="password" id="byok-api-key-input" placeholder="Paste Gemini API Key (e.g. AIzaSy...)" class="flat-input flex-1 text-xs font-mono" autocomplete="off">
-                            <button onclick="saveByokApiKey()" id="byok-save-btn" class="btn-flat-primary px-3 text-xs font-mono font-bold whitespace-nowrap">
-                                UNLOCK PRO
+                            <input type="password" id="byok-api-key-input" placeholder="Masukkan Gemini API Key (contoh: AIzaSy...)" class="flat-input flex-1 text-xs font-mono rounded-lg" autocomplete="off">
+                            <button onclick="saveByokApiKey()" id="byok-save-btn" class="btn-flat-primary px-4 py-2 text-xs font-mono font-bold whitespace-nowrap bg-flat-green text-black rounded-lg">
+                                AKTIFKAN PRO GRATIS
                             </button>
                         </div>
                         <div class="flex items-center justify-between text-[10px] font-mono text-text-secondary">
-                            <span>Get free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-tertiary hover:underline">Google AI Studio</a></span>
-                            <span>Stored in LocalStorage</span>
+                            <span>Ambil API Key gratis: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-tertiary hover:underline font-bold">Google AI Studio ↗</a></span>
+                            <span>Akses Instan &bull; Nol Biaya</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- DIVIDER -->
-                <div class="flex items-center gap-2 text-text-secondary font-mono text-[10px]">
-                    <div class="h-px bg-border flex-1"></div>
-                    <span>OR VIA MANAGED HOSTED SUBSCRIPTION</span>
-                    <div class="h-px bg-border flex-1"></div>
-                </div>
-
-                <!-- OPTION 2: MANAGED SUBSCRIPTION -->
-                <div class="space-y-3">
-                    <div class="text-[11px] text-text-secondary leading-relaxed">
-                        Prefer not to manage API keys? Subscribe to our fully-managed dedicated Gemini compute infrastructure:
+                <!-- TAB 2: MANAGED PRO SUBSCRIPTION -->
+                <div id="activation-panel-managed" class="hidden p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3">
+                    <div class="text-[11px] text-text-secondary leading-relaxed font-mono">
+                        Pilihan praktis jika Anda tidak ingin mengelola API Key sendiri. Kami sediakan compute dedicated Google Gemini Pro berkecepatan tinggi:
                     </div>
 
-                    <!-- Plan Selection -->
                     <div class="grid grid-cols-2 gap-3 font-mono text-xs">
-                        <label class="flat-card border-2 border-border p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary">
+                        <label class="flat-card border-2 border-border p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary rounded-xl">
                             <div class="flex items-center gap-1.5">
                                 <input type="radio" name="plan" value="monthly" checked onchange="updatePlanPrice('monthly')">
-                                <span class="font-bold text-text-primary">Monthly</span>
+                                <span class="font-bold text-text-primary">Bulanan</span>
                             </div>
-                            <div class="mt-2 text-sm font-bold text-tertiary">$19 / mo</div>
+                            <div class="mt-2 text-sm font-bold text-tertiary">Rp 89.000 / bln</div>
                         </label>
-                        <label class="flat-card border-2 border-border p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary">
+                        <label class="flat-card border-2 border-border p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary rounded-xl">
                             <div class="flex items-center gap-1.5">
                                 <input type="radio" name="plan" value="annual" onchange="updatePlanPrice('annual')">
-                                <span class="font-bold text-text-primary">Annual (Save 35%)</span>
+                                <span class="font-bold text-text-primary">Tahunan (Hemat 22%)</span>
                             </div>
-                            <div class="mt-2 text-sm font-bold text-flat-green">$149 / yr</div>
+                            <div class="mt-2 text-sm font-bold text-flat-green">Rp 828.000 / thn</div>
                         </label>
                     </div>
 
-                    <button onclick="confirmProSubscription()" id="pro-checkout-btn" class="btn-flat-secondary w-full py-2.5 text-xs font-mono font-bold">
-                        CONFIRM MONTHLY SUBSCRIPTION ($19/MO)
+                    <button onclick="confirmProSubscription()" id="pro-checkout-btn" class="btn-flat-secondary w-full py-2.5 text-xs font-mono font-bold rounded-xl border-2 border-tertiary text-tertiary hover:bg-tertiary hover:text-white transition-colors">
+                        KONFIRMASI LANGGANAN PRO (RP 89.000 / BULAN)
                     </button>
                 </div>
 
             </div>
+
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════ -->
     <!-- LEGAL COMPLIANCE MODAL (Terms, Privacy, Medical)           -->
     <!-- ══════════════════════════════════════════════════════════ -->
     <div id="legal-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
@@ -6223,14 +6399,25 @@
                 });
 
                 if (res.status === 402) {
+                    const errData = await res.json().catch(() => ({}));
+                    const detail = errData.detail || {};
                     openProPaymentModal();
-                    toast.info('API Key Required', 'Coach (Pro) requires your Gemini API Key or Pro subscription.');
-                    appendChatMessage('coach', 'Coach (Pro) mode requires entering your Google Gemini API Key. Click "ENTER GEMINI API KEY" in the sidebar to unlock unlimited reasoning.', 'Goalie Security');
+                    if (detail.code === 'FREE_TIER_DAILY_LIMIT_REACHED') {
+                        toast.info('Batas Kuota Chat', 'Batas 10 pesan harian Coach (Free) telah tercapai hari ini.');
+                        appendChatMessage('coach', '⚠️ **Batas 10 pesan harian Coach (Free) telah tercapai hari ini.**\n\nAnda dapat membuka akses **Coach (Pro) tanpa batas secara 100% GRATIS** dengan membawa Gemini API Key Anda sendiri (BYOK), atau upgrade ke Managed Pro.', 'Sistem Kuota');
+                        updateCoachQuotaUI({ is_unlimited: false, daily_limit: 10, daily_used: 10 });
+                    } else {
+                        toast.info('Coach (Pro) Dibutuhkan', 'Fitur ini membutuhkan BYOK Gemini API Key atau langganan Pro.');
+                        appendChatMessage('coach', 'Fitur ini membutuhkan akses Coach (Pro). Anda dapat mengaktifkannya secara 100% Gratis via BYOK Gemini API Key.', 'Goalie Security');
+                    }
                     return;
                 }
 
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
+                if (data.quota) {
+                    updateCoachQuotaUI(data.quota);
+                }
                 const replyText = data.response || data.reply || data.text || 'No response returned from model.';
                 appendChatMessage('coach', replyText, data.provider_used || 'Gemini 3.8 Flash');
 
@@ -7261,6 +7448,11 @@
                     headers: getAuthHeaders()
                 });
                 loadToast.dismiss();
+                if (res.status === 402) {
+                    openProPaymentModal();
+                    toast.info('Fitur Coach (Pro)', 'Direct Garmin Connect auto-ingest membutuhkan Coach (Pro). Aktifkan BYOK secara 100% Gratis!');
+                    return;
+                }
                 const data = await res.json();
                 if (res.ok) {
                     toast.success('Garmin Disinkronkan', data.message || 'Data aktivitas dan kesehatan terbaru berhasil diperbarui.');
@@ -7449,25 +7641,94 @@
             window.location.href = `${API_BASE}/strava/authorize`;
         }
 
-        // ── Subscription Status Check ──────────────────────────────────
+        // ── Subscription Status & Quota Check ─────────────────────────
+        function updateCoachQuotaUI(quota) {
+            const pill = document.getElementById('coach-quota-pill');
+            const dot = document.getElementById('coach-quota-dot');
+            const text = document.getElementById('coach-quota-text');
+            const upgradeTag = document.getElementById('coach-quota-upgrade-tag');
+            if (!pill) return;
+
+            if (quota && quota.is_unlimited) {
+                pill.className = 'flex items-center gap-1.5 font-mono text-[10px] bg-flat-green/10 border border-flat-green/40 text-flat-green px-2 py-0.5 rounded-full font-bold cursor-pointer';
+                if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-flat-green';
+                if (text) text.innerHTML = '✨ <strong class="text-flat-green">FULL COACH (UNLIMITED)</strong>';
+                if (upgradeTag) upgradeTag.className = 'hidden';
+            } else {
+                const used = (quota && typeof quota.daily_used === 'number') ? quota.daily_used : 0;
+                const limit = (quota && quota.daily_limit) || 10;
+                pill.className = 'flex items-center gap-1.5 font-mono text-[10px] bg-surface-subtle border border-border px-2 py-0.5 rounded-full cursor-pointer hover:border-tertiary transition-colors';
+                if (dot) dot.className = 'w-1.5 h-1.5 rounded-full ' + (used >= limit ? 'bg-flat-orange animate-ping' : 'bg-tertiary');
+                if (text) text.innerHTML = `Kuota: <strong class="${used >= limit ? 'text-flat-orange' : 'text-text-primary'}">${used}/${limit}</strong>`;
+                if (upgradeTag) {
+                    upgradeTag.className = 'text-flat-orange font-bold text-[9px] hover:underline ml-1';
+                    upgradeTag.textContent = used >= limit ? 'LIMIT TERCAPAI // BYOK' : 'BYOK GRATIS';
+                }
+            }
+        }
+
         async function checkSubscriptionStatus() {
             try {
                 const res = await fetch(`${API_BASE}/subscription/status`, { headers: getAuthHeaders() });
                 if (!res.ok) return;
                 const data = await res.json();
-                if (data.subscription && data.subscription.is_active) {
+                const sub = data.subscription || {};
+
+                const isOwner = sub.is_owner || (appState.userEmail && appState.userEmail.toLowerCase().includes('rizkyaryendigumilang'));
+                const ownerBanner = document.getElementById('owner-perk-banner');
+                if (ownerBanner) {
+                    if (isOwner) ownerBanner.classList.remove('hidden');
+                    else ownerBanner.classList.add('hidden');
+                }
+
+                if (isOwner) {
                     appState.isPro = true;
+                    appState.isOwner = true;
                     localStorage.setItem('user_is_pro', 'true');
                     localStorage.setItem('user_is_pro_subscription', 'true');
+                    updateCoachQuotaUI({ is_unlimited: true });
                     const badge = document.getElementById('chat-tier-badge');
                     if (badge) {
-                        badge.textContent = 'RECOMMENDED // FULL COACH (ACTIVE)';
+                        badge.textContent = 'RECOMMENDED // FULL COACH (FOUNDER)';
                         badge.className = 'font-mono text-[10px] text-flat-green font-bold bg-flat-green/10 border border-flat-green px-1.5 py-0.2';
                     }
                     const dropTier = document.getElementById('dropdown-tier-name');
                     if (dropTier) dropTier.textContent = 'RECOMMENDED // FULL COACH';
+                    return;
                 }
-            } catch (e) {}
+
+                if (sub.is_active || sub.is_byok || sub.status === 'pro') {
+                    appState.isPro = true;
+                    localStorage.setItem('user_is_pro', 'true');
+                    localStorage.setItem('user_is_pro_subscription', 'true');
+                    updateCoachQuotaUI({ is_unlimited: true });
+                    const badge = document.getElementById('chat-tier-badge');
+                    if (badge) {
+                        badge.textContent = sub.tier_name || 'RECOMMENDED // FULL COACH';
+                        badge.className = 'font-mono text-[10px] text-flat-green font-bold bg-flat-green/10 border border-flat-green px-1.5 py-0.2';
+                    }
+                    const dropTier = document.getElementById('dropdown-tier-name');
+                    if (dropTier) dropTier.textContent = sub.tier_name || 'FULL COACH (PRO)';
+                } else {
+                    appState.isPro = false;
+                    localStorage.removeItem('user_is_pro');
+                    localStorage.removeItem('user_is_pro_subscription');
+                    updateCoachQuotaUI({
+                        is_unlimited: false,
+                        daily_limit: sub.daily_chat_limit || 10,
+                        daily_used: sub.daily_chat_used || 0
+                    });
+                    const badge = document.getElementById('chat-tier-badge');
+                    if (badge) {
+                        badge.textContent = 'COACH (FREE)';
+                        badge.className = 'font-mono text-[10px] text-tertiary font-bold bg-surface-subtle border border-border px-1.5 py-0.2';
+                    }
+                    const dropTier = document.getElementById('dropdown-tier-name');
+                    if (dropTier) dropTier.textContent = 'COACH (FREE)';
+                }
+            } catch (e) {
+                console.warn('[Goalie] Subscription check failed:', e);
+            }
         }
 
         // Auth Modal Controller
@@ -7706,33 +7967,85 @@
             updateModalBodyLock();
         }
 
+        function switchActivationTab(tab) {
+            const btnByok = document.getElementById('act-tab-byok');
+            const btnManaged = document.getElementById('act-tab-managed');
+            const panelByok = document.getElementById('activation-panel-byok');
+            const panelManaged = document.getElementById('activation-panel-managed');
+            if (tab === 'managed') {
+                if (btnManaged) { btnManaged.className = 'px-3 py-1 text-xs font-mono font-bold rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary'; }
+                if (btnByok) { btnByok.className = 'px-3 py-1 text-xs font-mono font-semibold rounded-lg border border-border text-text-secondary hover:text-text-primary'; }
+                if (panelManaged) panelManaged.classList.remove('hidden');
+                if (panelByok) panelByok.classList.add('hidden');
+            } else {
+                if (btnByok) { btnByok.className = 'px-3 py-1 text-xs font-mono font-bold rounded-lg border-2 border-flat-green bg-flat-green/10 text-flat-green'; }
+                if (btnManaged) { btnManaged.className = 'px-3 py-1 text-xs font-mono font-semibold rounded-lg border border-border text-text-secondary hover:text-text-primary'; }
+                if (panelByok) panelByok.classList.remove('hidden');
+                if (panelManaged) panelManaged.classList.add('hidden');
+            }
+        }
+
+        function scrollToActivationSection() {
+            const el = document.getElementById('pro-activation-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
         function updatePlanPrice(plan) {
             const btn = document.getElementById('pro-checkout-btn');
             if (btn) {
                 btn.textContent = plan === 'annual'
-                    ? 'CONFIRM ANNUAL SUBSCRIPTION ($149/YR)'
-                    : 'CONFIRM MONTHLY SUBSCRIPTION ($19/MO)';
+                    ? 'KONFIRMASI LANGGANAN PRO TAHUNAN (RP 828.000 / TAHUN)'
+                    : 'KONFIRMASI LANGGANAN PRO BULANAN (RP 89.000 / BULAN)';
             }
         }
 
         async function confirmProSubscription() {
             const btn = document.getElementById('pro-checkout-btn');
             btn.disabled = true;
-            btn.textContent = 'CONFIRMING VIA PAYMENT GATEWAY...';
+            btn.textContent = 'MEMPROSES CHECKOUT QRIS...';
 
-            setTimeout(() => {
+            try {
+                const planInput = document.querySelector('input[name="plan"]:checked');
+                const plan = planInput ? planInput.value : 'monthly';
+                
+                const orderRes = await fetch(`${API_BASE}/subscription/create-order`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ plan: plan, payment_method: 'qris' })
+                });
+                const orderData = await orderRes.json();
+                
+                // Simulate instant payment confirmation
+                await fetch(`${API_BASE}/subscription/activate`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        order_id: orderData.order_id || 'ORD-PRO-INSTANT',
+                        plan: plan,
+                        payment_method: 'qris'
+                    })
+                });
+
                 appState.isPro = true;
                 localStorage.setItem('user_is_pro', 'true');
                 localStorage.setItem('user_is_pro_subscription', 'true');
+                updateCoachQuotaUI({ is_unlimited: true });
                 const badge = document.getElementById('chat-tier-badge');
                 if (badge) {
-                    badge.textContent = 'GEMINI 3.8 FLASH PRO (ACTIVE)';
+                    badge.textContent = 'RECOMMENDED // FULL COACH (PRO)';
                     badge.className = 'font-mono text-[10px] text-flat-green font-bold bg-flat-green/10 border border-flat-green px-1.5 py-0.2';
                 }
-                btn.disabled = false;
+                const dropTier = document.getElementById('dropdown-tier-name');
+                if (dropTier) dropTier.textContent = 'RECOMMENDED // FULL COACH';
+
                 closeProPaymentModal();
-                toast.success('Pro Activated', 'Your athlete account now possesses unlimited Gemini Pro macrocycle reasoning.');
-            }, 800);
+                toast.success('Coach Pro Aktif!', 'Langganan Managed Pro berhasil diaktifkan. Akses Gemini Pro & Garmin auto-sync tanpa batas.');
+            } catch (err) {
+                toast.error('Gagal Berlangganan', err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'KONFIRMASI LANGGANAN PRO (RP 89.000 / BULAN)';
+            }
         }
 
         // ══════════════════════════════════════════════════════
@@ -7742,20 +8055,21 @@
             const input = document.getElementById('byok-api-key-input');
             const key = input ? input.value.trim() : '';
             if (!key || key.length < 15) {
-                toast.error('Invalid Key', 'Please enter a valid Google Gemini API Key (starts with AIzaSy...).');
+                toast.error('API Key Tidak Valid', 'Masukkan Google Gemini API Key yang valid (minimal 15 karakter, diawali AIzaSy...).');
                 return;
             }
             const btn = document.getElementById('byok-save-btn');
-            if (btn) { btn.disabled = true; btn.textContent = 'VALIDATING...'; }
+            if (btn) { btn.disabled = true; btn.textContent = 'MEMVERIFIKASI...'; }
 
             try {
-                const res = await fetch(`${API_BASE}/coach/validate-key`, {
+                // Register to backend BYOK endpoint
+                const res = await fetch(`${API_BASE}/subscription/byok`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify({ api_key: key })
                 });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Validation failed');
+                if (!res.ok) throw new Error(data.detail || 'Verifikasi key gagal');
 
                 localStorage.setItem('user_gemini_api_key', key);
                 localStorage.setItem('user_is_pro', 'true');
@@ -7763,34 +8077,45 @@
                 appState.isPro = true;
 
                 updateByokUI();
+                updateCoachQuotaUI({ is_unlimited: true });
                 selectCoachTier('pro', false);
-                toast.success('Coach (Pro) BYOK Active', 'Gemini API Key saved. Unlimited Pro macrocycle reasoning unlocked!');
+                toast.success('Coach (Pro) BYOK Aktif!', 'Gemini API Key tersimpan. Tier Coach (Pro) terbuka 100% Gratis selamanya!');
                 closeProPaymentModal();
             } catch (err) {
-                // Save locally even if offline
+                // Save locally even if backend temporarily offline
                 localStorage.setItem('user_gemini_api_key', key);
                 localStorage.setItem('user_is_pro', 'true');
                 appState.customApiKey = key;
                 appState.isPro = true;
                 updateByokUI();
+                updateCoachQuotaUI({ is_unlimited: true });
                 selectCoachTier('pro', false);
-                toast.success('Key Saved Offline', 'Coach (Pro) enabled locally with your API Key.');
+                toast.success('Key Tersimpan Offline', 'Coach (Pro) aktif dengan Gemini API Key Anda.');
                 closeProPaymentModal();
             } finally {
-                if (btn) { btn.disabled = false; btn.textContent = 'UNLOCK PRO'; }
+                if (btn) { btn.disabled = false; btn.textContent = 'AKTIFKAN PRO GRATIS'; }
             }
         }
 
-        function removeByokApiKey() {
+        async function removeByokApiKey() {
+            try {
+                await fetch(`${API_BASE}/subscription/byok`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ api_key: '' })
+                });
+            } catch (e) {}
+
             localStorage.removeItem('user_gemini_api_key');
             appState.customApiKey = '';
-            if (localStorage.getItem('user_is_pro_subscription') !== 'true') {
+            if (localStorage.getItem('user_is_pro_subscription') !== 'true' && !appState.isOwner) {
                 appState.isPro = false;
                 localStorage.removeItem('user_is_pro');
+                updateCoachQuotaUI({ is_unlimited: false, daily_limit: 10, daily_used: 0 });
             }
             updateByokUI();
             selectCoachTier('free', false);
-            toast.info('API Key Removed', 'Coach reverted to Free tier.');
+            toast.info('API Key Dihapus', 'Akun kembali ke paket Coach (Free).');
         }
 
         function updateByokUI() {

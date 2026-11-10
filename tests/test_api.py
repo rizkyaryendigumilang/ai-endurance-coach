@@ -343,5 +343,117 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertEqual(sug_data.get("status"), "success")
         self.assertIn("suggestion", sug_data)
 
+    def test_17_free_tier_daily_chat_quota(self):
+        """Verify Coach (Free) daily 10 chat limit and HTTP 402 rejection on quota exhaustion."""
+        from app.core.auth import create_demo_token
+        from app.services import sandbox_store
+        user_id = "test_athlete_free_quota"
+        token = create_demo_token(user_id, "free_quota@athlete.test")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # Simulate user already having used 10 chats today
+        store = sandbox_store._get_user_store(user_id)
+        from datetime import datetime, timezone
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        store["daily_chat_tracker"] = {"date": today, "count": 10}
+
+        res = self.client.post(
+            "/api/v1/coach/chat",
+            json={"message": "Bagaimana pacing interval saya hari ini?"},
+            headers=headers
+        )
+        self.assertEqual(res.status_code, 402)
+        err = res.json().get("detail", {})
+        self.assertEqual(err.get("code"), "FREE_TIER_DAILY_LIMIT_REACHED")
+        self.assertEqual(err.get("quota"), 10)
+        self.assertEqual(err.get("used"), 10)
+        self.assertIn("BYOK", str(err.get("options")))
+
+    def test_18_owner_bypass_quota_and_pro_features(self):
+        """Verify owner account rizkyaryendigumilang@gmail.com is permanently exempt from all paywalls and quotas."""
+        from app.core.auth import create_demo_token
+        from app.services import sandbox_store
+        owner_token = create_demo_token("c698122d-1fe3-5620-820c-23682e4f844a", "rizkyaryendigumilang@gmail.com")
+        headers = {"Authorization": f"Bearer {owner_token}"}
+
+        # 1. Subscription status reflects RECOMMENDED // FULL COACH with is_owner=True
+        sub_res = self.client.get("/api/v1/subscription/status", headers=headers)
+        self.assertEqual(sub_res.status_code, 200)
+        sub_data = sub_res.json().get("subscription", {})
+        self.assertEqual(sub_data.get("status"), "pro")
+        self.assertEqual(sub_data.get("plan"), "full")
+        self.assertEqual(sub_data.get("tier_name"), "RECOMMENDED // FULL COACH")
+        self.assertTrue(sub_data.get("is_owner"))
+        self.assertIsNone(sub_data.get("daily_chat_limit"))
+
+        # 2. Garmin sync works seamlessly without 402 paywall
+        garmin_sync_res = self.client.post("/api/v1/garmin/sync", headers=headers)
+        self.assertEqual(garmin_sync_res.status_code, 200)
+
+        # 3. Quota endpoint reflects unlimited
+        quota_res = self.client.get("/api/v1/coach/quota", headers=headers)
+        self.assertEqual(quota_res.status_code, 200)
+        self.assertTrue(quota_res.json().get("is_unlimited"))
+
+    def test_19_byok_activation_and_unlimited_access(self):
+        """Verify Bring-Your-Own-Key (BYOK) activates Coach (Pro) for 100% free and bypasses chat limits."""
+        from app.core.auth import create_demo_token
+        from app.services import sandbox_store
+        user_id = "athlete_byok_tester"
+        token = create_demo_token(user_id, "byok_tester@athlete.test")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # Initial status is Coach (Free)
+        sub_before = self.client.get("/api/v1/subscription/status", headers=headers).json().get("subscription", {})
+        self.assertEqual(sub_before.get("status"), "free")
+        self.assertEqual(sub_before.get("daily_chat_limit"), 10)
+
+        # 1. Reject invalid short key
+        bad_res = self.client.post("/api/v1/subscription/byok", json={"api_key": "short"}, headers=headers)
+        self.assertEqual(bad_res.status_code, 400)
+
+        # 2. Activate valid BYOK key
+        valid_res = self.client.post(
+            "/api/v1/subscription/byok",
+            json={"api_key": "AIzaSyValidGeminiKeySecret12345"},
+            headers=headers
+        )
+        self.assertEqual(valid_res.status_code, 200)
+        self.assertTrue(valid_res.json().get("data", {}).get("is_active"))
+
+        # 3. Subscription status now reflects RECOMMENDED // FULL COACH (BYOK) with unlimited quota
+        sub_after = self.client.get("/api/v1/subscription/status", headers=headers).json().get("subscription", {})
+        self.assertEqual(sub_after.get("status"), "pro")
+        self.assertTrue(sub_after.get("is_byok"))
+        self.assertIsNone(sub_after.get("daily_chat_limit"))
+
+        # 4. Garmin sync is now unlocked (passes subscription firewall without 402)
+        garmin_res = self.client.post("/api/v1/garmin/sync", headers=headers)
+        self.assertNotEqual(garmin_res.status_code, 402)
+
+    def test_20_subscription_status_and_tier_details(self):
+        """Verify 3-tier transparent plans metadata and capabilities endpoint."""
+        tiers_res = self.client.get("/api/v1/coach/tiers")
+        self.assertEqual(tiers_res.status_code, 200)
+        plans = tiers_res.json().get("plans", {})
+        self.assertIn("pemula", plans)
+        self.assertIn("coach_free", plans)
+        self.assertIn("coach_pro", plans)
+        self.assertIn("RECOMMENDED // FULL COACH", plans["coach_pro"]["highlight"])
+
+    def test_21_garmin_sync_subscription_gating(self):
+        """Verify non-pro, non-owner, non-byok user receives HTTP 402 with contextual options when syncing Garmin."""
+        from app.core.auth import create_demo_token
+        user_id = "locked_garmin_user"
+        token = create_demo_token(user_id, "locked_garmin@athlete.test")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        res = self.client.post("/api/v1/garmin/sync", headers=headers)
+        self.assertEqual(res.status_code, 402)
+        err = res.json().get("detail", {})
+        self.assertEqual(err.get("code"), "PRO_FEATURE_REQUIRED")
+        self.assertEqual(err.get("feature"), "garmin_auto_ingest")
+        self.assertIn("BYOK", str(err.get("options")))
+
 if __name__ == "__main__":
     unittest.main()

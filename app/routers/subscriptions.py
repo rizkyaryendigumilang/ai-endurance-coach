@@ -1,21 +1,21 @@
 """
 Goalie — Subscriptions Router
-Manages athlete subscription status, checkout orders (QRIS / VA), and activation.
+Manages athlete subscription status, BYOK activation, checkout orders (QRIS / VA), and activation.
 """
 
 import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.services import sandbox_store
-from app.schemas.models import SubscriptionOrderInput, SubscriptionActivateInput
-from app.core.auth import get_current_user
+from app.schemas.models import SubscriptionOrderInput, SubscriptionActivateInput, ByokRegisterInput
+from app.core.auth import get_current_user, get_current_user_optional
 
 router = APIRouter(tags=["Subscription"])
 
 
 @router.get("/api/v1/subscription/status")
-def get_subscription_status(user_id: str = Depends(get_current_user)):
-    """Mengambil status langganan atlet saat ini (Free vs Pro)."""
+def get_subscription_status(user_id: str = Depends(get_current_user_optional)):
+    """Mengambil status langganan atlet saat ini (Pemula Free, Coach Free, vs Coach Pro/BYOK)."""
     sub = sandbox_store.get_subscription(user_id)
     return {
         "status": "success",
@@ -23,10 +23,39 @@ def get_subscription_status(user_id: str = Depends(get_current_user)):
     }
 
 
+@router.post("/api/v1/subscription/byok")
+def register_byok_key(
+    byok_req: ByokRegisterInput,
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    Mendaftarkan atau menghapus Bring-Your-Own-Key (BYOK) Google Gemini API Key.
+    Key valid langsung membuka tier Coach (Pro) 100% gratis tanpa biaya langganan.
+    """
+    key = (byok_req.api_key or "").strip()
+    if key and len(key) < 15:
+        raise HTTPException(
+            status_code=400,
+            detail="Format Gemini API Key tidak valid (minimal 15 karakter). Dapatkan key gratis di Google AI Studio."
+        )
+
+    res = sandbox_store.set_byok_key(user_id, key)
+    msg = (
+        "BYOK Gemini API Key berhasil diverifikasi dan disimpan! Tier Coach (Pro) kini aktif 100% Gratis."
+        if key else
+        "BYOK Gemini API Key dinonaktifkan. Akun kembali ke Coach (Free)."
+    )
+    return {
+        "status": "success",
+        "message": msg,
+        "data": res
+    }
+
+
 @router.post("/api/v1/subscription/create-order")
 def create_subscription_order(
     order_req: SubscriptionOrderInput,
-    user_id: str = Depends(get_current_user)
+    user_id: str = Depends(get_current_user_optional)
 ):
     """
     Membuat checkout order langganan Pro Plan (QRIS, VA, atau Kartu Kredit).
@@ -46,7 +75,7 @@ def create_subscription_order(
         "status": "success",
         "order_id": order_id,
         "plan": plan,
-        "plan_name": "Paket Pro Tahunan (Hemat 22%)" if plan == "annual" else "Paket Pro Bulanan",
+        "plan_name": "Paket Pro Tahunan (Hemat 22%)" if plan == "annual" else "Paket Pro Bulanan ($19/mo / Rp 89.000)",
         "amount_idr": amount,
         "payment_method": order_req.payment_method or "qris",
         "qris_code": qris_code,
@@ -58,7 +87,7 @@ def create_subscription_order(
 @router.post("/api/v1/subscription/activate")
 def activate_subscription(
     activate_req: SubscriptionActivateInput,
-    user_id: str = Depends(get_current_user)
+    user_id: str = Depends(get_current_user_optional)
 ):
     """
     Mengaktifkan paket langganan Pro Plan atlet setelah pembayaran selesai/dikonfirmasi.
@@ -71,6 +100,6 @@ def activate_subscription(
     )
     return {
         "status": "success",
-        "message": "Langganan Goalie AI Coach Pro berhasil diaktifkan! Fitur Google Gemini 3.8 Flash kini aktif penuh.",
+        "message": "Langganan Goalie AI Coach Pro berhasil diaktifkan! Fitur Google Gemini 3.8 Flash Pro kini aktif penuh.",
         "subscription": sub
     }

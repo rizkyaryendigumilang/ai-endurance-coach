@@ -17,6 +17,18 @@ from app.core.auth import get_current_user, get_current_user_optional
 router = APIRouter(tags=["Integrations"])
 
 
+def _check_pro_access(user_id: str) -> bool:
+    """Verifikasi apakah user memiliki hak akses fitur Pro (Owner, Pro Active, atau BYOK)."""
+    if sandbox_store._is_owner_user(user_id):
+        return True
+    sub = sandbox_store.get_subscription(user_id)
+    if sub.get("is_active") and sub.get("status") == "pro":
+        return True
+    if sandbox_store.get_byok_key(user_id):
+        return True
+    return False
+
+
 @router.get("/api/v1/strava/authorize", tags=["Strava"])
 def strava_authorize_alias(request: Request, user_id: str = Depends(get_current_user_optional)):
     """Direct alias for Strava OAuth flow supporting both JSON and direct browser redirect."""
@@ -43,6 +55,19 @@ def connect_garmin_account(
     """
     Direct connection to Garmin Connect using credentials or 2FA verification code.
     """
+    if not _check_pro_access(user_id):
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "PRO_FEATURE_REQUIRED",
+                "feature": "garmin_auto_ingest",
+                "message": "Direct Garmin Connect auto-ingest adalah fitur eksklusif Coach (Pro). Aktifkan BYOK secara 100% Gratis menggunakan Gemini API Key Anda atau upgrade ke Managed Pro.",
+                "options": [
+                    {"type": "byok", "name": "Bring Your Own Key (BYOK)", "cost": "$0 / Gratis Selamanya"},
+                    {"type": "managed_pro", "name": "Managed Coach (Pro)", "cost": "Rp 89.000 / bulan"}
+                ]
+            }
+        )
     try:
         res = garmin_service.authenticate_and_connect(
             user_id=user_id,
@@ -71,6 +96,19 @@ def disconnect_garmin_account(user_id: str = Depends(get_current_user_optional))
 @router.post("/api/v1/garmin/sync", tags=["Garmin Connect"])
 def sync_garmin_all(limit: int = 15, user_id: str = Depends(get_current_user_optional)):
     """Syncs both daily health metrics and recent activities from Garmin Connect."""
+    if not _check_pro_access(user_id):
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "PRO_FEATURE_REQUIRED",
+                "feature": "garmin_auto_ingest",
+                "message": "Direct Garmin Connect auto-ingest adalah fitur eksklusif Coach (Pro). Aktifkan BYOK secara 100% Gratis menggunakan Gemini API Key Anda atau upgrade ke Managed Pro.",
+                "options": [
+                    {"type": "byok", "name": "Bring Your Own Key (BYOK)", "cost": "$0 / Gratis Selamanya"},
+                    {"type": "managed_pro", "name": "Managed Coach (Pro)", "cost": "Rp 89.000 / bulan"}
+                ]
+            }
+        )
     try:
         health_data = garmin_service.sync_daily_health(user_id)
         activities = garmin_service.sync_recent_activities(user_id, limit=limit)
@@ -127,6 +165,19 @@ def sync_garmin_activities(
     """
     Syncs recent workout sessions directly from Garmin Connect.
     """
+    if not _check_pro_access(user_id):
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "PRO_FEATURE_REQUIRED",
+                "feature": "garmin_auto_ingest",
+                "message": "Direct Garmin Connect auto-ingest adalah fitur eksklusif Coach (Pro). Aktifkan BYOK secara 100% Gratis menggunakan Gemini API Key Anda atau upgrade ke Managed Pro.",
+                "options": [
+                    {"type": "byok", "name": "Bring Your Own Key (BYOK)", "cost": "$0 / Gratis Selamanya"},
+                    {"type": "managed_pro", "name": "Managed Coach (Pro)", "cost": "Rp 89.000 / bulan"}
+                ]
+            }
+        )
     try:
         activities = garmin_service.sync_recent_activities(user_id, limit)
         return {
