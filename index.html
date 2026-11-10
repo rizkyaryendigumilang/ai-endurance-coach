@@ -46,6 +46,7 @@
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
     <script src="/public/js/db.js"></script>
+    <script src="public/js/garmin_workouts_data.js" onerror="this.src='/public/js/garmin_workouts_data.js'"></script>
 
     <!-- Instant Theme Anti-FOUC Initialization -->
     <script>
@@ -5745,10 +5746,10 @@
         // Dynamic API Base URL for Web & Capacitor Native Mobile App
         const getApiBase = () => {
             if (typeof window !== 'undefined' && window.Capacitor) {
-                return localStorage.getItem('goalie_api_base') || "https://43.156.236.102/api/v1";
+                return localStorage.getItem('goalie_api_base') || "http://localhost:8000/api/v1";
             }
             if (window.location.protocol === 'file:') {
-                return localStorage.getItem('goalie_api_base') || "https://43.156.236.102/api/v1";
+                return localStorage.getItem('goalie_api_base') || "http://localhost:8000/api/v1";
             }
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
@@ -8116,15 +8117,19 @@
         }
 
         async function syncCockpitWithBackend() {
-            // 1. Instant Cache Hydration (0ms Stale-While-Revalidate)
+            // 1. Instant Cache & Pre-bundled Telemetry Hydration (0ms Stale-While-Revalidate)
             try {
                 const cached = localStorage.getItem('goalie_cached_cockpit');
                 if (cached) {
                     applyCockpitTotals(JSON.parse(cached));
+                } else if (window.INITIAL_COCKPIT_TOTALS) {
+                    applyCockpitTotals(window.INITIAL_COCKPIT_TOTALS);
                 }
                 const cachedFeed = localStorage.getItem('goalie_cached_feed');
                 if (cachedFeed) {
                     renderActivitiesFeed(JSON.parse(cachedFeed));
+                } else if (window.INITIAL_GARMIN_WORKOUTS && window.INITIAL_GARMIN_WORKOUTS.length > 0) {
+                    renderActivitiesFeed(window.INITIAL_GARMIN_WORKOUTS);
                 }
             } catch (e) {}
 
@@ -8142,9 +8147,14 @@
                             localStorage.setItem('goalie_cached_feed', JSON.stringify(workouts));
                         } catch (e) {}
                     }
+                } else if (window.INITIAL_GARMIN_WORKOUTS && window.INITIAL_GARMIN_WORKOUTS.length > 0) {
+                    renderActivitiesFeed(window.INITIAL_GARMIN_WORKOUTS);
                 }
             } catch (err) {
                 console.warn('[Goalie Cockpit] Feed fetch skipped:', err);
+                if (window.INITIAL_GARMIN_WORKOUTS && window.INITIAL_GARMIN_WORKOUTS.length > 0) {
+                    renderActivitiesFeed(window.INITIAL_GARMIN_WORKOUTS);
+                }
             }
 
             // 3. Network Revalidation: Sports Summary Totals
@@ -11042,9 +11052,15 @@
         // ── Garmin Integration Handlers ────────────────────────────────
         async function checkGarminStatus() {
             try {
-                const res = await fetch(`${API_BASE}/garmin/status`, { headers: getAuthHeaders() });
-                if (!res.ok) return;
-                const data = await res.json();
+                let data = null;
+                try {
+                    const res = await fetch(`${API_BASE}/garmin/status`, { headers: getAuthHeaders() });
+                    if (res.ok) data = await res.json();
+                } catch (ne) {}
+                if (!data && window.INITIAL_GARMIN_STATUS) {
+                    data = window.INITIAL_GARMIN_STATUS;
+                }
+                if (!data) return;
                 const badge = document.getElementById('garmin-status-badge');
                 const connPanel = document.getElementById('garmin-connected-panel');
                 const loginPanel = document.getElementById('garmin-login-panel');
