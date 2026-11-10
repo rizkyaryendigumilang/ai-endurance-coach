@@ -11,6 +11,31 @@ from app.services.sports_engine import SportsEngine
 
 ai_engine = MultiTierAIProvider()
 
+from enum import Enum
+
+
+class RunnerState(str, Enum):
+    ON_TRACK = "ON_TRACK"
+    INTRA_WEEK_SHIFT = "INTRA_WEEK_SHIFT"
+    RETURN_TO_RUN_BRIDGE = "RETURN_TO_RUN_BRIDGE"
+    MACRO_RECALIBRATION = "MACRO_RECALIBRATION"
+    GOAL_RESET_GATE = "GOAL_RESET_GATE"
+
+
+class WorkoutTier(str, Enum):
+    TIER_1_ANCHOR = "TIER_1_ANCHOR"    # Long Run & Marathon Pace Run (Wajib Selamat)
+    TIER_2_QUALITY = "TIER_2_QUALITY"  # Threshold, Tempo & Intervals (Downgrade/Potong)
+    TIER_3_FILLER = "TIER_3_FILLER"    # Easy Run & Recovery Run (Langsung Drop)
+
+
+class AbsenceReason(str, Enum):
+    BUSY_WORK = "BUSY_WORK"
+    FATIGUE_SORENESS = "FATIGUE_SORENESS"
+    SICKNESS_FLU = "SICKNESS_FLU"
+    MINOR_NIGGLE = "MINOR_NIGGLE"
+
+
+
 DAY_NAMES_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 DAY_NAMES_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
 
@@ -704,3 +729,210 @@ class WeeklyCalendarService:
 
         lines.append("END:VCALENDAR")
         return "\r\n".join(lines)
+
+    @classmethod
+    def determine_runner_state(cls, missed_count: int, reason: str) -> RunnerState:
+        """Menentukan state pelari dalam Finite State Machine (FSM)."""
+        if missed_count <= 0:
+            return RunnerState.ON_TRACK
+        elif missed_count == 1:
+            return RunnerState.INTRA_WEEK_SHIFT
+        elif missed_count <= 4:
+            return RunnerState.RETURN_TO_RUN_BRIDGE
+        elif missed_count <= 10:
+            return RunnerState.MACRO_RECALIBRATION
+        else:
+            return RunnerState.GOAL_RESET_GATE
+
+    @classmethod
+    def auto_rebalance_schedule(
+        cls,
+        user_id: str,
+        week_key: Optional[str] = None,
+        missed_day_indices: Optional[List[int]] = None,
+        reason: str = "BUSY_WORK"
+    ) -> Dict:
+        """
+        'Life Happens' Auto-Rebalancer:
+        Aturan Emas Fisiologis: Kilometer yang sudah terlewat TIDAK BOLEH pernah ditumpuk ke minggu depan.
+        Menerapkan FSM State Machine & Aturan Polarisasi 48 Jam.
+        """
+        ref_date = date.today()
+        if not week_key:
+            week_key = cls.get_week_key(ref_date)
+
+        user_store = sandbox_store._get_user_store(user_id)
+        cal = user_store.get("weekly_calendar", {}).get(week_key)
+        if not cal:
+            templates = cls._get_weekly_template("run", 45.0, 168)
+            week_dates = cls.get_week_dates(ref_date, 0)
+            days_payload = []
+            for i, (day_date, tpl) in enumerate(zip(week_dates, templates)):
+                days_payload.append({
+                    "day_index": i,
+                    "day_name_en": DAY_NAMES_EN[i],
+                    "day_name_id": DAY_NAMES_ID[i],
+                    "date": day_date.isoformat(),
+                    "completed": False,
+                    "category": tpl["category"],
+                    "workout_type": tpl["workout_type"],
+                    "title": tpl["title"],
+                    "distance_km": tpl["distance_km"],
+                    "duration_min": tpl["duration_min"],
+                    "intensity_zone": tpl["intensity_zone"]
+                })
+            cal = {
+                "week_key": week_key,
+                "days": days_payload,
+                "total_planned_km": sum(d["distance_km"] for d in days_payload)
+            }
+            if "weekly_calendar" not in user_store:
+                user_store["weekly_calendar"] = {}
+            user_store["weekly_calendar"][week_key] = cal
+
+        days = cal.get("days", [])
+        if missed_day_indices is None:
+            # Auto-detect uncompleted days before today
+            today_str = ref_date.isoformat()
+            missed_day_indices = [
+                i for i, d in enumerate(days)
+                if d.get("date") < today_str and not d.get("completed") and d.get("distance_km", 0) > 0
+            ]
+
+        missed_count = len(missed_day_indices)
+        runner_state = cls.determine_runner_state(missed_count, reason)
+
+        actions_taken = []
+        dropped_km = 0.0
+        shifted_sessions = []
+
+        for idx in missed_day_indices:
+            if idx < 0 or idx >= len(days):
+                continue
+            day = days[idx]
+            category = day.get("category", "")
+            w_type = day.get("workout_type", "")
+            dist = float(day.get("distance_km", 0.0))
+
+            # Tier 1 (Anchor: Long Run) -> Prioritas Geser ke slot kosong dengan jeda 48 jam
+            if category == "Long Run" or "long" in w_type:
+                target_slot = None
+                for candidate_idx in range(idx + 1, len(days)):
+                    if days[candidate_idx].get("category") in ("Recovery", "Rest"):
+                        target_slot = candidate_idx
+                        break
+                
+                if target_slot is not None:
+                    orig_day_name = day["day_name_id"]
+                    dest_day_name = days[target_slot]["day_name_id"]
+                    # Swap
+                    days[target_slot]["title"] = f"{day['title']} (Digeser dari {orig_day_name})"
+                    days[target_slot]["distance_km"] = day["distance_km"]
+                    days[target_slot]["duration_min"] = day["duration_min"]
+                    days[target_slot]["category"] = "Long Run"
+                    days[target_slot]["workout_type"] = day["workout_type"]
+                    days[target_slot]["intensity_zone"] = day["intensity_zone"]
+
+                    day["title"] = f"Rest Day (Sesi digeser ke {dest_day_name})"
+                    day["distance_km"] = 0.0
+                    day["duration_min"] = 0
+                    day["category"] = "Rest"
+                    day["workout_type"] = "rest"
+                    shifted_sessions.append(f"Long Run digeser dari {orig_day_name} ke {dest_day_name}")
+                    actions_taken.append(f"Tier 1 Saved: Long Run diselamatkan ke hari {dest_day_name} (jeda 48 jam aman).")
+                else:
+                    # Downgrade if no safe slot
+                    day["title"] = "Long Run Terlewat (Dihapus demi Proteksi ACWR)"
+                    day["distance_km"] = 0.0
+                    dropped_km += dist
+                    actions_taken.append("Tier 1 Protection: Tidak ada celah 48 jam aman, long run dipangkas untuk mencegah lonjakan ACWR > 1.5.")
+
+            # Tier 2 (Quality: Threshold / Intervals) -> Downgrade volume
+            elif category == "Quality" or "interval" in w_type or "tempo" in w_type:
+                day["title"] = "Sesi Kualitas Terlewat (Volume Downgraded)"
+                day["distance_km"] = 0.0
+                day["category"] = "Rest"
+                dropped_km += dist
+                actions_taken.append(f"Tier 2 Downgraded: Sesi {day['day_name_id']} di-drop untuk menghindari akumulasi kelelahan laktat.")
+
+            # Tier 3 (Filler: Easy Run / Recovery) -> Langsung Drop tanpa rasa bersalah
+            else:
+                day["title"] = "Easy Run Terlewat (Langsung Drop)"
+                day["distance_km"] = 0.0
+                day["category"] = "Rest"
+                dropped_km += dist
+                actions_taken.append(f"Tier 3 Dropped: Easy Run {day['day_name_id']} ({dist} km) dihapus. Jangan pernah tebus km terlewat!")
+
+        # Recalculate totals
+        total_km = round(sum(d["distance_km"] for d in days if d["distance_km"]), 1)
+        total_mins = sum(d["duration_min"] for d in days if d["duration_min"])
+        cal["total_planned_km"] = total_km
+        cal["total_planned_duration_min"] = total_mins
+        cal["total_planned_hours"] = round(total_mins / 60, 1)
+
+        # Update directive
+        cal["ai_directive"] = (
+            f"Direktif Auto-Rebalance (FSM: {runner_state.value}): "
+            f"Alasan absen '{reason}'. Total {round(dropped_km, 1)} km terlewat telah diamankan tanpa ditumpuk "
+            f"ke sesi lain demi menjaga ACWR tetap di rentang Sweet Spot (1.0 - 1.25). "
+            f"Jadwal sisa minggu disesuaikan dengan volume baru {total_km} km."
+        )
+
+        cal["fsm_state"] = runner_state.value
+        cal["rebalanced_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        user_store["weekly_calendar"][week_key] = cal
+
+        return {
+            "status": "success",
+            "fsm_state": runner_state.value,
+            "missed_count": missed_count,
+            "dropped_km": round(dropped_km, 1),
+            "new_planned_km": total_km,
+            "actions_taken": actions_taken,
+            "shifted_sessions": shifted_sessions,
+            "ai_directive": cal["ai_directive"],
+            "days": days
+        }
+
+    @classmethod
+    def check_eod_missed_workouts(cls, user_id: str) -> Dict:
+        """
+        Evaluasi EOD (misal batas pukul 22:00 WIB).
+        Mendeteksi apakah hari ini ada sesi terjadwal yang belum selesai dan bukan hari istirahat.
+        """
+        ref_date = date.today()
+        week_key = cls.get_week_key(ref_date)
+        user_store = sandbox_store._get_user_store(user_id)
+        cal = user_store.get("weekly_calendar", {}).get(week_key)
+        if not cal:
+            return {"missed_today": False, "reason": "No calendar active"}
+
+        today_str = ref_date.isoformat()
+        today_session = None
+        for i, d in enumerate(cal.get("days", [])):
+            if d.get("date") == today_str:
+                today_session = (i, d)
+                break
+
+        if not today_session:
+            return {"missed_today": False}
+
+        idx, s = today_session
+        is_completed = s.get("completed", False)
+        is_rest = s.get("category") == "Rest" or s.get("distance_km", 0) == 0
+
+        # If not completed and not a rest day, it is considered missed
+        is_missed = (not is_completed) and (not is_rest)
+
+        return {
+            "missed_today": is_missed,
+            "day_index": idx,
+            "workout_title": s.get("title"),
+            "distance_km": s.get("distance_km"),
+            "category": s.get("category"),
+            "prompt_user": is_missed,
+            "message": (
+                f"Sesi '{s.get('title')}' ({s.get('distance_km')} km) hari ini belum tercatat. "
+                f"Gunakan Auto-Rebalance untuk menyesuaikan jadwal tanpa merusak rasio cedera ACWR."
+            ) if is_missed else "Jadwal hari ini aman."
+        }

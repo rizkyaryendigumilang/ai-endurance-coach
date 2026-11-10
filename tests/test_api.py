@@ -629,5 +629,93 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertEqual(hm_data["zone_distribution"]["discipline_status"], "POLARIZED_OPTIMAL")
 
 
+
+    def test_26_post_run_debrief_and_fsm_rebalance_and_shoes_and_strength_catalog(self):
+        """Verify Post-Run Debrief, True Execution Score, FSM Auto-Rebalance, Shoes, and Strength Catalog."""
+        from app.core.auth import create_demo_token
+
+        user_id = "athlete_debrief_test"
+        token = create_demo_token(user_id, "athlete_debrief@goalie.fit")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 1. Post-Run Debrief & True Execution Scoring & Reverse Heat Normalization
+        debrief_payload = {
+            "workout_title": "Zone 2 Aerobic Foundation Run",
+            "actual_distance_km": 10.2,
+            "duration_seconds": 3600,
+            "avg_heart_rate": 145,
+            "avg_cadence": 178,
+            "temp_c": 29.0,
+            "rh_percent": 82.0,
+            "workout_category": "Aerobic Base",
+            "target_pace_sec": 350,
+            "target_hr_ceiling": 150
+        }
+        res_debrief = self.client.post("/api/v1/training/post-run-debrief", json=debrief_payload, headers=headers)
+        self.assertEqual(res_debrief.status_code, 200)
+        d_data = res_debrief.json()
+        self.assertEqual(d_data["status"], "success")
+        debrief = d_data["debrief"]
+        self.assertGreaterEqual(debrief["execution_scoring"]["total_execution_score"], 80)
+        self.assertIn("badge", debrief["execution_scoring"])
+        # Check reverse heat normalization
+        weather_norm = debrief["weather_normalization"]
+        self.assertLess(weather_norm["normalized_pace_sec"], weather_norm["observed_pace_sec"])
+        self.assertGreaterEqual(weather_norm["vdot_preserved_points"], 0.0)
+
+        # 2. Running Shoe Inventory & Mileage Tracking
+        res_shoes = self.client.get("/api/v1/training/shoes", headers=headers)
+        self.assertEqual(res_shoes.status_code, 200)
+        s_data = res_shoes.json()
+        self.assertEqual(s_data["status"], "success")
+        self.assertGreaterEqual(len(s_data["shoes"]), 1)
+
+        # Add new shoe
+        new_shoe_payload = {
+            "brand": "Puma",
+            "model": "Deviate Nitro 2",
+            "nickname": "Carbon Trainer",
+            "shoe_type": "tempo_nylon",
+            "max_km": 600.0,
+            "current_km": 50.0,
+            "is_default": False
+        }
+        res_add_shoe = self.client.post("/api/v1/training/shoes", json=new_shoe_payload, headers=headers)
+        self.assertEqual(res_add_shoe.status_code, 200)
+        self.assertEqual(res_add_shoe.json()["shoe"]["brand"], "Puma")
+
+        # 3. FSM Auto-Rebalance Schedule
+        rebalance_payload = {
+            "missed_day_indices": [2],
+            "reason": "BUSY_WORK"
+        }
+        res_reb = self.client.post("/api/v1/training/auto-rebalance", json=rebalance_payload, headers=headers)
+        self.assertEqual(res_reb.status_code, 200)
+        reb_data = res_reb.json()
+        self.assertEqual(reb_data["status"], "success")
+        self.assertIn("fsm_state", reb_data)
+
+        # 4. Check EOD missed workout endpoint
+        res_eod = self.client.get("/api/v1/training/check-missed-workouts", headers=headers)
+        self.assertEqual(res_eod.status_code, 200)
+        self.assertIn("missed_today", res_eod.json())
+
+        # 5. Export Structured Workout to Garmin
+        res_garmin = self.client.get("/api/v1/training/workout/export-garmin?title=5x1000m+VO2max&distance_km=10.0&target_pace=04:15+min/km", headers=headers)
+        self.assertEqual(res_garmin.status_code, 200)
+        garmin_data = res_garmin.json()
+        self.assertEqual(garmin_data["status"], "success")
+        self.assertIn("workoutSteps", garmin_data["garmin_workout"])
+        self.assertEqual(len(garmin_data["garmin_workout"]["workoutSteps"]), 3)
+
+        # 6. 24 Marathon Core Strength Catalog
+        res_str = self.client.get("/api/v1/training/strength-catalog")
+        self.assertEqual(res_str.status_code, 200)
+        str_data = res_str.json()
+        self.assertEqual(str_data["status"], "success")
+        self.assertEqual(str_data["total_exercises"], 24)
+        self.assertIn("weekly_recommendation", str_data)
+
+
 if __name__ == "__main__":
     unittest.main()

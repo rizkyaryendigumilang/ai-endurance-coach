@@ -1573,6 +1573,35 @@
                             </div>
                         </div>
 
+                        <!-- 3. Shoe Mileage & Wear Alert Widget -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3 font-mono text-xs">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                                    <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Usia Sepatu Lari</h4>
+                                </div>
+                                <button type="button" onclick="openShoeManagerModal()" class="text-[10px] text-tertiary hover:underline font-bold">
+                                    Kelola &gt;
+                                </button>
+                            </div>
+                            <div id="cockpit-shoes-list" class="space-y-2">
+                                <!-- Populated dynamically by loadShoesInventory() -->
+                                <div class="p-2 bg-surface-subtle border border-border rounded-lg space-y-1">
+                                    <div class="flex justify-between items-center text-[11px]">
+                                        <strong class="text-text-primary">Asics Novablast 4</strong>
+                                        <span class="text-flat-green font-bold">63.8%</span>
+                                    </div>
+                                    <div class="w-full bg-border h-1.5 rounded-xs overflow-hidden">
+                                        <div class="bg-flat-green h-full" style="width: 63.8%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] text-text-secondary">
+                                        <span>510.0 / 800 km</span>
+                                        <span class="text-flat-green">OPTIMAL</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 2. Target Marathon Progress & Detailed Event Countdown -->
                         <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
@@ -3697,6 +3726,10 @@
                                         <button type="button" id="btn-toggle-day-status" onclick="toggleCurrentSelectedDayStatus()" class="btn-flat-primary py-1.5 px-3 text-xs flex-1">
                                             MARK AS COMPLETED
                                         </button>
+                                        <button type="button" onclick="exportSelectedWorkoutToGarmin()" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono font-bold text-text-primary inline-flex items-center gap-1.5 hover:border-flat-orange" title="Export format terstruktur FIT / JSON untuk jam tangan Garmin">
+                                            <svg class="w-3.5 h-3.5 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            <span>EXPORT GARMIN (.FIT)</span>
+                                        </button>
                                         <button type="button" onclick="askAiAboutSelectedSession()" class="btn-flat-secondary py-1.5 px-3 text-xs text-tertiary inline-flex items-center gap-1.5" title="Consult AI Coach about this workout">
                                             <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                                             <span>ASK AI COACH</span>
@@ -3880,9 +3913,15 @@
                                     58 Total Sesi Terjadwal • 2x Seminggu (Rabu &amp; Jumat 12:00–13:00 WIB during Work-From-Home)
                                 </p>
                             </div>
-                            <span class="px-2.5 py-1 text-xs font-mono font-bold bg-flat-green/10 text-flat-green border border-flat-green/30 rounded-lg">
-                                &check; 0 / 58 Sesi Selesai (0%)
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="openStrengthCatalogModal()" class="btn-flat-primary py-1.5 px-3 text-xs font-mono font-bold inline-flex items-center gap-1.5 shadow-xs">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    <span>24 GERAKAN INTI MARATON</span>
+                                </button>
+                                <span class="px-2.5 py-1 text-xs font-mono font-bold bg-flat-green/10 text-flat-green border border-flat-green/30 rounded-lg">
+                                    &check; 0 / 58 Sesi Selesai (0%)
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Rationale Badge Strip -->
@@ -6812,6 +6851,476 @@
         setInterval(updateTargetRaceCountdown, 1000);
 
         // ══════════════════════════════════════════════════════════════════
+        // 1. POST-RUN COACH DEBRIEF & TRUE EXECUTION SCORING
+        // ══════════════════════════════════════════════════════════════════
+        async function openPostRunDebriefModal(activityData = {}) {
+            const modal = document.getElementById('post-run-debrief-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+
+            // Default fallback payload
+            const payload = {
+                workout_title: activityData.workout_title || 'Zone 2 Aerobic Foundation Run',
+                actual_distance_km: activityData.actual_distance_km || 10.2,
+                duration_seconds: activityData.duration_seconds || 3600,
+                avg_heart_rate: activityData.avg_heart_rate || 146,
+                avg_cadence: activityData.avg_cadence || 178,
+                temp_c: activityData.temp_c || 28.5,
+                rh_percent: activityData.rh_percent || 80.0,
+                workout_category: activityData.workout_category || 'Aerobic Base',
+                target_pace_sec: activityData.target_pace_sec || 350,
+                target_hr_ceiling: activityData.target_hr_ceiling || 150,
+                shoe_id: activityData.shoe_id || null
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/training/post-run-debrief`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.status === 'success' && data.debrief) {
+                    renderDebriefUI(data.debrief);
+                    loadShoesInventory();
+                }
+            } catch (err) {
+                console.warn('[Goalie] Post-run debrief fallback:', err);
+                renderDebriefUI({
+                    workout_category: payload.workout_category,
+                    execution_scoring: {
+                        total_execution_score: 94,
+                        badge: 'DISIPLIN TINGGI',
+                        breakdown: { pace_compliance_pct: 96, hr_compliance_pct: 92, distance_compliance_pct: 95 }
+                    },
+                    weather_normalization: {
+                        observed_pace_str: '05:22 /km',
+                        normalized_pace_str: '04:58 /km',
+                        dew_point_c: 24.3,
+                        vdot_preserved_points: 1.8
+                    },
+                    aerobic_decoupling: {
+                        decoupling_pct: 1.8,
+                        status_id: 'Fondasi Aerobik Sangat Kuat',
+                        late_stage_fade_detected: false
+                    },
+                    shoe_info: { nickname: 'Asics Novablast 4', current_km: 520.2, max_km: 800 },
+                    ai_coach_debrief_summary: 'Selesai 10.2 km dengan disiplin tinggi. Cadence 178 spm sangat konsisten menjaga efisiensi langkah.'
+                });
+            }
+        }
+
+        function renderDebriefUI(d) {
+            const exec = d.execution_scoring || {};
+            const weather = d.weather_normalization || {};
+            const dec = d.aerobic_decoupling || {};
+            const shoe = d.shoe_info || {};
+
+            const scoreEl = document.getElementById('debrief-exec-score');
+            const badgeEl = document.getElementById('debrief-badge');
+            const catEl = document.getElementById('debrief-category');
+            if (scoreEl) scoreEl.textContent = exec.total_execution_score || 94;
+            if (badgeEl) badgeEl.textContent = exec.badge || 'DISIPLIN TINGGI';
+            if (catEl) catEl.textContent = d.workout_category || 'Aerobic Base';
+
+            if (exec.breakdown) {
+                document.getElementById('debrief-sub-pace').textContent = `${Math.round(exec.breakdown.pace_compliance_pct)}%`;
+                document.getElementById('debrief-sub-hr').textContent = `${Math.round(exec.breakdown.hr_compliance_pct)}%`;
+                document.getElementById('debrief-sub-vol').textContent = `${Math.round(exec.breakdown.distance_compliance_pct)}%`;
+            }
+
+            document.getElementById('debrief-dewpoint-tag').textContent = `Dew Point: ${weather.dew_point_c || 24.3} °C`;
+            document.getElementById('debrief-obs-pace').textContent = weather.observed_pace_str || '05:22 /km';
+            document.getElementById('debrief-norm-pace').textContent = weather.normalized_pace_str || '04:58 /km';
+            document.getElementById('debrief-vdot-saved').textContent = `+${weather.vdot_preserved_points || 1.8} Poin Aman`;
+
+            document.getElementById('debrief-decoupling-tag').textContent = `DRIFT: +${dec.decoupling_pct || 1.8}% (STABIL)`;
+            document.getElementById('debrief-decoupling-status').textContent = dec.status_id || 'Fondasi Aerobik Sangat Kuat';
+            document.getElementById('debrief-fade-status').textContent = dec.late_stage_fade_detected ? '⚠ Terdeteksi Fatigue di akhir' : '✔ Tidak Terdeteksi (Pace Konstan)';
+
+            if (shoe.nickname || shoe.model) {
+                document.getElementById('debrief-shoe-name').textContent = `${shoe.brand || ''} ${shoe.model || shoe.nickname}`;
+                document.getElementById('debrief-shoe-km').textContent = `${shoe.current_km} / ${shoe.max_km} km`;
+            }
+
+            const coachEl = document.getElementById('debrief-coach-summary');
+            if (coachEl) coachEl.textContent = d.ai_coach_debrief_summary || 'Eksekusi lari sangat rapi.';
+        }
+
+        function closePostRunDebriefModal() {
+            const modal = document.getElementById('post-run-debrief-modal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════
+        // 2. SHOE MILEAGE & WEAR ALERT INVENTORY
+        // ══════════════════════════════════════════════════════════════════
+        let cachedShoes = [];
+
+        async function loadShoesInventory() {
+            try {
+                const res = await fetch(`${API_BASE}/training/shoes`, {
+                    headers: {
+                        ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                    }
+                });
+                const data = await res.json();
+                if (data.status === 'success' && data.shoes) {
+                    cachedShoes = data.shoes;
+                    renderShoesCockpit(data.shoes);
+                }
+            } catch (e) {
+                console.warn('[Goalie] Shoes inventory fallback');
+            }
+        }
+
+        function renderShoesCockpit(shoes) {
+            const listEl = document.getElementById('cockpit-shoes-list');
+            if (!listEl) return;
+            const active = shoes.filter(s => !s.is_retired).slice(0, 3);
+            if (active.length === 0) {
+                listEl.innerHTML = '<span class="text-text-secondary text-[11px]">Belum ada sepatu aktif.</span>';
+                return;
+            }
+
+            listEl.innerHTML = active.map(s => {
+                const isAlert = s.status === 'REPLACE_RECOMMENDED';
+                const color = isAlert ? 'bg-red-500' : (s.status === 'AGING' ? 'bg-amber-500' : 'bg-flat-green');
+                const textColor = isAlert ? 'text-red-500' : (s.status === 'AGING' ? 'text-amber-500' : 'text-flat-green');
+                return `
+                    <div class="p-2 bg-surface-subtle border ${isAlert ? 'border-red-500/50' : 'border-border'} rounded-lg space-y-1">
+                        <div class="flex justify-between items-center text-[11px]">
+                            <strong class="text-text-primary truncate">${s.brand} ${s.model}</strong>
+                            <span class="${textColor} font-bold">${s.wear_pct}%</span>
+                        </div>
+                        <div class="w-full bg-border h-1.5 rounded-xs overflow-hidden">
+                            <div class="${color} h-full" style="width: ${Math.min(100, s.wear_pct)}%;"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-text-secondary">
+                            <span>${s.current_km} / ${s.max_km} km</span>
+                            <span class="${textColor} font-bold">${s.status.replace('_', ' ')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openShoeManagerModal() {
+            const modal = document.getElementById('shoe-manager-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+            renderShoeModalList();
+        }
+
+        function closeShoeManagerModal() {
+            const modal = document.getElementById('shoe-manager-modal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+        }
+
+        function renderShoeModalList() {
+            const container = document.getElementById('shoe-modal-list');
+            if (!container) return;
+            if (cachedShoes.length === 0) {
+                container.innerHTML = '<div class="text-text-secondary p-3 text-center">Memuat daftar sepatu...</div>';
+                loadShoesInventory().then(() => renderShoeModalList());
+                return;
+            }
+
+            container.innerHTML = cachedShoes.map(s => `
+                <div class="p-3 bg-surface-subtle border ${s.status === 'REPLACE_RECOMMENDED' ? 'border-red-500/40 bg-red-500/5' : 'border-border'} rounded-xl flex items-center justify-between gap-3">
+                    <div class="min-w-0 flex-1 space-y-1">
+                        <div class="flex items-center gap-2">
+                            <strong class="text-xs text-text-primary">${s.brand} ${s.model}</strong>
+                            ${s.is_default ? '<span class="text-[9px] bg-tertiary/10 text-tertiary px-1.5 py-0.2 rounded font-bold">DEFAULT</span>' : ''}
+                            <span class="text-[10px] ${s.status === 'REPLACE_RECOMMENDED' ? 'text-red-500 font-bold' : 'text-text-secondary'}">(${s.status})</span>
+                        </div>
+                        <div class="text-[11px] text-text-secondary">${s.nickname || 'Road Running'} &bull; ${s.current_km} / ${s.max_km} km (${s.wear_pct}%)</div>
+                        <div class="w-full bg-border h-1.5 rounded-xs overflow-hidden">
+                            <div class="${s.wear_pct >= 90 ? 'bg-red-500' : 'bg-flat-green'} h-full" style="width: ${Math.min(100, s.wear_pct)}%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        ${!s.is_retired ? `
+                            <button type="button" onclick="retireShoe('${s.id}')" class="btn-flat-secondary text-[10px] py-1 px-2.5 text-text-secondary hover:text-red-500 hover:border-red-500">
+                                Pensiunkan
+                            </button>
+                        ` : '<span class="text-[10px] text-text-secondary">Pensiun</span>'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function handleSaveShoe(e) {
+            e.preventDefault();
+            const brand = document.getElementById('new-shoe-brand').value.trim();
+            const model = document.getElementById('new-shoe-model').value.trim();
+            const nickname = document.getElementById('new-shoe-nickname').value.trim() || 'Daily Trainer';
+            const maxKm = parseFloat(document.getElementById('new-shoe-maxkm').value) || 750.0;
+
+            try {
+                const res = await fetch(`${API_BASE}/training/shoes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                    },
+                    body: JSON.stringify({
+                        brand: brand,
+                        model: model,
+                        nickname: nickname,
+                        max_km: maxKm,
+                        current_km: 0.0,
+                        is_default: false
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    toast.success('Sepatu Ditambahkan', `${brand} ${model} siap melacak kilometer latihan.`);
+                    await loadShoesInventory();
+                    renderShoeModalList();
+                    e.target.reset();
+                }
+            } catch (err) {
+                toast.error('Gagal', 'Terjadi kendala saat menyimpan sepatu.');
+            }
+        }
+
+        async function retireShoe(shoeId) {
+            try {
+                const res = await fetch(`${API_BASE}/training/shoes/retire?shoe_id=${shoeId}`, {
+                    method: 'POST',
+                    headers: {
+                        ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                    }
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    toast.info('Sepatu Dipensiunkan', 'Sepatu telah diarsipkan dari pelacakan aktif.');
+                    await loadShoesInventory();
+                    renderShoeModalList();
+                }
+            } catch (e) {
+                toast.error('Gagal', 'Gagal memensiunkan sepatu.');
+            }
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════
+        // 3. 24 MARATHON CORE STRENGTH CATALOG & EXERCISE INSPECTOR
+        // ══════════════════════════════════════════════════════════════════
+        let cachedStrengthExercises = [];
+
+        async function openStrengthCatalogModal() {
+            const modal = document.getElementById('strength-catalog-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+
+            if (cachedStrengthExercises.length === 0) {
+                try {
+                    const res = await fetch(`${API_BASE}/training/strength-catalog`);
+                    const data = await res.json();
+                    if (data.status === 'success' && data.catalog) {
+                        cachedStrengthExercises = data.catalog;
+                    }
+                } catch (e) {
+                    console.warn('[Goalie] Strength catalog fetch error');
+                }
+            }
+            renderStrengthExercisesGrid('all');
+        }
+
+        function closeStrengthCatalogModal() {
+            const modal = document.getElementById('strength-catalog-modal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+        }
+
+        function filterStrengthPillar(pillar) {
+            ['all', 'unilateral', 'soleus', 'plyo', 'core'].forEach(p => {
+                const btn = document.getElementById(`btn-pillar-${p}`);
+                const isMatch = (p === 'all' && pillar === 'all') ||
+                                (p === 'unilateral' && pillar === 'unilateral_lower_body') ||
+                                (p === 'soleus' && pillar === 'soleus_achilles_complex') ||
+                                (p === 'plyo' && pillar === 'plyometrics_elastic_recoil') ||
+                                (p === 'core' && pillar === 'anti_rotation_pelvic_stability');
+                if (btn) {
+                    btn.classList.toggle('border-2', isMatch);
+                    btn.classList.toggle('border-tertiary', isMatch);
+                    btn.classList.toggle('bg-tertiary/10', isMatch);
+                    btn.classList.toggle('text-tertiary', isMatch);
+                    btn.classList.toggle('font-bold', isMatch);
+                }
+            });
+            renderStrengthExercisesGrid(pillar);
+        }
+
+        function renderStrengthExercisesGrid(filter) {
+            const container = document.getElementById('strength-exercises-grid');
+            if (!container) return;
+
+            const list = filter === 'all'
+                ? cachedStrengthExercises
+                : cachedStrengthExercises.filter(ex => ex.pillar === filter);
+
+            if (list.length === 0) {
+                container.innerHTML = '<div class="col-span-2 text-center text-text-secondary py-8">Memuat katalog gerakan...</div>';
+                return;
+            }
+
+            container.innerHTML = list.map(ex => `
+                <div class="p-3.5 bg-surface-subtle border border-border hover:border-tertiary transition-colors rounded-xl space-y-2 flex flex-col justify-between">
+                    <div class="space-y-1.5">
+                        <div class="flex items-start justify-between gap-2 border-b border-border pb-1.5">
+                            <div>
+                                <span class="text-[9px] font-bold text-tertiary uppercase block">${ex.pillar_name}</span>
+                                <h4 class="font-display font-bold text-xs sm:text-sm text-text-primary">${ex.name}</h4>
+                            </div>
+                            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-flat-green/10 text-flat-green border border-flat-green/20">2–3 RIR</span>
+                        </div>
+                        <div class="text-[11px] text-text-secondary">
+                            <div><strong class="text-text-primary">Target:</strong> ${ex.target_muscles}</div>
+                            <div><strong class="text-text-primary">Dosis:</strong> ${ex.sets_reps} &bull; Tempo: ${ex.tempo}</div>
+                        </div>
+                        <div class="text-[10px] text-text-secondary border-t border-border pt-1">
+                            ${ex.primary_adaptation}
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-border flex items-center justify-between text-[10px]">
+                        <span class="text-amber-500 font-bold">&bull; ${ex.safety_buffer_rule}</span>
+                        <button type="button" onclick="toast.info('${ex.name}', '${ex.form_cues.join(' ')}')" class="text-tertiary hover:underline font-bold">
+                            Lihat Panduan &gt;
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════
+        // 4. STRUCTURED WORKOUT EXPORT KE GARMIN (.FIT / JSON)
+        // ══════════════════════════════════════════════════════════════════
+        async function exportSelectedWorkoutToGarmin() {
+            const title = document.getElementById('detail-day-title')?.textContent || 'Target Session';
+            const pace = document.getElementById('detail-pace')?.textContent || '05:00 min/km';
+
+            try {
+                const res = await fetch(`${API_BASE}/training/workout/export-garmin?title=${encodeURIComponent(title)}&distance_km=10.0&target_pace=${encodeURIComponent(pace)}`);
+                const data = await res.json();
+                if (data.status === 'success' && data.garmin_workout) {
+                    const jsonStr = JSON.stringify(data.garmin_workout, null, 2);
+                    const blob = new Blob([jsonStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `garmin_workout_${title.toLowerCase().replace(/\s+/g, '_')}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast.success('Workout Siap untuk Garmin', 'File format terstruktur Garmin .FIT / JSON terunduh. Siap disinkronkan ke jam tangan.');
+                }
+            } catch (err) {
+                toast.error('Gagal Export', 'Terjadi kesalahan saat menyiapkan payload Garmin.');
+            }
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════
+        // 5. EOD MISSED WORKOUT DETECTION & AUTO-REBALANCE POPUP
+        // ══════════════════════════════════════════════════════════════════
+        let pendingMissedDayIndex = null;
+
+        async function checkMissedWorkoutsEOD() {
+            try {
+                const res = await fetch(`${API_BASE}/training/check-missed-workouts`, {
+                    headers: {
+                        ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                    }
+                });
+                const data = await res.json();
+                if (data.missed_today && data.prompt_user) {
+                    promptAutoRebalanceForMissed(data.workout_title, data.day_index);
+                }
+            } catch (e) {}
+        }
+
+        function promptAutoRebalanceForMissed(title, dayIndex) {
+            pendingMissedDayIndex = dayIndex;
+            const modal = document.getElementById('missed-workout-modal');
+            const titleEl = document.getElementById('missed-modal-workout-title');
+            if (titleEl) titleEl.textContent = title || 'Sesi Latihan Hari Ini';
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeMissedWorkoutModal() {
+            const modal = document.getElementById('missed-workout-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function confirmAutoRebalanceFromModal() {
+            const reason = document.getElementById('missed-modal-reason')?.value || 'BUSY_WORK';
+            closeMissedWorkoutModal();
+
+            try {
+                const res = await fetch(`${API_BASE}/training/auto-rebalance`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                    },
+                    body: JSON.stringify({
+                        missed_day_indices: pendingMissedDayIndex !== null ? [pendingMissedDayIndex] : null,
+                        reason: reason
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    toast.success('Jadwal Direbalance', `State FSM: ${data.fsm_state}. ${data.actions_taken ? data.actions_taken[0] : 'ACWR terlindungi.'}`);
+                    if (typeof loadWeeklyCalendar === 'function') loadWeeklyCalendar(0);
+                }
+            } catch (e) {
+                toast.error('Gagal', 'Terjadi kesalahan saat mengeksekusi auto-rebalance.');
+            }
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════
+        // 6. EVENT-TRIGGERED SYNC (On-Focus & Visibility Change)
+        // ══════════════════════════════════════════════════════════════════
+        let lastAutoSyncTimestamp = 0;
+        function checkAndTriggerBackgroundSync() {
+            const now = Date.now();
+            if (now - lastAutoSyncTimestamp < 60000) return;
+            lastAutoSyncTimestamp = now;
+            console.log('[Goalie] Event-triggered sync: App opened / focused');
+            if (typeof syncTelemetrySuite === 'function') syncTelemetrySuite();
+            if (typeof checkGarminStatus === 'function') checkGarminStatus();
+            if (typeof checkStravaStatus === 'function') checkStravaStatus();
+            if (typeof loadShoesInventory === 'function') loadShoesInventory();
+            if (typeof checkMissedWorkoutsEOD === 'function') checkMissedWorkoutsEOD();
+        }
+
+        window.addEventListener('focus', checkAndTriggerBackgroundSync);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) checkAndTriggerBackgroundSync();
+        });
+
+        // Initial fetch on app start
+        setTimeout(() => {
+            if (typeof loadShoesInventory === 'function') loadShoesInventory();
+            if (typeof checkMissedWorkoutsEOD === 'function') checkMissedWorkoutsEOD();
+        }, 1500);
+
+
+        // ══════════════════════════════════════════════════════════════════
         // TELEMETRY SUITE: HEATMAPS, SMART ROUTES & WEATHER PACE ADJUSTER
         // ══════════════════════════════════════════════════════════════════
         let telemetryHeatmapInstance = null;
@@ -9072,6 +9581,15 @@
                 closeLogWorkoutModal();
                 if (typeof HapticsService !== 'undefined') HapticsService.notification('SUCCESS');
                 toast.success('Workout Ingested', `Logged ${distanceKm}km (${durationMin} min). Telemetry recalculated.`);
+                if (typeof openPostRunDebriefModal === 'function') {
+                    openPostRunDebriefModal({
+                        workout_title: title,
+                        actual_distance_km: distanceKm,
+                        duration_seconds: durationMin * 60,
+                        avg_heart_rate: avgHr,
+                        workout_category: sportType === 'run' ? 'Aerobic Base' : sportType
+                    });
+                }
             } catch (err) {
                 // Queue for background sync when connection resumes
                 if (typeof GoalieDB !== 'undefined') {
@@ -11930,5 +12448,276 @@
             </button>
         </div>
     </nav>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- MODAL 1: POST-RUN COACH DEBRIEF & TRUE EXECUTION SCORING           -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="post-run-debrief-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-2xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col font-mono text-xs">
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-flat-orange rounded-xs"></span>
+                    <h3 class="font-display font-extrabold text-base sm:text-lg text-text-primary">Post-Run Coach Debrief</h3>
+                    <span id="debrief-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-flat-green/10 text-flat-green border border-flat-green/30">DISIPLIN TINGGI</span>
+                </div>
+                <button type="button" onclick="closePostRunDebriefModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <!-- Modal Scrollable Body -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4">
+                <!-- 1. Hero Score Bar: True Execution Score (0-100%) -->
+                <div class="p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3">
+                    <div class="flex items-baseline justify-between border-b border-border pb-2">
+                        <div>
+                            <span class="text-[10px] text-text-secondary uppercase">Skor Kepatuhan Latihan (True Execution Score)</span>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-text-primary mt-0.5">
+                                <span id="debrief-exec-score" class="text-flat-green">94</span> <span class="text-sm text-text-secondary">/ 100%</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-text-secondary uppercase block">Kategori Latihan</span>
+                            <span id="debrief-category" class="text-xs font-bold text-tertiary">Aerobic Base</span>
+                        </div>
+                    </div>
+
+                    <!-- 3-Pillar Breakdown Bars -->
+                    <div class="grid grid-cols-3 gap-2 text-[10px]">
+                        <div class="p-2 bg-surface border border-border rounded">
+                            <span class="text-text-secondary block">Pace Discipline (40%)</span>
+                            <strong id="debrief-sub-pace" class="text-sm font-bold text-text-primary">96%</strong>
+                        </div>
+                        <div class="p-2 bg-surface border border-border rounded">
+                            <span class="text-text-secondary block">HR Ceiling (30%)</span>
+                            <strong id="debrief-sub-hr" class="text-sm font-bold text-flat-green">92%</strong>
+                        </div>
+                        <div class="p-2 bg-surface border border-border rounded">
+                            <span class="text-text-secondary block">Volume (30%)</span>
+                            <strong id="debrief-sub-vol" class="text-sm font-bold text-text-primary">95%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Tropical Heat Normalization (VDOT & VO2max Protection) -->
+                <div class="p-4 bg-surface-subtle border border-border rounded-xl space-y-2">
+                    <div class="flex items-center justify-between border-b border-border pb-2">
+                        <span class="font-bold text-text-primary flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+                            Normalisasi Beban Cuaca Tropis (Suhu &amp; Titik Embun)
+                        </span>
+                        <span id="debrief-dewpoint-tag" class="text-[10px] text-cyan-400 font-bold">Dew Point: 24.3 &deg;C</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+                        <div class="p-2 bg-surface border border-border rounded">
+                            <span class="text-[10px] text-text-secondary block">Pace Aktual (Panas)</span>
+                            <strong id="debrief-obs-pace" class="text-sm font-bold text-text-primary">05:22 /km</strong>
+                        </div>
+                        <div class="p-2 bg-surface border border-border rounded">
+                            <span class="text-[10px] text-text-secondary block">Setara Cuaca Sejuk (15&deg;C)</span>
+                            <strong id="debrief-norm-pace" class="text-sm font-bold text-flat-green">04:58 /km</strong>
+                        </div>
+                        <div class="p-2 bg-surface border border-border rounded col-span-2 sm:col-span-1">
+                            <span class="text-[10px] text-text-secondary block">Proteksi VDOT Aerobik</span>
+                            <strong id="debrief-vdot-saved" class="text-sm font-bold text-tertiary">+1.8 Poin Aman</strong>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-text-secondary leading-relaxed pt-1">
+                        VDOT dan VO2max Anda tidak diturunkan secara keliru. Beban kardiovaskular pada 28&deg;C membuktikan stamina aerobik Anda berada di level puncak.
+                    </p>
+                </div>
+
+                <!-- 3. Aerobic Decoupling & Late-Stage Fade -->
+                <div class="p-4 bg-surface-subtle border border-border rounded-xl space-y-2">
+                    <div class="flex items-center justify-between border-b border-border pb-2">
+                        <span class="font-bold text-text-primary">Aerobic Decoupling (Cardiac Drift Pw:HR)</span>
+                        <span id="debrief-decoupling-tag" class="text-[10px] text-flat-green font-bold">DRIFT: +1.8% (STABIL)</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-text-secondary">Status Ketahanan:</span>
+                        <strong id="debrief-decoupling-status" class="text-text-primary">Fondasi Aerobik Sangat Kuat</strong>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-text-secondary">Late-Stage Fatigue Fade (KM 30+):</span>
+                        <strong id="debrief-fade-status" class="text-flat-green">&check; Tidak Terdeteksi (Pace Konstan)</strong>
+                    </div>
+                </div>
+
+                <!-- 4. Shoe Mileage Increment -->
+                <div class="p-3 bg-surface border border-border rounded-xl flex items-center justify-between text-[11px]">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-flat-orange"></span>
+                        <span class="text-text-secondary">Sepatu Dipakai:</span>
+                        <strong id="debrief-shoe-name" class="text-text-primary">Asics Novablast 4</strong>
+                    </div>
+                    <div>
+                        <span class="text-text-secondary">Total Usia:</span>
+                        <strong id="debrief-shoe-km" class="text-flat-green">520.2 / 800 km</strong>
+                    </div>
+                </div>
+
+                <!-- 5. AI Coach Summary & Fueling Protocol -->
+                <div class="p-4 bg-tertiary/10 border border-tertiary/30 rounded-xl space-y-2">
+                    <span class="font-bold text-tertiary uppercase flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        Evaluasi Personal AI Coach
+                    </span>
+                    <p id="debrief-coach-summary" class="text-text-secondary leading-relaxed text-[11px]">
+                        Eksekusi lari sangat rapi. Cadence rata-rata 178 spm menjaga mekanika langkah tetap efisien. Minum 750ml cairan ber-elektrolit dan istirahatkan kaki 24 jam sebelum sesi berikutnya.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-border flex justify-end gap-2 bg-surface-subtle">
+                <button type="button" onclick="closePostRunDebriefModal()" class="btn-flat-primary px-5 py-2 text-xs font-bold">
+                    TUTUP &amp; SIMPAN DEBRIEF
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- MODAL 2: INVENTARIS SEPATU LARI (SHOE MILEAGE & WEAR ALERT)        -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="shoe-manager-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col font-mono text-xs">
+            <div class="p-4 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-flat-orange rounded-xs"></span>
+                    <h3 class="font-display font-bold text-base text-text-primary">Inventaris Sepatu Lari &amp; Pelacak Usia</h3>
+                </div>
+                <button type="button" onclick="closeShoeManagerModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+                <!-- Shoe List Container -->
+                <div id="shoe-modal-list" class="space-y-3">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Form Add New Shoe (Collapsible or in-place) -->
+                <div class="p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3">
+                    <span class="font-bold text-text-primary uppercase block">Tambah Sepatu Lari Baru</span>
+                    <form onsubmit="handleSaveShoe(event)" class="space-y-2.5">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Brand</label>
+                                <input type="text" id="new-shoe-brand" required placeholder="Nike / Asics / Hoka" class="flat-input text-xs w-full">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Model</label>
+                                <input type="text" id="new-shoe-model" required placeholder="Vaporfly 3 / Novablast 4" class="flat-input text-xs w-full">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Nama Panggilan</label>
+                                <input type="text" id="new-shoe-nickname" placeholder="Daily Trainer" class="flat-input text-xs w-full">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Batas Rekomendasi (km)</label>
+                                <input type="number" id="new-shoe-maxkm" value="750" min="200" max="1500" step="50" class="flat-input text-xs w-full">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-flat-primary w-full py-2 text-xs font-bold uppercase mt-1">
+                            SIMPAN SEPATU KE INVENTARIS
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="p-3 border-t border-border flex justify-end bg-surface-subtle">
+                <button type="button" onclick="closeShoeManagerModal()" class="btn-flat-secondary px-4 py-1.5 text-xs">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- MODAL 3: KATALOG 24 GERAKAN INTI LATIHAN BEBAN MARATON             -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="strength-catalog-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-4xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col font-mono text-xs">
+            <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 bg-tertiary rounded-xs"></span>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-text-primary">24 Gerakan Inti Latihan Beban Maraton (Goalie Engine)</h3>
+                    </div>
+                    <p class="text-[11px] text-text-secondary mt-0.5">
+                        Terkunci deterministik: 2–3 RIR &bull; Buffer 48–72 jam sebelum Long Run &bull; Cutoff H-10 Hari Lomba
+                    </p>
+                </div>
+                <button type="button" onclick="closeStrengthCatalogModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <!-- 4 Pillar Filter Tabs -->
+            <div class="p-3 bg-surface border-b border-border flex flex-wrap gap-1.5">
+                <button type="button" onclick="filterStrengthPillar('all')" id="btn-pillar-all" class="px-2.5 py-1 rounded text-xs border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold">Semua (24)</button>
+                <button type="button" onclick="filterStrengthPillar('unilateral_lower_body')" id="btn-pillar-unilateral" class="px-2.5 py-1 rounded text-xs border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">1. Unilateral Lower Body (6)</button>
+                <button type="button" onclick="filterStrengthPillar('soleus_achilles_complex')" id="btn-pillar-soleus" class="px-2.5 py-1 rounded text-xs border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">2. Soleus &amp; Achilles (6)</button>
+                <button type="button" onclick="filterStrengthPillar('plyometrics_elastic_recoil')" id="btn-pillar-plyo" class="px-2.5 py-1 rounded text-xs border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">3. Plyo &amp; Recoil (6)</button>
+                <button type="button" onclick="filterStrengthPillar('anti_rotation_pelvic_stability')" id="btn-pillar-core" class="px-2.5 py-1 rounded text-xs border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">4. Anti-Rotation Core (6)</button>
+            </div>
+
+            <!-- Exercises Grid Container -->
+            <div id="strength-exercises-grid" class="p-4 sm:p-5 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <!-- Populated dynamically by loadStrengthCatalog() -->
+            </div>
+
+            <div class="p-3 border-t border-border flex items-center justify-between bg-surface-subtle text-[11px] text-text-secondary">
+                <span>Aturan Emas: Keep Hard Days Hard (Gym sore hari setelah interval lari pagi).</span>
+                <button type="button" onclick="closeStrengthCatalogModal()" class="btn-flat-secondary px-4 py-1 text-xs">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- MODAL 4: "LIFE HAPPENS" MISSED WORKOUT AUTO-REBALANCE PROMPT        -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="missed-workout-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-lg bg-surface border-2 border-flat-orange rounded-2xl shadow-2xl overflow-hidden flex flex-col font-mono text-xs">
+            <div class="p-4 border-b border-border flex items-center justify-between bg-flat-orange/10">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-flat-orange rounded-full animate-ping"></span>
+                    <h3 class="font-display font-bold text-sm text-text-primary">"Life Happens" &bull; Sesi Latihan Terlewat</h3>
+                </div>
+                <button type="button" onclick="closeMissedWorkoutModal()" class="text-text-secondary hover:text-text-primary font-bold">✕</button>
+            </div>
+
+            <div class="p-5 space-y-4">
+                <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-1">
+                    <span class="text-[10px] text-text-secondary uppercase">Sesi Hari Ini yang Belum Selesai:</span>
+                    <div id="missed-modal-workout-title" class="text-sm font-bold text-text-primary">5x1000m Lactate Threshold Intervals</div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] text-text-secondary uppercase mb-1">Alasan Tidak Dapat Lari Hari Ini:</label>
+                    <select id="missed-modal-reason" class="flat-input text-xs w-full">
+                        <option value="BUSY_WORK" selected>Lembur Kerja / Urusan Keluarga</option>
+                        <option value="FATIGUE_SORENESS">Kelelahan Fisik / Pegal (DOMS Berat)</option>
+                        <option value="SICKNESS_FLU">Sakit Demam / Flu / Meriang</option>
+                        <option value="MINOR_NIGGLE">Nyeri Otot / Tendon Kaku</option>
+                    </select>
+                </div>
+
+                <div class="p-3 bg-flat-orange/5 border border-flat-orange/30 rounded-lg text-[11px] text-text-secondary leading-relaxed">
+                    <strong class="text-text-primary">Proteksi ACWR Gabbett:</strong> Kilometer sesi ini tidak akan pernah ditumpuk ke minggu berikutnya. Engine akan memindahkan sesi kunci atau menghapus sesi filler secara aman.
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-border flex justify-end gap-2 bg-surface-subtle">
+                <button type="button" onclick="closeMissedWorkoutModal()" class="btn-flat-secondary px-4 py-1.5 text-xs">Nanti Saja</button>
+                <button type="button" onclick="confirmAutoRebalanceFromModal()" class="btn-flat-primary px-4 py-1.5 text-xs font-bold">
+                    REBALANCE JADWAL OTOMATIS
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -1272,3 +1272,147 @@ def set_strava_integration(user_id: str, data: dict):
     return store["strava_integration"]
 
 
+# ── Running Shoe Mileage & Wear Alert ──────────────────────────────────
+
+DEFAULT_DEMO_SHOES = [
+    {
+        "id": "shoe_nike_vp3",
+        "brand": "Nike",
+        "model": "Vaporfly 3",
+        "nickname": "Race Day Super Shoe",
+        "shoe_type": "race_carbon",
+        "max_km": 400.0,
+        "current_km": 142.5,
+        "wear_pct": 35.6,
+        "status": "OPTIMAL",
+        "is_default": False,
+        "is_retired": False,
+        "purchase_date": "2026-06-15"
+    },
+    {
+        "id": "shoe_asics_nb4",
+        "brand": "Asics",
+        "model": "Novablast 4",
+        "nickname": "Daily Trainer & Easy Run",
+        "shoe_type": "daily_trainer",
+        "max_km": 800.0,
+        "current_km": 510.0,
+        "wear_pct": 63.8,
+        "status": "OPTIMAL",
+        "is_default": True,
+        "is_retired": False,
+        "purchase_date": "2026-03-10"
+    },
+    {
+        "id": "shoe_saucony_es4",
+        "brand": "Saucony",
+        "model": "Endorphin Speed 4",
+        "nickname": "Tempo & Long Run Partner",
+        "shoe_type": "tempo_nylon",
+        "max_km": 750.0,
+        "current_km": 680.0,
+        "wear_pct": 90.7,
+        "status": "REPLACE_RECOMMENDED",
+        "is_default": False,
+        "is_retired": False,
+        "purchase_date": "2025-11-20"
+    }
+]
+
+def get_running_shoes(user_id: str) -> list:
+    store = _get_user_store(user_id)
+    if "running_shoes" not in store or not store["running_shoes"]:
+        import copy
+        store["running_shoes"] = copy.deepcopy(DEFAULT_DEMO_SHOES)
+    return store["running_shoes"]
+
+def save_running_shoe(user_id: str, shoe: dict) -> dict:
+    store = _get_user_store(user_id)
+    shoes = get_running_shoes(user_id)
+    shoe_id = shoe.get("id") or f"shoe_{int(datetime.now(timezone.utc).timestamp())}"
+    
+    max_km = float(shoe.get("max_km") or 750.0)
+    current_km = float(shoe.get("current_km") or 0.0)
+    wear_pct = round((current_km / max(1.0, max_km)) * 100.0, 1)
+    
+    if wear_pct >= 90.0:
+        status = "REPLACE_RECOMMENDED"
+    elif wear_pct >= 70.0:
+        status = "AGING"
+    elif wear_pct >= 30.0:
+        status = "OPTIMAL"
+    else:
+        status = "PRISTINE"
+
+    shoe_record = {
+        "id": shoe_id,
+        "brand": shoe.get("brand", "Running Brand"),
+        "model": shoe.get("model", "Road Shoe"),
+        "nickname": shoe.get("nickname", "My Running Shoe"),
+        "shoe_type": shoe.get("shoe_type", "daily_trainer"),
+        "max_km": max_km,
+        "current_km": round(current_km, 1),
+        "wear_pct": wear_pct,
+        "status": status,
+        "is_default": bool(shoe.get("is_default", False)),
+        "is_retired": bool(shoe.get("is_retired", False)),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # If is_default, clear default on other shoes
+    if shoe_record["is_default"]:
+        for s in shoes:
+            s["is_default"] = False
+
+    # Check existing
+    found = False
+    for i, s in enumerate(shoes):
+        if s["id"] == shoe_id:
+            shoes[i] = shoe_record
+            found = True
+            break
+    if not found:
+        shoes.insert(0, shoe_record)
+
+    store["running_shoes"] = shoes
+    return shoe_record
+
+def retire_running_shoe(user_id: str, shoe_id: str) -> bool:
+    shoes = get_running_shoes(user_id)
+    for s in shoes:
+        if s["id"] == shoe_id:
+            s["is_retired"] = True
+            s["status"] = "RETIRED"
+            return True
+    return False
+
+def add_shoe_mileage(user_id: str, shoe_id: str, distance_km: float) -> dict:
+    shoes = get_running_shoes(user_id)
+    for s in shoes:
+        if s["id"] == shoe_id and not s.get("is_retired", False):
+            s["current_km"] = round(s["current_km"] + distance_km, 1)
+            s["wear_pct"] = round((s["current_km"] / max(1.0, s["max_km"])) * 100.0, 1)
+            if s["wear_pct"] >= 90.0:
+                s["status"] = "REPLACE_RECOMMENDED"
+            elif s["wear_pct"] >= 70.0:
+                s["status"] = "AGING"
+            return s
+    return {}
+
+
+# ── Post-Run Debrief Persistence ───────────────────────────────────────
+
+def save_post_run_debrief(user_id: str, debrief: dict) -> dict:
+    store = _get_user_store(user_id)
+    if "post_run_debriefs" not in store:
+        store["post_run_debriefs"] = []
+    
+    debrief_id = debrief.get("id") or f"debrief_{int(datetime.now(timezone.utc).timestamp())}"
+    debrief["id"] = debrief_id
+    debrief["created_at"] = datetime.now(timezone.utc).isoformat()
+    store["post_run_debriefs"].insert(0, debrief)
+    return debrief
+
+def get_post_run_debriefs(user_id: str, limit: int = 10) -> list:
+    store = _get_user_store(user_id)
+    return store.get("post_run_debriefs", [])[:limit]

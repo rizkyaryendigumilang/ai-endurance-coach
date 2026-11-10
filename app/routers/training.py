@@ -5,8 +5,8 @@ Manages race plan generation, weekly AI calendar, 31-week marathon periodization
 
 import asyncio
 from datetime import date
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File, Form
+from typing import Optional, List, Dict
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File, Form, Query
 from pydantic import BaseModel, Field
 
 from app.core.config import supabase
@@ -487,4 +487,265 @@ async def upload_race_gpx(
         "status": "success",
         "message": f"File rute GPX {file.filename} berhasil dianalisis!",
         "course": course_data
+    }
+
+
+
+# ── Post-Run Debrief & True Execution Scoring ──────────────────────────
+
+class PostRunDebriefInput(BaseModel):
+    workout_title: Optional[str] = Field("Zone 2 Aerobic Foundation Run", description="Nama workout yang dijalankan")
+    actual_distance_km: float = Field(10.2, description="Jarak aktual dalam km")
+    duration_seconds: int = Field(3600, description="Durasi dalam detik")
+    avg_heart_rate: int = Field(146, description="Rata-rata detak jantung")
+    avg_cadence: Optional[int] = Field(178, description="Rata-rata cadence langkah per menit")
+    temp_c: Optional[float] = Field(28.0, description="Suhu cuaca dalam Celsius")
+    rh_percent: Optional[float] = Field(80.0, description="Kelembapan relatif %")
+    workout_category: Optional[str] = Field("Aerobic Base", description="Kategori: Aerobic Base, Quality, Long Run, Recovery")
+    target_pace_sec: Optional[int] = Field(345, description="Target pace rencana (detik/km)")
+    target_hr_ceiling: Optional[int] = Field(150, description="Batas atas HR target")
+    shoe_id: Optional[str] = Field(None, description="ID sepatu yang dipakai atlet")
+    splits: Optional[List[dict]] = Field(None, description="Splits per km")
+
+
+@router.post("/api/v1/training/post-run-debrief", tags=["Post-Run Debrief"])
+def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(get_current_user_optional)):
+    """
+    Menghasilkan Evaluasi Personal Pasca Lari (Post-Run Coach Debrief):
+    - True Execution Scoring (0-100% disiplin pace, HR, volume)
+    - Normalisasi Cuaca Tropis (Suhu & Titik Embun reverse calculation agar VDOT aman)
+    - Aerobic Decoupling & Late-Stage Fatigue Fade detector
+    - Pelacakan akumulasi usia sepatu lari
+    """
+    uid = user_id or "demo-athlete-budi"
+    actual_pace_sec = int(data.duration_seconds / max(0.1, data.actual_distance_km))
+
+    # 1. True Execution Scoring
+    planned_dict = {
+        "distance_km": data.actual_distance_km,
+        "target_pace_sec": data.target_pace_sec,
+        "target_hr_ceiling": data.target_hr_ceiling,
+        "category": data.workout_category
+    }
+    actual_dict = {
+        "distance_km": data.actual_distance_km,
+        "actual_pace_sec": actual_pace_sec,
+        "avg_heart_rate": data.avg_heart_rate
+    }
+    execution = SportsEngine.calculate_true_execution_score(planned_dict, actual_dict)
+
+    # 2. Reverse Heat Normalization (VDOT & VO2max protection)
+    temp = data.temp_c or 28.0
+    rh = data.rh_percent or 80.0
+    w_type = "long_run" if data.workout_category == "Long Run" else ("interval" if data.workout_category == "Quality" else "easy")
+    normalized_weather = SportsEngine.normalize_pace_for_heat(
+        observed_pace_sec_per_km=actual_pace_sec,
+        temp_c=temp,
+        rh_percent=rh,
+        workout_type=w_type
+    )
+
+    # 3. Aerobic Decoupling & Late-Stage Fade
+    splits_data = data.splits
+    if not splits_data:
+        # Build simulated splits from distance & pace
+        km_count = max(2, int(round(data.actual_distance_km)))
+        splits_data = []
+        for k in range(1, km_count + 1):
+            drift = (k - 1) * 1.5
+            splits_data.append({
+                "km": k,
+                "pace_sec": round(actual_pace_sec + drift),
+                "hr": round(data.avg_heart_rate + (k * 0.8))
+            })
+
+    decoupling = SportsEngine.calculate_aerobic_decoupling_and_fade(splits_data)
+
+    # 4. Shoe Mileage Tracking
+    shoe_info = None
+    if data.shoe_id:
+        shoe_info = sandbox_store.add_shoe_mileage(uid, data.shoe_id, data.actual_distance_km)
+    else:
+        # Increment default shoe if any
+        shoes = sandbox_store.get_running_shoes(uid)
+        default_shoe = next((s for s in shoes if s.get("is_default") and not s.get("is_retired")), None)
+        if default_shoe:
+            shoe_info = sandbox_store.add_shoe_mileage(uid, default_shoe["id"], data.actual_distance_km)
+
+    # 5. Synthesize AI Coach Actionable Debrief Notes
+    cadence = data.avg_cadence or 178
+    cadence_note = (
+        "Cadence optimal di angka 178+ spm, meminimalkan getaran impak ke sendi lutut."
+        if cadence >= 174 else
+        f"Cadence {cadence} spm sedikit rendah. Coba perpendek langkah untuk menghemat energi."
+    )
+
+    debrief_summary = (
+        f"Selesai {data.actual_distance_km:.1f} km pada cuaca {temp}°C (Dew Point {normalized_weather['dew_point_c']}°C). "
+        f"Skor Kepatuhan Latihan Anda mencapai {execution['total_execution_score']}% ({execution['badge']}). "
+        f"Meskipun pace aktual terbaca {normalized_weather['observed_pace_str']}, beban fisiologis Anda setara dengan "
+        f"{normalized_weather['normalized_pace_str']} pada kondisi sejuk ideal—VDOT aerobik Anda tetap terjaga aman. "
+        f"Status kardiak: {decoupling['status_id']} (Decoupling {decoupling['decoupling_pct']}%). {cadence_note}"
+    )
+
+    debrief_payload = {
+        "workout_title": data.workout_title,
+        "workout_category": data.workout_category,
+        "actual_distance_km": data.actual_distance_km,
+        "actual_duration_seconds": data.duration_seconds,
+        "avg_heart_rate": data.avg_heart_rate,
+        "avg_cadence": cadence,
+        "execution_scoring": execution,
+        "weather_normalization": normalized_weather,
+        "aerobic_decoupling": decoupling,
+        "shoe_info": shoe_info,
+        "ai_coach_debrief_summary": debrief_summary,
+        "recovery_recommendation": {
+            "fluid_target_ml": int(data.actual_distance_km * 75 + 300),
+            "carbs_protein_ratio": "3:1 (45g Karbohidrat + 15g Protein dalam 45 menit pertama)",
+            "rest_hours_recommended": 24 if data.workout_category in ("Quality", "Long Run") else 12
+        }
+    }
+
+    sandbox_store.save_post_run_debrief(uid, debrief_payload)
+
+    return {
+        "status": "success",
+        "debrief": debrief_payload
+    }
+
+
+# ── FSM Auto-Rebalancer & Missed Workout Endpoints ─────────────────────
+
+class AutoRebalanceInput(BaseModel):
+    week_key: Optional[str] = Field(None, description="ISO week key, misal 2026-W45")
+    missed_day_indices: Optional[List[int]] = Field(None, description="Daftar index hari yang terlewat (0=Senin, 6=Minggu)")
+    reason: str = Field("BUSY_WORK", description="BUSY_WORK, FATIGUE_SORENESS, SICKNESS_FLU, MINOR_NIGGLE")
+
+
+@router.post("/api/v1/training/auto-rebalance", tags=["Auto-Rebalancer"])
+def execute_auto_rebalance(data: AutoRebalanceInput, user_id: str = Depends(get_current_user_optional)):
+    """
+    Mengeksekusi 'Life Happens' Auto-Rebalancer berdasar State Machine (FSM) dan Aturan Emas.
+    """
+    uid = user_id or "demo-athlete-budi"
+    res = WeeklyCalendarService.auto_rebalance_schedule(
+        user_id=uid,
+        week_key=data.week_key,
+        missed_day_indices=data.missed_day_indices,
+        reason=data.reason
+    )
+    return res
+
+
+@router.get("/api/v1/training/check-missed-workouts", tags=["Auto-Rebalancer"])
+def check_eod_missed_workouts_endpoint(user_id: str = Depends(get_current_user_optional)):
+    """
+    Pengecekan akhir hari (EOD 22:00 WIB) mendeteksi sesi yang terlewat tanpa false alarm.
+    """
+    uid = user_id or "demo-athlete-budi"
+    return WeeklyCalendarService.check_eod_missed_workouts(uid)
+
+
+# ── Shoe Mileage & Wear Alert Endpoints ────────────────────────────────
+
+class ShoeInput(BaseModel):
+    id: Optional[str] = None
+    brand: str = Field("Nike", description="Brand sepatu")
+    model: str = Field("Vaporfly 3", description="Model sepatu")
+    nickname: Optional[str] = Field("Race Day Super Shoe", description="Nama panggilan sepatu")
+    shoe_type: Optional[str] = Field("daily_trainer", description="daily_trainer, race_carbon, tempo_nylon, trail")
+    max_km: float = Field(750.0, description="Batas rekomendasi kilometer")
+    current_km: float = Field(0.0, description="Kilometer berjalan")
+    is_default: bool = Field(False, description="Apakah sepatu default")
+
+
+@router.get("/api/v1/training/shoes", tags=["Shoe Mileage"])
+def get_shoes_endpoint(user_id: str = Depends(get_current_user_optional)):
+    """Mengambil daftar inventaris sepatu lari dan status keausannya."""
+    uid = user_id or "demo-athlete-budi"
+    shoes = sandbox_store.get_running_shoes(uid)
+    return {
+        "status": "success",
+        "shoes": shoes,
+        "total_active": len([s for s in shoes if not s.get("is_retired")]),
+        "replace_alerts": [s for s in shoes if s.get("status") == "REPLACE_RECOMMENDED" and not s.get("is_retired")]
+    }
+
+
+@router.post("/api/v1/training/shoes", tags=["Shoe Mileage"])
+def save_shoe_endpoint(data: ShoeInput, user_id: str = Depends(get_current_user_optional)):
+    """Menambah atau memperbarui data sepatu lari."""
+    uid = user_id or "demo-athlete-budi"
+    saved = sandbox_store.save_running_shoe(uid, data.model_dump())
+    return {
+        "status": "success",
+        "shoe": saved
+    }
+
+
+@router.post("/api/v1/training/shoes/retire", tags=["Shoe Mileage"])
+def retire_shoe_endpoint(shoe_id: str = Query(...), user_id: str = Depends(get_current_user_optional)):
+    """Memensiunkan sepatu lari yang sudah habis masa pakainya."""
+    uid = user_id or "demo-athlete-budi"
+    ok = sandbox_store.retire_running_shoe(uid, shoe_id)
+    return {
+        "status": "success" if ok else "not_found",
+        "shoe_id": shoe_id,
+        "is_retired": ok
+    }
+
+
+# ── Export Structured Workout to Garmin ────────────────────────────────
+
+@router.get("/api/v1/training/workout/export-garmin", tags=["Garmin Workout Export"])
+def export_garmin_workout(
+    title: str = Query("Lactate Threshold 5x1000m Cruise"),
+    distance_km: float = Query(10.0),
+    target_pace: str = Query("04:15 min/km"),
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    Menghasilkan structured workout kompatibel dengan Garmin Connect Training API
+    dan format file .FIT untuk disinkronkan ke jam tangan atlet.
+    """
+    workout_dict = {
+        "sport": "running",
+        "distance_km": distance_km,
+        "target_pace": target_pace,
+        "warmup": "1.5km lari pemanasan Zona 2 santai",
+        "main_set": f"Sesi Kunci: {title} @ {target_pace}",
+        "cooldown": "1.0km pendinginan lambat & mobilitas"
+    }
+    garmin_payload = SportsEngine.generate_garmin_structured_workout(title, workout_dict)
+    return {
+        "status": "success",
+        "garmin_workout": garmin_payload
+    }
+
+
+# ── 24 Marathon Core Strength Exercises Catalog ────────────────────────
+
+@router.get("/api/v1/training/strength-catalog", tags=["Strength Engine"])
+def get_strength_catalog_endpoint(
+    pillar: Optional[str] = Query(None, description="unilateral_lower_body, soleus_achilles_complex, plyometrics_elastic_recoil, anti_rotation_pelvic_stability"),
+    days_to_race: int = Query(120, description="Jumlah hari menuju hari H lomba maraton")
+):
+    """
+    Mengambil katalog 24 Gerakan Inti Latihan Beban Spesifik Maraton Goalie
+    dan rekomendasi sesi gym mingguan terkunci deterministik pada batasan 2-3 RIR.
+    """
+    from app.services.strength_catalog import StrengthEngine
+    if pillar:
+        catalog = StrengthEngine.get_exercises_by_pillar(pillar)
+    else:
+        catalog = StrengthEngine.get_catalog()
+
+    weekly_recommendation = StrengthEngine.get_weekly_strength_session(week_number=1, days_to_race=days_to_race)
+
+    return {
+        "status": "success",
+        "total_exercises": len(catalog),
+        "catalog": catalog,
+        "weekly_recommendation": weekly_recommendation
     }

@@ -715,3 +715,242 @@ class SportsEngine:
             "route_type": route_type,
             **route
         }
+
+    @staticmethod
+    def normalize_pace_for_heat(
+        observed_pace_sec_per_km: int,
+        temp_c: float,
+        rh_percent: float,
+        workout_type: str = "long_run",
+        is_heat_acclimatized: bool = True,
+        direct_sunlight: bool = False
+    ) -> dict:
+        """
+        Rumus Terbalik (Reverse Calculation):
+        Menormalkan pace aktual yang didapat pada cuaca panas tropis menjadi pace ekuivalen
+        pada kondisi sejuk ideal (15-20°C). Melindungi VDOT/VO2max atlet agar tidak drop keliru.
+        """
+        weather_adj = SportsEngine.adjust_pace_for_weather(
+            base_pace_sec_per_km=observed_pace_sec_per_km,
+            temp_c=temp_c,
+            rh_percent=rh_percent,
+            workout_type=workout_type,
+            is_heat_acclimatized=is_heat_acclimatized,
+            direct_sunlight=direct_sunlight
+        )
+        penalty_pct = weather_adj["final_penalty_pct"]
+        normalized_sec = max(120, round(observed_pace_sec_per_km / (1.0 + penalty_pct / 100.0)))
+        delta_sec = observed_pace_sec_per_km - normalized_sec
+
+        def sec_to_str(s: int) -> str:
+            m = int(s // 60)
+            sec = int(round(s % 60))
+            return f"{m:02d}:{sec:02d}"
+
+        observed_vdot = SportsEngine.calculate_vdot(distance_m=10000, duration_seconds=int(observed_pace_sec_per_km * 10))
+        normalized_vdot = SportsEngine.calculate_vdot(distance_m=10000, duration_seconds=int(normalized_sec * 10))
+        vdot_preserved = round(max(0.0, normalized_vdot - observed_vdot), 1)
+
+        return {
+            "observed_pace_sec": observed_pace_sec_per_km,
+            "observed_pace_str": f"{sec_to_str(observed_pace_sec_per_km)} /km",
+            "normalized_pace_sec": normalized_sec,
+            "normalized_pace_str": f"{sec_to_str(normalized_sec)} /km",
+            "penalty_pct": penalty_pct,
+            "delta_seconds_saved": delta_sec,
+            "dew_point_c": weather_adj["dew_point_c"],
+            "thermal_sum_c": weather_adj["thermal_sum_c"],
+            "observed_vdot": observed_vdot,
+            "normalized_vdot": normalized_vdot,
+            "vdot_preserved_points": vdot_preserved,
+            "explanation": (
+                f"Lari pada suhu {temp_c}°C & RH {rh_percent}% (Dew Point {weather_adj['dew_point_c']}°C). "
+                f"Pace riil {sec_to_str(observed_pace_sec_per_km)}/km bernilai fisiologis setara dengan "
+                f"{sec_to_str(normalized_sec)}/km pada cuaca sejuk. VDOT atlet berhasil diamankan (+{vdot_preserved} poin)."
+            )
+        }
+
+    @staticmethod
+    def calculate_true_execution_score(planned: dict, actual: dict) -> dict:
+        """
+        True Execution Scoring (Skor Kepatuhan Latihan 0–100%).
+        Mengevaluasi Kepatuhan Pace (40%), Detak Jantung (30%), dan Volume Jarak (30%).
+        Menghukum pelari yang lari terlalu kencang di sesi Easy Run (Grey Zone Trap).
+        """
+        target_dist = float(planned.get("distance_km") or 10.0)
+        actual_dist = float(actual.get("distance_km") or target_dist)
+
+        # 1. Volume / Distance Compliance (30%)
+        if target_dist > 0:
+            dist_ratio = actual_dist / target_dist
+            dist_diff = abs(dist_ratio - 1.0)
+            vol_score = max(0.0, min(100.0, 100.0 - (dist_diff * 100.0 * 2.0)))
+        else:
+            vol_score = 100.0
+
+        # 2. Heart Rate Compliance (30%)
+        target_hr_ceiling = int(planned.get("target_hr_ceiling") or 155)
+        actual_avg_hr = int(actual.get("avg_heart_rate") or actual.get("avg_hr") or 148)
+        if actual_avg_hr <= target_hr_ceiling:
+            hr_score = 100.0
+        else:
+            overshoot = actual_avg_hr - target_hr_ceiling
+            hr_score = max(0.0, 100.0 - (overshoot * 4.5))
+
+        # 3. Pace Discipline Compliance (40%)
+        planned_pace_sec = int(planned.get("target_pace_sec") or 330)
+        actual_pace_sec = int(actual.get("actual_pace_sec") or 335)
+        pace_diff = abs(actual_pace_sec - planned_pace_sec)
+
+        is_easy_or_recovery = planned.get("category") in ("Aerobic Base", "Recovery", "Rest") or "easy" in planned.get("workout_type", "").lower()
+        if is_easy_or_recovery and actual_pace_sec < (planned_pace_sec - 15):
+            too_fast_sec = (planned_pace_sec - 15) - actual_pace_sec
+            pace_score = max(30.0, 100.0 - (too_fast_sec * 3.5))
+            pace_note = "Peringatan Grey Zone: Lari terlalu kencang di hari pemulihan merusak adaptasi mitokondria."
+        else:
+            pace_score = max(0.0, min(100.0, 100.0 - (pace_diff * 2.5)))
+            pace_note = "Pace terkontrol disiplin dalam koridor target zona."
+
+        total_score = round(vol_score * 0.30 + hr_score * 0.30 + pace_score * 0.40)
+
+        if total_score >= 90:
+            badge = "DISIPLIN TINGGI"
+            badge_class = "text-flat-green bg-flat-green/10 border-flat-green"
+        elif total_score >= 75:
+            badge = "OPTIMAL"
+            badge_class = "text-tertiary bg-tertiary/10 border-tertiary"
+        else:
+            badge = "PERLU KOREKSI"
+            badge_class = "text-flat-orange bg-flat-orange/10 border-flat-orange"
+
+        return {
+            "total_execution_score": total_score,
+            "badge": badge,
+            "badge_class": badge_class,
+            "breakdown": {
+                "distance_compliance_pct": round(vol_score, 1),
+                "hr_compliance_pct": round(hr_score, 1),
+                "pace_compliance_pct": round(pace_score, 1)
+            },
+            "metrics": {
+                "planned_distance_km": target_dist,
+                "actual_distance_km": actual_dist,
+                "target_hr_ceiling": target_hr_ceiling,
+                "actual_avg_hr": actual_avg_hr,
+                "planned_pace_sec": planned_pace_sec,
+                "actual_pace_sec": actual_pace_sec
+            },
+            "coaching_feedback": pace_note
+        }
+
+    @staticmethod
+    def calculate_aerobic_decoupling_and_fade(
+        splits: list = None,
+        h1_pace_sec: float = 300,
+        h1_hr: float = 142,
+        h2_pace_sec: float = 305,
+        h2_hr: float = 149
+    ) -> dict:
+        """
+        Deteksi Aerobic Decoupling (Cardiac Drift Pw:HR) dan Late-Stage Fatigue Fade.
+        Mengukur penurunan rasio kecepatan terhadap detak jantung (Efficiency Factor) dari babak 1 ke babak 2.
+        """
+        if splits and len(splits) >= 4:
+            mid = len(splits) // 2
+            h1 = splits[:mid]
+            h2 = splits[mid:]
+            h1_hr = sum(s.get("hr", 145) for s in h1) / len(h1)
+            h2_hr = sum(s.get("hr", 152) for s in h2) / len(h2)
+            h1_pace_sec = sum(s.get("pace_sec", 300) for s in h1) / len(h1)
+            h2_pace_sec = sum(s.get("pace_sec", 308) for s in h2) / len(h2)
+
+        ef_1 = (60000.0 / max(100.0, h1_pace_sec)) / max(60.0, h1_hr)
+        ef_2 = (60000.0 / max(100.0, h2_pace_sec)) / max(60.0, h2_hr)
+
+        decoupling_pct = round(((ef_1 - ef_2) / max(0.01, ef_1)) * 100.0, 2)
+        has_late_fade = (h2_pace_sec - h1_pace_sec) > 18.0
+
+        if decoupling_pct < 3.5:
+            status = "EXCELLENT_AEROBIC_BASE"
+            status_id = "Fondasi Aerobik Sangat Kuat"
+            desc = "Tidak ada cardiac drift berarti. Mitokondria membakar lemak secara hemat glikogen."
+        elif decoupling_pct <= 5.0:
+            status = "OPTIMAL_STABLE"
+            status_id = "Kardiovaskular Stabil"
+            desc = "Cardiac drift di bawah batas 5.0%. Tubuh siap meningkatkan volume long run."
+        else:
+            status = "DECOUPLING_DETECTED"
+            status_id = "Aerobic Decoupling Terdeteksi"
+            desc = "Jantung bekerja lebih keras pada kecepatan yang sama. Tanda dehidrasi atau kekurangan glikogen."
+
+        return {
+            "decoupling_pct": decoupling_pct,
+            "status": status,
+            "status_id": status_id,
+            "ef_first_half": round(ef_1, 2),
+            "ef_second_half": round(ef_2, 2),
+            "late_stage_fade_detected": has_late_fade,
+            "description": desc
+        }
+
+    @staticmethod
+    def generate_garmin_structured_workout(workout_title: str, workout_dict: dict) -> dict:
+        """
+        Menghasilkan payload structured workout yang kompatibel dengan Garmin Connect Training API
+        dan format FIT interval standard.
+        """
+        sport = workout_dict.get("sport", "running")
+        distance_km = float(workout_dict.get("distance_km") or 10.0)
+        target_pace = workout_dict.get("target_pace", "05:00 min/km")
+
+        pace_sec = 300
+        try:
+            parts = target_pace.split(" ")[0].split(":")
+            pace_sec = int(parts[0]) * 60 + int(parts[1])
+        except Exception:
+            pass
+        target_speed_mps = round(1000.0 / max(1, pace_sec), 2)
+
+        steps = [
+            {
+                "stepId": 1,
+                "stepType": "warmup",
+                "intensity": "WARMUP",
+                "durationType": "DISTANCE",
+                "durationValue": 1500,
+                "targetType": "PACE",
+                "targetValueLow": round(target_speed_mps * 0.85, 2),
+                "targetValueHigh": round(target_speed_mps * 0.95, 2),
+                "description": workout_dict.get("warmup", "1.5km Easy Warmup")
+            },
+            {
+                "stepId": 2,
+                "stepType": "interval",
+                "intensity": "ACTIVE",
+                "durationType": "DISTANCE",
+                "durationValue": int(max(1000, (distance_km - 2.5) * 1000)),
+                "targetType": "PACE",
+                "targetValueLow": round(target_speed_mps * 0.97, 2),
+                "targetValueHigh": round(target_speed_mps * 1.03, 2),
+                "description": workout_dict.get("main_set", "Main Set Steady / Intervals")
+            },
+            {
+                "stepId": 3,
+                "stepType": "cooldown",
+                "intensity": "COOLDOWN",
+                "durationType": "DISTANCE",
+                "durationValue": 1000,
+                "targetType": "OPEN",
+                "description": workout_dict.get("cooldown", "1.0km Easy Cooldown")
+            }
+        ]
+
+        return {
+            "workoutName": f"Goalie: {workout_title}",
+            "sportType": sport.upper(),
+            "estimatedDurationInSecs": int(workout_dict.get("duration_min", 60) * 60),
+            "estimatedDistanceInMeters": int(distance_km * 1000),
+            "workoutSteps": steps,
+            "export_formats": ["JSON", "GARMIN_FIT_COMPLIANT"],
+            "sync_ready": True
+        }
