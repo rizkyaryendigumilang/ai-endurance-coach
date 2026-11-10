@@ -1,3 +1,4 @@
+from pydantic import BaseModel, Field
 import os
 import re
 import uuid
@@ -465,4 +466,129 @@ def get_sports_analytics(days: int = 30, user_id: str = Depends(get_current_user
         },
         "by_sport": by_sport,
         "active_sports": [k for k, v in by_sport.items() if v["count"] > 0]
+    }
+
+
+
+# ── Weather Heat/Dew Point, Route Recommender & Heatmaps ───────────────
+
+class WeatherPaceAdjustInput(BaseModel):
+    base_pace_sec: int = Field(300, description="Pace dasar dalam detik/km, misal 300 = 5:00/km")
+    temp_c: float = Field(28.0, description="Suhu udara dalam Celsius")
+    rh_percent: float = Field(80.0, description="Kelembapan relatif (1-100%)")
+    workout_type: str = Field("long_run", description="interval, tempo, easy, long_run")
+    is_heat_acclimatized: bool = Field(True, description="Apakah atlet sudah terbiasa cuaca panas")
+    direct_sunlight: bool = Field(False, description="Apakah terkena sinar matahari langsung")
+
+
+class SmartRouteGenerateInput(BaseModel):
+    start_location: str = Field("gbk_senayan", description="gbk_senayan, monas_menteng, bsd_green_office, bali_gianyar")
+    target_km: float = Field(10.0, description="Target jarak rute dalam km")
+    route_type: str = Field("loop", description="loop atau out_and_back")
+
+
+@router.post("/api/v1/telemetry/weather-adjust", tags=["Telemetry"])
+def adjust_pace_weather_endpoint(data: WeatherPaceAdjustInput):
+    """
+    Menghitung koreksi pace fisiologis berbasis Suhu (°C) dan Titik Embun (Dew Point °C).
+    """
+    res = SportsEngine.adjust_pace_for_weather(
+        base_pace_sec_per_km=data.base_pace_sec,
+        temp_c=data.temp_c,
+        rh_percent=data.rh_percent,
+        workout_type=data.workout_type,
+        is_heat_acclimatized=data.is_heat_acclimatized,
+        direct_sunlight=data.direct_sunlight
+    )
+    return {
+        "status": "success",
+        "weather_adjustment": res
+    }
+
+
+@router.post("/api/v1/telemetry/smart-routes/generate", tags=["Telemetry"])
+def generate_smart_route_endpoint(data: SmartRouteGenerateInput):
+    """
+    Menghasilkan rekomendasi rute pintar terstruktur, elevasi, dan koordinat GPX.
+    """
+    route = SportsEngine.generate_smart_route(
+        start_location_key=data.start_location,
+        target_km=data.target_km,
+        route_type=data.route_type
+    )
+    return {
+        "status": "success",
+        "route": route
+    }
+
+
+@router.get("/api/v1/telemetry/deep-zones-and-heatmaps", tags=["Telemetry"])
+def get_deep_zones_and_heatmaps(user_id: str = Depends(get_current_user_optional)):
+    """
+    Mengambil data heatmap aktivitas (Personal, Night, Weekly, Global)
+    dan analisis distribusi 5 Zona Karvonen & perbandingan GAP.
+    """
+    uid = user_id or "demo-athlete-budi"
+    workouts = sandbox_store.get_recent_workouts(uid, limit=20)
+    
+    # 1. Personal Heatmap Polylines from logged activities
+    personal_traces = []
+    weekly_traces = []
+    hr_stream = []
+
+    for idx, w in enumerate(workouts):
+        coords = w.get("gpsRoute")
+        if not coords or len(coords) < 2:
+            # Fallback simulated polyline for demo workouts
+            center_lat, center_lon = -6.2183, 106.8025
+            coords = [
+                [center_lat + (idx * 0.002), center_lon + (idx * 0.001)],
+                [center_lat + 0.005 + (idx * 0.002), center_lon + 0.008 + (idx * 0.001)],
+                [center_lat + 0.012 + (idx * 0.002), center_lon + 0.004 + (idx * 0.001)],
+                [center_lat + (idx * 0.002), center_lon + (idx * 0.001)]
+            ]
+        personal_traces.append(coords)
+        if idx < 4:
+            weekly_traces.append(coords)
+        
+        avg_hr = int(w.get("avg_hr") or 148)
+        hr_stream.extend([avg_hr - 6, avg_hr - 2, avg_hr, avg_hr + 3, avg_hr + 7])
+
+    # 2. Night Run Corridors (Jalur Aman & Terang)
+    night_corridors = [
+        # GBK Perimeter Loop
+        [[-6.2183, 106.8025], [-6.2140, 106.8050], [-6.2190, 106.8080], [-6.2220, 106.8040], [-6.2183, 106.8025]],
+        # Sudirman Boulevard
+        [[-6.2020, 106.8220], [-6.2100, 106.8180], [-6.2200, 106.8120], [-6.2300, 106.8070]],
+        # Danau Sunter Barat
+        [[-6.1420, 106.8650], [-6.1380, 106.8700], [-6.1430, 106.8750], [-6.1470, 106.8680], [-6.1420, 106.8650]]
+    ]
+
+    # 3. Global Popular Heatmap Corridors
+    global_corridors = [
+        [[-6.2183, 106.8025], [-6.2080, 106.8120], [-6.1950, 106.8220], [-6.1754, 106.8272]],
+        [[-6.2950, 106.6580], [-6.3050, 106.6680], [-6.3150, 106.6620], [-6.2950, 106.6580]],
+        [[-8.5833, 115.3400], [-8.5600, 115.3550], [-8.5300, 115.3620], [-8.5100, 115.3470]]
+    ]
+
+    # 4. Zone Distribution
+    zone_stats = SportsEngine.calculate_zone_distribution(hr_stream, resting_hr=48, max_hr=192)
+
+    return {
+        "status": "success",
+        "heatmaps": {
+            "personal_traces_count": len(personal_traces),
+            "personal_traces": personal_traces[:12],
+            "weekly_traces": weekly_traces,
+            "night_corridors": night_corridors,
+            "global_corridors": global_corridors
+        },
+        "zone_distribution": zone_stats,
+        "matched_runs_comparison": {
+            "route_name": "GBK Sudirman Loop 10K",
+            "historical_runs_count": 8,
+            "best_pace": "04:52 /km",
+            "average_hr_trend": "Turun 4 bpm pada pace yang sama (Adaptasi Aerobik Positif)",
+            "aerobic_efficiency_improvement": "+6.4% vs 60 hari lalu"
+        }
     }

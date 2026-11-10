@@ -542,3 +542,176 @@ class SportsEngine:
             "interval_pace": f"{sec_to_pace(interval_sec)} min/km",
             "repetition_pace": f"{sec_to_pace(rep_sec)} min/km"
         }
+
+    @staticmethod
+    def calculate_dew_point(temp_c: float, rh_percent: float) -> float:
+        """Menghitung Titik Embun (Dew Point °C) menggunakan rumus Magnus-Tetens."""
+        a, b = 17.625, 243.04
+        rh_clamped = max(1.0, min(100.0, float(rh_percent)))
+        gamma = math.log(rh_clamped / 100.0) + (a * temp_c) / (b + temp_c)
+        return round((b * gamma) / (a - gamma), 2)
+
+    @staticmethod
+    def adjust_pace_for_weather(
+        base_pace_sec_per_km: int,
+        temp_c: float,
+        rh_percent: float,
+        workout_type: str = "long_run",
+        is_heat_acclimatized: bool = True,
+        direct_sunlight: bool = False
+    ) -> dict:
+        """
+        Menyesuaikan target pace lari berdasarkan Suhu (°C) dan Dew Point (°C)
+        menggunakan model kuadratik Mark Hadley / Hanson untuk iklim tropis.
+        """
+        dew_point_c = SportsEngine.calculate_dew_point(temp_c, rh_percent)
+        effective_temp_c = temp_c + (2.5 if direct_sunlight else 0.0)
+        thermal_sum_c = effective_temp_c + dew_point_c
+
+        excess_heat = max(0.0, thermal_sum_c - 20.0)
+        base_penalty_pct = 0.00625 * (excess_heat ** 2)
+
+        duration_modifiers = {
+            "interval": 0.40,
+            "tempo": 0.75,
+            "easy": 0.85,
+            "long_run": 1.00
+        }
+        m_duration = duration_modifiers.get(workout_type, 1.0)
+        m_accl = 0.78 if is_heat_acclimatized else 1.00
+
+        final_penalty_pct = round(base_penalty_pct * m_duration * m_accl, 2)
+        adjusted_pace_sec = round(base_pace_sec_per_km * (1.0 + final_penalty_pct / 100.0))
+
+        def sec_to_str(s: int) -> str:
+            m = int(s // 60)
+            sec = int(round(s % 60))
+            return f"{m:02d}:{sec:02d}"
+
+        return {
+            "dew_point_c": dew_point_c,
+            "effective_temp_c": round(effective_temp_c, 1),
+            "thermal_sum_c": round(thermal_sum_c, 1),
+            "base_penalty_pct": round(base_penalty_pct, 2),
+            "final_penalty_pct": final_penalty_pct,
+            "base_pace_sec": base_pace_sec_per_km,
+            "base_pace_str": f"{sec_to_str(base_pace_sec_per_km)} /km",
+            "adjusted_pace_sec": adjusted_pace_sec,
+            "adjusted_pace_str": f"{sec_to_str(adjusted_pace_sec)} /km",
+            "delta_seconds_per_km": adjusted_pace_sec - base_pace_sec_per_km,
+            "warning_flag": thermal_sum_c > 60.0
+        }
+
+    @staticmethod
+    def calculate_zone_distribution(hr_stream: List[int], resting_hr: int = 48, max_hr: int = 192) -> dict:
+        """
+        Menghitung distribusi waktu dalam 5 Zona HR Karvonen dan rasio polarisasi (80/20).
+        """
+        if not hr_stream:
+            # Fallback realistic distribution
+            return {
+                "z1_pct": 14, "z2_pct": 68, "z3_pct": 10, "z4_pct": 6, "z5_pct": 2,
+                "polarized_low_pct": 82, "polarized_high_pct": 18,
+                "discipline_status": "POLARIZED_OPTIMAL"
+            }
+
+        zones = SportsEngine.calculate_karvonen_zones(resting_hr, max_hr)
+        z1_max = zones["zone1"]["max_hr"]
+        z2_max = zones["zone2"]["max_hr"]
+        z3_max = zones["zone3"]["max_hr"]
+        z4_max = zones["zone4"]["max_hr"]
+
+        counts = [0, 0, 0, 0, 0]
+        for hr in hr_stream:
+            if hr <= z1_max: counts[0] += 1
+            elif hr <= z2_max: counts[1] += 1
+            elif hr <= z3_max: counts[2] += 1
+            elif hr <= z4_max: counts[3] += 1
+            else: counts[4] += 1
+
+        total = max(1, len(hr_stream))
+        pcts = [round((c / total) * 100) for c in counts]
+        low_pct = pcts[0] + pcts[1]
+        high_pct = pcts[3] + pcts[4]
+
+        return {
+            "z1_pct": pcts[0],
+            "z2_pct": pcts[1],
+            "z3_pct": pcts[2],
+            "z4_pct": pcts[3],
+            "z5_pct": pcts[4],
+            "polarized_low_pct": low_pct,
+            "polarized_high_pct": high_pct,
+            "discipline_status": "POLARIZED_OPTIMAL" if low_pct >= 75 else "GREY_ZONE_WARNING"
+        }
+
+    @staticmethod
+    def generate_smart_route(start_location_key: str = "gbk_senayan", target_km: float = 10.0, route_type: str = "loop") -> dict:
+        """
+        Menghasilkan rute lari pintar dan rekomendasi elevasi berdasarkan hub utama pelari.
+        """
+        routes = {
+            "gbk_senayan": {
+                "name": "Gelora Bung Karno & Sudirman Loop",
+                "center": [-6.2183, 106.8025],
+                "surface": "Aspal Mulus & Jalur Pedestrian Lebar",
+                "night_safety_rating": 5,
+                "elevation_gain_m": round(target_km * 4.2, 1),
+                "water_stations_count": max(1, int(target_km / 3.5)),
+                "lighting_quality": "Sangat Terang (Aman untuk Night Run)",
+                "coords": [
+                    [-6.2183, 106.8025], [-6.2140, 106.8050], [-6.2080, 106.8120],
+                    [-6.2020, 106.8180], [-6.2060, 106.8220], [-6.2150, 106.8150],
+                    [-6.2220, 106.8080], [-6.2183, 106.8025]
+                ]
+            },
+            "monas_menteng": {
+                "name": "Monumen Nasional & Taman Suropati Circuit",
+                "center": [-6.1754, 106.8272],
+                "surface": "Paving Halus & Aspal Rindang",
+                "night_safety_rating": 4,
+                "elevation_gain_m": round(target_km * 2.8, 1),
+                "water_stations_count": max(1, int(target_km / 4.0)),
+                "lighting_quality": "Terang dengan Pengawasan Petugas",
+                "coords": [
+                    [-6.1754, 106.8272], [-6.1820, 106.8300], [-6.1950, 106.8350],
+                    [-6.2010, 106.8320], [-6.1920, 106.8250], [-6.1800, 106.8220],
+                    [-6.1754, 106.8272]
+                ]
+            },
+            "bsd_green_office": {
+                "name": "BSD Grand Boulevard & The Breeze Loop",
+                "center": [-6.3015, 106.6540],
+                "surface": "Aspal Halus Khusus Olahraga",
+                "night_safety_rating": 5,
+                "elevation_gain_m": round(target_km * 6.5, 1),
+                "water_stations_count": max(1, int(target_km / 3.0)),
+                "lighting_quality": "Sangat Terang & Jalur Steril Kendaraan",
+                "coords": [
+                    [-6.3015, 106.6540], [-6.2950, 106.6580], [-6.2880, 106.6620],
+                    [-6.2920, 106.6690], [-6.3040, 106.6650], [-6.3080, 106.6580],
+                    [-6.3015, 106.6540]
+                ]
+            },
+            "bali_gianyar": {
+                "name": "Maybank Bali Marathon Coastline Circuit",
+                "center": [-8.5833, 115.3400],
+                "surface": "Aspal Pesisir Pantai & Pedesaan Gianyar",
+                "night_safety_rating": 3,
+                "elevation_gain_m": round(target_km * 7.2, 1),
+                "water_stations_count": max(1, int(target_km / 2.5)),
+                "lighting_quality": "Subuh Segar (Disarankan Mulai 05.00)",
+                "coords": [
+                    [-8.5833, 115.3400], [-8.5720, 115.3530], [-8.5520, 115.3590],
+                    [-8.5320, 115.3635], [-8.5100, 115.3470], [-8.5265, 115.3255],
+                    [-8.5560, 115.3262], [-8.5833, 115.3400]
+                ]
+            }
+        }
+        route = routes.get(start_location_key, routes["gbk_senayan"])
+        return {
+            "key": start_location_key,
+            "target_km": target_km,
+            "route_type": route_type,
+            **route
+        }

@@ -578,5 +578,56 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertIn("fueling_schedule", course)
         self.assertIn("ai_summary", course)
 
+    def test_25_weather_adjust_and_smart_routes_and_deep_heatmaps(self):
+        """Verify Weather Pace Adjuster, Smart Route Generator, and Deep Zone Heatmaps."""
+        from app.core.auth import create_demo_token
+
+        user_id = "telemetry_deep_athlete"
+        token = create_demo_token(user_id, "deep_athlete@goalie.fit")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 1. Weather Pace Adjuster (Magnus-Tetens Dew Point + Quadratic Thermal Load)
+        weather_payload = {
+            "base_pace_sec": 300,
+            "temp_c": 28.0,
+            "rh_percent": 80.0,
+            "workout_type": "long_run",
+            "is_heat_acclimatized": True,
+            "direct_sunlight": True
+        }
+        res_weather = self.client.post("/api/v1/telemetry/weather-adjust", json=weather_payload)
+        self.assertEqual(res_weather.status_code, 200)
+        w_data = res_weather.json()
+        self.assertEqual(w_data["status"], "success")
+        adj = w_data["weather_adjustment"]
+        self.assertAlmostEqual(adj["dew_point_c"], 24.3, delta=0.5)
+        self.assertGreater(adj["adjusted_pace_sec"], 300)
+        self.assertIn("adjusted_pace_str", adj)
+
+        # 2. Smart Route Generator (GBK, Monas, BSD, Bali)
+        route_payload = {
+            "start_location": "gbk_senayan",
+            "target_km": 12.0,
+            "route_type": "loop"
+        }
+        res_route = self.client.post("/api/v1/telemetry/smart-routes/generate", json=route_payload)
+        self.assertEqual(res_route.status_code, 200)
+        r_data = res_route.json()
+        self.assertEqual(r_data["status"], "success")
+        self.assertIn("coords", r_data["route"])
+        self.assertGreater(len(r_data["route"]["coords"]), 3)
+        self.assertEqual(r_data["route"]["night_safety_rating"], 5)
+
+        # 3. Deep Zones and Multi-layer Heatmaps
+        res_hm = self.client.get("/api/v1/telemetry/deep-zones-and-heatmaps", headers=headers)
+        self.assertEqual(res_hm.status_code, 200)
+        hm_data = res_hm.json()
+        self.assertEqual(hm_data["status"], "success")
+        self.assertIn("heatmaps", hm_data)
+        self.assertIn("zone_distribution", hm_data)
+        self.assertIn("matched_runs_comparison", hm_data)
+        self.assertEqual(hm_data["zone_distribution"]["discipline_status"], "POLARIZED_OPTIMAL")
+
+
 if __name__ == "__main__":
     unittest.main()

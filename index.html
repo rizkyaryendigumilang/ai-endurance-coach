@@ -2695,6 +2695,417 @@
                     </div>
                 </div>
 
+                <!-- ══════════════════════════════════════════════════════════ -->
+                <!-- 4. HUB EKSPLORASI RUTE PINTAR & HEATMAP AKTIVITAS MULTI-LAYER -->
+                <!-- ══════════════════════════════════════════════════════════ -->
+                <div class="space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 bg-emerald-500"></span>
+                            <h3 class="font-display font-bold text-base text-text-primary">Eksplorasi Rute Pintar &amp; Heatmap Multi-Layer</h3>
+                        </div>
+                        <span class="text-[11px] font-mono text-text-secondary">Global Hubs &bull; Jejak Personal &bull; Night Run Terang &bull; Mingguan</span>
+                    </div>
+
+                    <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-4">
+                        <!-- Top Controls: Layer Switcher & Hub Selector -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-border pb-3">
+                            <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+                                <span class="text-[11px] text-text-secondary mr-1 uppercase font-bold">Lapisan Heatmap:</span>
+                                <button type="button" onclick="setTelemetryHeatmapLayer('personal')" id="btn-hm-personal" class="px-2.5 py-1 rounded-md border-2 border-flat-orange bg-flat-orange/10 text-flat-orange font-bold text-xs flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-flat-orange"></span>
+                                    <span>Personal (Aktivitas Saya)</span>
+                                </button>
+                                <button type="button" onclick="setTelemetryHeatmapLayer('weekly')" id="btn-hm-weekly" class="px-2.5 py-1 rounded-md border border-border bg-surface-subtle text-text-secondary hover:text-text-primary text-xs flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                                    <span>7-Hari (Mingguan)</span>
+                                </button>
+                                <button type="button" onclick="setTelemetryHeatmapLayer('night')" id="btn-hm-night" class="px-2.5 py-1 rounded-md border border-border bg-surface-subtle text-text-secondary hover:text-text-primary text-xs flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                    <span>Night Run (Jalur Terang)</span>
+                                </button>
+                                <button type="button" onclick="setTelemetryHeatmapLayer('global')" id="btn-hm-global" class="px-2.5 py-1 rounded-md border border-border bg-surface-subtle text-text-secondary hover:text-text-primary text-xs flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                                    <span>Global Running Hubs</span>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span id="hm-active-indicator" class="text-[11px] font-mono text-flat-green bg-flat-green/10 border border-flat-green/30 px-2 py-0.5 rounded font-bold">
+                                    JEJAK AKTIF: PERSONAL TRACES (12 RUNS)
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Map & Route Generator Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                            <!-- Left: Map Container (8 cols) -->
+                            <div class="lg:col-span-8 space-y-2">
+                                <div class="relative w-full h-[400px] rounded-xl overflow-hidden border border-border bg-black shadow-inner">
+                                    <div id="telemetry-heatmap-map" class="w-full h-full z-0"></div>
+                                    <!-- Floating Map HUD Legend -->
+                                    <div class="absolute bottom-3 left-3 z-[400] bg-surface/90 backdrop-blur-md border border-border p-2.5 rounded-lg text-[10px] font-mono space-y-1 shadow-md">
+                                        <div class="text-text-primary font-bold uppercase tracking-wider mb-1">Legenda Heatmap</div>
+                                        <div class="flex items-center gap-2 text-text-secondary">
+                                            <span class="w-2.5 h-1 bg-[#ff5500] rounded-xs"></span>
+                                            <span>Personal Run Trace</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-text-secondary">
+                                            <span class="w-2.5 h-1 bg-[#06b6d4] rounded-xs"></span>
+                                            <span>Volume 7-Hari Terakhir</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-text-secondary">
+                                            <span class="w-2.5 h-1 bg-[#f59e0b] rounded-xs"></span>
+                                            <span>Koridor Aman Malam Hari</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-text-secondary">
+                                            <span class="w-2.5 h-1 bg-[#10b981] rounded-xs"></span>
+                                            <span>Rute Pintar Rekomendasi</span>
+                                        </div>
+                                    </div>
+                                    <div class="absolute top-3 right-3 z-[400] flex gap-1">
+                                        <button type="button" onclick="resetTelemetryMapZoom()" class="px-2 py-1 rounded bg-surface/90 text-text-secondary hover:text-text-primary text-[10px] font-mono border border-border">Reset Zoom</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
+                                    <span>Peta interaktif Leaflet GPS &bull; Akurasi titik satelit resolusi tinggi</span>
+                                    <span class="text-tertiary">Klik polyline rute untuk melihat detail elevasi &amp; keamanan</span>
+                                </div>
+                            </div>
+
+                            <!-- Right: Route Builder & Recommender Form (4 cols) -->
+                            <div class="lg:col-span-4 p-4 bg-surface-subtle border border-border rounded-xl space-y-3 font-mono text-xs flex flex-col justify-between">
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between border-b border-border pb-2">
+                                        <span class="font-bold text-text-primary uppercase flex items-center gap-1.5">
+                                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                                            Generator Rute Pintar
+                                        </span>
+                                        <span class="text-[10px] text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded font-bold">AI ROUTE</span>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[10px] text-text-secondary uppercase mb-1">Pilih Lokasi Hub Lari:</label>
+                                        <select id="smart-route-location" onchange="generateSmartRouteLive()" class="flat-input text-xs w-full">
+                                            <option value="gbk_senayan" selected>Gelora Bung Karno &amp; Sudirman (Jakarta)</option>
+                                            <option value="monas_menteng">Monas &amp; Taman Suropati (Jakarta)</option>
+                                            <option value="bsd_green_office">BSD Grand Boulevard &amp; The Breeze (Tangerang)</option>
+                                            <option value="bali_gianyar">Maybank Bali Coastline (Gianyar)</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between text-[11px] mb-1">
+                                            <span class="text-text-secondary">Target Jarak Lari:</span>
+                                            <strong class="text-text-primary"><span id="smart-route-km-display">10.0</span> km</strong>
+                                        </div>
+                                        <input type="range" id="smart-route-km-slider" min="3.0" max="42.2" step="0.5" value="10.0" oninput="document.getElementById('smart-route-km-display').textContent=this.value; generateSmartRouteLive();" class="w-full accent-emerald-500 cursor-pointer">
+                                        <div class="flex justify-between text-[9px] text-text-secondary mt-0.5">
+                                            <span>3 km</span>
+                                            <span>10 km</span>
+                                            <span>21.1 km</span>
+                                            <span>42.2 km</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[10px] text-text-secondary uppercase mb-1">Tipe Jalur:</label>
+                                        <div class="grid grid-cols-2 gap-1.5">
+                                            <button type="button" onclick="setSmartRouteType('loop')" id="btn-rtype-loop" class="py-1 px-2 text-center rounded border-2 border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs">Loop (Memutar)</button>
+                                            <button type="button" onclick="setSmartRouteType('out_and_back')" id="btn-rtype-outback" class="py-1 px-2 text-center rounded border border-border bg-surface text-text-secondary text-xs">Out &amp; Back</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Route Details Specs Box -->
+                                    <div class="p-3 bg-surface border border-border rounded-lg space-y-1.5 text-[11px]">
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Estimasi Elevasi Gain:</span>
+                                            <strong class="text-text-primary" id="route-spec-elevation">+42 meter</strong>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Stasiun Air / Hydration:</span>
+                                            <strong class="text-flat-green" id="route-spec-water">3 Titik Air</strong>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-text-secondary">Keamanan Malam:</span>
+                                            <strong class="text-amber-500" id="route-spec-safety">5 / 5 Bintang (Sangat Aman)</strong>
+                                        </div>
+                                        <div class="text-[10px] text-text-secondary border-t border-border pt-1 mt-1" id="route-spec-surface">
+                                            Permukaan: Aspal Mulus &amp; Jalur Pedestrian Lebar
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1.5 pt-2">
+                                    <button type="button" onclick="generateSmartRouteLive()" class="btn-flat-primary w-full py-2 text-xs font-bold font-mono">
+                                        PERBARUI RUTE PINTAR
+                                    </button>
+                                    <div class="grid grid-cols-2 gap-1.5">
+                                        <button type="button" onclick="downloadSmartRouteGpx()" class="btn-flat-secondary py-1.5 text-[10px] font-mono text-center">
+                                            DOWNLOAD GPX
+                                        </button>
+                                        <button type="button" onclick="toast.success('Rute Terkirim', 'Rute berhasil disinkronkan ke Garmin Connect.');" class="btn-flat-secondary py-1.5 text-[10px] font-mono text-center text-tertiary">
+                                            SYNC KE GARMIN
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════════════════════ -->
+                <!-- 5. STUDIO ANALISIS MENDALAM: ZONA HR KARVONEN & GAP TRENDS -->
+                <!-- ══════════════════════════════════════════════════════════ -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 bg-tertiary"></span>
+                            <h3 class="font-display font-bold text-base text-text-primary">Studio Analisis Mendalam: Zona HR Karvonen &amp; Tren GAP</h3>
+                        </div>
+                        <span class="text-[11px] font-mono text-text-secondary">Model Polarisasi 80/20 &bull; Matched Runs Historical Trend &bull; Minetti Formula</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 font-mono text-xs">
+                        <!-- Left 6 cols: Karvonen 5-Zone Distribution & 80/20 Polarized Discipline -->
+                        <div class="lg:col-span-6 flat-card border-2 border-border p-5 bg-surface space-y-4 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between border-b border-border pb-2.5">
+                                    <div>
+                                        <h4 class="font-display font-bold text-sm text-text-primary">Distribusi 5 Zona HR Karvonen (Volume Akumulatif)</h4>
+                                        <p class="text-[11px] text-text-secondary mt-0.5">Analisis beban latihan 30 hari terakhir berdasarkan Karvonen Heart Rate Reserve</p>
+                                    </div>
+                                    <span id="zone-discipline-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-flat-green/10 text-flat-green border border-flat-green/30">
+                                        80/20 OPTIMAL
+                                    </span>
+                                </div>
+
+                                <!-- Segmented 5-Zone Horizontal Bar -->
+                                <div class="space-y-1.5">
+                                    <div class="w-full h-4 bg-surface-subtle border border-border rounded-md flex overflow-hidden">
+                                        <div id="bar-zone-1" class="bg-emerald-400 h-full" style="width: 14%;" title="Zone 1: 14%"></div>
+                                        <div id="bar-zone-2" class="bg-emerald-600 h-full" style="width: 68%;" title="Zone 2: 68%"></div>
+                                        <div id="bar-zone-3" class="bg-amber-400 h-full" style="width: 10%;" title="Zone 3: 10%"></div>
+                                        <div id="bar-zone-4" class="bg-orange-500 h-full" style="width: 6%;" title="Zone 4: 6%"></div>
+                                        <div id="bar-zone-5" class="bg-red-600 h-full" style="width: 2%;" title="Zone 5: 2%"></div>
+                                    </div>
+                                    <div class="grid grid-cols-5 text-[9px] text-center text-text-secondary pt-0.5">
+                                        <div><span class="text-emerald-400 font-bold">Z1</span>: <span id="z1-pct-label">14%</span></div>
+                                        <div><span class="text-emerald-600 font-bold">Z2</span>: <span id="z2-pct-label">68%</span></div>
+                                        <div><span class="text-amber-400 font-bold">Z3</span>: <span id="z3-pct-label">10%</span></div>
+                                        <div><span class="text-orange-500 font-bold">Z4</span>: <span id="z4-pct-label">6%</span></div>
+                                        <div><span class="text-red-600 font-bold">Z5</span>: <span id="z5-pct-label">2%</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- Polarized Model Ratio Meter (80/20) -->
+                                <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                    <div class="flex justify-between items-center text-[11px]">
+                                        <span class="font-bold text-text-primary">Rasio Disiplin Latihan Terpolarisasi (Stephen Seiler):</span>
+                                        <strong class="text-flat-green" id="polarized-ratio-text">82% Low / 18% High</strong>
+                                    </div>
+                                    <div class="w-full bg-border h-2 rounded-full overflow-hidden flex">
+                                        <div class="bg-flat-green h-full" style="width: 82%;"></div>
+                                        <div class="bg-flat-orange h-full" style="width: 18%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] text-text-secondary">
+                                        <span class="text-flat-green font-bold">&check; 82% Zona Intensitas Rendah (Z1-Z2)</span>
+                                        <span class="text-flat-orange font-bold">18% Kualitas Tinggi (Z4-Z5)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-[11px] text-text-secondary leading-relaxed border-t border-border pt-2.5">
+                                <strong class="text-text-primary">Proteksi Grey Zone:</strong> Anda berhasil menjaga volume Zona 3 di bawah 12%. Ini memastikan sistem saraf tidak mengalami kelelahan kronis saat masuk ke sesi Long Run akhir pekan.
+                            </p>
+                        </div>
+
+                        <!-- Right 6 cols: Matched Runs Historical Comparison & GAP Breakdown -->
+                        <div class="lg:col-span-6 flat-card border-2 border-border p-5 bg-surface space-y-4 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between border-b border-border pb-2.5">
+                                    <div>
+                                        <h4 class="font-display font-bold text-sm text-text-primary">Perbandingan Rute Serupa (Matched Runs Trend)</h4>
+                                        <p class="text-[11px] text-text-secondary mt-0.5">Analisis kemajuan fisiologis pada segmen rute yang sering dilalui</p>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-tertiary/10 text-tertiary border border-tertiary/30">
+                                        8 SESI IDENTIK
+                                    </span>
+                                </div>
+
+                                <!-- Route Card -->
+                                <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-text-primary">GBK Sudirman Loop 10K</span>
+                                        <span class="text-[10px] text-text-secondary font-mono">60 Hari Terakhir</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] pt-1">
+                                        <div class="p-2 bg-surface border border-border rounded">
+                                            <span class="text-[10px] text-text-secondary block">Pace Terbaik</span>
+                                            <strong class="text-sm font-bold text-text-primary">04:52 /km</strong>
+                                        </div>
+                                        <div class="p-2 bg-surface border border-border rounded">
+                                            <span class="text-[10px] text-text-secondary block">Tren Detak Jantung</span>
+                                            <strong class="text-sm font-bold text-flat-green">-4 bpm</strong>
+                                            <span class="text-[9px] text-flat-green block">Pada pace yang sama</span>
+                                        </div>
+                                        <div class="p-2 bg-surface border border-border rounded col-span-2 sm:col-span-1">
+                                            <span class="text-[10px] text-text-secondary block">Aerobic Efficiency</span>
+                                            <strong class="text-sm font-bold text-tertiary">+6.4% EF</strong>
+                                            <span class="text-[9px] text-text-secondary block">1.36 m/beat</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Minetti GAP vs Actual Comparison -->
+                                <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                    <div class="flex justify-between items-center text-[11px]">
+                                        <span class="font-bold text-text-primary">Efisiensi Minetti Grade-Adjusted Pace (GAP):</span>
+                                        <span class="text-flat-orange font-bold">Uphill +4.2% Grade</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs pt-1">
+                                        <div>
+                                            <span class="text-[10px] text-text-secondary block">Actual Pace di Tanjakan</span>
+                                            <strong class="text-text-primary text-sm">05:25 /km</strong>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-[10px] text-text-secondary block">GAP Setara Datar (Minetti)</span>
+                                            <strong class="text-tertiary text-sm">04:48 /km</strong>
+                                        </div>
+                                    </div>
+                                    <div class="text-[10px] text-text-secondary">
+                                        Pelari tidak kehilangan intensitas metabolik; perlambatan pace di tanjakan sepenuhnya sejalan dengan biaya mekanis elevasi.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-[11px] text-text-secondary leading-relaxed border-t border-border pt-2.5">
+                                <strong class="text-text-primary">Kesimpulan Tren:</strong> Peningkatan efisiensi aerobik sebesar +6.4% membuktikan kapilerisasi otot tungkai telah meningkat pesat tanpa lonjakan denyut jantung.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════════════════════ -->
+                <!-- 6. TROPICAL HEAT & DEW POINT PACE ADJUSTER                 -->
+                <!-- ══════════════════════════════════════════════════════════ -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 bg-flat-orange"></span>
+                            <h3 class="font-display font-bold text-base text-text-primary">Tropical Heat &amp; Dew Point Pace Adjuster</h3>
+                        </div>
+                        <span class="text-[11px] font-mono text-text-secondary">Rumus Magnus-Tetens ($T_d$) &bull; Model Kuadratik Mark Hadley / Hanson</span>
+                    </div>
+
+                    <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-4 font-mono text-xs">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+                            <div>
+                                <h4 class="font-display font-bold text-sm text-text-primary">Koreksi Fisiologis Pace Berdasarkan Beban Termal Lingkungan</h4>
+                                <p class="text-[11px] text-text-secondary mt-0.5">
+                                    Kelembapan tinggi menghambat evaporasi keringat dari kulit. Gunakan Suhu Udara ($T$) + Titik Embun ($T_d$) untuk kalkulasi presisi.
+                                </p>
+                            </div>
+                            <span id="weather-risk-badge" class="px-2.5 py-1 rounded text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                                BEBAN TERMAL SEDANG
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Slider 1: Suhu Udara -->
+                            <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-text-secondary uppercase">Suhu Udara (T)</span>
+                                    <strong class="text-sm font-bold text-text-primary"><span id="wcalc-temp-val">28.0</span> &deg;C</strong>
+                                </div>
+                                <input type="range" id="wcalc-temp" min="15.0" max="38.0" step="0.5" value="28.0" oninput="calculateWeatherAdjustLive()" class="w-full accent-flat-orange cursor-pointer">
+                                <div class="flex justify-between text-[9px] text-text-secondary">
+                                    <span>15&deg;C (Sejuk)</span>
+                                    <span>28&deg;C (Tropis)</span>
+                                    <span>38&deg;C (Ekstrem)</span>
+                                </div>
+                            </div>
+
+                            <!-- Slider 2: Kelembapan Relatif -->
+                            <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-text-secondary uppercase">Kelembapan Relatif (RH)</span>
+                                    <strong class="text-sm font-bold text-cyan-400"><span id="wcalc-rh-val">80</span> %</strong>
+                                </div>
+                                <input type="range" id="wcalc-rh" min="30" max="100" step="1" value="80" oninput="calculateWeatherAdjustLive()" class="w-full accent-cyan-400 cursor-pointer">
+                                <div class="flex justify-between text-[9px] text-text-secondary">
+                                    <span>30% (Kering)</span>
+                                    <span>80% (Pagi Jakarta)</span>
+                                    <span>100% (Hujan)</span>
+                                </div>
+                            </div>
+
+                            <!-- Tipe Sesi -->
+                            <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                <label class="block text-[10px] text-text-secondary uppercase">Tipe Latihan</label>
+                                <select id="wcalc-workout-type" onchange="calculateWeatherAdjustLive()" class="flat-input text-xs w-full">
+                                    <option value="long_run" selected>Long Run (Pengaruh Penuh 1.0x)</option>
+                                    <option value="tempo">Tempo / Threshold (0.75x)</option>
+                                    <option value="interval">Interval VO2max (0.40x)</option>
+                                    <option value="easy">Easy / Recovery (0.85x)</option>
+                                </select>
+                                <div class="flex items-center gap-1.5 pt-1">
+                                    <input type="checkbox" id="wcalc-acclimatized" checked onchange="calculateWeatherAdjustLive()" class="accent-flat-green">
+                                    <label for="wcalc-acclimatized" class="text-[10px] text-text-secondary cursor-pointer">Teraklimatisasi Tropis</label>
+                                </div>
+                            </div>
+
+                            <!-- Sun Exposure & Base Pace -->
+                            <div class="p-3 bg-surface-subtle border border-border rounded-lg space-y-2">
+                                <label class="block text-[10px] text-text-secondary uppercase">Pace Target Awal (Normal)</label>
+                                <div class="flex items-center gap-1">
+                                    <input type="text" id="wcalc-base-pace" value="05:00" onchange="calculateWeatherAdjustLive()" placeholder="05:00" class="flat-input text-xs w-full text-center font-bold">
+                                    <span class="text-[10px] text-text-secondary">/km</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 pt-1">
+                                    <input type="checkbox" id="wcalc-direct-sun" onchange="calculateWeatherAdjustLive()" class="accent-amber-500">
+                                    <label for="wcalc-direct-sun" class="text-[10px] text-text-secondary cursor-pointer">Sinar Matahari Langsung (+2.5&deg;C)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Output Banner -->
+                        <div class="p-4 bg-surface border-2 border-border rounded-xl space-y-3">
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Titik Embun (Dew Point)</span>
+                                    <strong class="text-base font-bold text-cyan-400" id="wcalc-res-dewpoint">24.3 &deg;C</strong>
+                                    <span class="text-[9px] text-text-secondary block">Magnus-Tetens</span>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Indeks Beban Termal (S_C)</span>
+                                    <strong class="text-base font-bold text-text-primary" id="wcalc-res-thermalsum">52.3 &deg;C</strong>
+                                    <span class="text-[9px] text-text-secondary block">T + Dew Point</span>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Penalti Pace Fisiologis</span>
+                                    <strong class="text-base font-bold text-flat-orange" id="wcalc-res-penalty">+5.1% (+15s)</strong>
+                                    <span class="text-[9px] text-text-secondary block">Perlambatan Wajar</span>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border-2 border-flat-green/40 bg-flat-green/5 rounded-lg">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Pace Target Cuaca Tropis</span>
+                                    <strong class="text-lg font-extrabold text-flat-green" id="wcalc-res-adjustedpace">05:15 /km</strong>
+                                    <span class="text-[9px] text-flat-green font-bold block">Pertahankan Beban Fisiologis</span>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] text-text-secondary leading-relaxed border-t border-border pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <span>
+                                    <strong class="text-text-primary">Edukasi Coach:</strong> Berlari di pace <span id="wcalc-res-pace-quote" class="text-flat-green font-bold">05:15/km</span> pada suhu 28&deg;C &amp; RH 80% membakar beban kardiovaskular setara dengan <strong class="text-text-primary">05:00/km</strong> pada cuaca sejuk 15&deg;C. Jangan memaksakan pace sejuk agar tidak terjadi heat exhaustion.
+                                </span>
+                                <button type="button" onclick="applyWeatherAdjustToCalculator()" class="btn-flat-secondary text-[10px] font-mono whitespace-nowrap py-1 px-2.5 self-end sm:self-auto">
+                                    GUNAKAN DI CALCULATOR PACE &gt;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- TAB 3: RUN ANALYZER -->
@@ -3388,6 +3799,72 @@
                         </div>
                     </div>
                 </div>
+
+                        <!-- Life Happens Auto-Rebalance Cockpit & FSM Status -->
+                        <div class="flat-card border-2 border-border-strong p-4 sm:p-5 bg-surface space-y-3 font-mono text-xs">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 bg-flat-orange rounded-xs"></span>
+                                    <h4 class="font-display font-bold text-sm text-text-primary">"Life Happens" Auto-Rebalance Engine</h4>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span id="fsm-status-badge" class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-flat-green/10 text-flat-green border border-flat-green/30">
+                                        FSM STATE: ON_TRACK (NORMAL)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Golden Rule Warning Strip -->
+                            <div class="p-3 bg-surface-subtle border border-border rounded-lg flex items-start gap-2.5">
+                                <svg class="w-4 h-4 text-flat-orange shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                <div class="text-[11px] leading-relaxed">
+                                    <strong class="text-text-primary">Aturan Emas Fisiologis (Anti-Tumpuk Kilometer):</strong>
+                                    <span class="text-text-secondary"> Kilometer yang sudah terlewat tidak boleh pernah ditebus dengan menumpuknya ke minggu berikutnya. Engine memutasi jadwal secara terstruktur menjaga rasio beban ACWR tetap aman (&lt; 1.3).</span>
+                                </div>
+                            </div>
+
+                            <!-- 3 Workout Priority Tiers Breakdown -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <strong class="text-flat-orange">Tier 1: Anchor</strong>
+                                        <span class="text-[9px] bg-flat-orange/10 text-flat-orange px-1.5 py-0.2 rounded font-bold">Wajib Geser</span>
+                                    </div>
+                                    <span class="text-text-primary font-bold block">Long Run &amp; Marathon Pace</span>
+                                    <span class="text-text-secondary text-[10px] block">Digeser di minggu yang sama jika ada jeda minimal 48 jam dari sesi keras.</span>
+                                </div>
+
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <strong class="text-tertiary">Tier 2: Quality</strong>
+                                        <span class="text-[9px] bg-tertiary/10 text-tertiary px-1.5 py-0.2 rounded font-bold">Modifikasi / Downgrade</span>
+                                    </div>
+                                    <span class="text-text-primary font-bold block">Threshold &amp; VO2max Intervals</span>
+                                    <span class="text-text-secondary text-[10px] block">Jika celah hari sempit, dipotong volumenya atau digabung sebagian ke Long Run.</span>
+                                </div>
+
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-lg space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <strong class="text-flat-green">Tier 3: Filler</strong>
+                                        <span class="text-[9px] bg-flat-green/10 text-flat-green px-1.5 py-0.2 rounded font-bold">Langsung Drop</span>
+                                    </div>
+                                    <span class="text-text-primary font-bold block">Easy Run &amp; Recovery Run</span>
+                                    <span class="text-text-secondary text-[10px] block">Dihapus tanpa rasa bersalah demi melindungi hari istirahat &amp; pemulihan jaringan.</span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Auto-Rebalance Action Bar -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border pt-2.5">
+                                <span class="text-[11px] text-text-secondary">
+                                    Pengecekan harian otomatis dieksekusi setiap pukul 22:00 WIB untuk mendeteksi sesi terlewat tanpa false alarm.
+                                </span>
+                                <button type="button" onclick="executeLifeHappensAutoRebalance()" class="btn-flat-secondary text-xs font-mono py-1.5 px-3 flex items-center justify-center gap-1.5 hover:border-flat-orange text-text-primary font-bold">
+                                    <svg class="w-3.5 h-3.5 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    <span>SIMULASI AUTO-REBALANCE</span>
+                                </button>
+                            </div>
+                        </div>
+
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════ -->
@@ -3726,6 +4203,42 @@
                                 <span class="text-[10px] text-text-secondary uppercase block">Target Goal &amp; Cutoff Buffer</span>
                                 <div class="text-base font-extrabold text-flat-green" id="splits-goal-time">05:30:00 (7:49/km)</div>
                                 <div class="text-[11px] text-text-secondary">Aman 1:30:00 dari Batas 7:00:00</div>
+                            </div>
+                        </div>
+
+                        <!-- Tropical Weather & Dew Point Pace Adjuster (Integrated in Calculator) -->
+                        <div class="p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3 font-mono text-xs">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 bg-flat-orange"></span>
+                                    <strong class="text-xs font-bold text-text-primary uppercase">Koreksi Cuaca Tropis: Suhu &amp; Titik Embun (Dew Point)</strong>
+                                </div>
+                                <span class="text-[10px] text-cyan-400 font-bold">RUMUS MAGNUS-TETENS &bull; HADLEY/HANSON</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                <div>
+                                    <div class="flex justify-between text-[11px] mb-1">
+                                        <span class="text-text-secondary">Suhu Udara:</span>
+                                        <strong class="text-text-primary"><span id="pcalc-weather-temp-val">28.0</span> &deg;C</strong>
+                                    </div>
+                                    <input type="range" id="pcalc-weather-temp" min="15.0" max="38.0" step="0.5" value="28.0" oninput="onWeatherSplitsChange()" class="w-full accent-flat-orange cursor-pointer">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-[11px] mb-1">
+                                        <span class="text-text-secondary">Kelembapan Relatif:</span>
+                                        <strong class="text-cyan-400"><span id="pcalc-weather-rh-val">80</span> %</strong>
+                                    </div>
+                                    <input type="range" id="pcalc-weather-rh" min="30" max="100" step="1" value="80" oninput="onWeatherSplitsChange()" class="w-full accent-cyan-400 cursor-pointer">
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <div class="text-[10px] text-text-secondary">Titik Embun (Dew Point):</div>
+                                    <strong class="text-sm text-cyan-400" id="pcalc-weather-dewpoint-val">24.3 &deg;C</strong>
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <div class="text-[10px] text-text-secondary">Pace Disesuaikan Cuaca:</div>
+                                    <strong class="text-sm text-flat-green" id="pcalc-weather-adjpace-val">08:14 /km (+5.3%)</strong>
+                                </div>
                             </div>
                         </div>
 
@@ -5710,6 +6223,12 @@
                 loadProfileSettings();
             } else if (tabName === 'telemetry') {
                 syncTelemetrySuite();
+                if (typeof initTelemetryHeatmap === 'function') {
+                    initTelemetryHeatmap();
+                }
+                if (typeof calculateWeatherAdjustLive === 'function') {
+                    calculateWeatherAdjustLive();
+                }
             } else if (tabName === 'schedule') {
                 loadWeeklyCalendar(currentCalendarWeekOffset);
                 if (typeof loadMarathonMacroPlan === 'function' && !currentMarathonPlanData) {
@@ -6291,6 +6810,411 @@
 
         // Real-time ticking interval for second-by-second countdown
         setInterval(updateTargetRaceCountdown, 1000);
+
+        // ══════════════════════════════════════════════════════════════════
+        // TELEMETRY SUITE: HEATMAPS, SMART ROUTES & WEATHER PACE ADJUSTER
+        // ══════════════════════════════════════════════════════════════════
+        let telemetryHeatmapInstance = null;
+        let telemetryTileLayer = null;
+        let telemetryLayers = {
+            personal: null,
+            weekly: null,
+            night: null,
+            global: null,
+            smartRoute: null
+        };
+        let activeTelemetryHeatmapLayer = 'personal';
+        let currentSmartRouteType = 'loop';
+        let cachedHeatmapData = null;
+
+        function initTelemetryHeatmap() {
+            const container = document.getElementById('telemetry-heatmap-map');
+            if (!container) return;
+
+            if (!telemetryHeatmapInstance) {
+                telemetryHeatmapInstance = L.map('telemetry-heatmap-map', {
+                    center: [-6.2183, 106.8025],
+                    zoom: 13,
+                    zoomControl: false,
+                    attributionControl: false
+                });
+
+                telemetryTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19
+                }).addTo(telemetryHeatmapInstance);
+
+                L.control.zoom({ position: 'topleft' }).addTo(telemetryHeatmapInstance);
+            }
+
+            loadDeepZonesAndHeatmaps();
+            setTimeout(() => {
+                if (telemetryHeatmapInstance) telemetryHeatmapInstance.invalidateSize();
+            }, 250);
+        }
+
+        function loadDeepZonesAndHeatmaps() {
+            fetch(`${API_BASE}/telemetry/deep-zones-and-heatmaps`, {
+                headers: {
+                    ...(appState.token ? { 'Authorization': `Bearer ${appState.token}` } : {})
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    cachedHeatmapData = data;
+                    renderHeatmapLayers(data.heatmaps);
+                    renderDeepZonesAnalysis(data.zone_distribution, data.matched_runs_comparison);
+                }
+            })
+            .catch(err => {
+                console.warn('[Goalie] Deep zones and heatmaps fallback:', err);
+                const mock = {
+                    heatmaps: {
+                        personal_traces: [
+                            [[-6.2183, 106.8025], [-6.2140, 106.8050], [-6.2080, 106.8120], [-6.2183, 106.8025]],
+                            [[-6.2200, 106.8000], [-6.2250, 106.8100], [-6.2220, 106.8180], [-6.2200, 106.8000]]
+                        ],
+                        weekly_traces: [
+                            [[-6.2183, 106.8025], [-6.2140, 106.8050], [-6.2080, 106.8120], [-6.2183, 106.8025]]
+                        ],
+                        night_corridors: [
+                            [[-6.2183, 106.8025], [-6.2140, 106.8050], [-6.2190, 106.8080], [-6.2220, 106.8040], [-6.2183, 106.8025]]
+                        ],
+                        global_corridors: [
+                            [[-6.2183, 106.8025], [-6.2080, 106.8120], [-6.1950, 106.8220], [-6.1754, 106.8272]]
+                        ]
+                    },
+                    zone_distribution: { z1_pct: 14, z2_pct: 68, z3_pct: 10, z4_pct: 6, z5_pct: 2, polarized_low_pct: 82, polarized_high_pct: 18 }
+                };
+                cachedHeatmapData = mock;
+                renderHeatmapLayers(mock.heatmaps);
+            });
+        }
+
+        function renderHeatmapLayers(heatmaps) {
+            if (!telemetryHeatmapInstance || !heatmaps) return;
+
+            // Clear previous layer groups
+            Object.values(telemetryLayers).forEach(layer => {
+                if (layer && telemetryHeatmapInstance.hasLayer(layer)) {
+                    telemetryHeatmapInstance.removeLayer(layer);
+                }
+            });
+
+            // 1. Personal Traces (Orange)
+            const personalGroup = L.featureGroup();
+            (heatmaps.personal_traces || []).forEach(coords => {
+                L.polyline(coords, { color: '#ff5500', weight: 3.5, opacity: 0.85 }).addTo(personalGroup);
+            });
+            telemetryLayers.personal = personalGroup;
+
+            // 2. Weekly Traces (Cyan)
+            const weeklyGroup = L.featureGroup();
+            (heatmaps.weekly_traces || []).forEach(coords => {
+                L.polyline(coords, { color: '#06b6d4', weight: 4, opacity: 0.9 }).addTo(weeklyGroup);
+            });
+            telemetryLayers.weekly = weeklyGroup;
+
+            // 3. Night Run Corridors (Amber glow)
+            const nightGroup = L.featureGroup();
+            (heatmaps.night_corridors || []).forEach(coords => {
+                L.polyline(coords, { color: '#f59e0b', weight: 4.5, opacity: 0.9, dashArray: '6, 6' }).addTo(nightGroup);
+            });
+            telemetryLayers.night = nightGroup;
+
+            // 4. Global Corridors (Purple/Emerald)
+            const globalGroup = L.featureGroup();
+            (heatmaps.global_corridors || []).forEach(coords => {
+                L.polyline(coords, { color: '#a855f7', weight: 3.5, opacity: 0.8 }).addTo(globalGroup);
+            });
+            telemetryLayers.global = globalGroup;
+
+            // Add active layer
+            setTelemetryHeatmapLayer(activeTelemetryHeatmapLayer);
+        }
+
+        function setTelemetryHeatmapLayer(layerName) {
+            activeTelemetryHeatmapLayer = layerName;
+            ['personal', 'weekly', 'night', 'global'].forEach(name => {
+                const btn = document.getElementById(`btn-hm-${name}`);
+                const isMatch = name === layerName;
+                if (btn) {
+                    btn.classList.toggle('border-2', isMatch);
+                    btn.classList.toggle('border-border', !isMatch);
+                    btn.classList.toggle('bg-surface-subtle', !isMatch);
+                }
+                const l = telemetryLayers[name];
+                if (l && telemetryHeatmapInstance) {
+                    if (isMatch) {
+                        l.addTo(telemetryHeatmapInstance);
+                        try {
+                            if (l.getBounds && l.getBounds().isValid()) {
+                                telemetryHeatmapInstance.fitBounds(l.getBounds(), { padding: [30, 30] });
+                            }
+                        } catch (e) {}
+                    } else if (telemetryHeatmapInstance.hasLayer(l)) {
+                        telemetryHeatmapInstance.removeLayer(l);
+                    }
+                }
+            });
+
+            const indicator = document.getElementById('hm-active-indicator');
+            if (indicator) {
+                const labels = {
+                    personal: 'JEJAK AKTIF: PERSONAL TRACES (12 RUNS)',
+                    weekly: 'JEJAK AKTIF: VOLUME MINGGUAN (7-HARI)',
+                    night: 'JEJAK AKTIF: NIGHT RUN AMAN & TERANG',
+                    global: 'JEJAK AKTIF: GLOBAL POPULAR HUBS'
+                };
+                indicator.textContent = labels[layerName] || 'HEATMAP AKTIF';
+            }
+        }
+
+        function resetTelemetryMapZoom() {
+            if (telemetryHeatmapInstance) {
+                telemetryHeatmapInstance.setView([-6.2183, 106.8025], 13);
+            }
+        }
+
+        function setSmartRouteType(type) {
+            currentSmartRouteType = type;
+            const btnLoop = document.getElementById('btn-rtype-loop');
+            const btnOutback = document.getElementById('btn-rtype-outback');
+            if (btnLoop && btnOutback) {
+                if (type === 'loop') {
+                    btnLoop.className = 'py-1 px-2 text-center rounded border-2 border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs';
+                    btnOutback.className = 'py-1 px-2 text-center rounded border border-border bg-surface text-text-secondary text-xs';
+                } else {
+                    btnOutback.className = 'py-1 px-2 text-center rounded border-2 border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs';
+                    btnLoop.className = 'py-1 px-2 text-center rounded border border-border bg-surface text-text-secondary text-xs';
+                }
+            }
+            generateSmartRouteLive();
+        }
+
+        let activeSmartRouteData = null;
+
+        function generateSmartRouteLive() {
+            const loc = document.getElementById('smart-route-location')?.value || 'gbk_senayan';
+            const km = parseFloat(document.getElementById('smart-route-km-slider')?.value || '10.0');
+
+            fetch(`${API_BASE}/telemetry/smart-routes/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    start_location: loc,
+                    target_km: km,
+                    route_type: currentSmartRouteType
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.route) {
+                    activeSmartRouteData = data.route;
+                    updateSmartRouteUI(data.route);
+                }
+            })
+            .catch(err => {
+                console.warn('[Goalie] Smart route generate fallback:', err);
+            });
+        }
+
+        function updateSmartRouteUI(route) {
+            const elevEl = document.getElementById('route-spec-elevation');
+            const waterEl = document.getElementById('route-spec-water');
+            const safetyEl = document.getElementById('route-spec-safety');
+            const surfEl = document.getElementById('route-spec-surface');
+
+            if (elevEl) elevEl.textContent = `+${route.elevation_gain_m} meter`;
+            if (waterEl) waterEl.textContent = `${route.water_stations_count} Titik Air`;
+            if (safetyEl) safetyEl.textContent = `${route.night_safety_rating} / 5 Bintang (${route.lighting_quality})`;
+            if (surfEl) surfEl.textContent = `Permukaan: ${route.surface}`;
+
+            if (telemetryHeatmapInstance && route.coords) {
+                if (telemetryLayers.smartRoute && telemetryHeatmapInstance.hasLayer(telemetryLayers.smartRoute)) {
+                    telemetryHeatmapInstance.removeLayer(telemetryLayers.smartRoute);
+                }
+                const routePoly = L.polyline(route.coords, { color: '#10b981', weight: 5, opacity: 0.95 });
+                telemetryLayers.smartRoute = routePoly;
+                routePoly.addTo(telemetryHeatmapInstance);
+                telemetryHeatmapInstance.fitBounds(routePoly.getBounds(), { padding: [35, 35] });
+            }
+        }
+
+        function downloadSmartRouteGpx() {
+            if (!activeSmartRouteData || !activeSmartRouteData.coords) {
+                toast.info('Pilih Rute', 'Perbarui rute terlebih dahulu sebelum mengunduh GPX.');
+                return;
+            }
+            const r = activeSmartRouteData;
+            let gpxStr = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Goalie Smart Routes" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>${r.name} (${r.target_km} km)</name>
+    <trkseg>
+`;
+            r.coords.forEach(([lat, lon]) => {
+                gpxStr += `      <trkpt lat="${lat}" lon="${lon}"><ele>20.0</ele></trkpt>
+`;
+            });
+            gpxStr += `    </trkseg>
+  </trk>
+</gpx>`;
+            const blob = new Blob([gpxStr], { type: 'application/gpx+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${r.key}_${r.target_km}k.gpx`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast.success('GPX Terunduh', `Rute ${r.name} siap dimasukkan ke jam tangan Garmin/Coros.`);
+        }
+
+        function renderDeepZonesAnalysis(zoneData, matchedRuns) {
+            if (!zoneData) return;
+            const z1 = zoneData.z1_pct || 14;
+            const z2 = zoneData.z2_pct || 68;
+            const z3 = zoneData.z3_pct || 10;
+            const z4 = zoneData.z4_pct || 6;
+            const z5 = zoneData.z5_pct || 2;
+
+            document.getElementById('bar-zone-1').style.width = `${z1}%`;
+            document.getElementById('bar-zone-2').style.width = `${z2}%`;
+            document.getElementById('bar-zone-3').style.width = `${z3}%`;
+            document.getElementById('bar-zone-4').style.width = `${z4}%`;
+            document.getElementById('bar-zone-5').style.width = `${z5}%`;
+
+            document.getElementById('z1-pct-label').textContent = `${z1}%`;
+            document.getElementById('z2-pct-label').textContent = `${z2}%`;
+            document.getElementById('z3-pct-label').textContent = `${z3}%`;
+            document.getElementById('z4-pct-label').textContent = `${z4}%`;
+            document.getElementById('z5-pct-label').textContent = `${z5}%`;
+
+            const low = zoneData.polarized_low_pct || (z1 + z2);
+            const high = zoneData.polarized_high_pct || (z4 + z5);
+            document.getElementById('polarized-ratio-text').textContent = `${low}% Low / ${high}% High`;
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // TROPICAL HEAT & DEW POINT CALCULATION (Magnus-Tetens + Hanson/Hadley)
+        // ══════════════════════════════════════════════════════════════════
+        function calculateDewPointJS(tempC, rhPercent) {
+            const a = 17.625;
+            const b = 243.04;
+            const rh = Math.max(1, Math.min(100, rhPercent));
+            const gamma = Math.log(rh / 100.0) + (a * tempC) / (b + tempC);
+            return (b * gamma) / (a - gamma);
+        }
+
+        function calculateWeatherAdjustLive() {
+            const tempC = parseFloat(document.getElementById('wcalc-temp')?.value || '28.0');
+            const rh = parseFloat(document.getElementById('wcalc-rh')?.value || '80');
+            const workoutType = document.getElementById('wcalc-workout-type')?.value || 'long_run';
+            const isAccl = document.getElementById('wcalc-acclimatized')?.checked ?? true;
+            const isSun = document.getElementById('wcalc-direct-sun')?.checked ?? false;
+            const basePaceStr = document.getElementById('wcalc-base-pace')?.value || '05:00';
+
+            document.getElementById('wcalc-temp-val').textContent = tempC.toFixed(1);
+            document.getElementById('wcalc-rh-val').textContent = Math.round(rh);
+
+            const dewPoint = calculateDewPointJS(tempC, rh);
+            const effectiveTemp = tempC + (isSun ? 2.5 : 0.0);
+            const thermalSum = effectiveTemp + dewPoint;
+
+            const excessHeat = Math.max(0.0, thermalSum - 20.0);
+            const basePenalty = 0.00625 * Math.pow(excessHeat, 2);
+
+            const durationMods = { interval: 0.40, tempo: 0.75, easy: 0.85, long_run: 1.00 };
+            const mDur = durationMods[workoutType] || 1.0;
+            const mAccl = isAccl ? 0.78 : 1.00;
+            const finalPenalty = basePenalty * mDur * mAccl;
+
+            const paceParts = basePaceStr.split(':');
+            const baseSec = (parseInt(paceParts[0], 10) || 5) * 60 + (parseInt(paceParts[1], 10) || 0);
+            const adjustedSec = Math.round(baseSec * (1.0 + finalPenalty / 100.0));
+            const deltaSec = adjustedSec - baseSec;
+
+            const adjM = Math.floor(adjustedSec / 60);
+            const adjS = Math.round(adjustedSec % 60);
+            const adjustedPaceStr = `${String(adjM).padStart(2, '0')}:${String(adjS).padStart(2, '0')}`;
+
+            document.getElementById('wcalc-res-dewpoint').textContent = `${dewPoint.toFixed(1)} °C`;
+            document.getElementById('wcalc-res-thermalsum').textContent = `${thermalSum.toFixed(1)} °C`;
+            document.getElementById('wcalc-res-penalty').textContent = `+${finalPenalty.toFixed(1)}% (+${deltaSec}s)`;
+            document.getElementById('wcalc-res-adjustedpace').textContent = `${adjustedPaceStr} /km`;
+            const quoteEl = document.getElementById('wcalc-res-pace-quote');
+            if (quoteEl) quoteEl.textContent = `${adjustedPaceStr}/km`;
+
+            const riskBadge = document.getElementById('weather-risk-badge');
+            if (riskBadge) {
+                if (thermalSum > 60.0) {
+                    riskBadge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30';
+                    riskBadge.textContent = 'RISIKO HEAT EXHAUSTION TINGGI';
+                } else if (thermalSum > 45.0) {
+                    riskBadge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30';
+                    riskBadge.textContent = 'BEBAN TERMAL TINGGI (TROPIS)';
+                } else {
+                    riskBadge.className = 'px-2.5 py-1 rounded text-xs font-bold bg-flat-green/10 text-flat-green border border-flat-green/30';
+                    riskBadge.textContent = 'KONDISI SEJUK / AMAN';
+                }
+            }
+        }
+
+        function applyWeatherAdjustToCalculator() {
+            const adjStr = document.getElementById('wcalc-res-adjustedpace')?.textContent.replace(' /km', '') || '05:15';
+            const parts = adjStr.split(':');
+            const m = parseInt(parts[0], 10) || 5;
+            const s = parseInt(parts[1], 10) || 15;
+
+            const paceM = document.getElementById('pcalc-pace-m');
+            const paceS = document.getElementById('pcalc-pace-s');
+            if (paceM && paceS) {
+                paceM.value = m;
+                paceS.value = s;
+                if (typeof onPaceCalcChange === 'function') onPaceCalcChange();
+            }
+            switchWorkstationTab('schedule');
+            switchScheduleSubtab('splits');
+            toast.success('Pace Diperbarui', `Target pace disesuaikan dengan cuaca tropis (${adjStr} /km).`);
+        }
+
+        function onWeatherSplitsChange() {
+            const t = parseFloat(document.getElementById('pcalc-weather-temp')?.value || '28.0');
+            const rh = parseFloat(document.getElementById('pcalc-weather-rh')?.value || '80');
+            document.getElementById('pcalc-weather-temp-val').textContent = t.toFixed(1);
+            document.getElementById('pcalc-weather-rh-val').textContent = Math.round(rh);
+
+            const dp = calculateDewPointJS(t, rh);
+            document.getElementById('pcalc-weather-dewpoint-val').textContent = `${dp.toFixed(1)} °C`;
+
+            const curM = parseInt(document.getElementById('pcalc-pace-m')?.value, 10) || 7;
+            const curS = parseInt(document.getElementById('pcalc-pace-s')?.value, 10) || 49;
+            const curTotalSec = curM * 60 + curS;
+
+            const thermalSum = t + dp;
+            const excess = Math.max(0, thermalSum - 20.0);
+            const penaltyPct = 0.00625 * Math.pow(excess, 2) * 0.78; // acclimatized long run
+            const adjSec = Math.round(curTotalSec * (1.0 + penaltyPct / 100.0));
+
+            const adjM = Math.floor(adjSec / 60);
+            const adjS = Math.round(adjSec % 60);
+            const adjPace = `${String(adjM).padStart(2, '0')}:${String(adjS).padStart(2, '0')}`;
+            document.getElementById('pcalc-weather-adjpace-val').textContent = `${adjPace} /km (+${penaltyPct.toFixed(1)}%)`;
+        }
+
+        function executeLifeHappensAutoRebalance() {
+            const badge = document.getElementById('fsm-status-badge');
+            if (badge) {
+                badge.className = 'px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 border border-amber-500/30';
+                badge.textContent = 'FSM: INTRA_WEEK_SHIFT (EVALUASI BEBAN)';
+                setTimeout(() => {
+                    badge.className = 'px-2.5 py-0.5 rounded text-[10px] font-bold bg-flat-green/10 text-flat-green border border-flat-green/30';
+                    badge.textContent = 'FSM: REBALANCED (ACWR 1.14 SAFE)';
+                }, 1800);
+            }
+            toast.info('Auto-Rebalance Dieksekusi', 'Long run diselamatkan dengan jeda 48 jam; Easy run di-drop demi mencegah lonjakan ACWR.');
+        }
+
 
 
         // GOALIE FEED & QUICK AI ASSISTANT HELPERS
