@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
     
-    <title>Admin Command Center — Goalie</title>
+    <title>Admin Command Center - Goalie</title>
     <meta name="description" content="Platform observability, mathematical engine calibration, and athlete telemetry monitoring.">
     
     <!-- PWA & App Icons -->
@@ -383,11 +383,14 @@
             <div class="flex items-center gap-2 sm:gap-2.5">
                 <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    <span class="hidden sm:inline">Athlete Terminal</span>
+                    <span data-i18n="admin_nav_athlete_terminal" class="hidden sm:inline">Terminal Atlet</span>
                     <span class="sm:hidden">App</span>
                 </a>
                 <button onclick="lockAdminSession()" id="btn-lock" class="hidden text-xs text-flat-orange hover:text-red-700 px-3 py-1.5 border border-flat-orange/30 rounded-full transition-colors touch-target-expand" title="Lock Admin Session">
-                    <span>Lock Session</span>
+                    <span><span data-i18n="admin_nav_lock_session">Kunci Sesi</span></span>
+                </button>
+                <button onclick="toggleAdminLanguage()" id="admin-lang-btn" class="h-8 px-2.5 rounded-full border border-border bg-surface text-xs font-mono font-bold text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Ganti Bahasa / Switch Language">
+                    <span id="admin-lang-label">ID</span>
                 </button>
                 <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Theme" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -406,7 +409,7 @@
             <div class="w-12 h-12 rounded-xl bg-surface-subtle border border-border text-tertiary mx-auto flex items-center justify-center text-sm mb-4">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
-            <h2 class="font-extrabold text-2xl text-text-primary mb-1">Admin Authorization</h2>
+            <h2 data-i18n="admin_gate_title" class="font-extrabold text-2xl text-text-primary mb-1">Otorisasi Administrator</h2>
             <p class="text-xs text-text-secondary mb-6 leading-relaxed">
                 Superuser oversight for athlete telemetry, mathematical compute engines, and session inspection.
             </p>
@@ -536,7 +539,7 @@
                 <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
                     <div class="flex items-center justify-between border-b border-border pb-3">
                         <div>
-                            <h3 class="font-bold text-sm text-text-primary">Subsystem Engine Diagnostics</h3>
+                            <h3 data-i18n="admin_sec_diagnostics" class="font-bold text-sm text-text-primary">Diagnostik Mesin Subsistem</h3>
                             <p class="text-xs text-text-secondary">Live operational telemetry across API services, database, and Gemini reasoning keys.</p>
                         </div>
                         <span class="px-2.5 py-1 rounded-full border border-flat-green text-flat-green text-xs font-mono font-bold flex items-center gap-1.5">
@@ -592,7 +595,7 @@
                     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-4">
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 class="font-bold text-sm text-text-primary">Athlete Directory & Calibration Access</h3>
+                                <h3 data-i18n="admin_sec_directory" class="font-bold text-sm text-text-primary">Direktori Atlet &amp; Akses Kalibrasi</h3>
                                 <span id="athlete-count-badge" class="font-mono text-[10px] px-2 py-0.5 rounded-full border border-border bg-surface-subtle">0 ATHLETES</span>
                             </div>
                             <p class="text-xs text-text-secondary mt-0.5">
@@ -668,7 +671,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 class="font-bold text-sm text-text-primary">Incoming Webhook Ingestion Streams</h3>
+                                <h3 data-i18n="admin_sec_webhooks" class="font-bold text-sm text-text-primary">Aliran Ingestion Webhook Masuk</h3>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-flat-green/10 text-flat-green border border-flat-green/20">LIVE LISTENER</span>
                             </div>
                             <p class="text-xs text-text-secondary mt-0.5">
@@ -704,7 +707,7 @@
                 <!-- Admin Audit Trail Card -->
                 <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
                     <div class="border-b border-border pb-3">
-                        <h3 class="font-bold text-sm text-text-primary">Administrator Audit Trail</h3>
+                        <h3 data-i18n="admin_sec_audit_trail" class="font-bold text-sm text-text-primary">Jejak Audit Administrator</h3>
                         <p class="text-xs text-text-secondary mt-0.5">
                             Catatan kepatuhan (*governance*) mencatat seluruh tindakan administratif (impersonasi, pembersihan cache, perubahan status akun).
                         </p>
@@ -742,7 +745,7 @@
                     <!-- Broadcast Announcement Composer -->
                     <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
                         <div class="border-b border-border pb-3">
-                            <h3 class="font-bold text-sm text-text-primary">Publikasikan Pengumuman Platform</h3>
+                            <h3 data-i18n="admin_sec_broadcast" class="font-bold text-sm text-text-primary">Publikasikan Pengumuman Platform</h3>
                             <p class="text-xs text-text-secondary mt-0.5">
                                 Kirim pengumuman banner global yang tampil di seluruh terminal atlet (maintenance, event, update algoritma).
                             </p>
@@ -782,7 +785,7 @@
                     <!-- Platform Maintenance & System Cache Controls -->
                     <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-4">
                         <div class="border-b border-border pb-3">
-                            <h3 class="font-bold text-sm text-text-primary">Pemeliharaan Komputasi & Ekspor Data</h3>
+                            <h3 data-i18n="admin_sec_maintenance" class="font-bold text-sm text-text-primary">Pemeliharaan Komputasi &amp; Ekspor Data</h3>
                             <p class="text-xs text-text-secondary mt-0.5">
                                 Alat manajemen cache in-memory, kalibrasi ulang telemetri, dan ekspor laporan berkala.
                             </p>
@@ -1843,5 +1846,71 @@
             applyTheme(isDark ? 'light' : 'dark');
         }
     </script>
+
+    <script>
+        // ══════════════════════════════════════════════════════
+        // ADMIN BILINGUAL I18N CONTROLLER (Indonesian / English)
+        // ══════════════════════════════════════════════════════
+        const ADMIN_I18N = {
+            id: {
+                admin_nav_athlete_terminal: "Terminal Atlet",
+                admin_nav_lock_session: "Kunci Sesi",
+                admin_gate_title: "Otorisasi Administrator",
+                admin_gate_subtitle: "Masukkan passcode administrator sistem untuk membuka alat diagnostik dan kendali pengguna.",
+                admin_gate_label_passcode: "Passcode Akses Superuser",
+                admin_gate_btn_unlock: "Buka Akses Admin",
+                admin_sec_diagnostics: "Diagnostik Mesin Subsistem",
+                admin_sec_directory: "Direktori Atlet & Akses Kalibrasi",
+                admin_sec_webhooks: "Aliran Ingestion Webhook Masuk",
+                admin_sec_audit_trail: "Jejak Audit Administrator",
+                admin_sec_broadcast: "Publikasikan Pengumuman Platform",
+                admin_sec_maintenance: "Pemeliharaan Komputasi & Ekspor Data",
+                admin_btn_sim_webhook: "Simulasi Webhook",
+                admin_btn_refresh_diag: "Periksa Ulang Mesin",
+                admin_btn_refresh_audit: "Segarkan Feed"
+            },
+            en: {
+                admin_nav_athlete_terminal: "Athlete Terminal",
+                admin_nav_lock_session: "Lock Session",
+                admin_gate_title: "Admin Authorization",
+                admin_gate_subtitle: "Enter system administrator passcode to unlock diagnostic tools and user controls.",
+                admin_gate_label_passcode: "Superuser Access Passcode",
+                admin_gate_btn_unlock: "Unlock Admin Access",
+                admin_sec_diagnostics: "Subsystem Engine Diagnostics",
+                admin_sec_directory: "Athlete Directory & Calibration Access",
+                admin_sec_webhooks: "Incoming Webhook Ingestion Streams",
+                admin_sec_audit_trail: "Administrator Audit Trail",
+                admin_sec_broadcast: "Publish Platform Announcement",
+                admin_sec_maintenance: "Compute Maintenance & Data Export",
+                admin_btn_sim_webhook: "Simulate Webhook",
+                admin_btn_refresh_diag: "Re-check Engines",
+                admin_btn_refresh_audit: "Refresh Feed"
+            }
+        };
+
+        function applyAdminLanguage(lang) {
+            const dict = ADMIN_I18N[lang] || ADMIN_I18N.id;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.textContent = dict[key];
+            });
+            const lbl = document.getElementById('admin-lang-label');
+            if (lbl) lbl.textContent = lang === 'id' ? 'ID' : 'EN';
+            document.documentElement.lang = lang;
+            localStorage.setItem('goalie_language', lang);
+        }
+
+        function toggleAdminLanguage() {
+            const current = localStorage.getItem('goalie_language') || 'id';
+            const next = current === 'id' ? 'en' : 'id';
+            applyAdminLanguage(next);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentLang = localStorage.getItem('goalie_language') || 'id';
+            applyAdminLanguage(currentLang);
+        });
+    </script>
+
 </body>
 </html>

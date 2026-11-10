@@ -191,7 +191,7 @@ async def social_oauth_callback(
                 )
                 token_data = token_res.json()
                 if "access_token" not in token_data:
-                    raise HTTPException(status_code=400, detail="Gagal verifikasi otentikasi Google OAuth.")
+                    raise HTTPException(status_code=400, detail="Gagal verifikasi autentikasi Google OAuth.")
 
                 userinfo_res = await http_client.get(
                     "https://openidconnect.googleapis.com/v1/userinfo",
@@ -216,7 +216,7 @@ async def social_oauth_callback(
                 )
                 token_data = token_res.json()
                 if "access_token" not in token_data:
-                    raise HTTPException(status_code=400, detail="Gagal verifikasi otentikasi GitHub OAuth.")
+                    raise HTTPException(status_code=400, detail="Gagal verifikasi autentikasi GitHub OAuth.")
 
                 user_res = await http_client.get(
                     "https://api.github.com/user",

@@ -57,7 +57,7 @@ def verify_signed_oauth_state(state: str) -> str:
 
     # Reject expired tokens older than 15 minutes (900 seconds)
     if time.time() - ts > 900:
-        raise HTTPException(status_code=400, detail="Sesi autentikasi Strava kadaluarsa (>15 menit). Harap ulangi otorisasi.")
+        raise HTTPException(status_code=400, detail="Sesi autentikasi Strava kedaluwarsa (>15 menit). Harap ulangi otorisasi.")
 
     payload = f"{user_id}:{ts}:{nonce}"
     expected_sig = hmac.new(OAUTH_STATE_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()

@@ -106,7 +106,7 @@ def login(user: UserLoginInput):
     except Exception as e:
         err_msg = str(e)
         if "invalid login credentials" in err_msg.lower() or "invalid_credentials" in err_msg.lower():
-            raise HTTPException(status_code=401, detail="Email atau password salah.")
+            raise HTTPException(status_code=401, detail="Email atau kata sandi salah.")
 
     # 2. Resilient demo/sandbox token
     if len(user.password) >= 6:
@@ -120,7 +120,7 @@ def login(user: UserLoginInput):
             "mode": "sandbox"
         }
     
-    raise HTTPException(status_code=401, detail="Password minimal 6 karakter.")
+    raise HTTPException(status_code=401, detail="Kata sandi minimal 6 karakter.")
 
 
 @router.post("/api/v1/auth/forgot-password", tags=["Auth"])

@@ -171,7 +171,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(H
             # If network error or invalid
             raise HTTPException(status_code=401, detail=f"Autentikasi gagal: {str(e)}")
 
-    raise HTTPException(status_code=401, detail="Token tidak valid atau telah kadaluarsa")
+    raise HTTPException(status_code=401, detail="Token tidak valid atau telah kedaluwarsa")
 
 
 async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))) -> str:

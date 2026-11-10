@@ -222,7 +222,7 @@ def admin_delete_athlete(user_id: str, admin: dict = Depends(require_admin_role)
     """
     ok = sandbox_store.delete_athlete(user_id)
     if not ok:
-        raise HTTPException(status_code=404, detail="Athlete record not found")
+        raise HTTPException(status_code=404, detail="Data profil atlet tidak ditemukan.")
     return {
         "status": "success",
         "message": f"Data atlet {user_id} berhasil dihapus permanen dari platform."

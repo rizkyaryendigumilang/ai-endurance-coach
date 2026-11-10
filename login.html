@@ -370,13 +370,16 @@
             <div class="flex items-center gap-1.5 sm:gap-3">
                 <a href="/admin" class="flex text-xs text-text-secondary hover:text-text-primary items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" title="Admin Command Center">
                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    <span class="font-medium hidden xs:inline">Admin Center</span>
+                    <span data-i18n="login_nav_admin" class="font-medium hidden xs:inline">Pusat Kendali Admin</span>
                     <span class="font-medium xs:hidden">Admin</span>
                 </a>
                 <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 px-2.5 sm:px-3 py-1.5 hover:bg-surface-subtle rounded-full border border-transparent transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    <span class="hidden sm:inline">Home</span>
+                    <span data-i18n="login_nav_home" class="hidden sm:inline">Beranda</span>
                 </a>
+                <button onclick="toggleLoginLanguage()" id="login-lang-btn" class="h-8 px-2.5 rounded-full border border-border bg-surface text-xs font-mono font-bold text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Ganti Bahasa / Switch Language">
+                    <span id="login-lang-label">ID</span>
+                </button>
                 <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary flex items-center justify-center transition-colors touch-target-expand" title="Toggle Theme" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
@@ -392,35 +395,35 @@
             <!-- Left Column: Value Proposition (5 cols) -->
             <div class="hidden lg:block lg:col-span-5 space-y-6 pr-2">
                 <div class="space-y-3">
-                    <span class="text-xs font-semibold text-tertiary">Deterministic Sports Science</span>
-                    <h1 class="text-3xl font-extrabold text-text-primary leading-tight tracking-tight">
-                        Precision Performance Modeling.
+                    <span data-i18n="login_vp_badge" class="text-xs font-semibold text-tertiary">Sains Olahraga Deterministik</span>
+                    <h1 data-i18n="login_vp_title" class="text-3xl font-extrabold text-text-primary leading-tight tracking-tight">
+                        Pemodelan Performa Presisi.
                     </h1>
-                    <p class="text-xs text-text-secondary leading-relaxed">
-                        One unified athlete profile for physiological metrics, macrocycle periodization, and real-time Garmin and Strava telemetry.
+                    <p data-i18n="login_vp_desc" class="text-xs text-text-secondary leading-relaxed">
+                        Satu profil atlet terpadu untuk metrik fisiologis, periodisasi makrosiklus, dan telemetri langsung Garmin serta Strava.
                     </p>
                 </div>
 
                 <div class="space-y-3 pt-2 font-mono text-xs">
                     <div class="p-3 bg-surface border border-border">
-                        <div class="font-bold text-text-primary">Deterministic Modeling</div>
-                        <div class="text-[11px] text-text-secondary font-sans mt-0.5">Pace, GAP, TRIMP/TSS, and TSB computed with zero hallucinations.</div>
+                        <div data-i18n="login_feat1_title" class="font-bold text-text-primary">Pemodelan Deterministik</div>
+                        <div data-i18n="login_feat1_desc" class="text-[11px] text-text-secondary font-sans mt-0.5">Pace, GAP, TRIMP/TSS, dan TSB dihitung presisi tanpa halusinasi model.</div>
                     </div>
 
                     <div class="p-3 bg-surface border border-border">
-                        <div class="font-bold text-text-primary">Garmin Direct & Strava Sync</div>
-                        <div class="text-[11px] text-text-secondary font-sans mt-0.5">Ingest Resting HR, HRV, sleep metrics, and FIT activity streams.</div>
+                        <div data-i18n="login_feat2_title" class="font-bold text-text-primary">Sinkronisasi Garmin & Strava</div>
+                        <div data-i18n="login_feat2_desc" class="text-[11px] text-text-secondary font-sans mt-0.5">Tarik detak jantung istirahat, HRV, metrik tidur, dan berkas FIT secara otomatis.</div>
                     </div>
 
                     <div class="p-3 bg-surface border border-border">
-                        <div class="font-bold text-text-primary">Row-Level Security Isolation</div>
-                        <div class="text-[11px] text-text-secondary font-sans mt-0.5">Personal biometric records guarded by TLS 1.3 and database RLS.</div>
+                        <div data-i18n="login_feat3_title" class="font-bold text-text-primary">Isolasi Keamanan Tingkat Baris</div>
+                        <div data-i18n="login_feat3_desc" class="text-[11px] text-text-secondary font-sans mt-0.5">Data biometrik pribadi terlindungi enkripsi TLS 1.3 dan Row-Level Security.</div>
                     </div>
                 </div>
 
                 <div class="pt-2 flex items-center gap-2 text-[11px] font-mono text-text-secondary">
                     <span class="w-2 h-2 bg-flat-green"></span>
-                    <span>Goalie Core Engine v2.4.1 Online</span>
+                    <span data-i18n="login_status_engine">Mesin Inti Goalie v2.4.1 Aktif</span>
                 </div>
             </div>
 
@@ -429,20 +432,20 @@
                 <div class="flat-card border-2 border-border-strong p-6 sm:p-8 bg-surface">
                     
                     <div class="mb-5">
-                        <h2 id="auth-title" class="text-xl sm:text-2xl font-extrabold text-text-primary tracking-tight">Athlete Sign In</h2>
-                        <p id="auth-subtitle" class="text-xs text-text-secondary mt-1">Access your physiological metrics and periodization blocks.</p>
+                        <h2 id="auth-title" data-i18n="login_auth_title" class="text-xl sm:text-2xl font-extrabold text-text-primary tracking-tight">Masuk Akun Atlet</h2>
+                        <p id="auth-subtitle" data-i18n="login_auth_subtitle" class="text-xs text-text-secondary mt-1">Akses metrik fisiologis dan blok periodisasi latihan Anda.</p>
                     </div>
 
                     <!-- Mode Switcher (Pill style) -->
                     <div class="grid grid-cols-3 gap-1 bg-surface-subtle p-1 border border-border rounded-full mb-5 text-xs font-semibold" role="tablist" aria-label="Sign-in Options">
                         <button type="button" onclick="switchMode('login')" id="tab-login" role="tab" aria-selected="true" class="py-1.5 px-3 text-center bg-surface text-text-primary rounded-full shadow-xs">
-                            Sign In
+                            <span data-i18n="login_tab_signin">Masuk</span>
                         </button>
                         <button type="button" onclick="switchMode('register')" id="tab-register" role="tab" aria-selected="false" class="py-1.5 px-3 text-center text-text-secondary hover:text-text-primary rounded-full">
-                            Register
+                            <span data-i18n="login_tab_register">Daftar</span>
                         </button>
                         <button type="button" onclick="switchMode('forgot')" id="tab-forgot" role="tab" aria-selected="false" class="py-1.5 px-3 text-center text-text-secondary hover:text-text-primary rounded-full">
-                            Reset
+                            <span data-i18n="login_tab_reset">Atur Ulang</span>
                         </button>
                     </div>
 
@@ -451,15 +454,15 @@
                     <!-- Form 1: Sign In -->
                     <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3.5">
                         <div>
-                            <label for="login-email" class="block text-[11px] font-mono text-text-secondary mb-1">Email or Username</label>
+                            <label for="login-email" data-i18n="login_label_email" class="block text-[11px] font-mono text-text-secondary mb-1">Email atau Nama Pengguna</label>
                             <input type="text" id="login-email" class="flat-input text-xs" placeholder="athlete@domain.com or admin" required autocomplete="username">
                         </div>
 
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <label for="login-password" class="block text-[11px] text-text-secondary">Password</label>
-                                <button type="button" onclick="switchMode('forgot')" class="text-[11px] text-tertiary hover:underline">
-                                    Forgot password?
+                                <label for="login-password" data-i18n="login_label_password" class="block text-[11px] text-text-secondary">Kata Sandi</label>
+                                <button type="button" onclick="switchMode('forgot')" data-i18n="login_forgot_link" class="text-[11px] text-tertiary hover:underline">
+                                    Lupa kata sandi?
                                 </button>
                             </div>
                             <div class="relative">
@@ -470,25 +473,25 @@
                             </div>
                         </div>
 
-                        <button type="submit" id="btn-login" class="btn-flat-primary w-full py-2.5 text-xs font-semibold mt-1">
-                            Sign in
+                        <button type="submit" id="btn-login" data-i18n="login_btn_submit" class="btn-flat-primary w-full py-2.5 text-xs font-semibold mt-1">
+                            Masuk ke Akun
                         </button>
                     </form>
 
                     <!-- Form 2: Register -->
                     <form id="form-register" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
                         <div>
-                            <label for="reg-name" class="block text-[11px] text-text-secondary mb-1">Athlete Full Name</label>
+                            <label for="reg-name" data-i18n="login_label_fullname" class="block text-[11px] text-text-secondary mb-1">Nama Lengkap Atlet</label>
                             <input type="text" id="reg-name" class="flat-input text-xs" placeholder="e.g. Eliud Kipchoge" required autocomplete="name">
                         </div>
 
                         <div>
-                            <label for="reg-email" class="block text-[11px] text-text-secondary mb-1">Email Address</label>
+                            <label for="reg-email" data-i18n="login_label_reg_email" class="block text-[11px] text-text-secondary mb-1">Alamat Email</label>
                             <input type="email" id="reg-email" class="flat-input text-xs" placeholder="kipchoge@domain.com" required autocomplete="email">
                         </div>
 
                         <div>
-                            <label for="reg-password" class="block text-[11px] text-text-secondary mb-1">Password (6+ chars)</label>
+                            <label for="reg-password" data-i18n="login_label_reg_password" class="block text-[11px] text-text-secondary mb-1">Kata Sandi (minimal 6 karakter)</label>
                             <div class="relative">
                                 <input type="password" id="reg-password" class="flat-input text-xs pr-10" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password" aria-describedby="auth-alert">
                                 <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
@@ -506,8 +509,8 @@
                             </label>
                         </div>
 
-                        <button type="submit" id="btn-register" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
-                            Create athlete account
+                        <button type="submit" id="btn-register" data-i18n="login_btn_register" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
+                            Daftarkan Akun Atlet
                         </button>
                     </form>
 
@@ -520,17 +523,17 @@
                             <label class="block text-[11px] text-text-secondary mb-1">Registered Email</label>
                             <input type="email" id="forgot-email" class="flat-input text-xs" placeholder="athlete@domain.com" required autocomplete="email">
                         </div>
-                        <button type="submit" id="btn-forgot" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
-                            Send reset link
+                        <button type="submit" id="btn-forgot" data-i18n="login_btn_send_reset" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
+                            Kirim Tautan Atur Ulang
                         </button>
-                        <button type="button" onclick="switchMode('login')" class="btn-flat-secondary w-full py-2 text-xs">
-                            Cancel
+                        <button type="button" onclick="switchMode('login')" data-i18n="login_btn_cancel" class="btn-flat-secondary w-full py-2 text-xs">
+                            Batal
                         </button>
                     </form>
 
                     <!-- Quick OAuth Mock -->
                     <div class="mt-5 pt-4 border-t border-border">
-                        <div class="text-[11px] font-mono text-text-secondary text-center mb-2.5">Or continue with third-party ID:</div>
+                        <div data-i18n="login_or_third_party" class="text-[11px] font-mono text-text-secondary text-center mb-2.5">Atau lanjutkan dengan akun pihak ketiga:</div>
                         <div class="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs font-mono">
                             <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
                                 <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
@@ -911,5 +914,97 @@
             });
         }
     </script>
+
+    <script>
+        // ══════════════════════════════════════════════════════
+        // LOGIN BILINGUAL I18N CONTROLLER (Indonesian / English)
+        // ══════════════════════════════════════════════════════
+        const LOGIN_I18N = {
+            id: {
+                login_nav_admin: "Pusat Kendali Admin",
+                login_nav_home: "Beranda",
+                login_vp_badge: "Sains Olahraga Deterministik",
+                login_vp_title: "Pemodelan Performa Presisi.",
+                login_vp_desc: "Satu profil atlet terpadu untuk metrik fisiologis, periodisasi makrosiklus, dan telemetri langsung Garmin serta Strava.",
+                login_feat1_title: "Pemodelan Deterministik",
+                login_feat1_desc: "Pace, GAP, TRIMP/TSS, dan TSB dihitung presisi tanpa halusinasi model.",
+                login_feat2_title: "Sinkronisasi Garmin & Strava",
+                login_feat2_desc: "Tarik detak jantung istirahat, HRV, metrik tidur, dan berkas FIT secara otomatis.",
+                login_feat3_title: "Isolasi Keamanan Tingkat Baris",
+                login_feat3_desc: "Data biometrik pribadi terlindungi enkripsi TLS 1.3 dan Row-Level Security.",
+                login_status_engine: "Mesin Inti Goalie v2.4.1 Aktif",
+                login_auth_title: "Masuk Akun Atlet",
+                login_auth_subtitle: "Akses metrik fisiologis dan blok periodisasi latihan Anda.",
+                login_tab_signin: "Masuk",
+                login_tab_register: "Daftar",
+                login_tab_reset: "Atur Ulang",
+                login_label_email: "Email atau Nama Pengguna",
+                login_label_password: "Kata Sandi",
+                login_forgot_link: "Lupa kata sandi?",
+                login_btn_submit: "Masuk ke Akun",
+                login_label_fullname: "Nama Lengkap Atlet",
+                login_label_reg_email: "Alamat Email",
+                login_label_reg_password: "Kata Sandi (minimal 6 karakter)",
+                login_btn_register: "Daftarkan Akun Atlet",
+                login_btn_send_reset: "Kirim Tautan Atur Ulang",
+                login_btn_cancel: "Batal",
+                login_or_third_party: "Atau lanjutkan dengan akun pihak ketiga:"
+            },
+            en: {
+                login_nav_admin: "Admin Center",
+                login_nav_home: "Home",
+                login_vp_badge: "Deterministic Sports Science",
+                login_vp_title: "Precision Performance Modeling.",
+                login_vp_desc: "One unified athlete profile for physiological metrics, macrocycle periodization, and real-time Garmin and Strava telemetry.",
+                login_feat1_title: "Deterministic Modeling",
+                login_feat1_desc: "Pace, GAP, TRIMP/TSS, and TSB computed with zero hallucinations.",
+                login_feat2_title: "Garmin Direct & Strava Sync",
+                login_feat2_desc: "Ingest Resting HR, HRV, sleep metrics, and FIT activity streams.",
+                login_feat3_title: "Row-Level Security Isolation",
+                login_feat3_desc: "Personal biometric records guarded by TLS 1.3 and database RLS.",
+                login_status_engine: "Goalie Core Engine v2.4.1 Online",
+                login_auth_title: "Athlete Sign In",
+                login_auth_subtitle: "Access your physiological metrics and periodization blocks.",
+                login_tab_signin: "Sign In",
+                login_tab_register: "Register",
+                login_tab_reset: "Reset",
+                login_label_email: "Email or Username",
+                login_label_password: "Password",
+                login_forgot_link: "Forgot password?",
+                login_btn_submit: "Sign in",
+                login_label_fullname: "Athlete Full Name",
+                login_label_reg_email: "Email Address",
+                login_label_reg_password: "Password (6+ chars)",
+                login_btn_register: "Create athlete account",
+                login_btn_send_reset: "Send reset link",
+                login_btn_cancel: "Cancel",
+                login_or_third_party: "Or continue with third-party ID:"
+            }
+        };
+
+        function applyLoginLanguage(lang) {
+            const dict = LOGIN_I18N[lang] || LOGIN_I18N.id;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.textContent = dict[key];
+            });
+            const lbl = document.getElementById('login-lang-label');
+            if (lbl) lbl.textContent = lang === 'id' ? 'ID' : 'EN';
+            document.documentElement.lang = lang;
+            localStorage.setItem('goalie_language', lang);
+        }
+
+        function toggleLoginLanguage() {
+            const current = localStorage.getItem('goalie_language') || 'id';
+            const next = current === 'id' ? 'en' : 'id';
+            applyLoginLanguage(next);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentLang = localStorage.getItem('goalie_language') || 'id';
+            applyLoginLanguage(currentLang);
+        });
+    </script>
+
 </body>
 </html>
