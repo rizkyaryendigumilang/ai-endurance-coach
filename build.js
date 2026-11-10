@@ -37,4 +37,14 @@ if (fs.existsSync(publicSrc)) {
   console.log('Copied public/ -> dist/public/');
 }
 
-console.log('Build completed successfully. Files are in dist/');
+// Automatically sync web assets to Capacitor native mobile targets (Android & iOS)
+try {
+  const { execSync } = require('child_process');
+  console.log('Synchronizing assets to Capacitor mobile targets (Android / iOS)...');
+  execSync('npx cap copy', { stdio: 'inherit' });
+  console.log('Capacitor native mobile assets synced successfully.');
+} catch (e) {
+  console.warn('Notice: Capacitor copy skipped or not configured in this environment:', e.message);
+}
+
+console.log('Build completed successfully. Files are in dist/ and mobile targets.');

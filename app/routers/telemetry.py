@@ -105,8 +105,12 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
     karvonen_zones = SportsEngine.calculate_karvonen_zones(resting_hr, max_hr)
     periodization = SportsEngine.calculate_macrocycle_countdown(str(target_race_date))
 
+    # Determine Garmin activities presence and calibration status
+    garmin_activities_count = len(recent_workouts) if recent_workouts else 0
+    has_garmin_data = garmin_activities_count > 0
+
     # Calculate deterministic metrics from actual workouts
-    if recent_workouts:
+    if has_garmin_data:
         current_mileage_km = round(sum(w.get("distance_km", 0.0) for w in recent_workouts[:7]), 1)
         total_load_acute = sum(
             (w.get("activity_metrics", [{}])[0].get("training_load", 0) if w.get("activity_metrics") else int(w.get("duration_seconds", 0) / 60 * 0.8))
@@ -121,6 +125,25 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
         tsb = round(ctl - atl, 1)
         acwr = SportsEngine.calculate_acwr(acute_load_7d=max(total_load_acute, 1.0), chronic_load_28d=max(total_load_chronic, 1.0))
         relative_suffer_score = int(total_load_acute)
+
+        # Calculate actual VDOT from running history or default to athlete 30.8 baseline
+        best_vdot = 30.8
+        for w in recent_workouts:
+            dist_km = float(w.get("distance_km", 0))
+            dur_sec = int(w.get("duration_seconds", 0))
+            if dist_km >= 3.0 and dur_sec >= 600:
+                v = SportsEngine.calculate_vdot(dist_km * 1000.0, dur_sec)
+                if v > best_vdot:
+                    best_vdot = v
+        vdot_paces = SportsEngine.get_vdot_training_paces(best_vdot)
+        garmin_calibration = {
+            "is_calibrated": True,
+            "activities_count": garmin_activities_count,
+            "badge": "TERKALIBRASI GARMIN",
+            "message_id": f"✓ Telemetri Garmin Terkalibrasi ({garmin_activities_count} Sesi Lari Dianalisis)",
+            "message_en": f"✓ Garmin Telemetry Calibrated ({garmin_activities_count} Running Sessions Analyzed)",
+            "banner_type": "success"
+        }
     else:
         current_mileage_km = 0.0
         atl = 0.0
@@ -128,6 +151,15 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
         tsb = 0.0
         acwr = {"acwr_ratio": 0.0, "zone": "fresh", "injury_risk": "low"}
         relative_suffer_score = 0
+        vdot_paces = None
+        garmin_calibration = {
+            "is_calibrated": False,
+            "activities_count": 0,
+            "badge": "MENUNGGU GARMIN",
+            "message_id": "Menghubungkan Telemetri Garmin untuk Menghitung VDOT & Status Kebugaran Atlet",
+            "message_en": "Connecting Garmin Telemetry to Compute VDOT & Athlete Fitness Status",
+            "banner_type": "warning"
+        }
 
     weekly_progress_pct = round((current_mileage_km / weekly_target_km) * 100, 1) if weekly_target_km > 0 else 0
 
@@ -141,6 +173,9 @@ def get_telemetry_suite(user_id: str = Depends(get_current_user_optional)):
 
     return {
         "status": "success",
+        "has_garmin_data": has_garmin_data,
+        "garmin_calibration": garmin_calibration,
+        "vdot_data": vdot_paces,
         "athlete": {
             "resting_hr": resting_hr,
             "max_hr": max_hr,

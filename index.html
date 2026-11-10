@@ -873,6 +873,30 @@
             <!-- Bento Telemetry Console (21st.dev Clean High-Density Bento Grid) -->
             <div id="telemetry" class="border border-border rounded-xl bg-surface-subtle p-3 sm:p-5 shadow-xs space-y-4">
                 
+                <!-- Garmin Telemetry Calibration Alert Banner -->
+                <div id="garmin-calibration-banner" class="p-3 sm:p-3.5 rounded-xl border border-flat-green/30 bg-flat-green/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-200">
+                    <div class="flex items-start sm:items-center gap-3">
+                        <div id="garmin-calib-icon" class="w-8 h-8 rounded-lg bg-flat-green/20 text-flat-green flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span id="garmin-calib-title" class="text-xs sm:text-sm font-bold text-text-primary" data-i18n="garmin_calib_calibrated">&#10003; Telemetri Garmin Terkalibrasi (20 Sesi Lari Dianalisis)</span>
+                                <span id="garmin-calib-badge" class="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-flat-green/30 text-flat-green bg-flat-green/15 uppercase">TERKALIBRASI GARMIN</span>
+                            </div>
+                            <p id="garmin-calib-sub" class="text-[11px] text-text-secondary font-mono mt-0.5" data-i18n="garmin_calib_calibrated_sub">VDOT, Ambang Laktat (LT2), Zona HR Karvonen, dan Beban Latihan Kronis tersinkronisasi secara presisi.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                        <button type="button" onclick="switchWorkstationTab('garmin')" id="garmin-calib-action-btn" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono font-bold inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                            <span id="garmin-calib-btn-label" data-i18n="garmin_calib_btn_synced">Status Garmin</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Console Top Control Strip -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-border text-xs font-mono">
                     <div class="flex items-center gap-2">
@@ -895,13 +919,13 @@
                     <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
                         <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
                             <span>AEROBIC CAPACITY</span>
-                            <span class="text-flat-green font-semibold">VDOT 62.1</span>
+                            <span id="hud-vdot-badge" class="text-flat-green font-semibold">VDOT 30.8</span>
                         </div>
                         <div class="font-mono font-extrabold text-2xl text-text-primary">
-                            58.4 <span class="text-xs font-normal text-text-secondary">mL/kg/min</span>
+                            <span id="hud-vo2-val">31.2</span> <span class="text-xs font-normal text-text-secondary">mL/kg/min</span>
                         </div>
-                        <div class="text-[10px] text-flat-green font-mono">
-                            +1.2 vs 30-day baseline
+                        <div id="hud-vdot-sub" class="text-[10px] text-flat-green font-mono">
+                            +0.8 vs 30-day baseline
                         </div>
                     </div>
 
@@ -909,12 +933,12 @@
                     <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
                         <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
                             <span>TRAINING STRESS BALANCE</span>
-                            <span class="text-tertiary font-semibold">FORM</span>
+                            <span id="hud-tsb-badge" class="text-tertiary font-semibold">FORM</span>
                         </div>
                         <div class="font-mono font-extrabold text-2xl text-tertiary">
-                            +6.2 <span class="text-xs font-normal text-text-secondary">TSB</span>
+                            <span id="hud-tsb-val">+6.2</span> <span class="text-xs font-normal text-text-secondary">TSB</span>
                         </div>
-                        <div class="text-[10px] text-text-secondary font-mono">
+                        <div id="hud-tsb-sub" class="text-[10px] text-text-secondary font-mono">
                             CTL 74.2 &bull; ATL 68.0 (Sweet Spot)
                         </div>
                     </div>
@@ -923,13 +947,13 @@
                     <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
                         <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
                             <span>LACTATE THRESHOLD (LT2)</span>
-                            <span class="text-text-primary font-semibold">Z4</span>
+                            <span id="hud-lt2-badge" class="text-text-primary font-semibold">Z4</span>
                         </div>
                         <div class="font-mono font-extrabold text-2xl text-text-primary">
-                            04:12 <span class="text-xs font-normal text-text-secondary">min/km</span>
+                            <span id="hud-lt2-val">07:20</span> <span class="text-xs font-normal text-text-secondary">min/km</span>
                         </div>
-                        <div class="text-[10px] text-text-secondary font-mono">
-                            HR: 168 bpm &bull; 88% HRmax
+                        <div id="hud-lt2-sub" class="text-[10px] text-text-secondary font-mono">
+                            HR: 160&ndash;172 bpm &bull; 88% HRmax
                         </div>
                     </div>
 
@@ -937,12 +961,12 @@
                     <div class="p-3.5 bg-surface border border-border rounded-lg space-y-1">
                         <div class="flex items-center justify-between text-[11px] font-mono text-text-secondary">
                             <span>AEROBIC DECOUPLING</span>
-                            <span class="text-flat-green font-semibold">Pw:HR</span>
+                            <span id="hud-drift-badge" class="text-flat-green font-semibold">Pw:HR</span>
                         </div>
                         <div class="font-mono font-extrabold text-2xl text-flat-green">
-                            +1.7% <span class="text-xs font-normal text-text-secondary">Drift</span>
+                            <span id="hud-drift-val">+1.7%</span> <span class="text-xs font-normal text-text-secondary">Drift</span>
                         </div>
-                        <div class="text-[10px] text-flat-green font-mono">
+                        <div id="hud-drift-sub" class="text-[10px] text-flat-green font-mono">
                             EF 1.36 m/beat (Base Stable &lt;5%)
                         </div>
                     </div>
@@ -955,7 +979,7 @@
                     <div class="p-4 bg-surface border border-border rounded-lg space-y-3">
                         <div class="flex items-center justify-between border-b border-border pb-2">
                             <span class="text-xs font-mono font-bold text-text-primary">ACWR WORKLOAD HAZARD METER</span>
-                            <span class="text-[11px] font-mono font-bold text-flat-green bg-flat-green/10 px-2 py-0.5 rounded border border-flat-green/20">1.16 OPTIMAL</span>
+                            <span id="hud-acwr-badge" class="text-[11px] font-mono font-bold text-flat-green bg-flat-green/10 px-2 py-0.5 rounded border border-flat-green/20">1.05 OPTIMAL</span>
                         </div>
                         
                         <div class="text-[11px] font-mono text-text-secondary">
@@ -972,15 +996,15 @@
                             </div>
                             <div class="flex justify-between text-[10px] text-text-secondary">
                                 <span>Under-training Risk</span>
-                                <span class="text-flat-green font-bold">Sweet Spot (1.16)</span>
+                                <span id="hud-acwr-center-val" class="text-flat-green font-bold">Sweet Spot (1.05)</span>
                                 <span class="text-flat-orange font-bold">Injury Zone</span>
                             </div>
                         </div>
 
                         <!-- Micro stats -->
                         <div class="pt-1 flex items-center justify-between text-[11px] font-mono text-text-secondary border-t border-border">
-                            <span>Ramp Rate: <strong class="text-text-primary">+4.8 TSS/wk</strong></span>
-                            <span>Injury Risk: <strong class="text-flat-green">0.14x (Low)</strong></span>
+                            <span>Ramp Rate: <strong id="hud-ramp-rate" class="text-text-primary">+4.8 TSS/wk</strong></span>
+                            <span>Injury Risk: <strong id="hud-injury-risk" class="text-flat-green">0.14x (Low)</strong></span>
                         </div>
                     </div>
 
@@ -988,34 +1012,34 @@
                     <div class="p-4 bg-surface border border-border rounded-lg space-y-3">
                         <div class="flex items-center justify-between border-b border-border pb-2">
                             <span class="text-xs font-mono font-bold text-text-primary">KARVONEN 5-ZONE HR MATRIX</span>
-                            <span class="text-[11px] font-mono text-tertiary font-bold">HRR 144 BPM</span>
+                            <span id="hud-hrr-val" class="text-[11px] font-mono text-tertiary font-bold">HRR 127 BPM</span>
                         </div>
 
-                        <div class="text-[11px] font-mono text-text-secondary">
-                            RHR 48 bpm &bull; Max 192 bpm &bull; Polarized 80/20
+                        <div id="hud-karvonen-sub" class="text-[11px] font-mono text-text-secondary">
+                            RHR 58 bpm &bull; Max 185 bpm &bull; Polarized 80/20
                         </div>
 
                         <!-- 5 Zones Grid -->
                         <div class="grid grid-cols-5 gap-1 text-center font-mono text-xs">
                             <div class="p-1.5 bg-surface-subtle border border-border rounded">
                                 <div class="text-[9px] text-text-secondary">Z1 Recovery</div>
-                                <div class="text-[11px] font-bold text-text-primary">&lt;134</div>
+                                <div id="hud-zone-z1" class="text-[11px] font-bold text-text-primary">&lt;122</div>
                             </div>
                             <div class="p-1.5 bg-flat-green/10 border border-flat-green rounded">
                                 <div class="text-[9px] text-flat-green font-bold">Z2 Base</div>
-                                <div class="text-[11px] font-bold text-flat-green">135-149</div>
+                                <div id="hud-zone-z2" class="text-[11px] font-bold text-flat-green">122-134</div>
                             </div>
                             <div class="p-1.5 bg-surface-subtle border border-border rounded">
                                 <div class="text-[9px] text-text-secondary">Z3 Tempo</div>
-                                <div class="text-[11px] font-bold text-text-primary">150-163</div>
+                                <div id="hud-zone-z3" class="text-[11px] font-bold text-text-primary">135-146</div>
                             </div>
                             <div class="p-1.5 bg-surface-subtle border border-border rounded">
                                 <div class="text-[9px] text-text-secondary">Z4 Thresh</div>
-                                <div class="text-[11px] font-bold text-text-primary">164-178</div>
+                                <div id="hud-zone-z4" class="text-[11px] font-bold text-text-primary">147-159</div>
                             </div>
                             <div class="p-1.5 bg-surface-subtle border border-border rounded">
                                 <div class="text-[9px] text-text-secondary">Z5 Anaer</div>
-                                <div class="text-[11px] font-bold text-text-primary">&gt;178</div>
+                                <div id="hud-zone-z5" class="text-[11px] font-bold text-text-primary">&gt;159</div>
                             </div>
                         </div>
 
@@ -5946,6 +5970,12 @@
                 tab_schedule: "Jadwal & iCal",
                 tab_integrations: "Integrasi",
                 tab_settings: "Pengaturan",
+                garmin_calib_uncalibrated: "Menghubungkan Telemetri Garmin untuk Menghitung VDOT & Status Kebugaran Atlet",
+                garmin_calib_uncalibrated_sub: "Menunggu sinkronisasi aktivitas Garmin Connect pertama untuk memvalidasi ambang laktat dan kapasitas aerobik riil.",
+                garmin_calib_calibrated: "✓ Telemetri Garmin Terkalibrasi (20 Sesi Lari Dianalisis)",
+                garmin_calib_calibrated_sub: "VDOT, Ambang Laktat (LT2), Zona HR Karvonen, dan Beban Latihan Kronis tersinkronisasi secara presisi.",
+                garmin_calib_btn_sync: "Hubungkan Garmin",
+                garmin_calib_btn_synced: "Status Garmin",
                 feed_filter_all: "Semua Aktivitas",
                 feed_filter_runs: "Lari",
                 feed_filter_rides: "Sepeda",
@@ -6231,6 +6261,12 @@
                 tab_schedule: "Schedule & iCal",
                 tab_integrations: "Integrations",
                 tab_settings: "Settings",
+                garmin_calib_uncalibrated: "Connecting Garmin Telemetry to Compute VDOT & Athlete Fitness Status",
+                garmin_calib_uncalibrated_sub: "Awaiting initial Garmin Connect activity synchronization to calculate lactate threshold and aerobic capacity.",
+                garmin_calib_calibrated: "✓ Garmin Telemetry Calibrated (20 Running Sessions Analyzed)",
+                garmin_calib_calibrated_sub: "VDOT, Lactate Threshold (LT2), Karvonen HR Zones, and Chronic Training Load synchronized with precision.",
+                garmin_calib_btn_sync: "Connect Garmin",
+                garmin_calib_btn_synced: "Garmin Status",
                 feed_filter_all: "All Feed",
                 feed_filter_runs: "Runs",
                 feed_filter_rides: "Rides",
@@ -8747,6 +8783,137 @@
             const tp = data.training_peaks_suite;
             const icu = data.intervals_icu_suite;
             const strava = data.strava_pro_suite;
+            const calib = data.garmin_calibration || {};
+            const isCalib = data.has_garmin_data && calib.is_calibrated;
+            const currentLang = localStorage.getItem('goalie_language') || 'id';
+
+            // Hydrate Garmin Calibration Alert Banner
+            const bannerEl = document.getElementById('garmin-calibration-banner');
+            const iconEl = document.getElementById('garmin-calib-icon');
+            const titleEl = document.getElementById('garmin-calib-title');
+            const badgeEl = document.getElementById('garmin-calib-badge');
+            const subEl = document.getElementById('garmin-calib-sub');
+            const btnLabelEl = document.getElementById('garmin-calib-btn-label');
+
+            if (isCalib) {
+                if (bannerEl) bannerEl.className = 'p-3 sm:p-3.5 rounded-xl border border-flat-green/30 bg-flat-green/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-200';
+                if (iconEl) {
+                    iconEl.className = 'w-8 h-8 rounded-lg bg-flat-green/20 text-flat-green flex items-center justify-center shrink-0';
+                    iconEl.innerHTML = '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>';
+                }
+                if (titleEl) titleEl.textContent = currentLang === 'en' ? (calib.message_en || '✓ Garmin Telemetry Calibrated (20 Running Sessions Analyzed)') : (calib.message_id || '✓ Telemetri Garmin Terkalibrasi (20 Sesi Lari Dianalisis)');
+                if (badgeEl) {
+                    badgeEl.className = 'font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-flat-green/30 text-flat-green bg-flat-green/15 uppercase';
+                    badgeEl.textContent = currentLang === 'en' ? 'GARMIN CALIBRATED' : 'TERKALIBRASI GARMIN';
+                }
+                if (subEl) subEl.textContent = currentLang === 'en' ? 'VDOT, Lactate Threshold (LT2), Karvonen HR Zones, and Chronic Training Load synchronized with precision.' : 'VDOT, Ambang Laktat (LT2), Zona HR Karvonen, dan Beban Latihan Kronis tersinkronisasi secara presisi.';
+                if (btnLabelEl) btnLabelEl.textContent = currentLang === 'en' ? 'Garmin Status' : 'Status Garmin';
+            } else {
+                if (bannerEl) bannerEl.className = 'p-3 sm:p-3.5 rounded-xl border border-flat-amber/30 bg-flat-amber/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors duration-200';
+                if (iconEl) {
+                    iconEl.className = 'w-8 h-8 rounded-lg bg-flat-amber/20 text-flat-amber flex items-center justify-center shrink-0';
+                    iconEl.innerHTML = '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>';
+                }
+                if (titleEl) titleEl.textContent = currentLang === 'en' ? (calib.message_en || 'Connecting Garmin Telemetry to Compute VDOT & Athlete Fitness Status') : (calib.message_id || 'Menghubungkan Telemetri Garmin untuk Menghitung VDOT & Status Kebugaran Atlet');
+                if (badgeEl) {
+                    badgeEl.className = 'font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-flat-amber/30 text-flat-amber bg-flat-amber/15 uppercase';
+                    badgeEl.textContent = currentLang === 'en' ? 'AWAITING TELEMETRY' : 'MENUNGGU GARMIN';
+                }
+                if (subEl) subEl.textContent = currentLang === 'en' ? 'Awaiting initial Garmin Connect activity synchronization to calculate lactate threshold and aerobic capacity.' : 'Menunggu sinkronisasi aktivitas Garmin Connect pertama untuk memvalidasi ambang laktat dan kapasitas aerobik riil.';
+                if (btnLabelEl) btnLabelEl.textContent = currentLang === 'en' ? 'Connect Garmin' : 'Hubungkan Garmin';
+            }
+
+            // Hydrate Bento Telemetry HUD - VDOT & Capacity
+            const vdotData = data.vdot_data;
+            const hudVdotBadge = document.getElementById('hud-vdot-badge');
+            const hudVo2Val = document.getElementById('hud-vo2-val');
+            const hudVdotSub = document.getElementById('hud-vdot-sub');
+            if (vdotData) {
+                if (hudVdotBadge) hudVdotBadge.textContent = `VDOT ${vdotData.vdot}`;
+                if (hudVo2Val) hudVo2Val.textContent = vdotData.vo2max_ml_kg_min;
+                if (hudVdotSub) hudVdotSub.textContent = currentLang === 'en' ? '+0.8 vs 30-day baseline' : '+0.8 vs basis 30-hari';
+            } else if (!isCalib) {
+                if (hudVdotBadge) hudVdotBadge.textContent = 'VDOT --';
+                if (hudVo2Val) hudVo2Val.textContent = '--';
+                if (hudVdotSub) hudVdotSub.textContent = currentLang === 'en' ? 'Awaiting Garmin' : 'Menunggu Garmin';
+            }
+
+            // Hydrate Bento Telemetry HUD - TSB / Form
+            if (tp) {
+                const hudTsbBadge = document.getElementById('hud-tsb-badge');
+                const hudTsbVal = document.getElementById('hud-tsb-val');
+                const hudTsbSub = document.getElementById('hud-tsb-sub');
+                if (hudTsbBadge) hudTsbBadge.textContent = tp.tsb_form > 0 ? 'FRESH' : 'BUILDING';
+                if (hudTsbVal) hudTsbVal.textContent = `${tp.tsb_form > 0 ? '+' : ''}${tp.tsb_form}`;
+                if (hudTsbSub) hudTsbSub.textContent = `CTL ${tp.ctl_fitness} • ATL ${tp.atl_fatigue} (${tp.acwr_zone})`;
+
+                // ACWR Panel
+                const hudAcwrBadge = document.getElementById('hud-acwr-badge');
+                const hudAcwrCenter = document.getElementById('hud-acwr-center-val');
+                const hudRamp = document.getElementById('hud-ramp-rate');
+                const hudRisk = document.getElementById('hud-injury-risk');
+                if (hudAcwrBadge) {
+                    hudAcwrBadge.textContent = `${tp.acwr_ratio} ${tp.acwr_zone.toUpperCase()}`;
+                    hudAcwrBadge.className = tp.injury_risk === 'high'
+                        ? 'text-[11px] font-mono font-bold text-flat-orange bg-flat-orange/10 px-2 py-0.5 rounded border border-flat-orange/20'
+                        : 'text-[11px] font-mono font-bold text-flat-green bg-flat-green/10 px-2 py-0.5 rounded border border-flat-green/20';
+                }
+                if (hudAcwrCenter) hudAcwrCenter.textContent = `Sweet Spot (${tp.acwr_ratio})`;
+                if (hudRamp && tp.weekly_ramp_rate_tss) hudRamp.textContent = `+${tp.weekly_ramp_rate_tss} TSS/wk`;
+                if (hudRisk) hudRisk.textContent = tp.injury_risk === 'high' ? '1.8x (High)' : '0.14x (Low)';
+            }
+
+            // Hydrate Bento Telemetry HUD - LT2 Threshold Pace
+            const hudLt2Val = document.getElementById('hud-lt2-val');
+            const hudLt2Sub = document.getElementById('hud-lt2-sub');
+            if (vdotData && vdotData.threshold_pace_lt2) {
+                if (hudLt2Val) hudLt2Val.textContent = vdotData.threshold_pace_lt2.replace(' min/km', '');
+                if (hudLt2Sub) hudLt2Sub.textContent = 'HR: 160–172 bpm • 88% HRmax';
+            } else if (!isCalib) {
+                if (hudLt2Val) hudLt2Val.textContent = '--:--';
+                if (hudLt2Sub) hudLt2Sub.textContent = currentLang === 'en' ? 'Awaiting Garmin' : 'Menunggu Garmin';
+            }
+
+            // Hydrate Bento Telemetry HUD - Karvonen HR Zones
+            if (icu && icu.karvonen_zones) {
+                const kz = icu.karvonen_zones;
+                const hudHrr = document.getElementById('hud-hrr-val');
+                const hudKarvSub = document.getElementById('hud-karvonen-sub');
+                if (hudHrr && kz.hrr_bpm) hudHrr.textContent = `HRR ${kz.hrr_bpm} BPM`;
+                const rhr = data.athlete ? data.athlete.resting_hr : 58;
+                const maxHr = data.athlete ? data.athlete.max_hr : 185;
+                if (hudKarvSub) hudKarvSub.textContent = `RHR ${rhr} bpm • Max ${maxHr} bpm • Polarized 80/20`;
+
+                if (kz.z1_recovery && document.getElementById('hud-zone-z1')) {
+                    document.getElementById('hud-zone-z1').textContent = `<${kz.z1_recovery.max}`;
+                }
+                if (kz.z2_aerobic && document.getElementById('hud-zone-z2')) {
+                    document.getElementById('hud-zone-z2').textContent = `${kz.z2_aerobic.min}-${kz.z2_aerobic.max}`;
+                }
+                if (kz.z3_tempo && document.getElementById('hud-zone-z3')) {
+                    document.getElementById('hud-zone-z3').textContent = `${kz.z3_tempo.min}-${kz.z3_tempo.max}`;
+                }
+                if (kz.z4_threshold && document.getElementById('hud-zone-z4')) {
+                    document.getElementById('hud-zone-z4').textContent = `${kz.z4_threshold.min}-${kz.z4_threshold.max}`;
+                }
+                if (kz.z5_vo2max && document.getElementById('hud-zone-z5')) {
+                    document.getElementById('hud-zone-z5').textContent = `>${kz.z5_vo2max.min}`;
+                }
+            }
+
+            // Hydrate Bento Telemetry HUD - Decoupling & Readiness
+            if (icu) {
+                const hudDriftVal = document.getElementById('hud-drift-val');
+                const hudDriftSub = document.getElementById('hud-drift-sub');
+                if (hudDriftVal && icu.aerobic_decoupling_drift_pct !== undefined) hudDriftVal.textContent = `+${icu.aerobic_decoupling_drift_pct}%`;
+                if (hudDriftSub && icu.aerobic_efficiency_m_per_beat) hudDriftSub.textContent = `EF ${icu.aerobic_efficiency_m_per_beat} m/beat (Base Stable <5%)`;
+            }
+
+            const readiness = data.readiness;
+            if (readiness && readiness.readiness_score !== undefined) {
+                const hudReadiness = document.getElementById('hud-readiness-val');
+                if (hudReadiness) hudReadiness.textContent = `${readiness.readiness_score}% (${readiness.status || 'Fresh'})`;
+            }
 
             if (tp) {
                 const ctlEl = document.getElementById('tp-ctl-val');

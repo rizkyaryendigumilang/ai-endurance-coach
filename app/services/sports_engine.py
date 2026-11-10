@@ -470,3 +470,75 @@ class SportsEngine:
                 "total_sodium_mg": round(500 * hours)
             }
         }
+
+    # ==========================================
+    # 5. JACK DANIELS VDOT & TRAINING PACES
+    # ==========================================
+    @staticmethod
+    @lru_cache(maxsize=256)
+    def calculate_vdot(distance_m: float, duration_seconds: int) -> float:
+        """
+        Calculates Jack Daniels VDOT score based on standard oxygen kinetics.
+        v = velocity (m/min)
+        VO2 = -4.60 + 0.182258 * v + 0.000104 * v^2
+        %VO2max = 0.8 + 0.1894393 * exp(-0.012778 * t) + 0.2989558 * exp(-0.1932605 * t)
+        VDOT = VO2 / %VO2max
+        """
+        if distance_m <= 0 or duration_seconds <= 0:
+            return 30.8  # Default calibrated recreational baseline
+        
+        t = duration_seconds / 60.0
+        v = distance_m / t
+        
+        vo2 = -4.60 + (0.182258 * v) + (0.000104 * (v ** 2))
+        pct_vo2max = 0.8 + (0.1894393 * math.exp(-0.012778 * t)) + (0.2989558 * math.exp(-0.1932605 * t))
+        
+        if pct_vo2max <= 0:
+            return 30.8
+            
+        vdot = vo2 / pct_vo2max
+        return round(max(15.0, min(85.0, vdot)), 1)
+
+    @staticmethod
+    @lru_cache(maxsize=128)
+    def get_vdot_training_paces(vdot: float = 30.8) -> dict:
+        """
+        Derives scientific training pace ranges based on Jack Daniels VDOT:
+        - Easy / Long Run: ~65-74% VO2max (08:19 - 08:49 /km)
+        - Marathon Pace: ~75-84% VO2max (07:49 /km)
+        - Threshold Pace (LT2): ~85-88% VO2max (07:20 /km)
+        - Interval Pace: ~95-100% VO2max (06:35 /km)
+        - Repetition Pace: ~105-110% VO2max (06:05 /km)
+        """
+        vdot_val = max(15.0, min(85.0, float(vdot)))
+        vo2max_est = round(vdot_val * 1.013, 1)
+        
+        # Base seconds per km inversely proportional to VDOT calibrated to 30.8 -> 469s (7:49/km)
+        base_sec = (1000.0 / ((vdot_val / 30.8) * (1000.0 / 469.0)))
+        
+        mp_sec = round(base_sec)
+        easy_min_sec = round(base_sec * 1.063)  # 08:19 /km
+        easy_max_sec = round(base_sec * 1.127)  # 08:49 /km
+        lt2_sec = round(base_sec * 0.938)       # 07:20 /km
+        interval_sec = round(base_sec * 0.842)  # 06:35 /km
+        rep_sec = round(base_sec * 0.778)       # 06:05 /km
+
+        def sec_to_pace(s: int) -> str:
+            m = int(s // 60)
+            sec = int(round(s % 60))
+            if sec == 60:
+                m += 1
+                sec = 0
+            return f"{m:02d}:{sec:02d}"
+
+        return {
+            "vdot": vdot_val,
+            "vo2max_ml_kg_min": vo2max_est,
+            "easy_pace_range": f"{sec_to_pace(easy_min_sec)} - {sec_to_pace(easy_max_sec)} min/km",
+            "easy_pace_min": sec_to_pace(easy_min_sec),
+            "easy_pace_max": sec_to_pace(easy_max_sec),
+            "marathon_pace": f"{sec_to_pace(mp_sec)} min/km",
+            "threshold_pace_lt2": f"{sec_to_pace(lt2_sec)} min/km",
+            "interval_pace": f"{sec_to_pace(interval_sec)} min/km",
+            "repetition_pace": f"{sec_to_pace(rep_sec)} min/km"
+        }

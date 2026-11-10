@@ -479,5 +479,42 @@ class TestGoalieAPI(unittest.TestCase):
         bad_res = self.client.post("/api/v1/analysis/run-form", files=bad_payload)
         self.assertEqual(bad_res.status_code, 400)
 
+    def test_23_telemetry_garmin_calibration_schema(self):
+        """Verify Telemetry Suite returns Garmin calibration schema and Jack Daniels VDOT pacing."""
+        from app.core.auth import create_demo_token
+        from app.services import sandbox_store
+        user_id = "calibrated_garmin_athlete"
+        token = create_demo_token(user_id, "garmin_athlete@athlete.test")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 1. Uncalibrated state (no workouts)
+        res_empty = self.client.get("/api/v1/telemetry/suite", headers=headers)
+        self.assertEqual(res_empty.status_code, 200)
+        data_empty = res_empty.json()
+        self.assertFalse(data_empty["has_garmin_data"])
+        self.assertFalse(data_empty["garmin_calibration"]["is_calibrated"])
+        self.assertIn("Menghubungkan Telemetri Garmin", data_empty["garmin_calibration"]["message_id"])
+
+        # 2. Log workout to simulate Garmin sync
+        sandbox_store.add_actual_workout(user_id, {
+            "title": "Garmin Threshold Tempo Run",
+            "distance_km": 10.0,
+            "duration_seconds": 3900,
+            "sport_type": "run"
+        }, {"training_load": 85})
+
+        # 3. Calibrated state (with workouts)
+        res_cal = self.client.get("/api/v1/telemetry/suite", headers=headers)
+        self.assertEqual(res_cal.status_code, 200)
+        data_cal = res_cal.json()
+        self.assertTrue(data_cal["has_garmin_data"])
+        self.assertTrue(data_cal["garmin_calibration"]["is_calibrated"])
+        self.assertGreaterEqual(data_cal["garmin_calibration"]["activities_count"], 1)
+        self.assertIn("Terkalibrasi", data_cal["garmin_calibration"]["message_id"])
+        self.assertIsNotNone(data_cal["vdot_data"])
+        self.assertIn("threshold_pace_lt2", data_cal["vdot_data"])
+        self.assertIn("marathon_pace", data_cal["vdot_data"])
+        self.assertIn("easy_pace_range", data_cal["vdot_data"])
+
 if __name__ == "__main__":
     unittest.main()
