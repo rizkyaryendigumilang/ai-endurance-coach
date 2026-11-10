@@ -886,10 +886,10 @@
                             <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
                             <span data-i18n="hero_telemetry_live">Aliran Telemetri Langsung</span>
                         </span>
-                        <span data-i18n="hero_target_block" class="text-text-secondary text-[11px]">Blok Target Maraton Sub-3:00</span>
+                        <span data-i18n="hero_target_block" class="text-text-secondary text-[11px]">Target Maraton 5:30:00 (Pace 7:49/km) &bull; 13 Jun 2027</span>
                     </div>
                     <div class="flex items-center gap-3 text-[11px] text-text-secondary">
-                        <span>Weekly Volume: <strong class="text-text-primary">68.4 / 72.0 km</strong></span>
+                        <span>Rencana Latihan: <strong class="text-text-primary">31 Minggu &bull; 977.2 km</strong></span>
                         <span class="hidden md:inline text-border">&bull;</span>
                         <span class="hidden md:inline">Readiness: <strong class="text-flat-green">94% (Fresh)</strong></span>
                     </div>
@@ -1188,53 +1188,51 @@
                             </div>
                         </div>
 
-                        <!-- 2. Weekly Training Goal (Strava Orange Meter) -->
+                        <!-- 2. Target Marathon Progress & Countdown (Gemini 31-Week Plan) -->
                         <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <div class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                    <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider" data-i18n="athlete_weekly_goal">This Week's Goal</h4>
+                                    <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider" data-i18n="marathon_target_title">Target Full Marathon</h4>
                                 </div>
-                                <span class="text-[10px] font-mono font-bold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">57%</span>
+                                <span id="cockpit-race-countdown" class="text-[10px] font-mono font-bold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">215 hari lagi</span>
                             </div>
 
                             <div>
                                 <div class="flex items-baseline justify-between font-mono">
-                                    <span class="text-xl font-extrabold text-text-primary">42.8 <span class="text-xs text-text-secondary">km</span></span>
-                                    <span class="text-xs text-text-secondary">Goal: 75.0 km</span>
+                                    <span class="text-base font-extrabold text-text-primary"><span id="cockpit-marathon-logged">0.0</span> <span class="text-xs text-text-secondary">/ 977.2 km</span></span>
+                                    <span id="cockpit-marathon-percent" class="text-xs font-bold text-emerald-500 font-mono">0.0%</span>
                                 </div>
-                                <!-- Strava Orange Progress Bar -->
+                                <!-- Progress Bar -->
                                 <div class="w-full bg-surface-subtle h-2.5 rounded-full overflow-hidden mt-1.5 border border-border">
-                                    <div class="bg-tertiary h-full rounded-full transition-all duration-500" style="width: 57%"></div>
+                                    <div id="cockpit-marathon-bar" class="bg-gradient-to-r from-tertiary to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
                                 </div>
                             </div>
 
-                            <!-- Weekly Metrics -->
-                            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1 text-text-secondary">
-                                <div class="flex items-center justify-between">
-                                    <span>Time:</span>
-                                    <strong class="text-text-primary">4h 12m</strong>
+                            <!-- Target Metrics Grid -->
+                            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1 text-text-secondary border-t border-border">
+                                <div>
+                                    <span class="block text-[10px]">Waktu Target:</span>
+                                    <strong class="text-text-primary font-mono text-xs">5:30:00</strong>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Elev:</span>
-                                    <strong class="text-text-primary">580 m</strong>
+                                <div>
+                                    <span class="block text-[10px]">Target Pace:</span>
+                                    <strong class="text-emerald-500 font-mono text-xs">7:49 /km</strong>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px]">Hari Lomba:</span>
+                                    <strong class="text-text-primary font-mono text-xs">13 Jun 2027</strong>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px]">Sesi Gym:</span>
+                                    <strong class="text-tertiary font-mono text-xs">58 Sesi (WFH)</strong>
                                 </div>
                             </div>
 
-                            <!-- Sport Breakdown Tabs -->
-                            <div class="flex items-center justify-between pt-2 border-t border-border text-[11px] font-mono" role="group" aria-label="Sport Distance Breakdown">
-                                <span class="flex items-center gap-1.5 text-text-primary" title="Running: 32.6 km" aria-label="Running: 32.6 km">
-                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
-                                    <span>32.6k</span>
-                                </span>
-                                <span class="flex items-center gap-1.5 text-text-primary" title="Cycling: 64.8 km" aria-label="Cycling: 64.8 km">
-                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
-                                    <span>64.8k</span>
-                                </span>
-                                <span class="flex items-center gap-1.5 text-text-primary" title="Swimming: 2.0 km" aria-label="Swimming: 2.0 km">
-                                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0 3-1.5 4.5 0"/><path d="M2 22c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0 3-1.5 4.5 0"/><circle cx="18" cy="5" r="2"/><path d="M8 12l4-2 3 2 3-2"/><path d="M4 11l4 2"/></svg>
-                                    <span>2.0k</span>
-                                </span>
+                            <!-- Phase Indicator -->
+                            <div class="p-2 rounded-lg bg-surface-subtle border border-border text-[11px] font-mono flex items-center justify-between">
+                                <span class="text-text-secondary">Fase Saat Ini:</span>
+                                <span class="font-bold text-tertiary">Fase 1 &bull; Pondasi (W1–13)</span>
                             </div>
                         </div>
 
@@ -1270,7 +1268,86 @@
 
                     <!-- CENTER COLUMN: AI Daily Prescription & Strava Activity Feed (6 cols) -->
                     <div class="lg:col-span-6 space-y-5">
-                        
+
+                        <!-- 0. TARGET MARATHON & DETERMINISTIC PACING MODEL (From Gemini Sports Science Plan) -->
+                        <div class="flat-card border-2 border-emerald-500/50 p-5 bg-surface space-y-4 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-tertiary"></div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shadow-xs" aria-hidden="true">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        </span>
+                                        <h3 class="font-display font-bold text-sm text-text-primary" data-i18n="pacing_model_title">MODEL PERHITUNGAN TARGET &amp; PACING MARATON</h3>
+                                    </div>
+                                    <p class="text-[11px] text-text-secondary mt-0.5" data-i18n="pacing_model_subtitle">
+                                        Sains Olahraga Deterministik &bull; Jack Daniels VDOT &bull; Formula Riegel
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                        RACE: 13 JUN 2027
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 4 Key Metric Boxes from Gemini Canvas -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Box 1: Recent Half Marathon Baseline -->
+                                <div class="p-3.5 rounded-xl bg-surface-subtle border border-border space-y-1">
+                                    <div class="text-[11px] text-text-secondary" data-i18n="pacing_box1_label">Basis Half Marathon (19 Sep 2026)</div>
+                                    <div class="text-xl font-extrabold font-mono text-text-primary">2:34:34 <span class="text-xs font-normal text-text-secondary">(21.2 km)</span></div>
+                                    <div class="text-xs font-mono text-tertiary font-bold">Pace: 7:17 /km</div>
+                                </div>
+
+                                <!-- Box 2: Riegel Prediction -->
+                                <div class="p-3.5 rounded-xl bg-surface-subtle border border-border space-y-1">
+                                    <div class="text-[11px] text-text-secondary" data-i18n="pacing_box2_label">Prediksi Formula Riegel (&times;1.06)</div>
+                                    <div class="text-xl font-extrabold font-mono text-text-primary">5:20:37</div>
+                                    <div class="text-xs font-mono text-flat-orange font-semibold">Realistis (+4% fade): 5:33:26</div>
+                                </div>
+
+                                <!-- Box 3: Official Target Marathon Time (Highlighted) -->
+                                <div class="p-3.5 rounded-xl bg-emerald-500/10 border-2 border-emerald-500/40 space-y-1">
+                                    <div class="text-[11px] text-emerald-700 dark:text-emerald-300 font-bold" data-i18n="pacing_box3_label">Target Waktu Maraton Resmi</div>
+                                    <div class="text-xl font-extrabold font-mono text-text-primary">5:30:00</div>
+                                    <div class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">Goal Pace: 7:49 /km</div>
+                                </div>
+
+                                <!-- Box 4: Recommended Long Run Easy Pace -->
+                                <div class="p-3.5 rounded-xl bg-surface-subtle border border-border space-y-1">
+                                    <div class="text-[11px] text-text-secondary" data-i18n="pacing_box4_label">Rekomendasi Long Run Easy Pace</div>
+                                    <div class="text-xl font-extrabold font-mono text-flat-amber">8:19 – 8:49 <span class="text-xs font-normal">/km</span></div>
+                                    <div class="text-xs font-mono text-text-secondary">+30 s.d. 60 dtk lebih lambat dari goal pace</div>
+                                </div>
+                            </div>
+
+                            <!-- Pacing Strategy Highlights -->
+                            <div class="p-3.5 rounded-xl bg-surface-subtle border border-border text-xs text-text-secondary space-y-1.5 font-mono">
+                                <div class="font-bold text-text-primary flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                                    <span data-i18n="pacing_strategy_title">Panduan Strategi Lomba &amp; Pembagian Energi</span>
+                                </div>
+                                <div class="text-[11px] space-y-1 text-text-secondary">
+                                    <p>&bull; <strong class="text-text-primary">KM 0–5 (Konservatif):</strong> Mulai pada <span class="text-tertiary font-bold">7:54–7:59/km</span> (+5–10 dtk lebih lambat dari goal pace) untuk menjaga cadangan glikogen.</p>
+                                    <p>&bull; <strong class="text-text-primary">KM 21.1 (Halfway Split):</strong> Target waktu <span class="text-tertiary font-bold">2:45:00</span> (sengaja ~10.5 menit lebih santai dari HM PR agar form tetap stabil di KM 35–42.2).</p>
+                                    <p>&bull; <strong class="text-text-primary">Margin Keselamatan:</strong> Finish 5:30:00 memberikan <span class="text-emerald-500 font-bold">buffer aman 1:30:00</span> di bawah batas resmi cutoff 7:00:00.</p>
+                                </div>
+                            </div>
+
+                            <!-- Direct Action Buttons -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border">
+                                <button onclick="switchScheduleSubtab('splits'); switchWorkstationTab('schedule');" class="btn-flat-secondary text-xs font-mono py-1.5 px-3 flex items-center gap-1.5 hover:border-emerald-500">
+                                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    <span data-i18n="pacing_btn_calculator">Buka Kalkulator Splits &amp; Nutrisi</span>
+                                </button>
+                                <button onclick="switchWorkstationTab('schedule');" class="text-xs text-tertiary hover:underline font-mono flex items-center gap-1">
+                                    <span data-i18n="pacing_btn_plan">Lihat Jadwal 31 Minggu &rarr;</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- FEED FILTER PILL BAR & ATHLETE FORM STATUS (Strava Signature) -->
                         <div class="flex flex-wrap items-center justify-between gap-2.5 pb-1">
                             <div class="flex flex-wrap items-center gap-1.5" id="feed-filter-container" role="toolbar" aria-label="Feed filter options">
@@ -5096,6 +5173,22 @@
             const countEl = document.getElementById('cockpit-activities-count');
             if (countEl) countEl.textContent = workouts.length;
 
+            // Dynamic 31-Week Marathon Progress & Race Countdown (From Gemini Plan)
+            const totalLoggedKm = workouts.reduce((sum, w) => sum + (parseFloat(w.distance_km) || 0), 0);
+            const marathonTargetEl = document.getElementById('cockpit-marathon-logged');
+            const marathonPercentEl = document.getElementById('cockpit-marathon-percent');
+            const marathonBarEl = document.getElementById('cockpit-marathon-bar');
+            if (marathonTargetEl) marathonTargetEl.textContent = totalLoggedKm.toFixed(1);
+            const pct = Math.min(100, (totalLoggedKm / 977.2) * 100).toFixed(1);
+            if (marathonPercentEl) marathonPercentEl.textContent = `${pct}%`;
+            if (marathonBarEl) marathonBarEl.style.width = `${pct}%`;
+
+            const raceDate = new Date('2027-06-13');
+            const now = new Date();
+            const daysToRace = Math.max(0, Math.ceil((raceDate - now) / (1000 * 60 * 60 * 24)));
+            const countdownEl = document.getElementById('cockpit-race-countdown');
+            if (countdownEl) countdownEl.textContent = `${daysToRace} hari lagi`;
+
             const latestTitleEl = document.getElementById('cockpit-latest-title');
             const latestMetaEl = document.getElementById('cockpit-latest-meta');
             if (workouts.length > 0 && latestTitleEl) {
@@ -5923,7 +6016,7 @@
                 system_bc_pill: "PENGUMUMAN",
                 system_bc_title: "Pemberitahuan Sistem",
                 hero_telemetry_live: "Aliran Telemetri Langsung",
-                hero_target_block: "Blok Target Maraton Sub-3:00",
+                hero_target_block: "Target Maraton 5:30:00 (Pace 7:49/km) • 13 Jun 2027",
                 pricing_pill: "NILAI TRANSPARAN",
                 pricing_title: "Pilihan Paket Sederhana & Transparan.",
                 pricing_subtitle: "Mesin Deterministik Gratis Selamanya • BYOK Gemini Pro Gratis • Tanpa Biaya Tersembunyi",
@@ -6028,7 +6121,17 @@
                 fitness_level_beginner: "Pemula / Fondasi Dasar (< 30 km/minggu)",
                 fitness_level_intermediate: "Menengah Kompetitif (30-70 km/minggu)",
                 fitness_level_advanced: "Mahir / Sub-Elite (70-120 km/minggu)",
-                fitness_level_elite: "Elite / Podium Utama (> 120 km/minggu)"
+                fitness_level_elite: "Elite / Podium Utama (> 120 km/minggu)",
+                pacing_model_title: "MODEL PERHITUNGAN TARGET & PACING MARATON",
+                pacing_model_subtitle: "Sains Olahraga Deterministik • Jack Daniels VDOT • Formula Riegel",
+                pacing_box1_label: "Basis Half Marathon (19 Sep 2026)",
+                pacing_box2_label: "Prediksi Formula Riegel (×1.06)",
+                pacing_box3_label: "Target Waktu Maraton Resmi",
+                pacing_box4_label: "Rekomendasi Long Run Easy Pace",
+                pacing_strategy_title: "Panduan Strategi Lomba & Pembagian Energi",
+                pacing_btn_calculator: "Buka Kalkulator Splits & Nutrisi",
+                pacing_btn_plan: "Lihat Jadwal 31 Minggu →",
+                marathon_target_title: "Target Full Marathon"
             },
             en: {
                 nav_dashboard: "Dashboard",
@@ -6184,7 +6287,7 @@
                 system_bc_pill: "NOTICE",
                 system_bc_title: "System Notice",
                 hero_telemetry_live: "Live Telemetry Stream",
-                hero_target_block: "Sub-3:00 Marathon Target Block",
+                hero_target_block: "Target Marathon 5:30:00 (Pace 7:49/km) • 13 Jun 2027",
                 pricing_pill: "TRANSPARENT VALUE",
                 pricing_title: "Simple, Predictable Plans.",
                 pricing_subtitle: "Free Forever Deterministic Core • BYOK Gemini 3.8 Flash Pro • Zero Dark Patterns",
@@ -6289,7 +6392,17 @@
                 fitness_level_beginner: "Beginner / Base Builder (< 30 km/wk)",
                 fitness_level_intermediate: "Intermediate Competitive (30-70 km/wk)",
                 fitness_level_advanced: "Advanced Sub-Elite (70-120 km/wk)",
-                fitness_level_elite: "Elite / Masters Podium (> 120 km/wk)"
+                fitness_level_elite: "Elite / Masters Podium (> 120 km/wk)",
+                pacing_model_title: "MARATHON TARGET & PACING MODEL",
+                pacing_model_subtitle: "Deterministic Sports Science • Jack Daniels VDOT • Riegel Formula",
+                pacing_box1_label: "Recent Half Marathon Baseline (19 Sep 2026)",
+                pacing_box2_label: "Riegel Formula Prediction (×1.06)",
+                pacing_box3_label: "Official Target Marathon Time",
+                pacing_box4_label: "Recommended Long Run Easy Pace",
+                pacing_strategy_title: "Race Pacing Strategy & Energy Guidelines",
+                pacing_btn_calculator: "Open Interactive Splits Calculator",
+                pacing_btn_plan: "View 31-Week Schedule →",
+                marathon_target_title: "Full Marathon Target"
             }
         };
 
