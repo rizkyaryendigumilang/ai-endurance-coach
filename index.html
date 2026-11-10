@@ -964,6 +964,315 @@
                 </div>
             </div>
 
+            <!-- ══════════════════════════════════════════════════════ -->
+            <!-- TELEMETRY COCKPIT SUITE & CORE DATA PILLARS             -->
+            <!-- (Directly under 'Train with verifiable metrics')        -->
+            <!-- ══════════════════════════════════════════════════════ -->
+            <!-- TRI-PLATFORM SCIENTIFIC TELEMETRY QUICK HUB -->
+                <div class="flat-card border-2 border-border-strong p-4 bg-surface space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 bg-tertiary rounded-xs"></span>
+                            <span class="text-xs font-semibold text-text-primary">Unified Telemetry Engine</span>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-flat-green/10 text-flat-green border border-flat-green/20">
+                                <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
+                                Live Sync
+                            </span>
+                        </div>
+                        <button onclick="switchWorkstationTab('telemetry')" class="text-xs text-tertiary hover:underline flex items-center gap-1 font-medium">
+                            <span>Open Detailed Workstation</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Hub 1: TrainingPeaks PMC & ACWR -->
+                        <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between space-y-2 hover:border-flat-orange transition-colors cursor-pointer rounded-lg" onclick="switchWorkstationTab('telemetry')">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-flat-orange">Workload Ratio (ACWR)</span>
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-flat-green/10 text-flat-green border border-flat-green/20">Sweet Spot</span>
+                            </div>
+                            <div class="flex items-baseline justify-between font-mono">
+                                <div>
+                                    <span class="text-[10px] text-text-secondary block">CTL / ATL / TSB</span>
+                                    <span class="text-sm font-bold text-text-primary">74.2 <span class="text-xs text-text-secondary">/</span> 86.1 <span class="text-xs text-text-secondary">/</span> <span class="text-tertiary">-11.9</span></span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] text-text-secondary block">ACWR Ratio</span>
+                                    <span class="text-base font-extrabold text-flat-green">1.16</span>
+                                </div>
+                            </div>
+                            <!-- Mini Segmented ACWR Visual Meter -->
+                            <div class="space-y-1">
+                                <div class="w-full bg-border h-1.5 flex overflow-hidden rounded-xs">
+                                    <div class="w-1/4 bg-surface-subtle border-r border-border" title="< 0.8 Under"></div>
+                                    <div class="w-1/4 bg-flat-green border-r border-border" title="0.8-1.3 Sweet Spot [ACTIVE]"></div>
+                                    <div class="w-1/4 bg-flat-amber border-r border-border" title="1.3-1.5 Caution"></div>
+                                    <div class="w-1/4 bg-flat-orange" title="> 1.5 Danger"></div>
+                                </div>
+                                <div class="flex justify-between text-[9px] font-mono text-text-secondary">
+                                    <span>&lt;0.8</span>
+                                    <span class="text-flat-green font-bold">0.8-1.3 Safe Range</span>
+                                    <span>&gt;1.5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hub 2: Intervals.icu Karvonen HR & Decoupling -->
+                        <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between space-y-2 hover:border-tertiary transition-colors cursor-pointer rounded-lg" onclick="switchWorkstationTab('telemetry')">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-tertiary">Heart Rate Reserve (HRR)</span>
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-tertiary/10 text-tertiary border border-tertiary/20">144 bpm</span>
+                            </div>
+                            <div class="flex items-baseline justify-between font-mono">
+                                <div>
+                                    <span class="text-[10px] text-text-secondary block">Zone 2 Aerobic Base</span>
+                                    <span class="text-sm font-bold text-tertiary">135 - 149 bpm</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] text-text-secondary block">Aerobic Decoupling</span>
+                                    <span class="text-base font-extrabold text-flat-green">+1.7%</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-[10px] font-mono text-text-secondary pt-0.5">
+                                <span>RHR: 48 | Max: 192</span>
+                                <span>EF: <strong class="text-text-primary">1.36 m/beat</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Hub 3: Strava Pro GAP & Suffer Score -->
+                        <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between space-y-2 hover:border-flat-orange transition-colors cursor-pointer rounded-lg" onclick="switchWorkstationTab('telemetry')">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-flat-orange">Grade-Adjusted Pace (GAP)</span>
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-flat-orange/10 text-flat-orange border border-flat-orange/20">Minetti Formula</span>
+                            </div>
+                            <div class="flex items-baseline justify-between font-mono">
+                                <div>
+                                    <span class="text-[10px] text-text-secondary block">Minetti GAP (+60m / 5:00)</span>
+                                    <span class="text-sm font-bold text-text-primary">04:05 min/km</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] text-text-secondary block">Target Progress</span>
+                                    <span class="text-base font-extrabold text-flat-green">97%</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-border h-1.5 overflow-hidden">
+                                <div class="bg-tertiary h-full" style="width: 97%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Row: 3 Data Monitoring Pillars (Summary, Today's Activity, Output) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- 1. SUMMARY WIDGET -->
+                    <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
+                        <div class="flex items-center justify-between border-b border-border pb-3">
+                            <h3 class="font-display font-bold text-base text-text-primary">Summary</h3>
+                            <div class="flex items-center gap-1">
+                                <select id="summary-range-select" onchange="updateSummaryData(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly" selected>Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-6 py-2">
+                            <!-- Circular SVG Donut Chart -->
+                            <div class="relative w-36 h-36 shrink-0 flex items-center justify-center">
+                                <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                                    <!-- Base Ring Track -->
+                                    <circle cx="80" cy="80" r="58" class="text-surface-subtle stroke-current" stroke-width="14" fill="none" />
+                                    <!-- Segment 1: Calories / Mileage Goal (Green #00D084 - 60.2%) -->
+                                    <circle cx="80" cy="80" r="58" stroke="#00D084" stroke-width="14" stroke-dasharray="219 365" stroke-dashoffset="0" fill="none" class="transition-all duration-500" />
+                                    <!-- Segment 2: Aerobic Base Z2 (Blue #0066FF - 24.6%) -->
+                                    <circle cx="80" cy="80" r="58" stroke="#0066FF" stroke-width="14" stroke-dasharray="90 365" stroke-dashoffset="-219" fill="none" class="transition-all duration-500" />
+                                    <!-- Segment 3: Threshold Z4 (Amber #FFB800 - 15.2%) -->
+                                    <circle cx="80" cy="80" r="58" stroke="#FFB800" stroke-width="14" stroke-dasharray="56 365" stroke-dashoffset="-309" fill="none" class="transition-all duration-500" />
+                                </svg>
+                                <!-- Center Text Overlay -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <span id="summary-center-pct" class="font-display font-extrabold text-2xl text-text-primary tracking-tight">+68.4%</span>
+                                    <span class="text-[10px] font-mono text-text-secondary uppercase tracking-wider">Total Goal</span>
+                                </div>
+                            </div>
+
+                            <!-- Legend Metrics Breakdown -->
+                            <div class="flex-1 w-full space-y-3 font-mono text-xs">
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 bg-flat-green shrink-0"></span>
+                                            <span class="text-text-secondary font-sans text-xs">Calories burn</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span id="stat-burn-pct" class="font-bold text-text-primary">60.2%</span>
+                                            <span class="text-[10px] text-flat-green font-mono">+2.13%</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-surface-subtle h-1 mt-1 rounded-[1px] overflow-hidden">
+                                        <div class="bg-flat-green h-full" style="width: 60.2%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 bg-tertiary shrink-0"></span>
+                                            <span class="text-text-secondary font-sans text-xs">Aerobic Base (Z2)</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span id="stat-carbs-pct" class="font-bold text-text-primary">24.6%</span>
+                                            <span class="text-[10px] text-tertiary font-mono">+1.18%</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-surface-subtle h-1 mt-1 rounded-[1px] overflow-hidden">
+                                        <div class="bg-tertiary h-full" style="width: 24.6%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 bg-flat-amber shrink-0"></span>
+                                            <span class="text-text-secondary font-sans text-xs">Threshold Load (Z4)</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span id="stat-protein-pct" class="font-bold text-text-primary">15.2%</span>
+                                            <span class="text-[10px] text-flat-amber font-mono">+1.02%</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-surface-subtle h-1 mt-1 rounded-[1px] overflow-hidden">
+                                        <div class="bg-flat-amber h-full" style="width: 15.2%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] font-mono text-text-secondary">
+                            <span>Target: <strong class="text-text-primary">60.0 km / wk</strong></span>
+                            <span>Completed: <strong class="text-flat-green">41.0 km</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- 2. TODAY'S ACTIVITY WIDGET -->
+                    <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
+                        <div class="flex items-center justify-between border-b border-border pb-3">
+                            <h3 class="font-display font-bold text-base text-text-primary">Today's activity</h3>
+                            <select id="today-activity-filter" onchange="filterTodayActivities(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
+                                <option value="recent" selected>Recent</option>
+                                <option value="planned">Planned</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <!-- Work Load Box -->
+                            <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between">
+                                <div class="w-8 h-8 bg-surface border border-border flex items-center justify-center mb-2">
+                                    <svg class="w-4 h-4 text-flat-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                </div>
+                                <div>
+                                    <div id="stat-weekly-work" class="font-display font-extrabold text-2xl sm:text-3xl text-text-primary font-mono tracking-tight">4,200</div>
+                                    <div class="text-[11px] font-mono text-text-secondary">work / week</div>
+                                </div>
+                            </div>
+
+                            <!-- Activity Reps Breakdown -->
+                            <div class="space-y-2.5 font-mono text-xs">
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 bg-flat-green shrink-0"></span>
+                                        <span class="font-bold text-text-primary">Squats / Intervals</span>
+                                    </div>
+                                    <span class="text-[11px] text-text-secondary font-sans block pl-4">40 reps (5x1000m)</span>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 bg-tertiary shrink-0"></span>
+                                        <span class="font-bold text-text-primary">Jump ropes / Strides</span>
+                                    </div>
+                                    <span class="text-[11px] text-text-secondary font-sans block pl-4">100 skips (8x20s)</span>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 bg-flat-amber shrink-0"></span>
+                                        <span class="font-bold text-text-primary">Push ups / Core</span>
+                                    </div>
+                                    <span class="text-[11px] text-text-secondary font-sans block pl-4">100 push ups (15 mins)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="pt-2">
+                            <button onclick="openLogWorkoutModal()" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span data-i18n="workout_start_log_btn">Mulai Sesi / Catat Latihan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. OUTPUT WIDGET (TWO STACKED SPARKLINE CARDS) -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-border pb-1">
+                            <h3 class="font-display font-bold text-base text-text-primary">Output</h3>
+                            <span class="text-xs font-mono text-text-secondary">Last week ▾</span>
+                        </div>
+
+                        <!-- Card 1: Calorie Loss Sparkline -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-flat-amber text-black flex items-center justify-center font-bold text-xs shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+                                    </div>
+                                    <div>
+                                        <span class="text-[11px] font-mono text-text-secondary block">Calorie loss</span>
+                                        <span id="stat-calorie-loss" class="font-mono font-bold text-lg text-text-primary">-4,957.6 kcal</span>
+                                    </div>
+                                </div>
+                                <span data-i18n="workout_active_burn" class="flat-badge border-flat-amber text-flat-amber text-[10px]">BAKARAN AKTIF</span>
+                            </div>
+
+                            <!-- Amber Sparkline Wave Chart (Flat 2D SVG) -->
+                            <div class="h-10 w-full pt-1">
+                                <svg class="w-full h-full overflow-visible" viewBox="0 0 200 40" preserveAspectRatio="none">
+                                    <path d="M 0 32 C 30 12, 60 36, 90 18 C 120 4, 150 32, 180 15 L 200 22 L 200 40 L 0 40 Z" fill="#FFB800" fill-opacity="0.18" />
+                                    <path d="M 0 32 C 30 12, 60 36, 90 18 C 120 4, 150 32, 180 15 L 200 22" fill="none" stroke="#FFB800" stroke-width="2.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Weight Loss / Cardiac Drift Sparkline -->
+                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-flat-green text-black flex items-center justify-center font-bold text-xs shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+                                    </div>
+                                    <div>
+                                        <span class="text-[11px] font-mono text-text-secondary block">Weight loss / Fatigue</span>
+                                        <span id="stat-weight-loss" class="font-mono font-bold text-lg text-text-primary">-7.908% drift</span>
+                                    </div>
+                                </div>
+                                <span class="flat-badge border-flat-green text-flat-green text-[10px]">OPTIMAL RECOVERY</span>
+                            </div>
+
+                            <!-- Green Sparkline Wave Chart (Flat 2D SVG) -->
+                            <div class="h-10 w-full pt-1">
+                                <svg class="w-full h-full overflow-visible" viewBox="0 0 200 40" preserveAspectRatio="none">
+                                    <path d="M 0 35 C 35 18, 70 38, 105 12 C 140 25, 175 8, 200 18 L 200 40 L 0 40 Z" fill="#00D084" fill-opacity="0.18" />
+                                    <path d="M 0 35 C 35 18, 70 38, 105 12 C 140 25, 175 8, 200 18" fill="none" stroke="#00D084" stroke-width="2.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
             <!-- Bento Telemetry Console (21st.dev Clean High-Density Bento Grid) -->
             <div id="telemetry" class="border border-border rounded-xl bg-surface-subtle p-3 sm:p-5 shadow-xs space-y-4">
                 
@@ -1693,310 +2002,6 @@
 
                     </div>
 
-                </div>
-
-                <!-- TRI-PLATFORM SCIENTIFIC TELEMETRY QUICK HUB -->
-                <div class="flat-card border-2 border-border-strong p-4 bg-surface space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 bg-tertiary rounded-xs"></span>
-                            <span class="text-xs font-semibold text-text-primary">Unified Telemetry Engine</span>
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-flat-green/10 text-flat-green border border-flat-green/20">
-                                <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
-                                Live Sync
-                            </span>
-                        </div>
-                        <button onclick="switchWorkstationTab('telemetry')" class="text-xs text-tertiary hover:underline flex items-center gap-1 font-medium">
-                            <span>Open Detailed Workstation</span>
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <!-- Hub 1: TrainingPeaks PMC & ACWR -->
-                        <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between space-y-2 hover:border-flat-orange transition-colors cursor-pointer rounded-lg" onclick="switchWorkstationTab('telemetry')">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-flat-orange">Workload Ratio (ACWR)</span>
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-flat-green/10 text-flat-green border border-flat-green/20">Sweet Spot</span>
-                            </div>
-                            <div class="flex items-baseline justify-between font-mono">
-                                <div>
-                                    <span class="text-[10px] text-text-secondary block">CTL / ATL / TSB</span>
-                                    <span class="text-sm font-bold text-text-primary">74.2 <span class="text-xs text-text-secondary">/</span> 86.1 <span class="text-xs text-text-secondary">/</span> <span class="text-tertiary">-11.9</span></span>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-[10px] text-text-secondary block">ACWR Ratio</span>
-                                    <span class="text-base font-extrabold text-flat-green">1.16</span>
-                                </div>
-                            </div>
-                            <!-- Mini Segmented ACWR Visual Meter -->
-                            <div class="space-y-1">
-                                <div class="w-full bg-border h-1.5 flex overflow-hidden rounded-xs">
-                                    <div class="w-1/4 bg-surface-subtle border-r border-border" title="< 0.8 Under"></div>
-                                    <div class="w-1/4 bg-flat-green border-r border-border" title="0.8-1.3 Sweet Spot [ACTIVE]"></div>
-                                    <div class="w-1/4 bg-flat-amber border-r border-border" title="1.3-1.5 Caution"></div>
-                                    <div class="w-1/4 bg-flat-orange" title="> 1.5 Danger"></div>
-                                </div>
-                                <div class="flex justify-between text-[9px] font-mono text-text-secondary">
-                                    <span>&lt;0.8</span>
-                                    <span class="text-flat-green font-bold">0.8-1.3 Safe Range</span>
-                                    <span>&gt;1.5</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hub 2: Intervals.icu Karvonen HR & Decoupling -->
-                        <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between space-y-2 hover:border-tertiary transition-colors cursor-pointer rounded-lg" onclick="switchWorkstationTab('telemetry')">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-tertiary">Heart Rate Reserve (HRR)</span>
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-tertiary/10 text-tertiary border border-tertiary/20">144 bpm</span>
-                            </div>
-                            <div class="flex items-baseline justify-between font-mono">
-                                <div>
-                                    <span class="text-[10px] text-text-secondary block">Zone 2 Aerobic Base</span>
-                                    <span class="text-sm font-bold text-tertiary">135 - 149 bpm</span>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-[10px] text-text-secondary block">Aerobic Decoupling</span>
-                                    <span class="text-base font-extrabold text-flat-green">+1.7%</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between text-[10px] font-mono text-text-secondary pt-0.5">
-                                <span>RHR: 48 | Max: 192</span>
-                                <span>EF: <strong class="text-text-primary">1.36 m/beat</strong></span>
-                            </div>
-                        </div>
-
-                        <!-- Hub 3: Strava Pro GAP & Suffer Score -->
-                        <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between space-y-2 hover:border-flat-orange transition-colors cursor-pointer rounded-lg" onclick="switchWorkstationTab('telemetry')">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-flat-orange">Grade-Adjusted Pace (GAP)</span>
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-flat-orange/10 text-flat-orange border border-flat-orange/20">Minetti Formula</span>
-                            </div>
-                            <div class="flex items-baseline justify-between font-mono">
-                                <div>
-                                    <span class="text-[10px] text-text-secondary block">Minetti GAP (+60m / 5:00)</span>
-                                    <span class="text-sm font-bold text-text-primary">04:05 min/km</span>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-[10px] text-text-secondary block">Target Progress</span>
-                                    <span class="text-base font-extrabold text-flat-green">97%</span>
-                                </div>
-                            </div>
-                            <div class="w-full bg-border h-1.5 overflow-hidden">
-                                <div class="bg-tertiary h-full" style="width: 97%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Top Row: 3 Data Monitoring Pillars (Summary, Today's Activity, Output) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    
-                    <!-- 1. SUMMARY WIDGET -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-3">
-                            <h3 class="font-display font-bold text-base text-text-primary">Summary</h3>
-                            <div class="flex items-center gap-1">
-                                <select id="summary-range-select" onchange="updateSummaryData(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly" selected>Monthly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row items-center gap-6 py-2">
-                            <!-- Circular SVG Donut Chart -->
-                            <div class="relative w-36 h-36 shrink-0 flex items-center justify-center">
-                                <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
-                                    <!-- Base Ring Track -->
-                                    <circle cx="80" cy="80" r="58" class="text-surface-subtle stroke-current" stroke-width="14" fill="none" />
-                                    <!-- Segment 1: Calories / Mileage Goal (Green #00D084 - 60.2%) -->
-                                    <circle cx="80" cy="80" r="58" stroke="#00D084" stroke-width="14" stroke-dasharray="219 365" stroke-dashoffset="0" fill="none" class="transition-all duration-500" />
-                                    <!-- Segment 2: Aerobic Base Z2 (Blue #0066FF - 24.6%) -->
-                                    <circle cx="80" cy="80" r="58" stroke="#0066FF" stroke-width="14" stroke-dasharray="90 365" stroke-dashoffset="-219" fill="none" class="transition-all duration-500" />
-                                    <!-- Segment 3: Threshold Z4 (Amber #FFB800 - 15.2%) -->
-                                    <circle cx="80" cy="80" r="58" stroke="#FFB800" stroke-width="14" stroke-dasharray="56 365" stroke-dashoffset="-309" fill="none" class="transition-all duration-500" />
-                                </svg>
-                                <!-- Center Text Overlay -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                    <span id="summary-center-pct" class="font-display font-extrabold text-2xl text-text-primary tracking-tight">+68.4%</span>
-                                    <span class="text-[10px] font-mono text-text-secondary uppercase tracking-wider">Total Goal</span>
-                                </div>
-                            </div>
-
-                            <!-- Legend Metrics Breakdown -->
-                            <div class="flex-1 w-full space-y-3 font-mono text-xs">
-                                <div>
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 bg-flat-green shrink-0"></span>
-                                            <span class="text-text-secondary font-sans text-xs">Calories burn</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span id="stat-burn-pct" class="font-bold text-text-primary">60.2%</span>
-                                            <span class="text-[10px] text-flat-green font-mono">+2.13%</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-full bg-surface-subtle h-1 mt-1 rounded-[1px] overflow-hidden">
-                                        <div class="bg-flat-green h-full" style="width: 60.2%"></div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 bg-tertiary shrink-0"></span>
-                                            <span class="text-text-secondary font-sans text-xs">Aerobic Base (Z2)</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span id="stat-carbs-pct" class="font-bold text-text-primary">24.6%</span>
-                                            <span class="text-[10px] text-tertiary font-mono">+1.18%</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-full bg-surface-subtle h-1 mt-1 rounded-[1px] overflow-hidden">
-                                        <div class="bg-tertiary h-full" style="width: 24.6%"></div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 bg-flat-amber shrink-0"></span>
-                                            <span class="text-text-secondary font-sans text-xs">Threshold Load (Z4)</span>
-                                        </div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span id="stat-protein-pct" class="font-bold text-text-primary">15.2%</span>
-                                            <span class="text-[10px] text-flat-amber font-mono">+1.02%</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-full bg-surface-subtle h-1 mt-1 rounded-[1px] overflow-hidden">
-                                        <div class="bg-flat-amber h-full" style="width: 15.2%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] font-mono text-text-secondary">
-                            <span>Target: <strong class="text-text-primary">60.0 km / wk</strong></span>
-                            <span>Completed: <strong class="text-flat-green">41.0 km</strong></span>
-                        </div>
-                    </div>
-
-                    <!-- 2. TODAY'S ACTIVITY WIDGET -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-3">
-                            <h3 class="font-display font-bold text-base text-text-primary">Today's activity</h3>
-                            <select id="today-activity-filter" onchange="filterTodayActivities(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
-                                <option value="recent" selected>Recent</option>
-                                <option value="planned">Planned</option>
-                            </select>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 items-center">
-                            <!-- Work Load Box -->
-                            <div class="p-3 bg-surface-subtle border border-border flex flex-col justify-between">
-                                <div class="w-8 h-8 bg-surface border border-border flex items-center justify-center mb-2">
-                                    <svg class="w-4 h-4 text-flat-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                                </div>
-                                <div>
-                                    <div id="stat-weekly-work" class="font-display font-extrabold text-2xl sm:text-3xl text-text-primary font-mono tracking-tight">4,200</div>
-                                    <div class="text-[11px] font-mono text-text-secondary">work / week</div>
-                                </div>
-                            </div>
-
-                            <!-- Activity Reps Breakdown -->
-                            <div class="space-y-2.5 font-mono text-xs">
-                                <div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 bg-flat-green shrink-0"></span>
-                                        <span class="font-bold text-text-primary">Squats / Intervals</span>
-                                    </div>
-                                    <span class="text-[11px] text-text-secondary font-sans block pl-4">40 reps (5x1000m)</span>
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 bg-tertiary shrink-0"></span>
-                                        <span class="font-bold text-text-primary">Jump ropes / Strides</span>
-                                    </div>
-                                    <span class="text-[11px] text-text-secondary font-sans block pl-4">100 skips (8x20s)</span>
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 bg-flat-amber shrink-0"></span>
-                                        <span class="font-bold text-text-primary">Push ups / Core</span>
-                                    </div>
-                                    <span class="text-[11px] text-text-secondary font-sans block pl-4">100 push ups (15 mins)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Button -->
-                        <div class="pt-2">
-                            <button onclick="openLogWorkoutModal()" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <span data-i18n="workout_start_log_btn">Mulai Sesi / Catat Latihan</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 3. OUTPUT WIDGET (TWO STACKED SPARKLINE CARDS) -->
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between border-b border-border pb-1">
-                            <h3 class="font-display font-bold text-base text-text-primary">Output</h3>
-                            <span class="text-xs font-mono text-text-secondary">Last week ▾</span>
-                        </div>
-
-                        <!-- Card 1: Calorie Loss Sparkline -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-flat-amber text-black flex items-center justify-center font-bold text-xs shrink-0">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
-                                    </div>
-                                    <div>
-                                        <span class="text-[11px] font-mono text-text-secondary block">Calorie loss</span>
-                                        <span id="stat-calorie-loss" class="font-mono font-bold text-lg text-text-primary">-4,957.6 kcal</span>
-                                    </div>
-                                </div>
-                                <span data-i18n="workout_active_burn" class="flat-badge border-flat-amber text-flat-amber text-[10px]">BAKARAN AKTIF</span>
-                            </div>
-
-                            <!-- Amber Sparkline Wave Chart (Flat 2D SVG) -->
-                            <div class="h-10 w-full pt-1">
-                                <svg class="w-full h-full overflow-visible" viewBox="0 0 200 40" preserveAspectRatio="none">
-                                    <path d="M 0 32 C 30 12, 60 36, 90 18 C 120 4, 150 32, 180 15 L 200 22 L 200 40 L 0 40 Z" fill="#FFB800" fill-opacity="0.18" />
-                                    <path d="M 0 32 C 30 12, 60 36, 90 18 C 120 4, 150 32, 180 15 L 200 22" fill="none" stroke="#FFB800" stroke-width="2.5" stroke-linecap="round" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Card 2: Weight Loss / Cardiac Drift Sparkline -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-flat-green text-black flex items-center justify-center font-bold text-xs shrink-0">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
-                                    </div>
-                                    <div>
-                                        <span class="text-[11px] font-mono text-text-secondary block">Weight loss / Fatigue</span>
-                                        <span id="stat-weight-loss" class="font-mono font-bold text-lg text-text-primary">-7.908% drift</span>
-                                    </div>
-                                </div>
-                                <span class="flat-badge border-flat-green text-flat-green text-[10px]">OPTIMAL RECOVERY</span>
-                            </div>
-
-                            <!-- Green Sparkline Wave Chart (Flat 2D SVG) -->
-                            <div class="h-10 w-full pt-1">
-                                <svg class="w-full h-full overflow-visible" viewBox="0 0 200 40" preserveAspectRatio="none">
-                                    <path d="M 0 35 C 35 18, 70 38, 105 12 C 140 25, 175 8, 200 18 L 200 40 L 0 40 Z" fill="#00D084" fill-opacity="0.18" />
-                                    <path d="M 0 35 C 35 18, 70 38, 105 12 C 140 25, 175 8, 200 18" fill="none" stroke="#00D084" stroke-width="2.5" stroke-linecap="round" />
-                                </svg>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
 
                 <!-- Bottom Row: Recommended Activity & Monthly/Weekly Activity Timeline -->
