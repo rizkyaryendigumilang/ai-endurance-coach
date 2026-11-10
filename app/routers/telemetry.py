@@ -528,7 +528,7 @@ def get_deep_zones_and_heatmaps(user_id: str = Depends(get_current_user_optional
     Mengambil data heatmap aktivitas (Personal, Night, Weekly, Global)
     dan analisis distribusi 5 Zona Karvonen & perbandingan GAP.
     """
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     workouts = sandbox_store.get_recent_workouts(uid, limit=20)
     
     # 1. Personal Heatmap Polylines from logged activities

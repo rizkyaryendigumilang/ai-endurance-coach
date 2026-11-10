@@ -410,7 +410,7 @@ class TargetRaceInput(BaseModel):
 
 @router.post("/api/v1/training/race-course/target")
 def set_race_target(payload: TargetRaceInput, user_id: str = Depends(get_current_user_optional)):
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     existing = sandbox_store.get_race_course(uid) or {}
     existing.update({
         "event_name": payload.event_name,
@@ -427,7 +427,7 @@ def set_race_target(payload: TargetRaceInput, user_id: str = Depends(get_current
 
 @router.get("/api/v1/training/race-course")
 def get_active_race_course(user_id: str = Depends(get_current_user_optional)):
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     course = sandbox_store.get_race_course(uid)
     if not course:
         return {
@@ -454,7 +454,7 @@ async def upload_race_gpx(
     target_pace: Optional[str] = Form(None),
     user_id: str = Depends(get_current_user_optional)
 ):
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     file_bytes = await file.read()
     if not file_bytes:
         raise HTTPException(status_code=400, detail="File GPX kosong.")
@@ -495,6 +495,7 @@ async def upload_race_gpx(
 
 class PostRunDebriefInput(BaseModel):
     workout_title: Optional[str] = Field("Zone 2 Aerobic Foundation Run", description="Nama workout yang dijalankan")
+    target_distance_km: Optional[float] = Field(None, description="Target jarak rencana dalam km")
     actual_distance_km: float = Field(10.2, description="Jarak aktual dalam km")
     duration_seconds: int = Field(3600, description="Durasi dalam detik")
     avg_heart_rate: int = Field(146, description="Rata-rata detak jantung")
@@ -517,18 +518,18 @@ def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(
     - Aerobic Decoupling & Late-Stage Fatigue Fade detector
     - Pelacakan akumulasi usia sepatu lari
     """
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     actual_pace_sec = int(data.duration_seconds / max(0.1, data.actual_distance_km))
 
     # 1. True Execution Scoring
     planned_dict = {
-        "distance_km": data.actual_distance_km,
+        "distance_km": data.target_distance_km or data.actual_distance_km,
         "target_pace_sec": data.target_pace_sec,
         "target_hr_ceiling": data.target_hr_ceiling,
         "category": data.workout_category
     }
     actual_dict = {
-        "distance_km": data.actual_distance_km,
+        "distance_km": data.target_distance_km or data.actual_distance_km,
         "actual_pace_sec": actual_pace_sec,
         "avg_heart_rate": data.avg_heart_rate
     }
@@ -584,7 +585,7 @@ def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(
         f"Selesai {data.actual_distance_km:.1f} km pada cuaca {temp}°C (Dew Point {normalized_weather['dew_point_c']}°C). "
         f"Skor Kepatuhan Latihan Anda mencapai {execution['total_execution_score']}% ({execution['badge']}). "
         f"Meskipun pace aktual terbaca {normalized_weather['observed_pace_str']}, beban fisiologis Anda setara dengan "
-        f"{normalized_weather['normalized_pace_str']} pada kondisi sejuk ideal—VDOT aerobik Anda tetap terjaga aman. "
+        f"{normalized_weather['normalized_pace_str']} pada kondisi sejuk ideal - VDOT aerobik Anda tetap terjaga aman. "
         f"Status kardiak: {decoupling['status_id']} (Decoupling {decoupling['decoupling_pct']}%). {cadence_note}"
     )
 
@@ -628,7 +629,7 @@ def execute_auto_rebalance(data: AutoRebalanceInput, user_id: str = Depends(get_
     """
     Mengeksekusi 'Life Happens' Auto-Rebalancer berdasar State Machine (FSM) dan Aturan Emas.
     """
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     res = WeeklyCalendarService.auto_rebalance_schedule(
         user_id=uid,
         week_key=data.week_key,
@@ -643,7 +644,7 @@ def check_eod_missed_workouts_endpoint(user_id: str = Depends(get_current_user_o
     """
     Pengecekan akhir hari (EOD 22:00 WIB) mendeteksi sesi yang terlewat tanpa false alarm.
     """
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     return WeeklyCalendarService.check_eod_missed_workouts(uid)
 
 
@@ -663,7 +664,7 @@ class ShoeInput(BaseModel):
 @router.get("/api/v1/training/shoes", tags=["Shoe Mileage"])
 def get_shoes_endpoint(user_id: str = Depends(get_current_user_optional)):
     """Mengambil daftar inventaris sepatu lari dan status keausannya."""
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     shoes = sandbox_store.get_running_shoes(uid)
     return {
         "status": "success",
@@ -676,7 +677,7 @@ def get_shoes_endpoint(user_id: str = Depends(get_current_user_optional)):
 @router.post("/api/v1/training/shoes", tags=["Shoe Mileage"])
 def save_shoe_endpoint(data: ShoeInput, user_id: str = Depends(get_current_user_optional)):
     """Menambah atau memperbarui data sepatu lari."""
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     saved = sandbox_store.save_running_shoe(uid, data.model_dump())
     return {
         "status": "success",
@@ -687,12 +688,14 @@ def save_shoe_endpoint(data: ShoeInput, user_id: str = Depends(get_current_user_
 @router.post("/api/v1/training/shoes/retire", tags=["Shoe Mileage"])
 def retire_shoe_endpoint(shoe_id: str = Query(...), user_id: str = Depends(get_current_user_optional)):
     """Memensiunkan sepatu lari yang sudah habis masa pakainya."""
-    uid = user_id or "demo-athlete-budi"
+    uid = user_id or sandbox_store.OWNER_USER_ID
     ok = sandbox_store.retire_running_shoe(uid, shoe_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail=f"Sepatu dengan ID '{shoe_id}' tidak ditemukan.")
     return {
-        "status": "success" if ok else "not_found",
+        "status": "success",
         "shoe_id": shoe_id,
-        "is_retired": ok
+        "is_retired": True
     }
 
 

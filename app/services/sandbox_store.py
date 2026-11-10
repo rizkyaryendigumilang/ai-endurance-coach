@@ -27,13 +27,13 @@ _SEEDING = False
 
 def _get_user_store(user_id: str):
     global _SEEDING
-    if not _SEEDING and "demo-athlete-budi" not in _USERS_DB:
+    if not _SEEDING and OWNER_USER_ID not in _USERS_DB:
         _SEEDING = True
         try:
             _ensure_seed_data()
         finally:
             _SEEDING = False
-    if _is_owner_user(user_id):
+    if _is_owner_user(user_id) or not user_id or str(user_id).lower() in ("demo-athlete-budi", "guest", "default", "sandbox_athlete_guest"):
         user_id = OWNER_USER_ID
     if user_id not in _USERS_DB:
         is_owner = _is_owner_user(user_id)
@@ -46,11 +46,14 @@ def _get_user_store(user_id: str):
                 "fitness_level": "advanced" if is_owner else "intermediate",
                 "weight_kg": 68.5,
                 "height_cm": 175.0,
-                "resting_hr": 48,
+                "resting_hr": 61 if is_owner else 55,
                 "max_hr": 192,
                 "lactate_threshold_hr": 168,
-                "target_race_name": "Berlin Marathon 2026",
-                "target_race_date": "2026-09-27",
+                "target_race_name": "BTN Jakarta International Marathon (JAKIM) 2026",
+                "target_race_date": "2026-06-28",
+                "target_race_datetime": "2026-06-28T04:30:00",
+                "target_time": "05:30:00",
+                "target_pace": "07:49 /km",
                 "weekly_mileage_target_km": 60.0 if is_owner else 50.0,
                 "preferred_coach_tier": "pro" if is_owner else "free",
                 "subscription_tier": "pro" if is_owner else "free",
@@ -388,114 +391,8 @@ def get_race_course(user_id: str):
 
 
 def _ensure_seed_data():
-    if "demo-athlete-budi" in _USERS_DB:
+    if OWNER_USER_ID in _USERS_DB:
         return
-    # Seed Athlete 1: Budi Santoso (Marathon Runner)
-    uid1 = "demo-athlete-budi"
-    if uid1 not in _USERS_DB:
-        store1 = _get_user_store(uid1)
-        store1["profile"] = {
-            "id": uid1,
-            "full_name": "Budi Santoso",
-            "email": "budi.santoso@endurance.local",
-            "sport_focus": "running",
-            "fitness_level": "advanced",
-            "weight_kg": 64.5,
-            "height_cm": 172,
-            "created_at": "2026-03-01T08:00:00Z"
-        }
-        store1["garmin_session"] = {
-            "email": "budi.santoso@garmin.com",
-            "connected_at": "2026-03-02T10:00:00Z",
-            "is_active": True
-        }
-        store1["actual_workouts"] = [
-            {
-                "id": "w-budi-1",
-                "title": "Sunday Long Run Aerobic Base",
-                "workout_type": "run",
-                "distance_km": 24.5,
-                "duration_seconds": 7800,
-                "started_at": "2026-10-12T05:30:00Z",
-                "source": "garmin",
-                "activity_metrics": [{"training_load": 185, "aerobic_te": 4.1, "avg_hr": 146}]
-            },
-            {
-                "id": "w-budi-2",
-                "title": "Threshold 4x2km Intervals",
-                "workout_type": "run",
-                "distance_km": 14.2,
-                "duration_seconds": 3900,
-                "started_at": "2026-10-10T06:00:00Z",
-                "source": "garmin",
-                "activity_metrics": [{"training_load": 142, "aerobic_te": 3.8, "avg_hr": 164}]
-            }
-        ]
-
-    # Seed Athlete 2: Sarah Jenkins (Triathlete)
-    uid2 = "demo-athlete-sarah"
-    if uid2 not in _USERS_DB:
-        store2 = _get_user_store(uid2)
-        store2["profile"] = {
-            "id": uid2,
-            "full_name": "Sarah Jenkins",
-            "email": "sarah.jenkins@triathlon.io",
-            "sport_focus": "triathlon",
-            "fitness_level": "elite",
-            "weight_kg": 57.0,
-            "height_cm": 168,
-            "created_at": "2026-02-15T09:00:00Z"
-        }
-        store2["actual_workouts"] = [
-            {
-                "id": "w-sarah-1",
-                "title": "Zone 2 Endurance Ride",
-                "workout_type": "cycling",
-                "distance_km": 82.0,
-                "duration_seconds": 9600,
-                "started_at": "2026-10-11T06:15:00Z",
-                "source": "intervals_icu",
-                "activity_metrics": [{"training_load": 210, "aerobic_te": 4.3, "avg_hr": 138}]
-            },
-            {
-                "id": "w-sarah-2",
-                "title": "Open Water Swim Simulation",
-                "workout_type": "swimming",
-                "distance_km": 3.2,
-                "duration_seconds": 3600,
-                "started_at": "2026-10-09T07:00:00Z",
-                "source": "strava",
-                "activity_metrics": [{"training_load": 88, "aerobic_te": 3.2, "avg_hr": 142}]
-            }
-        ]
-
-    # Seed Athlete 3: Rendi Kurniawan (Road Runner)
-    uid3 = "demo-athlete-rendi"
-    if uid3 not in _USERS_DB:
-        store3 = _get_user_store(uid3)
-        store3["profile"] = {
-            "id": uid3,
-            "full_name": "Rendi Kurniawan",
-            "email": "rendi.k@telegram.athlete",
-            "sport_focus": "running",
-            "fitness_level": "intermediate",
-            "weight_kg": 68.0,
-            "height_cm": 175,
-            "created_at": "2026-03-20T11:00:00Z"
-        }
-        store3["actual_workouts"] = [
-            {
-                "id": "w-rendi-1",
-                "title": "Tempo Run 8K Progression",
-                "workout_type": "run",
-                "distance_km": 8.0,
-                "duration_seconds": 2340,
-                "started_at": "2026-10-13T06:00:00Z",
-                "source": "manual",
-                "activity_metrics": [{"training_load": 74, "aerobic_te": 3.1, "avg_hr": 158}]
-            }
-        ]
-
     # Seed Account: Rizky Aryendi Gumilang (RECOMMENDED // FULL COACH & Garmin Synced)
     uid_owner = "c698122d-1fe3-5620-820c-23682e4f844a"
     if uid_owner not in _USERS_DB:
@@ -511,14 +408,37 @@ def _ensure_seed_data():
             "resting_hr": 61,
             "max_hr": 192,
             "lactate_threshold_hr": 168,
-            "target_race_name": "Berlin Marathon 2026",
-            "target_race_date": "2026-09-27",
+            "target_race_name": "BTN Jakarta International Marathon (JAKIM) 2026",
+            "target_race_date": "2026-06-28",
+            "target_race_datetime": "2026-06-28T04:30:00",
+            "target_time": "05:30:00",
+            "target_pace": "07:49 /km",
             "weekly_mileage_target_km": 60.0,
             "subscription_tier": "pro",
             "preferred_coach_tier": "pro",
             "unit_preference": "metric",
             "created_at": "2026-01-01T00:00:00Z"
         }
+        
+        # Load user's BTN JAKIM 2026 Marathon GPX course
+        import os
+        from app.services.activity_parser import parse_gpx
+        gpx_path = os.path.join(os.path.dirname(__file__), "..", "..", "public", "gpx", "rute-marathon-btn-jakim-2026.gpx")
+        if os.path.exists(gpx_path):
+            try:
+                with open(gpx_path, "rb") as gf:
+                    parsed_gpx = parse_gpx(gf.read())
+                    store_owner["race_course"] = {
+                        "event_name": "BTN Jakarta International Marathon (JAKIM) 2026",
+                        "event_datetime": "2026-06-28T04:30:00",
+                        "target_time": "05:30:00",
+                        "target_pace": "07:49 /km",
+                        "filename": "rute-marathon-btn-jakim-2026.gpx",
+                        **parsed_gpx
+                    }
+            except Exception as eg:
+                pass
+
         store_owner["subscription"] = {
             "status": "pro",
             "plan": "full",
@@ -1049,7 +969,7 @@ def _seed_admin_logs():
                 "id": "aud-102",
                 "timestamp": "2026-10-29T16:30:00Z",
                 "action": "SUBSCRIPTION_OVERRIDE",
-                "target": "Sarah Jenkins (demo-athlete-sarah)",
+                "target": "Rizky Aryendi Gumilang (Garmin Synced)",
                 "admin": "Superuser",
                 "detail": "Mengubah paket ke PRO (Tahunan) via Admin Override"
             },
@@ -1057,7 +977,7 @@ def _seed_admin_logs():
                 "id": "aud-103",
                 "timestamp": "2026-10-28T08:45:00Z",
                 "action": "IMPERSONATION",
-                "target": "Rendi Kurniawan (demo-athlete-rendi)",
+                "target": "Rizky Aryendi Gumilang (JAKIM 2026 Course Ingested)",
                 "admin": "Superuser",
                 "detail": "Inspeksi telemetri dropout Garmin cadence pada sesi Tempo Run 8K"
             }

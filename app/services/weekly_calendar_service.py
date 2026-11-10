@@ -895,11 +895,20 @@ class WeeklyCalendarService:
         }
 
     @classmethod
-    def check_eod_missed_workouts(cls, user_id: str) -> Dict:
+    def check_eod_missed_workouts(cls, user_id: str, force_check: bool = False, current_hour: Optional[int] = None) -> Dict:
         """
-        Evaluasi EOD (misal batas pukul 22:00 WIB).
+        Evaluasi EOD (batas pukul 22:00 WIB).
         Mendeteksi apakah hari ini ada sesi terjadwal yang belum selesai dan bukan hari istirahat.
         """
+        from datetime import datetime
+        now_hour = current_hour if current_hour is not None else datetime.now().hour
+        if not force_check and now_hour < 22:
+            return {
+                "missed_today": False,
+                "prompt_user": False,
+                "reason": "Sebelum batas evaluasi akhir hari (22:00 WIB)."
+            }
+
         ref_date = date.today()
         week_key = cls.get_week_key(ref_date)
         user_store = sandbox_store._get_user_store(user_id)
