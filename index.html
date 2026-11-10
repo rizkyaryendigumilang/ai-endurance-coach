@@ -1358,7 +1358,7 @@
                             <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border">
                                 <button onclick="switchScheduleSubtab('splits'); switchWorkstationTab('schedule');" class="btn-flat-secondary text-xs font-mono py-1.5 px-3 flex items-center gap-1.5 hover:border-emerald-500">
                                     <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                    <span data-i18n="pacing_btn_calculator">Buka Kalkulator Splits &amp; Nutrisi</span>
+                                    <span data-i18n="pacing_btn_calculator">Buka Calculator Pace</span>
                                 </button>
                                 <button onclick="switchWorkstationTab('schedule');" class="text-xs text-tertiary hover:underline font-mono flex items-center gap-1">
                                     <span data-i18n="pacing_btn_plan">Lihat Jadwal 31 Minggu &rarr;</span>
@@ -2760,8 +2760,8 @@
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('splits')" id="subtab-btn-splits" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span data-i18n="subtab_splits">Split &amp; Nutrisi</span>
-                            <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-flat-green/15 text-flat-green">42.2k</span>
+                            <span data-i18n="subtab_splits">Calculator Pace</span>
+                            <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-flat-green/15 text-flat-green">Pace &amp; Splits</span>
                         </button>
                     </div>
                 </div>
@@ -3291,27 +3291,171 @@
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════ -->
-                <!-- SUB-TAB 4: RACE PACING, SPLITS & FUELING CALCULATOR (STAGE 3) -->
+                                <!-- ════════════════════════════════════════════════════════════ -->
+                <!-- SUB-TAB 4: INTERACTIVE CALCULATOR PACE & SPLITS SUITE        -->
                 <!-- ════════════════════════════════════════════════════════════ -->
                 <div id="subtab-view-splits" class="hidden space-y-6">
-                    <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
+                    <div class="flat-card border-2 border-border p-4 sm:p-6 bg-surface space-y-6">
+                        
+                        <!-- Header & Actions -->
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
                             <div>
-                                <span class="flat-badge border-flat-green text-flat-green mb-1">STAGE 3: SPLITS &amp; FUELING</span>
-                                <h3 class="font-display font-extrabold text-xl text-text-primary tracking-tight">Marathon 5k Splits &amp; Fueling Calculator</h3>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="flat-badge border-flat-green text-flat-green text-[10px] font-mono font-bold uppercase">ALAT PERFORMA ATLET</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-tertiary/10 text-tertiary font-bold uppercase">CALCULATOR PACE</span>
+                                </div>
+                                <h3 class="font-display font-extrabold text-xl sm:text-2xl text-text-primary tracking-tight">Calculator Pace &amp; Splits Interaktif</h3>
                                 <p class="text-xs text-text-secondary font-mono mt-0.5">
-                                    42.195 km Target Pacing, Riegel Formula Comparison, 4% Fatigue Fade &amp; Hydration Protocol
+                                    Hitung pace, estimasi waktu finish, atau jarak tempuh dengan proyeksi split per km dan protokol nutrisi race day.
                                 </p>
                             </div>
-                            <button type="button" onclick="copySplitsStrategy()" id="btn-copy-splits" class="btn-flat-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 font-mono">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                                <span>SALIN STRATEGI SPLITS</span>
-                            </button>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" onclick="setSplitsTargetPreset(19800)" class="btn-flat-secondary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 font-mono">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    <span>GOAL 5:30:00</span>
+                                </button>
+                                <button type="button" onclick="copySplitsStrategy()" id="btn-copy-splits" class="btn-flat-primary py-1.5 px-3 text-xs inline-flex items-center gap-1.5 font-mono font-bold">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                                    <span>SALIN STRATEGI</span>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Target Time Selector -->
-                        <div class="p-3.5 bg-surface-subtle border border-border space-y-2">
-                            <span class="text-xs font-mono font-bold text-text-primary uppercase block">Pilih Target Finish Time:</span>
+                        <!-- 1. Calculation Mode Tabs -->
+                        <div class="p-3 bg-surface-subtle border border-border rounded-xl space-y-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
+                                <span class="text-xs font-mono font-bold text-text-primary uppercase flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                                    Mode Kalkulator:
+                                </span>
+                                <div class="inline-flex p-1 bg-surface border border-border rounded-lg text-xs font-mono font-semibold" role="tablist">
+                                    <button type="button" onclick="setPaceCalcMode('pace')" id="pcalc-mode-pace" class="px-3 py-1 rounded-md bg-tertiary text-white shadow-xs transition-colors">Hitung Pace</button>
+                                    <button type="button" onclick="setPaceCalcMode('time')" id="pcalc-mode-time" class="px-3 py-1 rounded-md text-text-secondary hover:text-text-primary transition-colors">Hitung Waktu</button>
+                                    <button type="button" onclick="setPaceCalcMode('dist')" id="pcalc-mode-dist" class="px-3 py-1 rounded-md text-text-secondary hover:text-text-primary transition-colors">Hitung Jarak</button>
+                                </div>
+                            </div>
+
+                            <!-- Distance Preset Badges -->
+                            <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                <span class="text-[11px] font-mono text-text-secondary mr-1">Preset Lomba:</span>
+                                <button type="button" onclick="setPaceCalcDistancePreset(42.195, 'km')" id="pcalc-preset-marathon" class="px-2.5 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold">Maraton 42.2k</button>
+                                <button type="button" onclick="setPaceCalcDistancePreset(21.0975, 'km')" id="pcalc-preset-hm" class="px-2.5 py-1 text-xs font-mono rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-tertiary">Half 21.1k</button>
+                                <button type="button" onclick="setPaceCalcDistancePreset(10.0, 'km')" id="pcalc-preset-10k" class="px-2.5 py-1 text-xs font-mono rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-tertiary">10K</button>
+                                <button type="button" onclick="setPaceCalcDistancePreset(5.0, 'km')" id="pcalc-preset-5k" class="px-2.5 py-1 text-xs font-mono rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-tertiary">5K</button>
+                                <button type="button" onclick="setPaceCalcDistancePreset(null, 'km')" id="pcalc-preset-custom" class="px-2.5 py-1 text-xs font-mono rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-tertiary">Kustom</button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Interactive Input Matrix (3-Column Grid) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
+                            
+                            <!-- Input Column 1: Jarak (Distance) -->
+                            <div id="pcalc-group-dist" class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2">
+                                <label class="text-xs font-bold text-text-primary uppercase flex items-center justify-between">
+                                    <span>Jarak Tempuh</span>
+                                    <span class="text-[10px] text-text-secondary">Distance</span>
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="pcalc-input-dist" step="0.001" min="0.1" value="42.195" oninput="onPaceCalcChange()" class="flat-input font-bold text-base flex-1">
+                                    <select id="pcalc-input-dist-unit" onchange="onPaceCalcUnitChange()" class="flat-input text-xs w-24">
+                                        <option value="km" selected>km</option>
+                                        <option value="mi">mil</option>
+                                    </select>
+                                </div>
+                                <span class="text-[10px] text-text-secondary block" id="pcalc-dist-hint">Standar Maraton: 42.195 km</span>
+                            </div>
+
+                            <!-- Input Column 2: Waktu (Time: HH:MM:SS) -->
+                            <div id="pcalc-group-time" class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2">
+                                <label class="text-xs font-bold text-text-primary uppercase flex items-center justify-between">
+                                    <span>Waktu Total</span>
+                                    <span class="text-[10px] text-text-secondary">HH : MM : SS</span>
+                                </label>
+                                <div class="grid grid-cols-3 gap-1.5">
+                                    <div>
+                                        <input type="number" id="pcalc-time-h" min="0" max="99" value="5" oninput="onPaceCalcChange()" placeholder="Jam" class="flat-input font-bold text-sm text-center">
+                                        <span class="text-[9px] text-text-secondary text-center block mt-0.5">Jam</span>
+                                    </div>
+                                    <div>
+                                        <input type="number" id="pcalc-time-m" min="0" max="59" value="30" oninput="onPaceCalcChange()" placeholder="Min" class="flat-input font-bold text-sm text-center">
+                                        <span class="text-[9px] text-text-secondary text-center block mt-0.5">Menit</span>
+                                    </div>
+                                    <div>
+                                        <input type="number" id="pcalc-time-s" min="0" max="59" value="0" oninput="onPaceCalcChange()" placeholder="Sec" class="flat-input font-bold text-sm text-center">
+                                        <span class="text-[9px] text-text-secondary text-center block mt-0.5">Detik</span>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] text-text-secondary block" id="pcalc-time-hint">Contoh Target: 5:30:00</span>
+                            </div>
+
+                            <!-- Input Column 3: Pace (MM:SS / unit) -->
+                            <div id="pcalc-group-pace" class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2">
+                                <label class="text-xs font-bold text-text-primary uppercase flex items-center justify-between">
+                                    <span>Pace Rata-Rata</span>
+                                    <span class="text-[10px] text-text-secondary">MM : SS</span>
+                                </label>
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex-1">
+                                        <input type="number" id="pcalc-pace-m" min="1" max="59" value="7" oninput="onPaceCalcChange()" placeholder="Min" class="flat-input font-bold text-sm text-center">
+                                        <span class="text-[9px] text-text-secondary text-center block mt-0.5">Menit</span>
+                                    </div>
+                                    <span class="font-bold text-text-primary pb-3">:</span>
+                                    <div class="flex-1">
+                                        <input type="number" id="pcalc-pace-s" min="0" max="59" value="49" oninput="onPaceCalcChange()" placeholder="Sec" class="flat-input font-bold text-sm text-center">
+                                        <span class="text-[9px] text-text-secondary text-center block mt-0.5">Detik</span>
+                                    </div>
+                                    <div class="w-20 pb-3">
+                                        <select id="pcalc-pace-unit" onchange="onPaceCalcUnitChange()" class="flat-input text-xs">
+                                            <option value="km" selected>/km</option>
+                                            <option value="mi">/mil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] text-text-secondary block" id="pcalc-pace-hint">Setara 12:35 /mil</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Calculated Results Hero Dashboard -->
+                        <div class="p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3">
+                            <div class="flex items-center justify-between border-b border-border pb-2">
+                                <span class="text-xs font-mono font-bold text-text-primary uppercase flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-flat-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Hasil Komputasi Sports Science:
+                                </span>
+                                <span class="text-[10px] font-mono text-flat-green font-bold bg-flat-green/10 border border-flat-green/20 px-2 py-0.5 rounded">0ms INSTAN</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
+                                <!-- Card 1: Pace -->
+                                <div class="p-3 bg-surface border border-border rounded-lg space-y-1">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Pace Dihitung</span>
+                                    <div class="text-xl sm:text-2xl font-extrabold text-tertiary" id="pcalc-res-pace">07:49 <span class="text-xs font-normal text-text-secondary">/km</span></div>
+                                    <div class="text-[11px] text-text-secondary" id="pcalc-res-pace-alt">12:35 /mil</div>
+                                </div>
+                                <!-- Card 2: Kecepatan -->
+                                <div class="p-3 bg-surface border border-border rounded-lg space-y-1">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Kecepatan (Speed)</span>
+                                    <div class="text-xl sm:text-2xl font-extrabold text-text-primary" id="pcalc-res-speed">7.67 <span class="text-xs font-normal text-text-secondary">km/h</span></div>
+                                    <div class="text-[11px] text-text-secondary" id="pcalc-res-speed-alt">4.77 mph</div>
+                                </div>
+                                <!-- Card 3: Waktu Finish -->
+                                <div class="p-3 bg-surface border border-border rounded-lg space-y-1">
+                                    <span class="text-[10px] text-text-secondary uppercase block">Waktu Finish</span>
+                                    <div class="text-xl sm:text-2xl font-extrabold text-flat-green" id="pcalc-res-time">05:30:00</div>
+                                    <div class="text-[11px] text-flat-green font-bold" id="pcalc-res-buffer">Aman 01:30:00 dari Cutoff</div>
+                                </div>
+                                <!-- Card 4: VDOT Estimasi -->
+                                <div class="p-3 bg-surface border border-border rounded-lg space-y-1">
+                                    <span class="text-[10px] text-text-secondary uppercase block">VDOT / Aerobik</span>
+                                    <div class="text-xl sm:text-2xl font-extrabold text-text-primary" id="pcalc-res-vdot">VDOT 30.8</div>
+                                    <div class="text-[11px] text-flat-green" id="pcalc-res-vdot-desc">Fondasi Base Aerobik</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Quick Target Time Presets -->
+                        <div class="p-3 bg-surface-subtle border border-border rounded-xl space-y-2">
+                            <span class="text-xs font-mono font-bold text-text-primary uppercase block">Target Waktu Maraton Populer:</span>
                             <div class="flex flex-wrap items-center gap-2">
                                 <button type="button" onclick="setSplitsTargetPreset(18000)" class="splits-preset-btn px-3 py-1 text-xs font-mono rounded-lg border border-border bg-surface hover:border-tertiary">5:00:00 (7:06/km)</button>
                                 <button type="button" onclick="setSplitsTargetPreset(18900)" class="splits-preset-btn px-3 py-1 text-xs font-mono rounded-lg border border-border bg-surface hover:border-tertiary">5:15:00 (7:28/km)</button>
@@ -3322,48 +3466,48 @@
                             </div>
                         </div>
 
-                        <!-- Sports Science Comparison Grid -->
+                        <!-- 5. Sports Science Model Comparison Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                            <div class="p-3 bg-surface-subtle border border-border space-y-1">
+                            <div class="p-3.5 bg-surface-subtle border border-border rounded-lg space-y-1">
                                 <span class="text-[10px] text-text-secondary uppercase block">Riegel Theoretical Model</span>
                                 <div class="text-base font-extrabold text-text-primary" id="splits-riegel-time">05:22:16</div>
-                                <div class="text-[11px] text-text-secondary">Pace: 7:38/km (Dari HM 2:34:34)</div>
+                                <div class="text-[11px] text-text-secondary">Pace: 7:38/km (Dari HM PR 2:34:34)</div>
                             </div>
-                            <div class="p-3 bg-surface-subtle border border-border space-y-1">
+                            <div class="p-3.5 bg-surface-subtle border border-border rounded-lg space-y-1">
                                 <span class="text-[10px] text-text-secondary uppercase block">Realistic (+4% Fatigue Fade)</span>
                                 <div class="text-base font-extrabold text-flat-amber" id="splits-realistic-time">05:35:09</div>
                                 <div class="text-[11px] text-text-secondary">Pace: 7:56/km (Dekompensasi km 32+)</div>
                             </div>
-                            <div class="p-3 bg-surface-subtle border-2 border-flat-green/40 bg-flat-green/5 space-y-1">
+                            <div class="p-3.5 bg-surface-subtle border-2 border-flat-green/40 bg-flat-green/5 rounded-lg space-y-1">
                                 <span class="text-[10px] text-text-secondary uppercase block">Target Goal &amp; Cutoff Buffer</span>
                                 <div class="text-base font-extrabold text-flat-green" id="splits-goal-time">05:30:00 (7:49/km)</div>
                                 <div class="text-[11px] text-text-secondary">Aman 1:30:00 dari Batas 7:00:00</div>
                             </div>
                         </div>
 
-                        <!-- Fueling & Nutrition Blueprint Box -->
-                        <div class="p-4 bg-surface-subtle border border-border space-y-2">
+                        <!-- 6. Fueling & Nutrition Blueprint Box -->
+                        <div class="p-4 bg-surface-subtle border border-border rounded-xl space-y-2">
                             <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 bg-tertiary"></span>
-                                <strong class="text-xs font-mono font-bold text-text-primary uppercase">Protokol Nutrisi &amp; Hidrasi Race Day (5.5 Jam)</strong>
+                                <span class="w-2.5 h-2.5 bg-tertiary rounded-xs"></span>
+                                <strong class="text-xs font-mono font-bold text-text-primary uppercase">Protokol Nutrisi &amp; Hidrasi Race Day (Dihitung Dinamis Sesuai Target Waktu)</strong>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-1">
-                                <div class="p-2.5 bg-surface border border-border">
+                                <div class="p-2.5 bg-surface border border-border rounded-lg">
                                     <span class="text-[10px] text-text-secondary uppercase block">Total Karbohidrat</span>
                                     <strong class="text-sm font-bold text-tertiary" id="splits-fuel-carbs">~330 gram</strong>
                                     <span class="text-[10px] text-text-secondary block">60g / jam target</span>
                                 </div>
-                                <div class="p-2.5 bg-surface border border-border">
+                                <div class="p-2.5 bg-surface border border-border rounded-lg">
                                     <span class="text-[10px] text-text-secondary uppercase block">Energy Gels</span>
                                     <strong class="text-sm font-bold text-text-primary" id="splits-fuel-gels">11 Gels (25g/gel)</strong>
                                     <span class="text-[10px] text-text-secondary block">Setiap 45 menit</span>
                                 </div>
-                                <div class="p-2.5 bg-surface border border-border">
+                                <div class="p-2.5 bg-surface border border-border rounded-lg">
                                     <span class="text-[10px] text-text-secondary uppercase block">Asupan Cairan</span>
                                     <strong class="text-sm font-bold text-flat-green" id="splits-fuel-fluid">550 ml / jam (~3.0L)</strong>
                                     <span class="text-[10px] text-text-secondary block">Air + Isotonik</span>
                                 </div>
-                                <div class="p-2.5 bg-surface border border-border">
+                                <div class="p-2.5 bg-surface border border-border rounded-lg">
                                     <span class="text-[10px] text-text-secondary uppercase block">Natrium &amp; Elektrolit</span>
                                     <strong class="text-sm font-bold text-flat-amber" id="splits-fuel-sodium">500 mg / jam</strong>
                                     <span class="text-[10px] text-text-secondary block">Salt chews di km 20 &amp; 30</span>
@@ -3371,9 +3515,20 @@
                             </div>
                         </div>
 
-                        <!-- 10-Segment Splits Table -->
-                        <div class="space-y-2 pt-2">
-                            <span class="text-xs font-mono font-bold text-text-primary uppercase block">Tabel Progresi 5k Splits &amp; Milestone Taktis</span>
+                        <!-- 7. Interactive Splits Progression Table -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <span class="text-xs font-mono font-bold text-text-primary uppercase flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                    Tabel Progresi Splits &amp; Milestone Taktis
+                                </span>
+                                <!-- Splits Granularity Toggle (5k vs 1k) -->
+                                <div class="inline-flex p-0.5 bg-surface-subtle border border-border rounded-lg text-xs font-mono">
+                                    <button type="button" onclick="setPaceCalcSplitGranularity('5k')" id="pcalc-split-btn-5k" class="px-2.5 py-1 rounded-md bg-surface text-text-primary font-bold shadow-xs border border-border">Split 5 km</button>
+                                    <button type="button" onclick="setPaceCalcSplitGranularity('1k')" id="pcalc-split-btn-1k" class="px-2.5 py-1 rounded-md text-text-secondary hover:text-text-primary">Split 1 km</button>
+                                </div>
+                            </div>
+
                             <div class="overflow-x-auto border border-border rounded-xl">
                                 <table class="w-full text-left font-mono text-xs border-collapse">
                                     <thead>
@@ -3390,9 +3545,9 @@
                                 </table>
                             </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
 
             <!-- TAB 5: HARDWARE INTEGRATIONS -->
             <div id="tab-content-integrations" class="hidden space-y-6">
@@ -6084,7 +6239,8 @@
                 subtab_weekly: "Mingguan (7-Hari)",
                 subtab_strength: "Kekuatan & WFH",
                 subtab_strength_count: "58 Sesi",
-                subtab_splits: "Split & Nutrisi",
+                subtab_splits: "Calculator Pace",
+                pacing_btn_calculator: "Buka Calculator Pace",
                 macro_stage_badge: "TAHAP 1: PERIODISASI MAKRO",
                 macro_title: "Roadmap 31-Minggu Maraton Penuh",
                 macro_desc: "Mulai: Sen, 9 Nov 2026 • Lomba: Min, 13 Jun 2027 • Target: 42.195 km • Finis 05:30:00 (7:49/km)",
@@ -6375,7 +6531,8 @@
                 subtab_weekly: "Weekly (7-Day)",
                 subtab_strength: "Strength & WFH",
                 subtab_strength_count: "58 Sessions",
-                subtab_splits: "Splits & Nutrition",
+                subtab_splits: "Calculator Pace",
+                pacing_btn_calculator: "Open Calculator Pace",
                 macro_stage_badge: "STAGE 1: MACRO PERIODIZATION",
                 macro_title: "31-Week Full Marathon Roadmap",
                 macro_desc: "Kickoff: Mon, Nov 9, 2026 • Race Day: Sun, Jun 13, 2027 • Target: 42.195 km • Finish 05:30:00 (7:49/km)",
@@ -7636,193 +7793,385 @@
         // ══════════════════════════════════════════════════════
         let currentMarathonPlanData = null;
         let currentMarathonSplitsData = null;
-        let currentSelectedMacroWeek = 1;
+        let paceCalcState = {
+            mode: 'pace', // 'pace' (calc pace from time+dist), 'time' (calc time from dist+pace), 'dist' (calc dist from time+pace)
+            distance: 42.195,
+            distanceUnit: 'km',
+            hours: 5,
+            minutes: 30,
+            seconds: 0,
+            paceMinutes: 7,
+            paceSeconds: 49,
+            paceUnit: 'km',
+            splitGranularity: '5k' // '5k' or '1k'
+        };
 
-        function switchScheduleSubtab(tab) {
-            const tabs = ['macro', 'weekly', 'strength', 'splits'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`subtab-btn-${t}`);
-                const view = document.getElementById(`subtab-view-${t}`);
-                if (view) view.classList.add('hidden');
-                if (btn) {
-                    btn.className = 'schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
-                    btn.setAttribute('aria-selected', 'false');
-                    const icon = btn.querySelector('svg');
-                    if (icon) icon.classList.remove('text-tertiary');
+        function setPaceCalcMode(mode) {
+            paceCalcState.mode = mode;
+            const btnPace = document.getElementById('pcalc-mode-pace');
+            const btnTime = document.getElementById('pcalc-mode-time');
+            const btnDist = document.getElementById('pcalc-mode-dist');
+
+            const activeClass = 'px-3 py-1 rounded-md bg-tertiary text-white shadow-xs transition-colors';
+            const inactiveClass = 'px-3 py-1 rounded-md text-text-secondary hover:text-text-primary transition-colors';
+
+            if (btnPace) btnPace.className = mode === 'pace' ? activeClass : inactiveClass;
+            if (btnTime) btnTime.className = mode === 'time' ? activeClass : inactiveClass;
+            if (btnDist) btnDist.className = mode === 'dist' ? activeClass : inactiveClass;
+
+            // Highlight output group
+            const gDist = document.getElementById('pcalc-group-dist');
+            const gTime = document.getElementById('pcalc-group-time');
+            const gPace = document.getElementById('pcalc-group-pace');
+            if (gDist) gDist.className = mode === 'dist' ? 'p-3.5 bg-surface border-2 border-tertiary rounded-xl space-y-2' : 'p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2';
+            if (gTime) gTime.className = mode === 'time' ? 'p-3.5 bg-surface border-2 border-tertiary rounded-xl space-y-2' : 'p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2';
+            if (gPace) gPace.className = mode === 'pace' ? 'p-3.5 bg-surface border-2 border-tertiary rounded-xl space-y-2' : 'p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2';
+
+            onPaceCalcChange();
+        }
+
+        function setPaceCalcDistancePreset(kmVal, unit = 'km') {
+            const distInput = document.getElementById('pcalc-input-dist');
+            const distUnit = document.getElementById('pcalc-input-dist-unit');
+            const hint = document.getElementById('pcalc-dist-hint');
+
+            // Reset preset button styling
+            const presets = ['marathon', 'hm', '10k', '5k', 'custom'];
+            presets.forEach(p => {
+                const b = document.getElementById(`pcalc-preset-${p}`);
+                if (b) b.className = 'px-2.5 py-1 text-xs font-mono rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-tertiary';
+            });
+
+            if (kmVal !== null) {
+                if (distInput) distInput.value = kmVal;
+                if (distUnit) distUnit.value = unit;
+                paceCalcState.distance = kmVal;
+                paceCalcState.distanceUnit = unit;
+
+                if (kmVal === 42.195) {
+                    const b = document.getElementById('pcalc-preset-marathon');
+                    if (b) b.className = 'px-2.5 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold';
+                    if (hint) hint.textContent = 'Standar Maraton Resmi: 42.195 km';
+                } else if (kmVal === 21.0975) {
+                    const b = document.getElementById('pcalc-preset-hm');
+                    if (b) b.className = 'px-2.5 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold';
+                    if (hint) hint.textContent = 'Standar Half Marathon: 21.0975 km';
+                } else if (kmVal === 10.0) {
+                    const b = document.getElementById('pcalc-preset-10k');
+                    if (b) b.className = 'px-2.5 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold';
+                    if (hint) hint.textContent = 'Standar 10K Race: 10.00 km';
+                } else if (kmVal === 5.0) {
+                    const b = document.getElementById('pcalc-preset-5k');
+                    if (b) b.className = 'px-2.5 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold';
+                    if (hint) hint.textContent = 'Standar 5K Fun Run / TT: 5.00 km';
                 }
-            });
-
-            const activeBtn = document.getElementById(`subtab-btn-${tab}`);
-            const activeView = document.getElementById(`subtab-view-${tab}`);
-            if (activeView) activeView.classList.remove('hidden');
-            if (activeBtn) {
-                activeBtn.className = 'schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
-                activeBtn.setAttribute('aria-selected', 'true');
-                const icon = activeBtn.querySelector('svg');
-                if (icon) icon.classList.add('text-tertiary');
+            } else {
+                const b = document.getElementById('pcalc-preset-custom');
+                if (b) b.className = 'px-2.5 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold';
+                if (hint) hint.textContent = 'Jarak kustom dimasukkan manual';
+                if (distInput) distInput.focus();
             }
 
-            if (tab === 'macro') {
-                if (!currentMarathonPlanData) loadMarathonMacroPlan();
-            } else if (tab === 'weekly') {
-                if (!currentWeeklyCalendarData) loadWeeklyCalendar(currentCalendarWeekOffset);
-            } else if (tab === 'splits') {
-                if (!currentMarathonSplitsData) loadMarathonSplits(19800);
+            onPaceCalcChange();
+        }
+
+        function setPaceCalcSplitGranularity(granularity) {
+            paceCalcState.splitGranularity = granularity;
+            const b5k = document.getElementById('pcalc-split-btn-5k');
+            const b1k = document.getElementById('pcalc-split-btn-1k');
+
+            const activeClass = 'px-2.5 py-1 rounded-md bg-surface text-text-primary font-bold shadow-xs border border-border';
+            const inactiveClass = 'px-2.5 py-1 rounded-md text-text-secondary hover:text-text-primary';
+
+            if (b5k) b5k.className = granularity === '5k' ? activeClass : inactiveClass;
+            if (b1k) b1k.className = granularity === '1k' ? activeClass : inactiveClass;
+
+            recomputeAndRenderSplits();
+        }
+
+        function onPaceCalcUnitChange() {
+            const distUnit = document.getElementById('pcalc-input-dist-unit');
+            const paceUnit = document.getElementById('pcalc-input-dist-unit');
+            if (distUnit) paceCalcState.distanceUnit = distUnit.value;
+            if (paceUnit) paceCalcState.paceUnit = paceUnit.value;
+            onPaceCalcChange();
+        }
+
+        function onPaceCalcChange() {
+            const distInput = document.getElementById('pcalc-input-dist');
+            const distUnit = document.getElementById('pcalc-input-dist-unit');
+            const hInput = document.getElementById('pcalc-time-h');
+            const mInput = document.getElementById('pcalc-time-m');
+            const sInput = document.getElementById('pcalc-time-s');
+            const pmInput = document.getElementById('pcalc-pace-m');
+            const psInput = document.getElementById('pcalc-pace-s');
+            const paceUnit = document.getElementById('pcalc-pace-unit');
+
+            let dVal = distInput ? parseFloat(distInput.value) || 0 : 42.195;
+            const dUnit = distUnit ? distUnit.value : 'km';
+            const distKm = dUnit === 'mi' ? dVal * 1.60934 : dVal;
+
+            let h = hInput ? parseInt(hInput.value) || 0 : 5;
+            let m = mInput ? parseInt(mInput.value) || 0 : 30;
+            let s = sInput ? parseInt(sInput.value) || 0 : 0;
+            let totalSeconds = h * 3600 + m * 60 + s;
+
+            let pm = pmInput ? parseInt(pmInput.value) || 0 : 7;
+            let ps = psInput ? parseInt(psInput.value) || 0 : 49;
+            const pUnit = paceUnit ? paceUnit.value : 'km';
+            let paceSecKm = pUnit === 'mi' ? (pm * 60 + ps) / 1.60934 : (pm * 60 + ps);
+
+            if (paceCalcState.mode === 'pace') {
+                if (distKm > 0 && totalSeconds > 0) {
+                    paceSecKm = totalSeconds / distKm;
+                    const paceSecTarget = pUnit === 'mi' ? paceSecKm * 1.60934 : paceSecKm;
+                    const targetM = Math.floor(paceSecTarget / 60);
+                    const targetS = Math.round(paceSecTarget % 60);
+                    if (pmInput) pmInput.value = targetM;
+                    if (psInput) psInput.value = targetS === 60 ? 0 : targetS;
+                }
+            } else if (paceCalcState.mode === 'time') {
+                if (distKm > 0 && paceSecKm > 0) {
+                    totalSeconds = Math.round(distKm * paceSecKm);
+                    const th = Math.floor(totalSeconds / 3600);
+                    const tm = Math.floor((totalSeconds % 3600) / 60);
+                    const ts = totalSeconds % 60;
+                    if (hInput) hInput.value = th;
+                    if (mInput) mInput.value = tm;
+                    if (sInput) sInput.value = ts;
+                }
+            } else if (paceCalcState.mode === 'dist') {
+                if (paceSecKm > 0 && totalSeconds > 0) {
+                    const calcKm = totalSeconds / paceSecKm;
+                    dVal = dUnit === 'mi' ? calcKm / 1.60934 : calcKm;
+                    if (distInput) distInput.value = dVal.toFixed(3);
+                }
             }
+
+            paceCalcState.distance = distKm;
+            paceCalcState.totalSeconds = totalSeconds;
+            paceCalcState.paceSecKm = paceSecKm;
+
+            recomputeAndRenderSplits();
         }
 
-        async function loadMarathonMacroPlan() {
-            try {
-                const res = await fetch(`${API_BASE}/training/marathon-plan`, { headers: getAuthHeaders() });
-                if (!res.ok) throw new Error('Gagal memuat rencana marathon');
-                const data = await res.json();
-                currentMarathonPlanData = data;
-                renderMarathonMacroChart(data.weeks);
-                populateAdaptWeekDropdown(data.weeks);
-                selectMacroWeek(1);
-            } catch (err) {
-                console.warn('Macro plan fallback:', err);
+        function recomputeAndRenderSplits() {
+            const distKm = Math.max(0.1, paceCalcState.distance || 42.195);
+            const totalSeconds = Math.max(10, paceCalcState.totalSeconds || 19800);
+            const paceSecKm = totalSeconds / distKm;
+
+            // 1. Format Pace
+            const pKmMin = Math.floor(paceSecKm / 60);
+            const pKmSec = Math.round(paceSecKm % 60);
+            const paceKmStr = `${pKmMin < 10 ? '0' : ''}${pKmMin}:${pKmSec < 10 ? '0' : ''}${pKmSec}`;
+
+            const paceSecMi = paceSecKm * 1.60934;
+            const pMiMin = Math.floor(paceSecMi / 60);
+            const pMiSec = Math.round(paceSecMi % 60);
+            const paceMiStr = `${pMiMin < 10 ? '0' : ''}${pMiMin}:${pMiSec < 10 ? '0' : ''}${pMiSec}`;
+
+            // 2. Format Speed
+            const speedKmh = ((distKm / totalSeconds) * 3600).toFixed(2);
+            const speedMph = (((distKm / 1.60934) / totalSeconds) * 3600).toFixed(2);
+
+            // 3. Format Time
+            const th = Math.floor(totalSeconds / 3600);
+            const tm = Math.floor((totalSeconds % 3600) / 60);
+            const ts = totalSeconds % 60;
+            const timeStr = `${th < 10 ? '0' : ''}${th}:${tm < 10 ? '0' : ''}${tm}:${ts < 10 ? '0' : ''}${ts}`;
+
+            // 4. Update Result Hero Dashboard
+            const resPace = document.getElementById('pcalc-res-pace');
+            const resPaceAlt = document.getElementById('pcalc-res-pace-alt');
+            const resSpeed = document.getElementById('pcalc-res-speed');
+            const resSpeedAlt = document.getElementById('pcalc-res-speed-alt');
+            const resTime = document.getElementById('pcalc-res-time');
+            const resBuffer = document.getElementById('pcalc-res-buffer');
+            const resVdot = document.getElementById('pcalc-res-vdot');
+            const resVdotDesc = document.getElementById('pcalc-res-vdot-desc');
+
+            if (resPace) resPace.innerHTML = `${paceKmStr} <span class="text-xs font-normal text-text-secondary">/km</span>`;
+            if (resPaceAlt) resPaceAlt.textContent = `${paceMiStr} /mil`;
+            if (resSpeed) resSpeed.innerHTML = `${speedKmh} <span class="text-xs font-normal text-text-secondary">km/h</span>`;
+            if (resSpeedAlt) resSpeedAlt.textContent = `${speedMph} mph`;
+            if (resTime) resTime.textContent = timeStr;
+
+            // Cutoff buffer (standard 7hr marathon cutoff)
+            const cutoffSec = 25200; // 07:00:00
+            const bufferSec = cutoffSec - totalSeconds;
+            if (resBuffer) {
+                if (bufferSec > 0) {
+                    const bh = Math.floor(bufferSec / 3600);
+                    const bm = Math.floor((bufferSec % 3600) / 60);
+                    resBuffer.textContent = `Aman ${bh < 10 ? '0' : ''}${bh}:${bm < 10 ? '0' : ''}${bm}:00 dari Batas 7:00:00`;
+                    resBuffer.className = 'text-[11px] text-flat-green font-bold';
+                } else {
+                    resBuffer.textContent = `Melewati Cutoff 07:00:00 (${Math.abs(Math.round(bufferSec/60))} min)`;
+                    resBuffer.className = 'text-[11px] text-flat-orange font-bold';
+                }
             }
-        }
 
-        function renderMarathonMacroChart(weeks) {
-            const container = document.getElementById('macro-volume-chart-container');
-            if (!container || !weeks || !weeks.length) return;
+            // Estimate VDOT
+            const tMin = totalSeconds / 60.0;
+            const vM = (distKm * 1000.0) / tMin;
+            const vo2 = -4.60 + 0.182258 * vM + 0.000104 * (vM * vM);
+            const pct = 0.8 + 0.1894393 * Math.exp(-0.012778 * tMin) + 0.2989558 * Math.exp(-0.1932605 * tMin);
+            const estVdot = Math.max(15, Math.min(85, (vo2 / pct))).toFixed(1);
+            if (resVdot) resVdot.textContent = `VDOT ${estVdot}`;
+            if (resVdotDesc) resVdotDesc.textContent = estVdot >= 50 ? 'Podium / Sub-Elite' : (estVdot >= 38 ? 'Kompetitif Menengah' : 'Fondasi Base Aerobik');
 
-            const maxKm = Math.max(...weeks.map(w => w.weekly_km), 52.0);
-            const chartHeight = 160;
-
-            let html = '<div class="w-full flex items-end justify-between gap-1.5 h-full pt-6">';
-            weeks.forEach(w => {
-                const totalH = Math.max(14, Math.round((w.weekly_km / maxKm) * chartHeight));
-                const lrH = Math.max(6, Math.round((w.long_run_km / maxKm) * chartHeight));
-                const otherH = Math.max(0, totalH - lrH);
-                const isSelected = w.week_number === currentSelectedMacroWeek;
-                const isCutback = w.is_cutback;
-                const isPeak = w.long_run_km >= 32.0;
-                const isHM = w.week_number === 21;
-                const isRace = w.week_number === 31;
-
-                let marker = '';
-                if (isRace) marker = '<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-mono font-bold px-1 bg-flat-green text-white rounded">RACE</span>';
-                else if (isPeak) marker = '<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-mono font-bold px-1 bg-tertiary text-white rounded">32k</span>';
-                else if (isHM) marker = '<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-mono font-bold px-1 bg-flat-amber text-white rounded">HM</span>';
-                else if (isCutback) marker = '<span class="absolute -top-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-flat-green"></span>';
-
-                html += `
-                    <div onclick="selectMacroWeek(${w.week_number})" 
-                         title="Week ${w.week_number}: ${w.weekly_km}k Total (LR: ${w.long_run_km}k)"
-                         class="group relative flex-1 flex flex-col items-center justify-end cursor-pointer h-full transition-transform active:scale-95">
-                        ${marker}
-                        <div class="w-full rounded-t-sm flex flex-col justify-end transition-all duration-150 ${isSelected ? 'ring-2 ring-tertiary ring-offset-1 ring-offset-surface' : 'hover:opacity-90'}" style="height: ${totalH}px;">
-                            <div class="w-full bg-text-secondary/40 rounded-t-sm" style="height: ${otherH}px;"></div>
-                            <div class="w-full ${isCutback ? 'bg-flat-green' : 'bg-tertiary'}" style="height: ${lrH}px;"></div>
-                        </div>
-                        <span class="text-[9px] font-mono mt-1 ${isSelected ? 'text-tertiary font-bold' : 'text-text-secondary'}">W${w.week_number}</span>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        function selectMacroWeek(weekNum) {
-            currentSelectedMacroWeek = weekNum;
-            if (!currentMarathonPlanData || !currentMarathonPlanData.weeks) return;
-            const week = currentMarathonPlanData.weeks.find(w => w.week_number === weekNum);
-            if (!week) return;
-
-            const badge = document.getElementById('insp-week-badge');
-            const title = document.getElementById('insp-week-title');
-            const dates = document.getElementById('insp-week-dates');
-            const totalKm = document.getElementById('insp-total-km');
-            const lrKm = document.getElementById('insp-lr-km');
-            const runs = document.getElementById('insp-runs-count');
-            const str = document.getElementById('insp-strength');
-            const checkpoint = document.getElementById('insp-checkpoint');
-
-            if (badge) {
-                badge.textContent = `WEEK ${week.week_number}`;
-                badge.className = week.is_cutback ? 'px-2 py-0.5 font-mono text-xs font-bold bg-flat-green text-white rounded' : 'px-2 py-0.5 font-mono text-xs font-bold bg-tertiary text-white rounded';
-            }
-            if (title) title.textContent = `${week.phase} • ${week.checkpoint || 'Target Progresi Volume'}`;
-            if (dates) dates.textContent = `${week.start_date} – ${week.end_date} (${week.weeks_to_race} minggu menuju race)`;
-            if (totalKm) totalKm.textContent = `${week.weekly_km} km`;
-            if (lrKm) lrKm.textContent = `${week.long_run_km} km (${week.is_cutback ? 'Cutback Recovery' : 'Progressive'})`;
-            if (runs) runs.textContent = `${week.runs_per_week}x Lari (${week.other_km} km mid-week)`;
-            if (str) str.textContent = `${week.strength_sessions_per_week} Sesi (${week.strength_theme})`;
-            if (checkpoint) checkpoint.innerHTML = `<strong>Taktis Pelatih:</strong> ${week.checkpoint} • Sesi WFH: ${week.strength_slots.join(' & ')}`;
-
-            renderMarathonMacroChart(currentMarathonPlanData.weeks);
-        }
-
-        function populateAdaptWeekDropdown(weeks) {
-            const sel = document.getElementById('adapt-current-week');
-            if (!sel || !weeks) return;
-            sel.innerHTML = weeks.map(w => `<option value="${w.week_number}">Minggu ${w.week_number} (${w.phase} - ${w.weekly_km} km)</option>`).join('');
-        }
-
-        async function loadMarathonSplits(targetSeconds = 19800) {
-            try {
-                const res = await fetch(`${API_BASE}/training/race-splits`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ target_time_seconds: targetSeconds, baseline_hm_seconds: 9274 })
-                });
-                if (!res.ok) throw new Error('Gagal kalkulasi splits');
-                const data = await res.json();
-                currentMarathonSplitsData = data;
-                renderMarathonSplitsView(data);
-            } catch (err) {
-                console.warn('Splits calculation fallback:', err);
-            }
-        }
-
-        function renderMarathonSplitsView(data) {
-            if (!data) return;
+            // 5. Update Models Comparison Grid (Riegel)
             const rTime = document.getElementById('splits-riegel-time');
             const fTime = document.getElementById('splits-realistic-time');
             const gTime = document.getElementById('splits-goal-time');
-            const carbs = document.getElementById('splits-fuel-carbs');
-            const gels = document.getElementById('splits-fuel-gels');
-            const fluid = document.getElementById('splits-fuel-fluid');
-            const sodium = document.getElementById('splits-fuel-sodium');
-            const tbody = document.getElementById('splits-table-body');
 
-            if (rTime) rTime.textContent = data.riegel_predicted_formatted || '05:22:16';
-            if (fTime) fTime.textContent = data.realistic_fade_formatted || '05:35:09';
-            if (gTime) gTime.textContent = `${data.target_time_formatted} (${data.target_pace_formatted})`;
+            // User baseline HM is 9274s (02:34:34)
+            const baseHm = 9274;
+            const riegelSec = Math.round(baseHm * Math.pow(distKm / 21.0975, 1.06));
+            const fadeSec = Math.round(riegelSec * 1.04);
 
-            if (data.fueling_summary) {
-                if (carbs) carbs.textContent = `~${data.fueling_summary.total_carbohydrates_g} gram`;
-                if (gels) gels.textContent = `${data.fueling_summary.total_gels} Gels (25g/gel)`;
-                if (fluid) fluid.textContent = `${data.fueling_summary.hourly_fluid_ml} ml/jam (~${data.fueling_summary.total_fluid_liters}L)`;
-                if (sodium) sodium.textContent = `${data.fueling_summary.sodium_mg_per_hr} mg/jam (~${data.fueling_summary.total_sodium_mg}mg)`;
+            function secToFmt(s) {
+                const sh = Math.floor(s / 3600);
+                const sm = Math.floor((s % 3600) / 60);
+                const ss = s % 60;
+                return `${sh < 10 ? '0' : ''}${sh}:${sm < 10 ? '0' : ''}${sm}:${ss < 10 ? '0' : ''}${ss}`;
             }
 
-            if (tbody && data.splits) {
-                tbody.innerHTML = data.splits.map((s, idx) => `
+            if (rTime) rTime.textContent = secToFmt(riegelSec);
+            if (fTime) fTime.textContent = secToFmt(fadeSec);
+            if (gTime) gTime.textContent = `${timeStr} (${paceKmStr}/km)`;
+
+            // 6. Fueling Strategy (linked dynamically to totalSeconds)
+            const hours = totalSeconds / 3600.0;
+            const carbsG = Math.round(60 * hours);
+            const gelsCount = Math.max(1, Math.round(carbsG / 25));
+            const fluidL = (0.55 * hours).toFixed(1);
+            const sodiumMg = Math.round(500 * hours);
+
+            const carbsEl = document.getElementById('splits-fuel-carbs');
+            const gelsEl = document.getElementById('splits-fuel-gels');
+            const fluidEl = document.getElementById('splits-fuel-fluid');
+            const sodiumEl = document.getElementById('splits-fuel-sodium');
+
+            if (carbsEl) carbsEl.textContent = `~${carbsG} gram`;
+            if (gelsEl) gelsEl.textContent = `${gelsCount} Gels (25g/gel)`;
+            if (fluidEl) fluidEl.textContent = `550 ml/jam (~${fluidL}L)`;
+            if (sodiumEl) sodiumEl.textContent = `500 mg/jam (~${sodiumMg}mg)`;
+
+            // 7. Render Splits Table
+            const tbody = document.getElementById('splits-table-body');
+            if (tbody) {
+                const splits = [];
+                const step = paceCalcState.splitGranularity === '1k' ? 1.0 : 5.0;
+                let currentKm = 0.0;
+                let gelIndex = 1;
+
+                while (currentKm < distKm) {
+                    const startKm = currentKm;
+                    const nextKm = Math.min(distKm, currentKm + step);
+                    const segDist = nextKm - startKm;
+                    const cumSec = Math.round(nextKm * paceSecKm);
+                    const splitSec = Math.round(segDist * paceSecKm);
+
+                    const sm = Math.floor(splitSec / 60);
+                    const ss = splitSec % 60;
+                    const splitStr = `${sm < 10 ? '0' : ''}${sm}:${ss < 10 ? '0' : ''}${ss}`;
+                    const cumStr = secToFmt(cumSec);
+
+                    // Contextual tactical / nutrition guidance
+                    let note = 'Hidrasi teratur setiap water station (150-200ml)';
+                    if (nextKm <= 5.0) {
+                        note = 'Start terkontrol: cegah adrenaline rush, kunci detak jantung di Z2.';
+                    } else if (Math.abs(nextKm - 21.0975) < 2.5 || (startKm < 21.1 && nextKm >= 21.1)) {
+                        note = `KM 21.1 Halfway: Form check, postur rileks, Energy Gel #${gelIndex++}.`;
+                    } else if (nextKm >= 30.0 && nextKm <= 35.0) {
+                        note = `The Wall Zone: Tambah salt chew & Energy Gel #${gelIndex++}. Fokus langkah stabil.`;
+                    } else if (nextKm >= 40.0) {
+                        note = 'Final Push: Bernapas dalam, pertahankan kadens, sprint finish ke gate.';
+                    } else if (Math.round(nextKm) % 7 === 0 || Math.round(nextKm) % 8 === 0) {
+                        note = `Konsumsi Energy Gel #${gelIndex++} + air putih di hydration station.`;
+                    }
+
+                    splits.push({
+                        segment_km: `KM ${startKm.toFixed(1)} - ${nextKm.toFixed(1)} (${segDist.toFixed(1)} km)`,
+                        target_pace: `${paceKmStr} /km`,
+                        split_time: cumStr,
+                        lap_time: splitStr,
+                        fueling_milestone: note
+                    });
+
+                    currentKm = nextKm;
+                }
+
+                currentMarathonSplitsData = {
+                    target_time_formatted: timeStr,
+                    target_pace_formatted: `${paceKmStr}/km`,
+                    riegel_predicted_formatted: secToFmt(riegelSec),
+                    realistic_fade_formatted: secToFmt(fadeSec),
+                    splits: splits
+                };
+
+                tbody.innerHTML = splits.map((s, idx) => `
                     <tr class="hover:bg-surface-subtle transition-colors">
-                        <td class="p-3 font-bold text-text-primary">${s.segment_km}</td>
-                        <td class="p-3 text-tertiary font-bold">${s.target_pace}</td>
-                        <td class="p-3 text-text-primary font-bold">${s.split_time}</td>
+                        <td class="p-3 font-bold text-text-primary whitespace-nowrap">${s.segment_km}</td>
+                        <td class="p-3 text-tertiary font-bold whitespace-nowrap">${s.target_pace}</td>
+                        <td class="p-3 text-text-primary font-bold whitespace-nowrap">${s.split_time}</td>
                         <td class="p-3 font-sans text-xs text-text-secondary">${s.fueling_milestone}</td>
                     </tr>
                 `).join('');
             }
         }
 
+        async function loadMarathonSplits(targetSeconds = 19800) {
+            setSplitsTargetPreset(targetSeconds);
+        }
+
         function setSplitsTargetPreset(seconds) {
             document.querySelectorAll('.splits-preset-btn').forEach(b => {
                 b.className = 'splits-preset-btn px-3 py-1 text-xs font-mono rounded-lg border border-border bg-surface hover:border-tertiary';
             });
-            if (event && event.target) {
+            if (event && event.target && event.target.classList.contains('splits-preset-btn')) {
                 event.target.className = 'splits-preset-btn px-3 py-1 text-xs font-mono rounded-lg border-2 border-tertiary bg-tertiary/10 text-tertiary font-bold';
             }
-            loadMarathonSplits(seconds);
+
+            const th = Math.floor(seconds / 3600);
+            const tm = Math.floor((seconds % 3600) / 60);
+            const ts = seconds % 60;
+
+            const hInput = document.getElementById('pcalc-time-h');
+            const mInput = document.getElementById('pcalc-time-m');
+            const sInput = document.getElementById('pcalc-time-s');
+            const distInput = document.getElementById('pcalc-input-dist');
+            const distUnit = document.getElementById('pcalc-input-dist-unit');
+
+            if (hInput) hInput.value = th;
+            if (mInput) mInput.value = tm;
+            if (sInput) sInput.value = ts;
+            if (distInput) distInput.value = 42.195;
+            if (distUnit) distUnit.value = 'km';
+
+            paceCalcState.distance = 42.195;
+            paceCalcState.distanceUnit = 'km';
+            paceCalcState.totalSeconds = seconds;
+            paceCalcState.mode = 'pace';
+
+            const btnPace = document.getElementById('pcalc-mode-pace');
+            const btnTime = document.getElementById('pcalc-mode-time');
+            const btnDist = document.getElementById('pcalc-mode-dist');
+            if (btnPace) btnPace.className = 'px-3 py-1 rounded-md bg-tertiary text-white shadow-xs transition-colors';
+            if (btnTime) btnTime.className = 'px-3 py-1 rounded-md text-text-secondary hover:text-text-primary transition-colors';
+            if (btnDist) btnDist.className = 'px-3 py-1 rounded-md text-text-secondary hover:text-text-primary transition-colors';
+
+            onPaceCalcChange();
         }
 
-        function copySplitsStrategy() {
+        function resetPaceCalcToGoal() {
+            setSplitsTargetPreset(19800);
+            toast.info('Pace Calculator Direset', 'Target kembali ke sasaran utama 5:30:00 (Pace 7:49/km).');
+        }
+
+
+                function copySplitsStrategy() {
             if (!currentMarathonSplitsData || !currentMarathonSplitsData.splits) return;
             const lines = [
                 `GOALIE MARATHON 42.195 KM PACING CARD`,
