@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional, List, Union
 from datetime import date, datetime
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ class UserProfileUpdate(BaseModel):
     max_hr: Optional[int] = None
     lactate_threshold_hr: Optional[int] = None
     target_race_name: Optional[str] = None
-    target_race_date: Optional[date] = None
+    target_race_date: Optional[Union[date, datetime, str]] = None
     weekly_mileage_target_km: Optional[float] = None
     preferred_coach_tier: Optional[str] = "free"  # 'pemula' | 'free' | 'pro'
     unit_preference: Optional[str] = "metric"  # 'metric' | 'imperial'

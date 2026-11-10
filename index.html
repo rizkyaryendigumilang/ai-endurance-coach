@@ -849,7 +849,7 @@
                 <div class="space-y-1">
                     <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium border border-border bg-surface-subtle text-text-secondary">
                         <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
-                        <span data-i18n="hero_badge">Garmin FIT &bull; Strava Sync &bull; Banister TRIMP</span>
+                        <span data-i18n="hero_badge">Garmin FIT &bull; Goalie Telemetri &bull; Banister TRIMP</span>
                     </div>
                     <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-text-primary tracking-tight font-display" data-i18n="hero_title">
                         Train with verifiable metrics.
@@ -1206,14 +1206,38 @@
                             </div>
                         </div>
 
-                        <!-- 2. Target Marathon Progress & Countdown (Gemini 31-Week Plan) -->
+                        <!-- 2. Target Marathon Progress & Detailed Event Countdown -->
                         <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <div class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                     <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider" data-i18n="marathon_target_title">Target Full Marathon</h4>
                                 </div>
-                                <span id="cockpit-race-countdown" class="text-[10px] font-mono font-bold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">215 hari lagi</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span id="cockpit-race-countdown" class="text-[10px] font-mono font-bold text-tertiary bg-tertiary/10 border border-tertiary/20 px-2 py-0.5 rounded-full whitespace-nowrap">-- hari lagi</span>
+                                    <button type="button" onclick="openTargetRaceModal()" title="Ubah Nama Event &amp; Tanggal Lomba" class="p-1 text-text-secondary hover:text-tertiary rounded hover:bg-surface-subtle transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Target Event Banner & Quick Edit Link -->
+                            <div class="p-2.5 bg-surface-subtle border border-border rounded-xl space-y-1 cursor-pointer hover:border-tertiary transition-colors group" onclick="openTargetRaceModal()" title="Klik untuk mengubah nama event &amp; jadwal detail">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-mono text-text-secondary uppercase">Nama Event Lomba</span>
+                                    <span class="text-[10px] font-mono text-tertiary font-bold flex items-center gap-1 group-hover:underline">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        Edit Jadwal
+                                    </span>
+                                </div>
+                                <div id="cockpit-target-event-name" class="font-display font-extrabold text-sm text-text-primary truncate">Jakarta Marathon 2027</div>
+                                <div id="cockpit-target-event-schedule" class="text-[11px] font-mono text-text-secondary">Minggu, 13 Jun 2027 &bull; Flag-off 04:30 WIB</div>
+                            </div>
+
+                            <!-- Real-time Detailed Countdown Bar -->
+                            <div class="p-2 bg-surface-subtle border border-border rounded-lg flex items-center justify-between font-mono text-xs">
+                                <span class="text-text-secondary text-[10px] uppercase font-bold">Hitung Mundur Detail:</span>
+                                <strong id="cockpit-detailed-countdown" class="text-tertiary font-extrabold text-xs">-- Hari -- Jam Lagi</strong>
                             </div>
 
                             <div>
@@ -1231,26 +1255,26 @@
                             <div class="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1 text-text-secondary border-t border-border">
                                 <div>
                                     <span class="block text-[10px]">Waktu Target:</span>
-                                    <strong class="text-text-primary font-mono text-xs">5:30:00</strong>
+                                    <strong id="cockpit-target-time-val" class="text-text-primary font-mono text-xs">5:30:00</strong>
                                 </div>
                                 <div>
                                     <span class="block text-[10px]">Target Pace:</span>
-                                    <strong class="text-emerald-500 font-mono text-xs">7:49 /km</strong>
+                                    <strong id="cockpit-target-pace-val" class="text-emerald-500 font-mono text-xs">7:49 /km</strong>
                                 </div>
                                 <div>
                                     <span class="block text-[10px]">Hari Lomba:</span>
-                                    <strong class="text-text-primary font-mono text-xs">13 Jun 2027</strong>
+                                    <strong id="cockpit-target-day-val" class="text-text-primary font-mono text-xs">13 Jun 2027</strong>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px]">Sesi Gym:</span>
-                                    <strong class="text-tertiary font-mono text-xs">58 Sesi (WFH)</strong>
+                                    <span class="block text-[10px]">Sisa Waktu:</span>
+                                    <strong id="cockpit-target-days-left-val" class="text-tertiary font-mono text-xs">-- Hari Lagi</strong>
                                 </div>
                             </div>
 
                             <!-- Phase Indicator -->
                             <div class="p-2 rounded-lg bg-surface-subtle border border-border text-[11px] font-mono flex items-center justify-between">
                                 <span class="text-text-secondary">Fase Saat Ini:</span>
-                                <span class="font-bold text-tertiary">Fase 1 &bull; Pondasi (W1–13)</span>
+                                <span id="cockpit-target-phase-val" class="font-bold text-tertiary">Fase 1 &bull; Pondasi (W1–13)</span>
                             </div>
                         </div>
 
@@ -2137,7 +2161,7 @@
                                 <span data-i18n="chip_karvonen">Matriks Karvonen 5-Zona</span>
                             </button>
                             <button onclick="sendQuickPrompt('Hitung Minetti Grade-Adjusted Pace jika saya lari di tanjakan elevasi 60 meter dengan pace 05:00 min/km.')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
-                                <span data-i18n="chip_gap">Kalkulator Strava GAP</span>
+                                <span data-i18n="chip_gap">Kalkulator Minetti GAP</span>
                             </button>
                             <button onclick="sendQuickPrompt('Cardiac drift saya tercatat +1.7% (decoupling) dan efisiensi 1.36 m/beat. Apakah fondasi aerobik saya sudah cukup solid?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
                                 <span data-i18n="chip_drift">Decoupling Aerobik +1.7%</span>
@@ -2215,7 +2239,7 @@
                         </div>
                         <h2 class="font-display font-bold text-xl text-text-primary tracking-tight mt-1" data-i18n="telemetry_suite_title">Rangkaian Telemetri Ketahanan Terpadu</h2>
                         <p class="text-xs font-mono text-text-secondary mt-0.5" data-i18n="telemetry_suite_sub">
-                            TrainingPeaks PMC/ACWR &bull; Intervals.icu Karvonen HR &bull; Strava Pro Minetti GAP
+                            Beban ACWR &bull; Karvonen HR Reserve &bull; Minetti Grade Adjusted Pace
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
@@ -2533,7 +2557,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 bg-flat-orange"></span>
-                            <h3 data-i18n="strava_hub_title" class="font-display font-bold text-base text-text-primary">Pusat Telemetri Strava Pro</h3>
+                            <h3 data-i18n="strava_hub_title" class="font-display font-bold text-base text-text-primary">Pusat Telemetri Goalie Pro</h3>
                         </div>
                         <span class="text-[11px] font-mono text-text-secondary">Minetti Energetic Cost &amp; Relative Effort Suffer Score</span>
                     </div>
@@ -2578,7 +2602,7 @@
                             <!-- Relative Effort / Suffer Score -->
                             <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-[10px] font-mono text-text-secondary uppercase">Strava Relative Effort</span>
+                                    <span class="text-[10px] font-mono text-text-secondary uppercase">Goalie Relative Effort</span>
                                     <span class="flat-badge border-flat-orange text-flat-orange text-[9px]">SUFFER SCORE</span>
                                 </div>
                                 <div class="flex items-baseline gap-2">
@@ -4132,6 +4156,70 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- AI MARATHON PLAN ADAPTATION MODAL (STAGE 1 & 2 AI ENGINE)  -->
     <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- MODAL: SET FULL MARATHON TARGET EVENT & DETAILED DATE-TIME  -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <div id="modal-target-race" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="target-race-modal-title">
+        <div class="flat-card border-2 border-border-strong max-w-lg w-full p-5 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 space-y-4">
+            
+            <div class="flex justify-between items-center border-b-2 border-border pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 bg-tertiary rounded-xs"></span>
+                    <h3 id="target-race-modal-title" class="font-display font-bold text-base text-text-primary">Atur Target Full Marathon &amp; Jadwal Lomba</h3>
+                </div>
+                <button type="button" onclick="closeTargetRaceModal()" class="text-text-secondary hover:text-text-primary p-1 rounded-md" aria-label="Close modal">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form onsubmit="handleTargetRaceSubmit(event)" class="space-y-3.5 font-mono text-xs">
+                <div>
+                    <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">1. Nama Event Lomba (Full Marathon)</label>
+                    <input type="text" id="target-modal-event-name" class="flat-input text-xs font-sans font-bold" placeholder="Contoh: Jakarta Marathon 2027, Maybank Marathon Bali 2026" required>
+                    <span class="text-[10px] text-text-secondary font-mono mt-0.5 block">Nama race resmi yang menjadi tujuan utama periodisasi latihan Anda.</span>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">2. Tanggal &amp; Jam Flag-Off (Detail)</label>
+                    <input type="datetime-local" id="target-modal-event-datetime" oninput="updateTargetRaceModalPreview()" class="flat-input text-xs font-mono font-bold" required>
+                    <span class="text-[10px] text-text-secondary font-mono mt-0.5 block">Tentukan tanggal dan jam start (flag-off) detail untuk kalkulasi hitung mundur presisi.</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">3. Target Waktu Finish</label>
+                        <input type="text" id="target-modal-time" oninput="updateTargetRaceModalPreview()" class="flat-input text-xs font-mono font-bold" value="05:30:00" placeholder="05:30:00">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">Target Pace Ekuivalen</label>
+                        <input type="text" id="target-modal-pace" class="flat-input text-xs font-mono font-bold text-emerald-500 bg-surface-subtle" value="07:49 /km" readonly>
+                    </div>
+                </div>
+
+                <!-- Live Dynamic Countdown Preview -->
+                <div class="p-3 bg-surface-subtle border border-border rounded-xl space-y-1.5 text-center">
+                    <span class="text-[10px] text-text-secondary uppercase block font-bold">Hitung Mundur Menuju Hari Lomba</span>
+                    <div id="target-modal-countdown-preview" class="text-lg sm:text-xl font-extrabold text-tertiary font-mono">
+                        -- Hari -- Jam -- Menit Lagi
+                    </div>
+                    <div id="target-modal-milestone-preview" class="text-[11px] text-text-secondary font-mono">
+                        Minggu, 13 Jun 2027 &bull; Flag-off 04:30 WIB
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-2 border-t border-border">
+                    <button type="button" onclick="closeTargetRaceModal()" class="btn-flat-secondary py-2 px-3 text-xs font-mono">
+                        Batal
+                    </button>
+                    <button type="submit" id="btn-save-target-race" class="btn-flat-primary py-2 px-4 text-xs font-bold font-mono inline-flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>SIMPAN TARGET LOMBA</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="modal-adapt-marathon-plan" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="adapt-modal-title">
         <div class="flat-card border-2 border-border-strong max-w-lg w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150 space-y-4">
             <div class="flex justify-between items-center border-b-2 border-border pb-3">
@@ -5297,6 +5385,192 @@
         }
 
         // ══════════════════════════════════════════════════════
+        // Target Full Marathon Event Configuration & Dynamic Countdown
+        function getTargetRaceConfig() {
+            try {
+                const stored = localStorage.getItem('goalie_target_race');
+                if (stored) return JSON.parse(stored);
+            } catch (e) {}
+            return {
+                event_name: 'Jakarta Marathon 2027',
+                event_datetime: '2027-06-13T04:30',
+                target_time: '05:30:00',
+                target_pace: '07:49 /km'
+            };
+        }
+
+        function saveTargetRaceConfig(cfg) {
+            localStorage.setItem('goalie_target_race', JSON.stringify(cfg));
+            
+            // Sync with Settings inputs
+            const sName = document.getElementById('settings-race-name');
+            const sDate = document.getElementById('settings-race-date');
+            if (sName) sName.value = cfg.event_name;
+            if (sDate && cfg.event_datetime) sDate.value = cfg.event_datetime.split('T')[0];
+
+            // Sync with backend profile if token exists
+            if (appState.token) {
+                fetch(`${API_BASE}/profile`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        target_race_name: cfg.event_name,
+                        target_race_date: cfg.event_datetime
+                    })
+                }).catch(err => console.warn('[Goalie] Save race profile warning:', err));
+            }
+
+            updateTargetRaceUI();
+        }
+
+        function openTargetRaceModal() {
+            const cfg = getTargetRaceConfig();
+            const nameInput = document.getElementById('target-modal-event-name');
+            const dtInput = document.getElementById('target-modal-event-datetime');
+            const timeInput = document.getElementById('target-modal-time');
+            const paceInput = document.getElementById('target-modal-pace');
+
+            if (nameInput) nameInput.value = cfg.event_name || 'Jakarta Marathon 2027';
+            if (dtInput) dtInput.value = cfg.event_datetime || '2027-06-13T04:30';
+            if (timeInput) timeInput.value = cfg.target_time || '05:30:00';
+            if (paceInput) paceInput.value = cfg.target_pace || '07:49 /km';
+
+            updateTargetRaceModalPreview();
+            const modal = document.getElementById('modal-target-race');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeTargetRaceModal() {
+            const modal = document.getElementById('modal-target-race');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function updateTargetRaceModalPreview() {
+            const dtInput = document.getElementById('target-modal-event-datetime');
+            const timeInput = document.getElementById('target-modal-time');
+            const paceInput = document.getElementById('target-modal-pace');
+            const previewEl = document.getElementById('target-modal-countdown-preview');
+            const milestoneEl = document.getElementById('target-modal-milestone-preview');
+
+            if (!dtInput || !dtInput.value) return;
+
+            const targetDt = new Date(dtInput.value);
+            const now = new Date();
+            const diffMs = targetDt - now;
+
+            if (diffMs > 0) {
+                const totalSec = Math.floor(diffMs / 1000);
+                const days = Math.floor(totalSec / 86400);
+                const hours = Math.floor((totalSec % 86400) / 3600);
+                const mins = Math.floor((totalSec % 3600) / 60);
+
+                if (previewEl) {
+                    previewEl.textContent = `${days} Hari, ${hours} Jam, ${mins} Menit Lagi`;
+                }
+            } else {
+                if (previewEl) previewEl.textContent = 'Jadwal Telah Berlalu';
+            }
+
+            if (milestoneEl && !isNaN(targetDt.getTime())) {
+                const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                milestoneEl.textContent = targetDt.toLocaleDateString('id-ID', options) + ' WIB';
+            }
+
+            // Calculate pace preview from target time
+            if (timeInput && paceInput) {
+                const parts = (timeInput.value || '05:30:00').split(':').map(Number);
+                let sec = 19800;
+                if (parts.length === 3) sec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+                else if (parts.length === 2) sec = parts[0] * 60 + parts[1];
+                const paceSecKm = sec / 42.195;
+                const pm = Math.floor(paceSecKm / 60);
+                const ps = Math.round(paceSecKm % 60);
+                paceInput.value = `${pm < 10 ? '0' : ''}${pm}:${ps < 10 ? '0' : ''}${ps} /km`;
+            }
+        }
+
+        function handleTargetRaceSubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('target-modal-event-name');
+            const dtInput = document.getElementById('target-modal-event-datetime');
+            const timeInput = document.getElementById('target-modal-time');
+            const paceInput = document.getElementById('target-modal-pace');
+
+            if (!nameInput || !dtInput || !dtInput.value) {
+                toast.error('Data Kurang Lengkap', 'Silakan masukkan nama event dan tanggal jam pelaksanaan.');
+                return;
+            }
+
+            const cfg = {
+                event_name: nameInput.value.trim(),
+                event_datetime: dtInput.value,
+                target_time: timeInput ? timeInput.value.trim() : '05:30:00',
+                target_pace: paceInput ? paceInput.value.trim() : '07:49 /km'
+            };
+
+            saveTargetRaceConfig(cfg);
+            closeTargetRaceModal();
+            toast.success('Target Lomba Disimpan', `Target event ${cfg.event_name} berhasil disimpan!`);
+        }
+
+        function updateTargetRaceUI() {
+            const cfg = getTargetRaceConfig();
+            const targetDt = new Date(cfg.event_datetime);
+            const now = new Date();
+            const diffMs = targetDt - now;
+
+            let daysLeft = 0;
+            let hoursLeft = 0;
+            let minsLeft = 0;
+            let countdownShort = 'Selesai';
+            let countdownDetailed = 'Lomba Telah Berlalu';
+
+            if (diffMs > 0) {
+                const totalSec = Math.floor(diffMs / 1000);
+                daysLeft = Math.floor(totalSec / 86400);
+                hoursLeft = Math.floor((totalSec % 86400) / 3600);
+                minsLeft = Math.floor((totalSec % 3600) / 60);
+
+                countdownShort = daysLeft > 0 ? `${daysLeft} hari lagi` : `${hoursLeft} jam lagi`;
+                countdownDetailed = `${daysLeft} Hari ${hoursLeft} Jam ${minsLeft} Menit Lagi`;
+            }
+
+            // Update Cockpit Target Marathon card
+            const badgeEl = document.getElementById('cockpit-race-countdown');
+            const nameEl = document.getElementById('cockpit-target-event-name');
+            const schedEl = document.getElementById('cockpit-target-event-schedule');
+            const detailCdEl = document.getElementById('cockpit-detailed-countdown');
+            const timeValEl = document.getElementById('cockpit-target-time-val');
+            const paceValEl = document.getElementById('cockpit-target-pace-val');
+            const dayValEl = document.getElementById('cockpit-target-day-val');
+            const daysLeftValEl = document.getElementById('cockpit-target-days-left-val');
+            const heroTargetBlock = document.getElementById('hero-target-block');
+
+            if (badgeEl) badgeEl.textContent = countdownShort;
+            if (nameEl) nameEl.textContent = cfg.event_name;
+            if (detailCdEl) detailCdEl.textContent = countdownDetailed;
+            if (timeValEl) timeValEl.textContent = cfg.target_time;
+            if (paceValEl) paceValEl.textContent = cfg.target_pace;
+            if (daysLeftValEl) daysLeftValEl.textContent = `${daysLeft} Hari Lagi`;
+
+            if (!isNaN(targetDt.getTime())) {
+                const optionsDate = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+                const optionsTime = { hour: '2-digit', minute: '2-digit' };
+                const dayStr = targetDt.toLocaleDateString('id-ID', optionsDate);
+                const timeStr = targetDt.toLocaleTimeString('id-ID', optionsTime);
+
+                if (schedEl) schedEl.textContent = `${dayStr} • Flag-off ${timeStr} WIB`;
+                if (dayValEl) dayValEl.textContent = `${targetDt.getDate()} ${targetDt.toLocaleString('id-ID', { month: 'short' })} ${targetDt.getFullYear()}`;
+                if (heroTargetBlock) {
+                    heroTargetBlock.innerHTML = `<strong>${cfg.event_name}</strong> &bull; Target ${cfg.target_time} (${cfg.target_pace}) &bull; ${dayStr} ${timeStr} WIB`;
+                }
+            }
+        }
+
+        // Initialize target race countdown interval (every 60s)
+        setInterval(updateTargetRaceUI, 60000);
+
+
         // GOALIE FEED & QUICK AI ASSISTANT HELPERS
         // ══════════════════════════════════════════════════════
         function toggleKudos(btn) {
@@ -5425,6 +5699,7 @@
             const raceDate = new Date('2027-06-13');
             const now = new Date();
             const daysToRace = Math.max(0, Math.ceil((raceDate - now) / (1000 * 60 * 60 * 24)));
+            updateTargetRaceUI();
             const countdownEl = document.getElementById('cockpit-race-countdown');
             if (countdownEl) countdownEl.textContent = `${daysToRace} hari lagi`;
 
@@ -6209,7 +6484,7 @@
                 mobile_nav_training: "Latihan",
                 mobile_nav_coach: "Pelatih AI",
                 mobile_nav_telemetry: "Telemetri",
-                hero_badge: "Garmin FIT • Strava Sync • Banister TRIMP",
+                hero_badge: "Garmin FIT • Goalie Telemetri • Banister TRIMP",
                 hero_title: "Berlatih dengan metrik terverifikasi.",
                 hero_subtitle: "LT2 • ACWR • GAP • Periodisasi Maraton 31-Minggu",
                 hero_cta_terminal: "TERMINAL KOKPIT",
@@ -6219,7 +6494,7 @@
                 chip_prescribe: "Preskripsi Latihan Besok",
                 chip_acwr: "Evaluasi ACWR & TSB",
                 chip_karvonen: "Matriks Karvonen 5-Zona",
-                chip_gap: "Kalkulator Strava GAP",
+                chip_gap: "Kalkulator Minetti GAP",
                 chip_drift: "Decoupling Aerobik +1.7%",
                 chat_input_ph: "Tanyakan target pace, protokol pemulihan, interval...",
                 chat_send_btn: "KIRIM >",
@@ -6255,7 +6530,7 @@
                 telemetry_badge_core: "SAINS OLAHRAGA UTAMA",
                 telemetry_badge_access: "AKSES ATLET GRATIS",
                 telemetry_suite_title: "Rangkaian Telemetri Ketahanan Terpadu",
-                telemetry_suite_sub: "TrainingPeaks PMC/ACWR • Intervals.icu Karvonen HR • Strava Pro Minetti GAP",
+                telemetry_suite_sub: "Beban ACWR • Karvonen HR Reserve • Minetti Grade Adjusted Pace",
                 telemetry_btn_recalc: "HITUNG ULANG",
                 telemetry_btn_ical: "SALIN FEED ICAL",
                 telemetry_tp_hub: "Hub Telemetri TrainingPeaks™",
@@ -6327,7 +6602,7 @@
                 icu_settings_link: "Ubah Detak Jantung Istirahat & Maks di Pengaturan >",
                 icu_matrix_title: "Matriks Dynamic Karvonen Heart Rate Reserve (HRR)",
                 icu_customizer_title: "KUSTOMISASI BIOMETRIK LANGSUNG",
-                strava_hub_title: "Pusat Telemetri Strava Pro",
+                strava_hub_title: "Pusat Telemetri Goalie Pro",
                 garmin_sync_btn: "SINKRONKAN TELEMETRI GARMIN",
                 gait_select_clip: "Pilih Rekaman Gerak",
                 gait_quality_sessions: "Sesi Berkualitas",
@@ -6501,7 +6776,7 @@
                 mobile_nav_training: "Training",
                 mobile_nav_coach: "AI Coach",
                 mobile_nav_telemetry: "Telemetry",
-                hero_badge: "Garmin FIT • Strava Sync • Banister TRIMP",
+                hero_badge: "Garmin FIT • Goalie Telemetry • Banister TRIMP",
                 hero_title: "Train with verifiable metrics.",
                 hero_subtitle: "LT2 • ACWR • GAP • 31-Wk Marathon Periodization",
                 hero_cta_terminal: "LIVE COCKPIT",
@@ -6511,7 +6786,7 @@
                 chip_prescribe: "Prescribe Tomorrow's Workout",
                 chip_acwr: "Evaluate ACWR & TSB",
                 chip_karvonen: "Karvonen 5-Zone Matrix",
-                chip_gap: "Strava Minetti GAP Calculator",
+                chip_gap: "Goalie Minetti GAP Calculator",
                 chip_drift: "Aerobic Decoupling +1.7%",
                 chat_input_ph: "Ask about target pace, recovery protocols, interval structure...",
                 chat_send_btn: "SEND >",
@@ -6547,7 +6822,7 @@
                 telemetry_badge_core: "CORE SPORTS SCIENCE",
                 telemetry_badge_access: "FREE ATHLETE ACCESS",
                 telemetry_suite_title: "Unified Endurance Telemetry Suite",
-                telemetry_suite_sub: "TrainingPeaks PMC/ACWR • Intervals.icu Karvonen HR • Strava Pro Minetti GAP",
+                telemetry_suite_sub: "ACWR Workload • Karvonen HR Reserve • Minetti Grade Adjusted Pace",
                 telemetry_btn_recalc: "RECALCULATE",
                 telemetry_btn_ical: "COPY ICAL FEED",
                 telemetry_tp_hub: "TrainingPeaks™ Telemetry Hub",
@@ -6619,7 +6894,7 @@
                 icu_settings_link: "Edit Resting & Max HR in Settings >",
                 icu_matrix_title: "Dynamic Karvonen Heart Rate Reserve (HRR) Matrix",
                 icu_customizer_title: "LIVE BIOMETRIC CUSTOMIZER",
-                strava_hub_title: "Strava Pro Telemetry Hub",
+                strava_hub_title: "Goalie Pro Telemetry Hub",
                 garmin_sync_btn: "SYNC GARMIN TELEMETRY",
                 gait_select_clip: "Select Gait Clip",
                 gait_quality_sessions: "Quality Sessions",
