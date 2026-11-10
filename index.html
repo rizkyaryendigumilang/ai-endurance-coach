@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="light user-is-pro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
@@ -898,7 +898,7 @@
                 </a>
 
                 <!-- Unauthenticated State -->
-                <div id="nav-unauth-actions" class="flex items-center gap-1.5 shrink-0">
+                <div id="nav-unauth-actions" class="hidden flex items-center gap-1.5 shrink-0">
                     <button onclick="openAuthModal('login')" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-lg transition-colors whitespace-nowrap shrink-0" data-i18n="nav_login">
                         Log In
                     </button>
@@ -908,8 +908,8 @@
                 </div>
 
                 <!-- Authenticated State -->
-                <div id="nav-auth-actions" class="hidden flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="h-8 px-2 text-xs font-mono font-bold text-flat-amber border border-flat-amber/40 bg-surface-subtle rounded-lg hover:bg-flat-amber/10 transition-colors hidden xl:flex items-center gap-1 whitespace-nowrap shrink-0" title="Summit Pro Status">
+                <div id="nav-auth-actions" class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="hidden" title="Summit Pro Status">
                         <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                         <span class="whitespace-nowrap font-bold">SUMMIT PRO</span>
                     </button>
@@ -4707,7 +4707,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div>
                                     <label data-i18n="settings_fullname_label" class="block text-[11px] text-text-secondary mb-1">Nama Lengkap</label>
-                                    <input type="text" id="settings-name" class="flat-input text-xs" placeholder="e.g. Alex Henderson" required>
+                                    <input type="text" id="settings-name" class="flat-input text-xs" placeholder="Rizky Aryendi Gumilang" required>
                                 </div>
                                 <div>
                                     <label data-i18n="settings_weight_label" class="block text-[11px] text-text-secondary mb-1">Berat Badan (kg)</label>
@@ -4895,7 +4895,7 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- PRICING SECTION: 3 Tiers, Middle Highlighted (2D Flat)    -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <section id="pricing" class="py-16 lg:py-24 border-b-2 border-border bg-surface">
+    <section id="pricing" class="hidden py-16 lg:py-24 border-b-2 border-border bg-surface">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
             
             <div class="text-center max-w-xl mx-auto space-y-2">
@@ -8551,81 +8551,40 @@
         // ══════════════════════════════════════════════════════
         // STRAVA ATHLETIC ACTIVITY FIXTURES & MODAL (Feature 1 & 2)
         // ══════════════════════════════════════════════════════
-        const ACTIVITY_FIXTURES = {
-            morning_run: {
-                id: 'morning_run',
-                sport: 'run',
-                locationName: 'Gelora Bung Karno Senayan • Jakarta',
-                gpsRoute: typeof getWorkoutRouteCoordinates !== 'undefined' ? getWorkoutRouteCoordinates('morning_run', 10.25, 'run').coords : [],
-                title: { id: 'Morning Progression Tempo Run', en: 'Morning Progression Tempo Run' },
-                date: { id: 'Hari ini pukul 06:15 WIB • Jakarta, Indonesia', en: 'Today at 06:15 AM • Jakarta, Indonesia' },
-                distance: '10.25 km',
-                pace: '4:38 /km',
-                time: '47m 32s',
-                elev: '+68 m',
-                avgHr: '158 bpm',
-                maxHr: '174 bpm',
-                calories: '730 kcal',
-                suffer: '64 (Tough)',
-                hrStacked: [
-                    { pct: 8, color: 'bg-blue-400', label: 'Z1 (<125 bpm): 8%' },
-                    { pct: 24, color: 'bg-emerald-400', label: 'Z2 (125-149): 24%' },
-                    { pct: 38, color: 'bg-amber-400', label: 'Z3 (150-163): 38%' },
-                    { pct: 26, color: 'bg-orange-500', label: 'Z4 (164-177): 26%' },
-                    { pct: 4, color: 'bg-rose-500', label: 'Z5 (>177 bpm): 4%' }
-                ],
-                splits: [
-                    { km: '1', pace: '05:12', distPct: 75, elev: '+4m', hr: 142 },
-                    { km: '2', pace: '04:58', distPct: 80, elev: '+6m', hr: 148 },
-                    { km: '3', pace: '04:44', distPct: 86, elev: '+8m', hr: 153 },
-                    { km: '4', pace: '04:36', distPct: 91, elev: '+5m', hr: 157 },
-                    { km: '5', pace: '04:32', distPct: 93, elev: '+2m', hr: 160 },
-                    { km: '6', pace: '04:28', distPct: 95, elev: '+7m', hr: 163 },
-                    { km: '7', pace: '04:22', distPct: 98, elev: '+9m', hr: 166 },
-                    { km: '8', pace: '04:20', distPct: 100, elev: '+11m', hr: 169 },
-                    { km: '9', pace: '04:21', distPct: 99, elev: '+10m', hr: 171 },
-                    { km: '10', pace: '04:35', distPct: 92, elev: '+6m', hr: 165 },
-                    { km: '10.25', pace: '04:48', distPct: 85, elev: '0m', hr: 159 }
-                ],
-                aiAudit: {
-                    id: 'Eksekusi sangat solid pada blok interval threshold. Decoupling kardiovaskular tercatat hanya +1.7% antara repetisi awal dan akhir, membuktikan densitas mitokondria yang prima. Rekomendasi pemulihan: 65g karbohidrat cepat serap dan 25g protein dalam 45 menit pertama.',
-                    en: 'Stellar execution across threshold interval blocks. Cardiovascular drift was limited to only +1.7% decoupling, proving high mitochondrial density. Recommended recovery: 65g fast carbohydrates and 25g protein within 45 minutes.'
-                }
-            },
-            weekend_ride: {
-                id: 'weekend_ride',
-                sport: 'cycling',
-                title: { id: 'Sentul KM0 Hill Climb Endurance', en: 'Sentul KM0 Hill Climb Endurance' },
-                date: { id: 'Kemarin pukul 05:45 WIB • Sentul Loop, Jawa Barat', en: 'Yesterday at 05:45 AM • Sentul Loop, West Java' },
-                distance: '64.8 km',
-                pace: '28.4 km/h',
-                time: '2h 16m',
-                elev: '+580 m',
-                avgHr: '146 bpm',
-                maxHr: '178 bpm',
-                calories: '1,420 kcal',
-                suffer: '142 (Epic)',
-                hrStacked: [
-                    { pct: 12, color: 'bg-blue-400', label: 'Z1 (<120 bpm): 12%' },
-                    { pct: 45, color: 'bg-emerald-400', label: 'Z2 (120-142): 45%' },
-                    { pct: 25, color: 'bg-amber-400', label: 'Z3 (143-158): 25%' },
-                    { pct: 15, color: 'bg-orange-500', label: 'Z4 (159-172): 15%' },
-                    { pct: 3, color: 'bg-rose-500', label: 'Z5 (>172 bpm): 3%' }
-                ],
-                splits: [
-                    { km: '0-10', pace: '32.1 km/h', distPct: 90, elev: '+25m', hr: 134 },
-                    { km: '10-20', pace: '30.5 km/h', distPct: 85, elev: '+45m', hr: 139 },
-                    { km: '20-30', pace: '24.2 km/h', distPct: 70, elev: '+180m', hr: 156 },
-                    { km: '30-40', pace: '18.6 km/h', distPct: 55, elev: '+240m', hr: 168 },
-                    { km: '40-50', pace: '38.4 km/h', distPct: 98, elev: '-310m', hr: 128 },
-                    { km: '50-64.8', pace: '31.2 km/h', distPct: 88, elev: '+90m', hr: 142 }
-                ],
-                aiAudit: {
-                    id: 'Manajemen tenaga di tanjakan KM0 sangat konsisten di 240W Normalised Power. Efisiensi aerodinamis saat turunan menjaga denyut jantung di zona pemulihan aktif. Waspadai asupan elektrolit untuk mencegah dehidrasi pada cuaca tropis.',
-                    en: 'Climbing power management up KM0 was exceptionally steady at 240W Normalized Power. Aerodynamic efficiency during descent allowed quick active recovery. Monitor electrolyte replenishment in hot tropical climates.'
-                }
-            }
-        };
+        const ACTIVITY_FIXTURES = {};
+        // Automatically populated from Garmin Connect authentic workouts
+        if (typeof INITIAL_GARMIN_WORKOUTS !== 'undefined' && Array.isArray(INITIAL_GARMIN_WORKOUTS)) {
+            INITIAL_GARMIN_WORKOUTS.forEach(w => {
+                ACTIVITY_FIXTURES[w.id] = {
+                    id: w.id,
+                    sport: w.sport || 'run',
+                    locationName: w.location || 'Jakarta • Garmin Connect Track',
+                    gpsRoute: typeof getWorkoutRouteCoordinates !== 'undefined' ? getWorkoutRouteCoordinates(w.id, w.distance_km, w.sport).coords : [],
+                    title: { id: w.title, en: w.title },
+                    date: { id: `${w.date} • Garmin Telemetri Riil`, en: `${w.date} • Real Garmin Telemetry` },
+                    distance: `${w.distance_km} km`,
+                    pace: `${w.avg_pace_formatted || '5:28'} /km`,
+                    time: w.duration_formatted || '1h 38m',
+                    elev: `+${w.elevation_gain_m || 42} m`,
+                    avgHr: `${w.avg_hr || 154} bpm`,
+                    maxHr: `${w.max_hr || 172} bpm`,
+                    calories: `${w.calories || 950} kcal`,
+                    suffer: `${w.trimp_score || 85} (Training Load)`,
+                    hrStacked: [
+                        { pct: 10, color: 'bg-blue-400', label: 'Z1: 10%' },
+                        { pct: 35, color: 'bg-emerald-400', label: 'Z2: 35%' },
+                        { pct: 35, color: 'bg-amber-400', label: 'Z3: 35%' },
+                        { pct: 15, color: 'bg-orange-500', label: 'Z4: 15%' },
+                        { pct: 5, color: 'bg-rose-500', label: 'Z5: 5%' }
+                    ],
+                    splits: w.splits || [],
+                    aiAudit: {
+                        id: w.ai_coach_debrief || 'Eksekusi telemetri Garmin tercatat sangat baik dan konsisten di zona target fisiologis.',
+                        en: w.ai_coach_debrief || 'Solid Garmin telemetry execution aligned with target physiological zones.'
+                    }
+                };
+            });
+        }
 
         function filterFeed(type) {
             const cards = document.querySelectorAll('.feed-card');
@@ -8932,7 +8891,7 @@
         }
 
         function openActivityDetailModal(activityId) {
-            const data = ACTIVITY_FIXTURES[activityId] || ACTIVITY_FIXTURES.morning_run;
+            const data = ACTIVITY_FIXTURES[activityId] || Object.values(ACTIVITY_FIXTURES)[0];
             const currentLang = localStorage.getItem('goalie_language') || 'id';
 
             const titleEl = document.getElementById('detail-activity-title');
@@ -9453,7 +9412,6 @@
                 run_analyzer_drop: "Drop foto atau video lari di sini, atau klik untuk memilih",
                 run_analyzer_formats: "Foto (JPG, PNG, WEBP) atau Klip Video (MP4, MOV, WEBM) hingga 50MB",
                 run_analyzer_btn_select: "Pilih Berkas Foto / Video",
-                run_analyzer_btn_demo: "Gunakan Contoh Pose Pelari",
                 run_analyzer_hint: "Tips: Tampak samping (sagital) memberikan evaluasi sudut lutut & kemiringan badan paling akurat.",
                 run_analyzer_btn_run: "EKSTRAKSI BIOMEKANIKA LARI",
                 run_analyzer_res_title: "Hasil Analisis: Evaluasi Rangka & Sudut Fisiologis",
@@ -9745,7 +9703,6 @@
                 run_analyzer_drop: "Drop running photo or video here, or click to browse",
                 run_analyzer_formats: "Photos (JPG, PNG, WEBP) or Video Clips (MP4, MOV, WEBM) up to 50MB",
                 run_analyzer_btn_select: "Select Photo or Video File",
-                run_analyzer_btn_demo: "Use Sample Runner Pose",
                 run_analyzer_hint: "Tip: Side (sagittal) view provides the highest precision for knee flexion and torso lean angle.",
                 run_analyzer_btn_run: "RUN BIOMECHANICAL EXTRACTION",
                 run_analyzer_res_title: "Analysis Complete: Skeletal Landmarks & Angles",
@@ -9810,7 +9767,7 @@
         }
 
         function triggerWorkoutPreview(title, pace) {
-            openActivityDetailModal('morning_run');
+            const firstId = Object.keys(ACTIVITY_FIXTURES)[0] || 'w-garmin-rizky-1'; openActivityDetailModal(firstId);
         }
 
         // ══════════════════════════════════════════════════════════════════

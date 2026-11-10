@@ -33,7 +33,7 @@ def _get_user_store(user_id: str):
             _ensure_seed_data()
         finally:
             _SEEDING = False
-    if _is_owner_user(user_id) or not user_id or str(user_id).lower() in ("demo-athlete-budi", "guest", "default", "sandbox_athlete_guest"):
+    if _is_owner_user(user_id) or not user_id or str(user_id).lower() in ("guest", "default", "sandbox_athlete_guest", "athlete"):
         user_id = OWNER_USER_ID
     if user_id not in _USERS_DB:
         is_owner = _is_owner_user(user_id)
@@ -990,8 +990,8 @@ def _seed_admin_logs():
                 "source": "Strava",
                 "event_type": "activity.create",
                 "status": "200 OK",
-                "athlete_id": "demo-athlete-sarah",
-                "athlete_name": "Sarah Jenkins",
+                "athlete_id": OWNER_USER_ID,
+                "athlete_name": "Rizky Aryendi Gumilang",
                 "detail": "Activity #84920194 • Zone 2 Endurance Ride (82.0 km) parsed & normalized"
             },
             {
@@ -1000,8 +1000,8 @@ def _seed_admin_logs():
                 "source": "Garmin",
                 "event_type": "health_metrics.sync",
                 "status": "200 OK",
-                "athlete_id": "demo-user-12345",
-                "athlete_name": "Alex Rivers",
+                "athlete_id": OWNER_USER_ID,
+                "athlete_name": "Rizky Aryendi Gumilang",
                 "detail": "Resting HR: 48 bpm, Sleep Score: 86, HRV Status: Balanced (58ms)"
             },
             {
@@ -1010,8 +1010,8 @@ def _seed_admin_logs():
                 "source": "Intervals.icu",
                 "event_type": "wellness.update",
                 "status": "200 OK",
-                "athlete_id": "demo-athlete-sarah",
-                "athlete_name": "Sarah Jenkins",
+                "athlete_id": OWNER_USER_ID,
+                "athlete_name": "Rizky Aryendi Gumilang",
                 "detail": "TSB: +12, CTL: 78.4, ATL: 66.4 • Ingested via API polling stream"
             },
             {
@@ -1020,8 +1020,8 @@ def _seed_admin_logs():
                 "source": "Strava",
                 "event_type": "activity.update",
                 "status": "FAILED",
-                "athlete_id": "demo-athlete-rendi",
-                "athlete_name": "Rendi Kurniawan",
+                "athlete_id": OWNER_USER_ID,
+                "athlete_name": "Rizky Aryendi Gumilang",
                 "detail": "Invalid FIT binary CRC checksum • Stream retry queued"
             }
         ]
