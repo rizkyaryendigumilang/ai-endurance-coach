@@ -5142,13 +5142,13 @@
                 <div>
                     <label class="block text-[11px] text-text-secondary mb-1 uppercase font-bold">1. Kategori Kendala</label>
                     <select id="helpdesk-ticket-category" class="flat-input text-xs font-sans font-medium w-full">
-                        <option value="Telemetri Garmin & Jam">Telemetri Garmin &amp; Sensor Jam</option>
-                        <option value="Calculator Pace & Cuaca" selected>Calculator Pace, Cuaca &amp; Pacing Lomba</option>
-                        <option value="Rute GPX & Elevasi">Rute GPX, Elevasi &amp; Peta</option>
-                        <option value="Biomekanika & Form Lari">Biomekanika &amp; Analisis Form Lari</option>
-                        <option value="Jadwal Kalender 31 Minggu">Jadwal Kalender &amp; Makrosiklus 31 Minggu</option>
-                        <option value="Akun & Kunci AI">Akun, BYOK Kunci AI &amp; Integrasi</option>
-                        <option value="Kendala Lainnya">Kendala Lainnya / Pertanyaan Umum</option>
+                        <option value="bug_error" selected>Bug / Gangguan Teknis Aplikasi (bug_error)</option>
+                        <option value="garmin_telemetry">Telemetri Garmin &amp; Sensor Jam</option>
+                        <option value="calculator_pace">Calculator Pace, Cuaca &amp; Pacing Lomba</option>
+                        <option value="course_gpx">Rute GPX, Elevasi &amp; Peta</option>
+                        <option value="biomekanika">Biomekanika &amp; Analisis Form Lari</option>
+                        <option value="account_access">Akun, BYOK Kunci AI &amp; Integrasi</option>
+                        <option value="general_inquiry">Pertanyaan Umum / Lainnya</option>
                     </select>
                 </div>
 
@@ -5192,6 +5192,14 @@
                             </button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Prioritas Kendala -->
+                <div class="flex items-center gap-2 pt-0.5">
+                    <input type="checkbox" id="helpdesk-ticket-urgent" class="w-3.5 h-3.5 accent-rose-500 rounded cursor-pointer">
+                    <label for="helpdesk-ticket-urgent" class="text-[11px] text-text-secondary cursor-pointer select-none">
+                        Tandai sebagai Prioritas Mendesak (Urgent Priority)
+                    </label>
                 </div>
 
                 <!-- Diagnostic Metadata (Auto-attached) -->
@@ -10285,16 +10293,59 @@
             if (imgEl) imgEl.src = '';
         }
 
+        function dapatkanSesiPenggunaAktif() {
+            const email = appState.userEmail || localStorage.getItem('user_email') || 'rizkyaryendigumilang@gmail.com';
+            const isOwner = email.toLowerCase().includes('rizkyaryendigumilang');
+            const name = isOwner 
+                ? 'Rizky Aryendi Gumilang' 
+                : (localStorage.getItem('athlete_full_name') || email.split('@')[0] || 'Tamu / Pengguna');
+            const role = appState.isPro ? 'Pro Coach' : 'Pengguna';
+
+            return {
+                id: email,
+                username: email,
+                name: name,
+                role: role
+            };
+        }
+
+        function laporkanKendalaKeHelpdesk({ subject, description, category = 'bug_error', isUrgent = false }) {
+            const currentUser = dapatkanSesiPenggunaAktif();
+            
+            const params = new URLSearchParams({
+                app: 'ai-endurance',
+                uid: currentUser.id || currentUser.username,
+                name: currentUser.name || currentUser.username,
+                role: currentUser.role || 'Pengguna',
+                from_url: window.location.href,
+                new: '1',
+                auto_submit: '1',
+                subject: (subject || '').trim(),
+                description: (description || '').trim(),
+                category: category,
+                priority: isUrgent ? 'urgent' : 'medium'
+            });
+
+            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
+            const targetUrl = 'https://43.156.236.102/helpdesk/handoff?' + params.toString();
+            window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        }
+
+        // Alias for compatibility
+        const openHelpdeskTicket = laporkanKendalaKeHelpdesk;
+
         function handleHelpdeskSubmit(e) {
             e.preventDefault();
 
             const catEl = document.getElementById('helpdesk-ticket-category');
             const subEl = document.getElementById('helpdesk-ticket-subject');
             const descEl = document.getElementById('helpdesk-ticket-description');
+            const urgEl = document.getElementById('helpdesk-ticket-urgent');
 
-            const category = catEl ? catEl.value : 'Kendala Teknis';
+            const category = catEl ? catEl.value : 'bug_error';
             const subject = subEl ? subEl.value.trim() : 'Laporan Kendala';
             let description = descEl ? descEl.value.trim() : '';
+            const isUrgent = urgEl ? urgEl.checked : false;
 
             if (!description) {
                 toast.error('Keluhan Belum Diisi', 'Silakan tuliskan rincian keluhan yang dihadapi.');
@@ -10306,55 +10357,15 @@
                 description += `\n\n[Lampiran Foto Terlampir: ${currentHelpdeskPhotoData.name} (${currentHelpdeskPhotoData.sizeStr})]`;
             }
 
-            openHelpdeskTicket({
-                category: category,
+            laporkanKendalaKeHelpdesk({
                 subject: subject,
-                description: description
+                description: description,
+                category: category,
+                isUrgent: isUrgent
             });
 
             closeHelpdeskModal();
-            toast.success('Tiket Dialihkan', 'Keluhan dan data kendala berhasil dikirim ke VPS Helpdesk!');
-        }
-
-        // ══════════════════════════════════════════════════════════════════
-        // HELPDESK SSO JUST-IN-TIME HANDOFF INTEGRATION
-        // ══════════════════════════════════════════════════════════════════
-        function openHelpdeskTicket(customData = {}) {
-            const HELPDESK_BASE = 'https://43.156.236.102/helpdesk/handoff';
-            const APP_SLUG = 'ai-endurance';
-
-            const email = appState.userEmail || localStorage.getItem('user_email') || 'rizkyaryendigumilang@gmail.com';
-            let name = 'Rizky Aryendi Gumilang';
-            if (email && email.toLowerCase().includes('rizkyaryendigumilang')) {
-                name = 'Rizky Aryendi Gumilang';
-            } else if (localStorage.getItem('athlete_full_name')) {
-                name = localStorage.getItem('athlete_full_name');
-            } else {
-                name = email.split('@')[0] || 'Tamu / Pengguna';
-            }
-
-            const role = appState.isPro ? 'Pro Coach' : 'Pemula';
-            const uid = email || ('guest_' + Math.random().toString(36).slice(2, 9));
-            const fromUrl = window.location.href;
-
-            const paramObj = {
-                app: APP_SLUG,
-                uid: String(uid).slice(0, 200),
-                name: String(name).slice(0, 100),
-                role: String(role).slice(0, 50),
-                from_url: fromUrl,
-                new: '1'
-            };
-
-            if (customData.subject) paramObj.subject = String(customData.subject).slice(0, 200);
-            if (customData.description) paramObj.description = String(customData.description).slice(0, 4000);
-            if (customData.category) paramObj.category = String(customData.category).slice(0, 100);
-
-            const params = new URLSearchParams(paramObj);
-
-            if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
-            const targetUrl = `${HELPDESK_BASE}?${params.toString()}`;
-            window.open(targetUrl, '_blank', 'noopener,noreferrer');
+            toast.success('Tiket Terkirim', 'Keluhan berhasil dialihkan dan disubmit otomatis ke VPS Helpdesk!');
         }
 
         // Auth Navigation UI
