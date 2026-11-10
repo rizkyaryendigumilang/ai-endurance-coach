@@ -1,6 +1,6 @@
 ---
 name: pick-ui-library
-description: Pick the right library for a given frontend task from a curated, opinionated list — numbers, OTP inputs, charts, command menus, virtualization, drag and drop, toasts, state, styling, and more. Only runs when explicitly invoked; it does not trigger on its own.
+description: Use when selecting the optimal UI component library, CSS framework, or styling solution for a web application based on requirements and constraints.
 disable-model-invocation: true
 ---
 

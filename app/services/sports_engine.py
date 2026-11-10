@@ -544,6 +544,13 @@ class SportsEngine:
         }
 
     @staticmethod
+    def format_pace_mmss(seconds: int) -> str:
+        """Mengonversi durasi detik ke format string MM:SS."""
+        m = int(seconds // 60)
+        sec = int(round(seconds % 60))
+        return f"{m:02d}:{sec:02d}"
+
+    @staticmethod
     def calculate_dew_point(temp_c: float, rh_percent: float) -> float:
         """Menghitung Titik Embun (Dew Point °C) menggunakan rumus Magnus-Tetens."""
         a, b = 17.625, 243.04
@@ -583,11 +590,6 @@ class SportsEngine:
         final_penalty_pct = round(base_penalty_pct * m_duration * m_accl, 2)
         adjusted_pace_sec = round(base_pace_sec_per_km * (1.0 + final_penalty_pct / 100.0))
 
-        def sec_to_str(s: int) -> str:
-            m = int(s // 60)
-            sec = int(round(s % 60))
-            return f"{m:02d}:{sec:02d}"
-
         return {
             "dew_point_c": dew_point_c,
             "effective_temp_c": round(effective_temp_c, 1),
@@ -595,9 +597,9 @@ class SportsEngine:
             "base_penalty_pct": round(base_penalty_pct, 2),
             "final_penalty_pct": final_penalty_pct,
             "base_pace_sec": base_pace_sec_per_km,
-            "base_pace_str": f"{sec_to_str(base_pace_sec_per_km)} /km",
+            "base_pace_str": f"{SportsEngine.format_pace_mmss(base_pace_sec_per_km)} /km",
             "adjusted_pace_sec": adjusted_pace_sec,
-            "adjusted_pace_str": f"{sec_to_str(adjusted_pace_sec)} /km",
+            "adjusted_pace_str": f"{SportsEngine.format_pace_mmss(adjusted_pace_sec)} /km",
             "delta_seconds_per_km": adjusted_pace_sec - base_pace_sec_per_km,
             "warning_flag": thermal_sum_c > 60.0
         }
@@ -742,20 +744,15 @@ class SportsEngine:
         normalized_sec = max(120, round(observed_pace_sec_per_km / (1.0 + penalty_pct / 100.0)))
         delta_sec = observed_pace_sec_per_km - normalized_sec
 
-        def sec_to_str(s: int) -> str:
-            m = int(s // 60)
-            sec = int(round(s % 60))
-            return f"{m:02d}:{sec:02d}"
-
         observed_vdot = SportsEngine.calculate_vdot(distance_m=10000, duration_seconds=int(observed_pace_sec_per_km * 10))
         normalized_vdot = SportsEngine.calculate_vdot(distance_m=10000, duration_seconds=int(normalized_sec * 10))
         vdot_preserved = round(max(0.0, normalized_vdot - observed_vdot), 1)
 
         return {
             "observed_pace_sec": observed_pace_sec_per_km,
-            "observed_pace_str": f"{sec_to_str(observed_pace_sec_per_km)} /km",
+            "observed_pace_str": f"{SportsEngine.format_pace_mmss(observed_pace_sec_per_km)} /km",
             "normalized_pace_sec": normalized_sec,
-            "normalized_pace_str": f"{sec_to_str(normalized_sec)} /km",
+            "normalized_pace_str": f"{SportsEngine.format_pace_mmss(normalized_sec)} /km",
             "penalty_pct": penalty_pct,
             "delta_seconds_saved": delta_sec,
             "dew_point_c": weather_adj["dew_point_c"],
@@ -765,8 +762,8 @@ class SportsEngine:
             "vdot_preserved_points": vdot_preserved,
             "explanation": (
                 f"Lari pada suhu {temp_c}°C & RH {rh_percent}% (Dew Point {weather_adj['dew_point_c']}°C). "
-                f"Pace riil {sec_to_str(observed_pace_sec_per_km)}/km bernilai fisiologis setara dengan "
-                f"{sec_to_str(normalized_sec)}/km pada cuaca sejuk. VDOT atlet berhasil diamankan (+{vdot_preserved} poin)."
+                f"Pace riil {SportsEngine.format_pace_mmss(observed_pace_sec_per_km)}/km bernilai fisiologis setara dengan "
+                f"{SportsEngine.format_pace_mmss(normalized_sec)}/km pada cuaca sejuk. VDOT atlet berhasil diamankan (+{vdot_preserved} poin)."
             )
         }
 

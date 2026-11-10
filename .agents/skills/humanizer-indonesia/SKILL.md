@@ -1,7 +1,6 @@
 ---
 name: humanizer-indonesia
-description: "Menyunting teks bahasa Indonesia agar tidak terbaca sebagai tulisan AI atau terjemahan, dan kembali ke gaya penulis. Juga untuk mengaudit berkas yang sudah disunting model lain. Trigger: /humanizer-id, humanize, rapikan bahasa, biar tidak kaku, lebih mengalir, cek gaya, audit hasil Gemini."
----
+description: Use when editing or auditing Indonesian copy to sound natural, human, and conversational, removing stiff AI translation patterns and em-dashes.---
 
 # Humanizer Indonesia
 

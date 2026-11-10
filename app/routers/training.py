@@ -510,7 +510,7 @@ class PostRunDebriefInput(BaseModel):
 
 
 @router.post("/api/v1/training/post-run-debrief", tags=["Post-Run Debrief"])
-def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(get_current_user_optional)):
+async def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(get_current_user_optional)):
     """
     Menghasilkan Evaluasi Personal Pasca Lari (Post-Run Coach Debrief):
     - True Execution Scoring (0-100% disiplin pace, HR, volume)
@@ -573,7 +573,7 @@ def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(
         if default_shoe:
             shoe_info = sandbox_store.add_shoe_mileage(uid, default_shoe["id"], data.actual_distance_km)
 
-    # 5. Synthesize AI Coach Actionable Debrief Notes
+    # 5. Synthesize AI Coach Actionable Debrief Notes (Rule Engine + LLM fallback)
     cadence = data.avg_cadence or 178
     cadence_note = (
         "Cadence optimal di angka 178+ spm, meminimalkan getaran impak ke sendi lutut."
@@ -581,13 +581,36 @@ def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = Depends(
         f"Cadence {cadence} spm sedikit rendah. Coba perpendek langkah untuk menghemat energi."
     )
 
-    debrief_summary = (
+    rule_summary = (
         f"Selesai {data.actual_distance_km:.1f} km pada cuaca {temp}°C (Dew Point {normalized_weather['dew_point_c']}°C). "
         f"Skor Kepatuhan Latihan Anda mencapai {execution['total_execution_score']}% ({execution['badge']}). "
         f"Meskipun pace aktual terbaca {normalized_weather['observed_pace_str']}, beban fisiologis Anda setara dengan "
         f"{normalized_weather['normalized_pace_str']} pada kondisi sejuk ideal - VDOT aerobik Anda tetap terjaga aman. "
         f"Status kardiak: {decoupling['status_id']} (Decoupling {decoupling['decoupling_pct']}%). {cadence_note}"
     )
+    debrief_summary = rule_summary
+
+    # Attempt AI Engine personalization with graceful rule fallback
+    try:
+        prof = sandbox_store.get_profile(uid) or {}
+        ai_prompt = (
+            f"Sebagai Head Coach Maraton elit Goalie, berikan evaluasi pasca lari singkat (3 kalimat padat) "
+            f"untuk atlet {prof.get('full_name', 'Atlet')} yang baru menyelesaikan {data.workout_title}: "
+            f"Jarak {data.actual_distance_km} km ({data.duration_seconds//60} menit), HR rata-rata {data.avg_heart_rate} bpm, "
+            f"Cadence {cadence} spm, Cuaca {temp}°C / {rh}% RH (Dew Point {normalized_weather['dew_point_c']}°C). "
+            f"Skor Eksekusi {execution['total_execution_score']}%, Decoupling {decoupling['decoupling_pct']}%. "
+            f"Gunakan bahasa Indonesia profesional, tanpa tanda pisah em-dash, tanpa jargon berlebih."
+        )
+        llm_response = await ai_provider.generate_adaptation_explanation({
+            "athlete": prof.get("full_name", "Atlet"),
+            "workout": data.workout_title,
+            "query": ai_prompt
+        })
+        if llm_response and len(llm_response.strip()) > 20:
+            clean_llm = llm_response.strip().replace("—", " - ")
+            debrief_summary = f"{clean_llm} {cadence_note}"
+    except Exception:
+        pass
 
     debrief_payload = {
         "workout_title": data.workout_title,

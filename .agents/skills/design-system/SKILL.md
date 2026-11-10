@@ -1,6 +1,6 @@
 ---
 name: design-system
-description: Token architecture, component specifications, and slide generation. Three-layer tokens (primitive→semantic→component), CSS variables, spacing/typography scales, component specs, strategic slide creation. Use for design tokens, systematic design, brand-compliant presentations.
+description: Use when designing or documenting three-layer design tokens, CSS variable architectures, typography scales, and component specifications.
 argument-hint: "[component or token]"
 license: MIT
 metadata:

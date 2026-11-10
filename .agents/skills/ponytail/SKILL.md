@@ -1,7 +1,6 @@
 ---
 name: ponytail
-description: Makes the AI agent think like the pragmatic, minimalist senior software architect. The cleanest code is simple, deterministic, and maintainable.
----
+description: Use when designing pragmatic, minimalist software architecture, eliminating over-engineering, pruning bloat, and enforcing deterministic simple code.---
 
 # Ponytail Pragmatic Architecture
 

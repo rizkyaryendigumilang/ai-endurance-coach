@@ -1,7 +1,6 @@
 ---
 name: design-craft
-description: Design engineering skills for high-fidelity micro-interactions, clean layout hierarchies, and smooth usability inspired by Emil Kowalski and modern editorial design.
----
+description: Use when building high-fidelity micro-interactions, clean layout hierarchies, polished component interactions, and fluid web animations.---
 
 # Design Craft & Interaction Principles
 
