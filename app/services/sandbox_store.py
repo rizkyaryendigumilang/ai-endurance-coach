@@ -15,7 +15,7 @@ def _is_owner_user(user_id: str, profile_data: dict = None) -> bool:
         "rizkyaryendigumilang" in u
         or u == "c698122d-1fe3-5620-820c-23682e4f844a"
         or u == "ccca9bca-6fda-5c32-a87b-a43cfa476219"
-        or u in ("sandbox_athlete_guest", "guest", "default")
+        or u in ("sandbox_athlete_guest", "guest", "default", "athlete", "athlete-session-token-active")
     ):
         return True
     if profile_data and "rizkyaryendigumilang@gmail.com" in str(profile_data.get("email", "")).lower():
@@ -33,7 +33,7 @@ def _get_user_store(user_id: str):
             _ensure_seed_data()
         finally:
             _SEEDING = False
-    if _is_owner_user(user_id) or not user_id or str(user_id).lower() in ("guest", "default", "sandbox_athlete_guest", "athlete"):
+    if _is_owner_user(user_id) or not user_id or str(user_id).lower() in ("guest", "default", "sandbox_athlete_guest", "athlete", "athlete-session-token-active"):
         user_id = OWNER_USER_ID
     if user_id not in _USERS_DB:
         is_owner = _is_owner_user(user_id)
