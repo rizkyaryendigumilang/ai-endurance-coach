@@ -36,6 +36,12 @@ npm run build
 4. **UI Conventions**:
    - The pace calculator tab/subtab is strictly named **Calculator Pace**.
 
+5. **Production & VPS Deployment Environment**:
+   - Live Host / VPS Endpoint: `https://43.156.236.102/golie`
+   - Reverse Proxy Route: Host prefix `/golie` proxies to the Goalie backend application and frontend shell.
+   - Allowed Origins: `https://43.156.236.102` and `http://43.156.236.102` are pre-whitelisted in CORS (`app/main.py`).
+   - Dynamic API Base: Frontend scripts (`index.html`, `login.html`, `admin.html`) auto-detect subpath `/golie` and map endpoints to `${window.location.origin}/golie/api/v1`.
+
 ## Agent skills
 
 ### Issue tracker

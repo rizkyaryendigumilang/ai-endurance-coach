@@ -51,7 +51,9 @@ else:
         "http://localhost:3000",
         "capacitor://localhost",
         "http://localhost",
-        "https://localhost"
+        "https://localhost",
+        "https://43.156.236.102",
+        "http://43.156.236.102"
     ]
 
 app.add_middleware(

@@ -45,8 +45,8 @@
 
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="/public/js/db.js?v=2.9.1"></script>
-    <script src="/public/js/garmin_workouts_data.js?v=2.9.1" onerror="this.onerror=null;this.src='public/js/garmin_workouts_data.js?v=2.9.1';"></script>
+    <script src="public/js/db.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.1';"></script>
+    <script src="public/js/garmin_workouts_data.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/garmin_workouts_data.js?v=2.9.1';"></script>
     <script src="public/js/garmin_map_viewer.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js?v=2.9.1';"></script>
 
 
@@ -7876,7 +7876,8 @@
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
             }
-            return `${window.location.origin}/api/v1`;
+            const pathPrefix = window.location.pathname.startsWith('/golie') ? '/golie' : '';
+            return `${window.location.origin}${pathPrefix}/api/v1`;
         };
         const API_BASE = getApiBase();
 

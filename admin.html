@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="/public/css/tailwind.min.css?v=2.9.1">
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="/public/js/db.js?v=2.9.1"></script>
+    <script src="public/js/db.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.1';"></script>
 
     <!-- Instant Theme Anti-FOUC Initialization -->
     <script>
@@ -1015,8 +1015,9 @@
 
     <!-- Script Controller -->
     <script>
+        const pathPrefix = window.location.pathname.startsWith('/golie') ? '/golie' : '';
         const API_BASE = (window.location.origin && window.location.origin !== "null") 
-            ? `${window.location.origin}/api/v1` 
+            ? `${window.location.origin}${pathPrefix}/api/v1` 
             : "http://localhost:8000/api/v1";
 
         // HTML Sanitizer to prevent XSS in DOM innerHTML operations
