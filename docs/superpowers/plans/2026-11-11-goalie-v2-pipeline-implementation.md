@@ -108,19 +108,19 @@
 - Modify: `app/routers/coach.py`
 - Test: `tests/test_v2_safety_gatekeeper.py`
 
-- [ ] Write failing unit test in `tests/test_v2_safety_gatekeeper.py`:
+- [x] Write failing unit test in `tests/test_v2_safety_gatekeeper.py`:
   - Test `assemble_unified_contract`: Generates complete JSON matching Master Blueprint specification.
   - Test `build_three_tier_context`: Assembles Hot (7-day), Warm (4-week mesocycle), and Persistent Dossier context.
   - Test `validate_ai_adaptation_gatekeeper`: Load Clamping clamps volume jumps > 10% or ACWR > 1.30.
-- [ ] Run test to verify failure:
+- [x] Run test to verify failure:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_safety_gatekeeper.py`
-- [ ] Implement memory assembler and Safety Gatekeeper in `app/services/ai_provider.py` and `app/services/sandbox_store.py`:
+- [x] Implement memory assembler and Safety Gatekeeper in `app/services/ai_provider.py` and `app/services/sandbox_store.py`:
   - `assemble_unified_contract(user_id, activity_data, eval_metrics)`
   - `build_three_tier_context(user_id)`
   - `validate_ai_adaptation_gatekeeper(proposed_intent_json, current_ctl, current_atl)`
-- [ ] Run test to verify pass:
+- [x] Run test to verify pass:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_safety_gatekeeper.py`
-- [ ] Commit: `git commit -m "feat(v2): implement Lapisan 4 3-Tier Memory, Unified Contract, and Lapisan 5 Safety Gatekeeper"`
+- [x] Commit: `git commit -m "feat(v2): implement Lapisan 4 3-Tier Memory, Unified Contract, and Lapisan 5 Safety Gatekeeper"`
 
 ---
 
@@ -131,18 +131,18 @@
 - Modify: `app/services/sandbox_store.py`
 - Test: `tests/test_v2_database_schema_and_store.py`
 
-- [ ] Write failing unit test in `tests/test_v2_database_schema_and_store.py`:
+- [x] Write failing unit test in `tests/test_v2_database_schema_and_store.py`:
   - Test storing and retrieving `athlete_profiles` with `persistent_dossier_json`.
   - Test storing and retrieving `garmin_activities_evaluated` with EWMA snapshots and auto-test verdicts.
   - Test `training_plan_workouts` with `original_workout_spec` and `adapted_workout_spec`.
   - Test `schedule_mutation_logs` and `mesocycle_digests`.
-- [ ] Run test to verify failure:
+- [x] Run test to verify failure:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_database_schema_and_store.py`
-- [ ] Create `docs/migrations/0002_goalie_v2_core_schema.sql` containing the 5 PostgreSQL DDL table definitions.
-- [ ] Implement atomic local sandbox persistence for all 5 schemas in `app/services/sandbox_store.py`.
-- [ ] Run test to verify pass:
+- [x] Create `docs/migrations/0002_goalie_v2_core_schema.sql` containing the 5 PostgreSQL DDL table definitions.
+- [x] Implement atomic local sandbox persistence for all 5 schemas in `app/services/sandbox_store.py`.
+- [x] Run test to verify pass:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_database_schema_and_store.py`
-- [ ] Commit: `git commit -m "feat(v2): define PostgreSQL DDL migration and sandbox store persistence for 5 core tables"`
+- [x] Commit: `git commit -m "feat(v2): define PostgreSQL DDL migration and sandbox store persistence for 5 core tables"`
 
 ---
 
@@ -151,18 +151,18 @@
 **Files:**
 - Create: `tests/test_v2_end_to_end_pipeline.py`
 
-- [ ] Write end-to-end integration test simulating:
+- [x] Write end-to-end integration test simulating:
   1. Ingesting Garmin raw stream via Lapisan 1.
   2. Calculating Submaximal VDOT, Minetti GAP, and EWMA ACWR via Lapisan 2.
   3. Evaluating Target Gap and 3-session verdict via Lapisan 3.
   4. Assembling 3-Tier Context and Unified Contract via Lapisan 4.
   5. Generating AI Coach guidance and passing through Safety Gatekeeper Load Clamping via Lapisan 5.
-- [ ] Run the complete test suite:
+- [x] Run the complete test suite:
   `.\venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"`
-- [ ] Build frontend and sync Capacitor mobile targets:
+- [x] Build frontend and sync Capacitor mobile targets:
   `npm run build`
-- [ ] Verify local server response:
+- [x] Verify local server response:
   `.\venv\Scripts\python.exe -c "import urllib.request; resp = urllib.request.urlopen('http://127.0.0.1:8000/'); print('Server status:', resp.status)"`
-- [ ] Verify zero em-dash characters across all modified files.
-- [ ] Commit and push to origin main:
+- [x] Verify zero em-dash characters across all modified files.
+- [x] Commit and push to origin main:
   `git push origin main`
