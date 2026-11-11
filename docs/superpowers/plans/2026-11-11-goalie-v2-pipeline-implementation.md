@@ -56,23 +56,23 @@
 - Modify: `app/services/sports_engine.py`
 - Test: `tests/test_v2_sports_engine_core.py`
 
-- [ ] Write failing unit test in `tests/test_v2_sports_engine_core.py`:
+- [x] Write failing unit test in `tests/test_v2_sports_engine_core.py`:
   - Test `calculate_normalized_velocity`: Minetti slope correction + Magnus-Tetens dew point heat penalty factor.
   - Test `calculate_submaximal_vdot`: Jack Daniels oxygen cost from normalized velocity divided by Karvonen `%HRR`.
   - Test `calculate_ewma_load`: 7-day ATL vs 28-day CTL exponential weighting, ACWR ratio, and TSB form.
   - Test `calculate_tropical_fueling`: Carbohydrate g/hr, hydration ml/hr, and sodium mg/hr based on body weight and dew point.
   - Test `calculate_aerobic_decoupling_and_cadence_fade`: Pw:HR ratio across run halves and late-stage cadence drop.
-- [ ] Run test to verify failure:
+- [x] Run test to verify failure:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_sports_engine_core.py`
-- [ ] Implement mathematical functions in `app/services/sports_engine.py`:
+- [x] Implement mathematical functions in `app/services/sports_engine.py`:
   - `calculate_normalized_velocity(actual_speed_mps, gradient_pct, dew_point_c, duration_min, acclimatized=True)`
   - `calculate_submaximal_vdot(v_norm_mps, steady_hr, resting_hr, max_hr)`
   - `calculate_ewma_load(daily_trimp_series, initial_atl=None, initial_ctl=None)`
   - `calculate_tropical_fueling(weight_kg, duration_hours, dew_point_c)`
   - `calculate_aerobic_decoupling_and_cadence_fade(split_points)`
-- [ ] Run test to verify pass:
+- [x] Run test to verify pass:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_sports_engine_core.py`
-- [ ] Commit: `git commit -m "feat(v2): implement Lapisan 2 Submaximal VDOT, EWMA ACWR, and Tropical Fueling"`
+- [x] Commit: `git commit -m "feat(sports-engine): implement Lapisan 2 Core, fix GAP calculation bug and enhance live feed maps"`
 
 ---
 
