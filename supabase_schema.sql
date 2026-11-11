@@ -1,5 +1,5 @@
 -- ══════════════════════════════════════════════════════════
--- GOALIE — PRODUCTION SUPABASE SQL SCHEMA
+-- GOALIE - PRODUCTION SUPABASE SQL SCHEMA
 -- ══════════════════════════════════════════════════════════
 
 -- Enable UUID extension
@@ -234,3 +234,96 @@ CREATE POLICY "Users can view own metrics" ON public.activity_metrics FOR ALL US
 );
 CREATE POLICY "Users can manage own chat" ON public.chat_history FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can view own subscription" ON public.subscriptions FOR ALL USING (auth.uid() = user_id);
+
+-- ══════════════════════════════════════════════════════════
+-- 12. GOALIE V2 CORE SCHEMA (5-LAYER SPORTS ENGINE & REBALANCER)
+-- ══════════════════════════════════════════════════════════
+
+-- 12.1 Extend Profiles with 3-Tier Athlete Memory & Target VDOT
+ALTER TABLE IF EXISTS public.profiles
+    ADD COLUMN IF NOT EXISTS baseline_vdot NUMERIC(4, 2) DEFAULT 44.0,
+    ADD COLUMN IF NOT EXISTS target_goal_vdot NUMERIC(4, 2) DEFAULT 46.5,
+    ADD COLUMN IF NOT EXISTS current_training_week INTEGER DEFAULT 18,
+    ADD COLUMN IF NOT EXISTS total_plan_weeks INTEGER DEFAULT 31,
+    ADD COLUMN IF NOT EXISTS training_phase TEXT DEFAULT 'BUILD_2',
+    ADD COLUMN IF NOT EXISTS heat_acclimatized BOOLEAN DEFAULT TRUE,
+    ADD COLUMN IF NOT EXISTS persistent_dossier_json JSONB DEFAULT '{}'::jsonb;
+
+-- 12.2 Evaluated Garmin Activities (Submaximal Continuous VDOT & Decoupling)
+CREATE TABLE IF NOT EXISTS public.garmin_activities_evaluated (
+    activity_id TEXT PRIMARY KEY,
+    athlete_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    start_time TIMESTAMPTZ NOT NULL,
+    workout_category TEXT DEFAULT 'AEROBIC_BASE',
+    raw_distance_km NUMERIC(6, 2) NOT NULL,
+    raw_avg_pace_sec INTEGER,
+    norm_steady_pace_sec INTEGER,
+    steady_hrr_pct NUMERIC(4, 1),
+    session_effective_vdot NUMERIC(4, 2),
+    aerobic_decoupling_pct NUMERIC(5, 2) DEFAULT 0.0,
+    late_cadence_drop_spm NUMERIC(4, 1) DEFAULT 0.0,
+    trimp_load NUMERIC(6, 1) DEFAULT 0.0,
+    acwr_ewma_snapshot NUMERIC(4, 2),
+    tsb_snapshot NUMERIC(5, 1),
+    auto_test_verdict TEXT DEFAULT 'ON_TRACK_PASS',
+    ai_debrief_summary TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 12.3 Training Plan Workouts (Dual Spec: Original vs Adapted)
+CREATE TABLE IF NOT EXISTS public.training_plan_workouts (
+    workout_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    athlete_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    week_number INTEGER NOT NULL CHECK (week_number >= 1 AND week_number <= 35),
+    phase_name TEXT NOT NULL,
+    scheduled_date DATE NOT NULL,
+    priority_tier INTEGER NOT NULL DEFAULT 2 CHECK (priority_tier IN (1, 2, 3)),
+    original_workout_spec JSONB NOT NULL,
+    adapted_workout_spec JSONB,
+    execution_status TEXT DEFAULT 'SCHEDULED' CHECK (execution_status IN ('SCHEDULED', 'COMPLETED', 'MISSED', 'DOWNGRADED', 'SHIFTED')),
+    linked_garmin_activity_id TEXT REFERENCES public.garmin_activities_evaluated(activity_id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 12.4 Schedule Mutation Logs (5-State Machine & Safety Gatekeeper Audit)
+CREATE TABLE IF NOT EXISTS public.schedule_mutation_logs (
+    mutation_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    athlete_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    runner_state TEXT NOT NULL CHECK (runner_state IN ('ON_TRACK', 'INTRA_WEEK_SHIFT', 'RETURN_TO_RUN_BRIDGE', 'MACRO_RECALIBRATION', 'GOAL_RESET_GATE')),
+    trigger_source TEXT NOT NULL,
+    primary_limiter TEXT,
+    applied_changes_json JSONB NOT NULL
+);
+
+-- 12.5 Mesocycle Digests (Tier 2 Warm Context per 4-Week Block)
+CREATE TABLE IF NOT EXISTS public.mesocycle_digests (
+    digest_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    athlete_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    block_number INTEGER NOT NULL,
+    start_week INTEGER NOT NULL,
+    end_week INTEGER NOT NULL,
+    vdot_progression_delta NUMERIC(4, 2) DEFAULT 0.0,
+    volume_compliance_pct NUMERIC(5, 2) DEFAULT 100.0,
+    avg_long_run_decoupling_pct NUMERIC(5, 2) DEFAULT 0.0,
+    compressed_coach_notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for Goalie V2
+CREATE INDEX IF NOT EXISTS idx_garmin_act_eval_athlete_time ON public.garmin_activities_evaluated(athlete_id, start_time DESC);
+CREATE INDEX IF NOT EXISTS idx_training_plan_workouts_athlete_date ON public.training_plan_workouts(athlete_id, scheduled_date);
+CREATE INDEX IF NOT EXISTS idx_schedule_mutation_logs_athlete ON public.schedule_mutation_logs(athlete_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_mesocycle_digests_athlete_block ON public.mesocycle_digests(athlete_id, block_number DESC);
+
+-- RLS Policies for Goalie V2
+ALTER TABLE public.garmin_activities_evaluated ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.training_plan_workouts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.schedule_mutation_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.mesocycle_digests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own evaluated activities" ON public.garmin_activities_evaluated FOR ALL USING (auth.uid() = athlete_id);
+CREATE POLICY "Users can manage own plan workouts" ON public.training_plan_workouts FOR ALL USING (auth.uid() = athlete_id);
+CREATE POLICY "Users can view own mutation logs" ON public.schedule_mutation_logs FOR ALL USING (auth.uid() = athlete_id);
+CREATE POLICY "Users can view own mesocycle digests" ON public.mesocycle_digests FOR ALL USING (auth.uid() = athlete_id);

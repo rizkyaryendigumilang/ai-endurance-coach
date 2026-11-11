@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Dict, Any
 from datetime import date, datetime
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
@@ -168,3 +168,14 @@ class MarathonPlanAdaptInput(BaseModel):
     feedback: Optional[str] = "Kaki terasa sedikit lelah setelah long run minggu lalu"
     completed_volume_km: Optional[float] = 20.0
     target_time_str: Optional[str] = "05:30:00"
+
+class UnifiedContractInput(BaseModel):
+    activity_data: Optional[Dict[str, Any]] = {}
+    eval_metrics: Optional[Dict[str, Any]] = {}
+    injury_reported: Optional[bool] = False
+
+class AdaptationValidationInput(BaseModel):
+    proposed_intent: Dict[str, Any]
+    current_ctl: Optional[float] = None
+    current_atl: Optional[float] = None
+    current_weekly_km: Optional[float] = 50.0

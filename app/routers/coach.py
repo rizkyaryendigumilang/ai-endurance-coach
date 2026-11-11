@@ -1,13 +1,18 @@
 """
-Goalie — AI Coach Router
-Provides AI Coach interaction, chat history, key validation, and tier capabilities.
+Goalie - AI Coach Router
+Provides AI Coach interaction, chat history, key validation, 3-Tier Athlete Memory, and Safety Gatekeeper.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from app.core.config import supabase, GEMINI_PRO_API_KEY
 from app.services import sandbox_store
 from app.core.rate_limiter import chat_rate_limiter
-from app.schemas.models import ChatMessageInput, ApiKeyValidationInput
+from app.schemas.models import (
+    ChatMessageInput,
+    ApiKeyValidationInput,
+    UnifiedContractInput,
+    AdaptationValidationInput
+)
 from app.services.sports_engine import SportsEngine
 from app.services.ai_provider import ai_provider
 from app.core.auth import get_current_user, get_current_user_optional
@@ -71,7 +76,32 @@ async def chat(chat_input: ChatMessageInput, request: Request, user_id: str = De
     if race_course:
         course_context_str = f"\nProfil Medan Lintasan Lomba (GPX Terunggah): {race_course.get('ai_summary', '')}\nSegmen Tanjakan: {race_course.get('climb_segments', [])}\nJadwal Fueling: {race_course.get('fueling_schedule', [])}"
 
+    # Lapisan 4: 3-Tier Athlete Memory (Hot Context, Warm Mesocycle Digest, Persistent Dossier)
+    three_tier_mem = ai_provider.build_three_tier_context(user_id)
+    t1 = three_tier_mem.get("tier_1_hot", {})
+    t2 = three_tier_mem.get("tier_2_warm_mesocycle", {})
+    t3 = three_tier_mem.get("tier_3_persistent_dossier", {})
+
     context = f"""
+[Lapisan 4: 3-Tier Athlete Memory (31 Minggu)]
+Tier 1 Hot Context (7 Hari Real-Time):
+- Aktivitas Terakhir: {t1.get('last_activity')}
+- Status Beban EWMA: {t1.get('recent_load_status')}
+- Target Volume 7 Hari: {t1.get('upcoming_7d_volume_km')} km
+
+Tier 2 Warm Mesocycle Digest (Blok 4 Minggu):
+- Blok Mesosiklus: {t2.get('current_mesocycle')}
+- Kepatuhan Volume: {t2.get('volume_compliance_pct')}%
+- Progres VDOT: +{t2.get('vdot_progression_delta')}
+- Catatan Kebugaran: {t2.get('digest_summary')}
+
+Tier 3 Persistent Athlete Dossier (Profil Permanen):
+- Riwayat Cedera: {t3.get('injury_history')}
+- Pola Kerja / WFH: {t3.get('work_lifestyle')}
+- Ketersediaan Alat Gym: {t3.get('gym_equipment_access')}
+- Toleransi Nutrisi / Pencernaan: {t3.get('gut_training_tolerance')}
+
+[Data Dasar Atlet & Fisiologi]
 Profil Atlet: {prof}
 Zona Detak Jantung Karvonen: {hr_zones}
 Fase Makrosiklus: {periodization}
@@ -250,3 +280,69 @@ def get_chat_history(user_id: str = Depends(get_current_user), limit: int = 50):
         pass
 
     return {"history": sandbox_store.get_chat_history(user_id, limit)}
+
+
+# ==========================================
+# GOALIE V2: 3-TIER MEMORY, UNIFIED CONTRACT & SAFETY GATEKEEPER
+# ==========================================
+
+@router.get("/api/v1/coach/memory-context")
+def get_athlete_memory_context(user_id: str = Depends(get_current_user)):
+    """
+    Lapisan 4: Mengambil status memori berjenjang atlet (Hot, Warm Mesocycle, Persistent Dossier).
+    """
+    return {
+        "status": "success",
+        "user_id": user_id,
+        "three_tier_memory": ai_provider.build_three_tier_context(user_id)
+    }
+
+
+@router.post("/api/v1/coach/unified-contract")
+def generate_unified_contract(data: UnifiedContractInput, user_id: str = Depends(get_current_user)):
+    """
+    Lapisan 4 & 5: Membentuk berkas Unified Contract JSON terstandar Goalie V2 Master Blueprint.
+    """
+    contract = ai_provider.assemble_unified_contract(
+        user_id=user_id,
+        activity_data=data.activity_data or {},
+        eval_metrics=data.eval_metrics or {},
+        injury_reported=data.injury_reported or False
+    )
+    return {
+        "status": "success",
+        "unified_contract": contract
+    }
+
+
+@router.post("/api/v1/coach/validate-adaptation")
+def validate_adaptation_gatekeeper(data: AdaptationValidationInput, user_id: str = Depends(get_current_user)):
+    """
+    Lapisan 5: Safety Gatekeeper Validator (Load Clamping).
+    Memvalidasi usulan penyesuaian jadwal agar volume mingguan dan rasio ACWR terjamin aman.
+    """
+    user_data = get_dashboard_data(user_id)
+    prof = user_data.get('profile', {})
+    weekly_km = float(data.current_weekly_km or prof.get('weekly_mileage_target_km') or 50.0)
+    ctl = float(data.current_ctl or 50.0)
+    atl = float(data.current_atl or 52.0)
+
+    result = SportsEngine.validate_ai_adaptation_gatekeeper(
+        proposed_intent=data.proposed_intent,
+        current_ctl=ctl,
+        current_atl=atl,
+        current_weekly_km=weekly_km
+    )
+
+    # Catat ke log mutasi jika usulan diaplikasikan
+    sandbox_store.log_schedule_mutation(user_id, {
+        "runner_state": "ON_TRACK" if not result.get("clamped") else "MACRO_RECALIBRATION",
+        "trigger_source": "AI_COACH_ADAPTATION_VALIDATION",
+        "primary_limiter": "LOAD_CLAMPING_GUARD",
+        "applied_changes_json": result
+    })
+
+    return {
+        "status": "success",
+        "gatekeeper_evaluation": result
+    }
