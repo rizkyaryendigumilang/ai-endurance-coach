@@ -71,7 +71,9 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 async def add_cache_control_headers(request: Request, call_next):
     response = await call_next(request)
     path = request.url.path
-    if path.startswith("/public/") or path.startswith("/icons/"):
+    if path.startswith("/public/js/") or path.startswith("/public/css/"):
+        response.headers["Cache-Control"] = "no-cache, must-revalidate"
+    elif path.startswith("/public/") or path.startswith("/icons/"):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     elif path in ["/manifest.json", "/favicon.ico", "/apple-touch-icon.png"]:
         response.headers["Cache-Control"] = "public, max-age=86400"

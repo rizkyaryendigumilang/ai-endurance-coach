@@ -38,16 +38,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS (25.8 KB) -->
-    <link rel="stylesheet" href="public/css/tailwind.min.css" onerror="this.onerror=null;this.href='/public/css/tailwind.min.css';">
+    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.1" onerror="this.onerror=null;this.href='/public/css/tailwind.min.css?v=2.9.1';">
     <!-- Leaflet GPS Map Engine (Garmin Connect & Strava Interactive Maps with CDN Fallback) -->
     <link rel="stylesheet" href="public/vendor/leaflet/leaflet.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';">
     <script src="public/vendor/leaflet/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';"></script>
 
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="/public/js/db.js"></script>
-    <script src="/public/js/garmin_workouts_data.js" onerror="this.onerror=null;this.src='public/js/garmin_workouts_data.js';"></script>
-    <script src="public/js/garmin_map_viewer.js" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js';"></script>
+    <script src="/public/js/db.js?v=2.9.1"></script>
+    <script src="/public/js/garmin_workouts_data.js?v=2.9.1" onerror="this.onerror=null;this.src='public/js/garmin_workouts_data.js?v=2.9.1';"></script>
+    <script src="public/js/garmin_map_viewer.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js?v=2.9.1';"></script>
 
 
     <style>
@@ -10272,6 +10272,11 @@
                     applyCockpitTotals(JSON.parse(cached));
                 } else if (window.INITIAL_COCKPIT_TOTALS) {
                     applyCockpitTotals(window.INITIAL_COCKPIT_TOTALS);
+                }
+                // Invalidate stale feed cache if from legacy pre-v2 schema
+                if (localStorage.getItem('goalie_feed_schema_ver') !== '2.2') {
+                    localStorage.removeItem('goalie_cached_feed');
+                    localStorage.setItem('goalie_feed_schema_ver', '2.2');
                 }
                 const cachedFeed = localStorage.getItem('goalie_cached_feed');
                 let parsedFeed = null;
