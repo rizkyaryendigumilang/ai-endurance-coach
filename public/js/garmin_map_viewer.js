@@ -104,153 +104,44 @@ let activityMapInstance = null;
             const distStr = distNum.toFixed(2);
             const paceStr = paceFormatted || '05:30 /km';
             const locationName = (routeInfo && routeInfo.locationName) ? routeInfo.locationName : 'Gelora Bung Karno (GBK) Senayan • Jakarta';
-            
-            let hash = 0;
-            for (let i = 0; i < wId.length; i++) hash = (hash << 5) - hash + wId.charCodeAt(i);
-            const seed = Math.abs(hash);
+            const sport = String(w.sport || 'run').toLowerCase();
 
-            let routePath = "";
-            let startX = 82, startY = 76, finishX = 86, finishY = 80, midX = 200, midY = 32;
-            let venue = locationName;
-            let bgPark = "";
-            let bgInner = "";
-            let labelText = "";
+            // Schedule observer re-check after card DOM insertion
+            setTimeout(() => {
+                if (typeof initFeedMapObserver === 'function') initFeedMapObserver();
+            }, 50);
 
-            if (distNum < 1.0) {
-                routePath = "M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z";
-                startX = 120; startY = 78; finishX = 126; finishY = 78; midX = 280; midY = 48;
-                venue = "Stadion Madya GBK Senayan • Jakarta";
-                bgPark = '<ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>';
-                bgInner = '<ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>';
-                labelText = '<text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>';
-            } else if (distNum >= 12.0 || (seed % 4 === 0)) {
-                routePath = "M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80";
-                startX = 82; startY = 76; finishX = 86; finishY = 80; midX = 200; midY = 32;
-                venue = "Gelora Bung Karno (GBK) Senayan • Jakarta";
-                bgPark = '<ellipse cx="200" cy="64" rx="145" ry="42" fill="#064e3b" fill-opacity="0.20" stroke="#047857" stroke-width="0.8" stroke-opacity="0.3"/>';
-                bgInner = '<ellipse cx="200" cy="64" rx="42" ry="20" fill="#071322" stroke="#007cc3" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="3,2"/>';
-                labelText = '<text x="170" y="66" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Stadion Utama GBK</text>';
-            } else if (seed % 4 === 1) {
-                routePath = "M 95 86 L 95 36 Q 95 32 99 32 L 305 32 Q 310 32 310 36 L 310 86 Q 310 90 305 90 L 102 90";
-                startX = 95; startY = 86; finishX = 102; finishY = 90; midX = 202; midY = 32;
-                venue = "Monumen Nasional (Monas) • Jakarta Pusat";
-                bgPark = '<rect x="85" y="24" width="235" height="74" rx="6" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>';
-                bgInner = '<rect x="180" y="48" width="45" height="26" rx="3" fill="#0f291e" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.4"/>';
-                labelText = '<text x="185" y="63" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Taman Monas</text>';
-            } else if (seed % 4 === 2) {
-                routePath = "M 55 90 C 105 84, 140 70, 180 58 C 215 48, 255 36, 310 30 C 332 28, 342 38, 332 44 C 295 56, 235 68, 180 76 C 130 82, 90 88, 62 90";
-                startX = 55; startY = 90; finishX = 62; finishY = 90; midX = 330; midY = 36;
-                venue = "Sudirman - Bundaran HI Track • Jakarta";
-                bgPark = '<path d="M 160 52 C 180 40, 200 40, 220 52 C 200 64, 180 64, 160 52 Z" fill="#064e3b" fill-opacity="0.25" stroke="#047857" stroke-width="0.5"/>';
-                bgInner = '<circle cx="325" cy="36" r="14" fill="#0369a1" fill-opacity="0.2" stroke="#0284c7" stroke-width="0.8" stroke-dasharray="2,2"/>';
-                labelText = '<text x="195" y="62" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#64748b" opacity="0.8">Jl. Jend. Sudirman</text>';
-            } else {
-                routePath = "M 70 82 C 90 42, 145 34, 205 44 C 265 54, 315 36, 340 54 C 352 68, 305 86, 240 82 C 175 78, 110 86, 76 84";
-                startX = 70; startY = 82; finishX = 76; finishY = 84; midX = 205; midY = 44;
-                venue = "Kuningan Rasuna Epicentrum • Jakarta";
-                bgPark = '<path d="M 60 50 Q 200 55 350 48" stroke="#0284c7" stroke-width="3" stroke-opacity="0.25" fill="none"/>';
-                bgInner = '';
-                labelText = '<text x="160" y="44" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#0284c7" opacity="0.8">Kanal Epicentrum</text>';
-            }
+            return `<!-- Garmin Connect Real Street Map Banner -->
+            <div onclick="openActivityDetailModal('${escapeHTML(wId)}')" class="garmin-map-card relative w-full h-44 sm:h-52 rounded-xl overflow-hidden border border-border bg-[#e5e3df] cursor-pointer group hover:border-[#007cc3] transition-all duration-200 shadow-sm select-none" title="Buka Detail Aktivitas & Replay GPS">
+                <!-- Real Leaflet Street Map Container -->
+                <div id="feed-map-${escapeHTML(wId)}" class="garmin-feed-map-container w-full h-full z-0 pointer-events-none" data-workout-id="${escapeHTML(wId)}" data-dist="${distStr}" data-sport="${escapeHTML(sport)}"></div>
 
-            return `<!-- Garmin Connect GPS Route Map Banner -->
-            <div onclick="openActivityDetailModal('${escapeHTML(wId)}')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-                <!-- Garmin Real Street Map Canvas -->
-                <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="garmin-cyan-glow-${escapeHTML(wId)}" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#00A3E0" />
-                            <stop offset="50%" stop-color="#00E5FF" />
-                            <stop offset="100%" stop-color="#007CC3" />
-                        </linearGradient>
-                        <pattern id="garmin-grid-${escapeHTML(wId)}" width="28" height="28" patternUnits="userSpaceOnUse">
-                            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#1e293b" stroke-width="0.5" stroke-opacity="0.45"/>
-                            <circle cx="28" cy="0" r="0.6" fill="#334155" opacity="0.6" />
-                        </pattern>
-                        <filter id="garmin-track-glow-${escapeHTML(wId)}" x="-10%" y="-10%" width="120%" height="120%">
-                            <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#00A3E0" flood-opacity="0.8"/>
-                        </filter>
-                    </defs>
-
-                    <!-- Base Grid & Street Map Background -->
-                    <rect width="400" height="128" fill="#060c18" />
-                    <rect width="400" height="128" fill="url(#garmin-grid-${escapeHTML(wId)})" opacity="0.75" />
-
-                    <!-- City Street Network (Arterial & Secondary Roads) -->
-                    <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
-                        <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
-                        <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
-                        <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
-                        <path d="M 280 0 L 280 128" stroke-width="1.2" stroke-dasharray="4,4" />
-                        <path d="M 40 10 L 40 118" stroke-width="0.8" opacity="0.4" />
-                        <path d="M 200 10 L 200 118" stroke-width="0.8" opacity="0.4" />
-                        <path d="M 360 10 L 360 118" stroke-width="0.8" opacity="0.4" />
-                    </g>
-
-                    <!-- Park / Water Venue Landmark Polygons -->
-                    ${bgPark}
-                    ${bgInner}
-                    ${labelText}
-
-                    <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
-                    <g stroke="#334155" stroke-width="0.8" opacity="0.7">
-                        <path d="M 18 14 L 18 22 M 14 18 L 22 18" />
-                        <path d="M 382 14 L 382 22 M 378 18 L 386 18" />
-                        <path d="M 18 106 L 18 114 M 14 110 L 22 110" />
-                        <path d="M 382 106 L 382 114 M 378 110 L 386 110" />
-                    </g>
-                    <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
-                    <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
-
-                    <!-- 1. Deep Navy Track Underglow -->
-                    <path d="${routePath}" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
-
-                    <!-- 2. Garmin Signature Cyan GPS Track -->
-                    <path d="${routePath}" fill="none" stroke="url(#garmin-cyan-glow-${escapeHTML(wId)})" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-${escapeHTML(wId)})" />
-
-                    <!-- 3. Mid-route Checkpoint Marker -->
-                    <circle cx="${midX}" cy="${midY}" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
-
-                    <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
-                    <circle cx="${startX}" cy="${startY}" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
-                    <circle cx="${startX}" cy="${startY}" r="1.8" fill="#ffffff" />
-
-                    <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
-                    <g transform="translate(${finishX - 7}, ${finishY - 13})">
-                        <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
-                        <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
-                    </g>
-                </svg>
-
-                <!-- Top Left: Garmin Connect Brand Header -->
-                <div class="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-[#00a3e0] text-[10px] font-mono font-bold flex items-center gap-1.5 shadow-sm">
-                    <svg class="w-2.5 h-2.5 fill-[#00a3e0] shrink-0" viewBox="0 0 24 24"><polygon points="12 2, 22 21, 2 21"/></svg>
-                    <span>GARMIN CONNECT™</span>
+                <!-- Top Left: Venue Location Badge -->
+                <div class="absolute top-2.5 left-2.5 z-[400] px-2.5 py-1 rounded-full bg-white/95 text-slate-900 shadow-sm border border-slate-300 font-mono text-[10px] flex items-center gap-1.5 font-bold max-w-[65%] truncate backdrop-blur-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                    <span class="truncate">${escapeHTML(locationName)}</span>
                 </div>
 
-                <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
-                <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
-                    <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                <!-- Top Right: Weather Widget (27.2° ☀️) -->
+                <div class="absolute top-2.5 right-2.5 z-[400] flex items-center gap-1.5 font-mono text-[10px]">
+                    <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1 backdrop-blur-md" title="Kondisi Cuaca Sesi">
                         <span>27.2°</span>
                         <svg class="w-3 h-3 text-amber-500 fill-amber-500 inline-block shrink-0" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
                     </div>
-                    <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
-                        <span>GPS 3D</span>
-                        <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </div>
                 </div>
 
-                <!-- Bottom Left: Venue Location Badge -->
-                <div class="absolute bottom-2.5 left-2.5 z-20 px-2.5 py-1 rounded-full bg-black/85 backdrop-blur-md text-[10px] font-mono text-white flex items-center gap-1.5 border border-[#007cc3]/40 shadow-sm max-w-[65%] sm:max-w-none truncate">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                    <span class="font-bold truncate">${escapeHTML(venue)}</span>
+                <!-- Bottom Left: Garmin Connect Brand Header -->
+                <div class="absolute bottom-2.5 left-2.5 z-[400] px-2 py-0.5 rounded bg-white/90 backdrop-blur-md border border-slate-300 text-slate-800 text-[10px] font-mono font-bold flex items-center gap-1.5 shadow-sm">
+                    <svg class="w-2.5 h-2.5 fill-[#007cc3] shrink-0" viewBox="0 0 24 24"><polygon points="12 2, 22 21, 2 21"/></svg>
+                    <span>GARMIN CONNECT™</span>
                 </div>
 
-                <!-- Bottom Right: Live Stats Chip -->
-                <div class="absolute bottom-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-slate-300 hidden xs:flex items-center gap-1.5 shadow-sm">
-                    <span class="text-white font-bold">${distStr} km</span>
-                    <span class="text-cyan-400">•</span>
+                <!-- Bottom Right: Live Stats & Replay CTA -->
+                <div class="absolute bottom-2.5 right-2.5 z-[400] px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-300 text-[10px] font-mono text-slate-800 flex items-center gap-1.5 shadow-sm group-hover:bg-[#007cc3] group-hover:text-white transition-colors">
+                    <span class="font-bold">${distStr} km</span>
+                    <span class="text-[#007cc3] group-hover:text-cyan-200">•</span>
                     <span>${escapeHTML(paceStr)}</span>
+                    <span class="hidden xs:inline ml-0.5 font-bold">&rarr;</span>
                 </div>
             </div>`;
         }
@@ -552,6 +443,119 @@ let activityMapInstance = null;
     window.activeMapStyle = activeMapStyle;
     window.MAP_TILE_PROVIDERS = MAP_TILE_PROVIDERS;
     window.JAKARTA_GPS_LANDMARKS = JAKARTA_GPS_LANDMARKS;
+    
+    // ══════════════════════════════════════════════════════
+    // FEED CARDS REAL STREET MAP ENGINE (INTERSECTION OBSERVER)
+    // ══════════════════════════════════════════════════════
+    const feedMapInstances = new Map();
+    let feedMapObserver = null;
+
+    function mountFeedCardMap(containerEl) {
+        if (!containerEl || containerEl._leaflet_id || typeof L === 'undefined') return;
+        const wId = containerEl.getAttribute('data-workout-id') || 'w-1';
+        const dist = parseFloat(containerEl.getAttribute('data-dist')) || 5.0;
+        const sport = containerEl.getAttribute('data-sport') || 'run';
+
+        const workoutData = (typeof ACTIVITY_FIXTURES !== 'undefined' && ACTIVITY_FIXTURES[wId]) ? ACTIVITY_FIXTURES[wId] : { id: wId };
+        const routeInfo = getWorkoutRouteCoordinates(workoutData, dist, sport);
+        const coords = routeInfo.coords;
+        if (!coords || coords.length < 2) return;
+
+        try {
+            const map = L.map(containerEl, {
+                zoomControl: false,
+                attributionControl: false,
+                dragging: false,
+                touchZoom: false,
+                scrollWheelZoom: false,
+                doubleClickZoom: false,
+                boxZoom: false,
+                keyboard: false
+            });
+
+            // Clean, bright outdoor street map tiles (CartoDB Voyager)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            // 1. Navy underglow for high contrast
+            L.polyline(coords, {
+                color: '#002b49',
+                weight: 5.5,
+                opacity: 0.85,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }).addTo(map);
+
+            // 2. Garmin Signature Cyan/Blue polyline
+            const track = L.polyline(coords, {
+                color: '#007CC3',
+                weight: 3.5,
+                opacity: 0.95,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }).addTo(map);
+
+            // 3. Start marker: black circle with white center (◎)
+            const startIcon = L.divIcon({
+                className: 'garmin-feed-start-pin',
+                html: '<div class="w-4 h-4 rounded-full bg-black border-2 border-white flex items-center justify-center shadow-md"><div class="w-1.5 h-1.5 rounded-full bg-white"></div></div>',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8]
+            });
+            L.marker(coords[0], { icon: startIcon }).addTo(map);
+
+            // 4. Finish/Stop marker: red teardrop pin with white stop square (⏹)
+            const finishIcon = L.divIcon({
+                className: 'garmin-feed-stop-pin',
+                html: '<div class="flex items-center justify-center"><svg width="18" height="22" viewBox="0 0 24 28" fill="none"><path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 16 12 16s12-7 12-16c0-6.63-5.37-12-12-12z" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/><rect x="8.5" y="8.5" width="7" height="7" rx="1" fill="#FFFFFF"/></svg></div>',
+                iconSize: [18, 22],
+                iconAnchor: [9, 22]
+            });
+            L.marker(coords[coords.length - 1], { icon: finishIcon }).addTo(map);
+
+            map.fitBounds(track.getBounds(), {
+                padding: [22, 22]
+            });
+
+            feedMapInstances.set(containerEl, map);
+        } catch (e) {
+            console.warn('Feed map mount warning for ' + wId + ':', e);
+        }
+    }
+
+    function initFeedMapObserver() {
+        const containers = document.querySelectorAll('.garmin-feed-map-container');
+        if (!containers || containers.length === 0) return;
+
+        if (!('IntersectionObserver' in window)) {
+            containers.forEach(el => mountFeedCardMap(el));
+            return;
+        }
+
+        if (feedMapObserver) {
+            feedMapObserver.disconnect();
+        }
+
+        feedMapObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    mountFeedCardMap(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            rootMargin: '250px 0px',
+            threshold: 0.01
+        });
+
+        containers.forEach(el => feedMapObserver.observe(el));
+    }
+
+
+    window.mountFeedCardMap = mountFeedCardMap;
+    window.initFeedMapObserver = initFeedMapObserver;
     window.getWorkoutRouteCoordinates = getWorkoutRouteCoordinates;
     window.renderGarminMapCardSvg = renderGarminMapCardSvg;
     window.generateMiniSvgRoutePath = generateMiniSvgRoutePath;
@@ -564,4 +568,14 @@ let activityMapInstance = null;
     window.stopActivityReplay = stopActivityReplay;
     window.resetActivityReplay = resetActivityReplay;
     window.toggleActivityMapFullscreen = toggleActivityMapFullscreen;
+
+    // Auto-init feed observer on page load
+    if (typeof document !== 'undefined') {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFeedMapObserver);
+        } else {
+            setTimeout(initFeedMapObserver, 150);
+        }
+    }
+
 })(typeof window !== 'undefined' ? window : this);
