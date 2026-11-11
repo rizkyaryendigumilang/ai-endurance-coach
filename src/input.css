@@ -10,7 +10,7 @@
     --garmin-dark: #060C18;
   }
 
-  /* WCAG 2.1 AA: Accessible Keyboard Navigation Focus Indicator */
+  /* WCAG 2.1 AA: Accessible Keyboard Navigation Focus Indicator (focus-visible:ring-2) */
   button:focus-visible,
   [role="button"]:focus-visible,
   a:focus-visible,
@@ -19,14 +19,18 @@
   textarea:focus-visible {
     outline: 2px solid var(--garmin-blue, #007CC3) !important;
     outline-offset: 2px !important;
+    box-shadow: 0 0 0 2px var(--garmin-blue, #007CC3) !important;
   }
 
-  /* Apple WWDC Fluid Interfaces: Instant pointer-down active tactile feedback */
+  /* Apple WWDC Fluid Interfaces: Instant pointer-down active tactile feedback (active:scale-[0.98]) */
   button:not(:disabled):active,
   [role="button"]:not([aria-disabled="true"]):active,
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-flat-primary:active,
   .btn-interactive:active {
-    transform: scale(0.975);
-    transition: transform 75ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.98) !important;
+    transition: transform 75ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   /* Apple Human Interface Guidelines: Ergonomic 44x44pt touch bounding hitbox for coarse pointers */

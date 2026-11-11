@@ -11651,6 +11651,9 @@
         }
 
         function closeActivityDetailModal() {
+            if (typeof stopActivityReplay === 'function') {
+                stopActivityReplay();
+            }
             if (typeof resetActivityReplay === 'function') {
                 resetActivityReplay();
             }
