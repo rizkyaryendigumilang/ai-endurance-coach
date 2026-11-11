@@ -717,6 +717,15 @@
             color: #cbd5e1 !important;
             text-decoration: none;
         }
+                .garmin-map-pin-clean {
+            background: transparent !important;
+            border: none !important;
+        }
+        .garmin-runner-marker {
+            background: transparent !important;
+            border: none !important;
+            transition: all 50ms linear;
+        }
         .garmin-map-pin {
             display: flex;
             align-items: center;
@@ -2091,7 +2100,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-1')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-1" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2108,12 +2117,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-1)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -2126,6 +2135,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="64" rx="145" ry="42" fill="#064e3b" fill-opacity="0.20" stroke="#047857" stroke-width="0.8" stroke-opacity="0.3"/>
                 <ellipse cx="200" cy="64" rx="42" ry="20" fill="#071322" stroke="#007cc3" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="3,2"/>
+                <text x="170" y="66" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Stadion Utama GBK</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -2137,24 +2147,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-1)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-1)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="200" cy="32" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="200" cy="32" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="82" cy="76" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="82" cy="76" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="82" y="78.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="82" cy="76" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="82" cy="76" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="86" cy="80" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="86" cy="80" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="86" y="82.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(79, 67)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -2163,11 +2173,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -2182,10 +2197,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>8:35 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -2249,7 +2261,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-2')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-2" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2266,12 +2278,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-2)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -2284,6 +2296,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <path d="M 60 50 Q 200 55 350 48" stroke="#0284c7" stroke-width="3" stroke-opacity="0.25" fill="none"/>
                 
+                <text x="160" y="44" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#0284c7" opacity="0.8">Kanal Epicentrum</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -2295,24 +2308,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 70 82 C 90 42, 145 34, 205 44 C 265 54, 315 36, 340 54 C 352 68, 305 86, 240 82 C 175 78, 110 86, 76 84" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 70 82 C 90 42, 145 34, 205 44 C 265 54, 315 36, 340 54 C 352 68, 305 86, 240 82 C 175 78, 110 86, 76 84" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-2)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-2)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="205" cy="44" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="205" cy="44" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="70" cy="82" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="70" cy="82" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="70" y="84.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="70" cy="82" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="70" cy="82" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="76" cy="84" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="76" cy="84" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="76" y="86.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(69, 71)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -2321,11 +2334,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -2340,10 +2358,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>8:34 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -2407,7 +2422,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-3')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-3" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2424,12 +2439,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-3)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -2442,6 +2457,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="64" rx="145" ry="42" fill="#064e3b" fill-opacity="0.20" stroke="#047857" stroke-width="0.8" stroke-opacity="0.3"/>
                 <ellipse cx="200" cy="64" rx="42" ry="20" fill="#071322" stroke="#007cc3" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="3,2"/>
+                <text x="170" y="66" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Stadion Utama GBK</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -2453,24 +2469,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-3)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-3)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="200" cy="32" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="200" cy="32" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="82" cy="76" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="82" cy="76" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="82" y="78.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="82" cy="76" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="82" cy="76" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="86" cy="80" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="86" cy="80" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="86" y="82.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(79, 67)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -2479,11 +2495,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -2498,10 +2519,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>15:17 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -2565,7 +2583,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-4')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-4" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2582,12 +2600,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-4)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -2600,6 +2618,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <rect x="85" y="24" width="235" height="74" rx="6" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <rect x="180" y="48" width="45" height="26" rx="3" fill="#0f291e" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.4"/>
+                <text x="185" y="63" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Taman Monas</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -2611,24 +2630,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 95 86 L 95 36 Q 95 32 99 32 L 305 32 Q 310 32 310 36 L 310 86 Q 310 90 305 90 L 102 90" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 95 86 L 95 36 Q 95 32 99 32 L 305 32 Q 310 32 310 36 L 310 86 Q 310 90 305 90 L 102 90" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-4)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-4)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="202" cy="32" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="202" cy="32" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="95" cy="86" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="95" cy="86" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="95" y="88.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="95" cy="86" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="95" cy="86" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="102" cy="90" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="102" cy="90" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="102" y="92.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(95, 77)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -2637,11 +2656,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -2656,10 +2680,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>9:27 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -2849,7 +2870,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-7')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-7" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2866,12 +2887,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-7)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -2884,6 +2905,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="64" rx="145" ry="42" fill="#064e3b" fill-opacity="0.20" stroke="#047857" stroke-width="0.8" stroke-opacity="0.3"/>
                 <ellipse cx="200" cy="64" rx="42" ry="20" fill="#071322" stroke="#007cc3" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="3,2"/>
+                <text x="170" y="66" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Stadion Utama GBK</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -2895,24 +2917,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-7)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-7)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="200" cy="32" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="200" cy="32" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="82" cy="76" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="82" cy="76" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="82" y="78.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="82" cy="76" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="82" cy="76" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="86" cy="80" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="86" cy="80" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="86" y="82.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(79, 67)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -2921,11 +2943,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -2940,10 +2967,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>5:40 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3007,7 +3031,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-8')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-8" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3024,12 +3048,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-8)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3042,6 +3066,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <rect x="85" y="24" width="235" height="74" rx="6" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <rect x="180" y="48" width="45" height="26" rx="3" fill="#0f291e" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.4"/>
+                <text x="185" y="63" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Taman Monas</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -3053,24 +3078,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 95 86 L 95 36 Q 95 32 99 32 L 305 32 Q 310 32 310 36 L 310 86 Q 310 90 305 90 L 102 90" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 95 86 L 95 36 Q 95 32 99 32 L 305 32 Q 310 32 310 36 L 310 86 Q 310 90 305 90 L 102 90" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-8)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-8)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="202" cy="32" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="202" cy="32" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="95" cy="86" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="95" cy="86" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="95" y="88.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="95" cy="86" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="95" cy="86" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="102" cy="90" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="102" cy="90" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="102" y="92.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(95, 77)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -3079,11 +3104,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -3098,10 +3128,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>7:29 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3165,7 +3192,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-9')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-9" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3182,12 +3209,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-9)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3200,6 +3227,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <path d="M 160 52 C 180 40, 200 40, 220 52 C 200 64, 180 64, 160 52 Z" fill="#064e3b" fill-opacity="0.25" stroke="#047857" stroke-width="0.5"/>
                 <circle cx="325" cy="36" r="14" fill="#0369a1" fill-opacity="0.2" stroke="#0284c7" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="195" y="62" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#64748b" opacity="0.8">Jl. Jend. Sudirman</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -3211,24 +3239,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 55 90 C 105 84, 140 70, 180 58 C 215 48, 255 36, 310 30 C 332 28, 342 38, 332 44 C 295 56, 235 68, 180 76 C 130 82, 90 88, 62 90" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 55 90 C 105 84, 140 70, 180 58 C 215 48, 255 36, 310 30 C 332 28, 342 38, 332 44 C 295 56, 235 68, 180 76 C 130 82, 90 88, 62 90" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-9)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-9)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="330" cy="36" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="330" cy="36" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="55" cy="90" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="55" cy="90" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="55" y="92.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="55" cy="90" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="55" cy="90" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="62" cy="90" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="62" cy="90" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="62" y="92.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(55, 77)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -3237,11 +3265,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -3256,10 +3289,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>7:26 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3323,7 +3353,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-10')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-10" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3340,12 +3370,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-10)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3358,6 +3388,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <path d="M 160 52 C 180 40, 200 40, 220 52 C 200 64, 180 64, 160 52 Z" fill="#064e3b" fill-opacity="0.25" stroke="#047857" stroke-width="0.5"/>
                 <circle cx="325" cy="36" r="14" fill="#0369a1" fill-opacity="0.2" stroke="#0284c7" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="195" y="62" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#64748b" opacity="0.8">Jl. Jend. Sudirman</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -3369,24 +3400,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 55 90 C 105 84, 140 70, 180 58 C 215 48, 255 36, 310 30 C 332 28, 342 38, 332 44 C 295 56, 235 68, 180 76 C 130 82, 90 88, 62 90" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 55 90 C 105 84, 140 70, 180 58 C 215 48, 255 36, 310 30 C 332 28, 342 38, 332 44 C 295 56, 235 68, 180 76 C 130 82, 90 88, 62 90" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-10)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-10)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="330" cy="36" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="330" cy="36" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="55" cy="90" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="55" cy="90" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="55" y="92.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="55" cy="90" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="55" cy="90" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="62" cy="90" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="62" cy="90" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="62" y="92.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(55, 77)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -3395,11 +3426,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -3414,10 +3450,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>7:25 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3481,7 +3514,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-11')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-11" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3498,12 +3531,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-11)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3516,6 +3549,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -3527,24 +3561,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-11)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-11)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -3553,11 +3587,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -3572,10 +3611,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>15:46 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3639,7 +3675,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-12')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-12" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3656,12 +3692,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-12)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3674,6 +3710,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -3685,24 +3722,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-12)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-12)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -3711,11 +3748,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -3730,10 +3772,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>6:11 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3797,7 +3836,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-13')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-13" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3814,12 +3853,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-13)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3832,6 +3871,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -3843,24 +3883,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-13)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-13)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -3869,11 +3909,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -3888,10 +3933,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>5:31 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -3955,7 +3997,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-14')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-14" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -3972,12 +4014,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-14)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -3990,6 +4032,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -4001,24 +4044,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-14)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-14)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -4027,11 +4070,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -4046,10 +4094,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>5:40 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -4113,7 +4158,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-15')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-15" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -4130,12 +4175,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-15)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -4148,6 +4193,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -4159,24 +4205,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-15)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-15)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -4185,11 +4231,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -4204,10 +4255,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>13:32 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -4271,7 +4319,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-16')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-16" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -4288,12 +4336,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-16)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -4306,6 +4354,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -4317,24 +4366,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-16)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-16)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -4343,11 +4392,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -4362,10 +4416,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>7:33 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -4429,7 +4480,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-17')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-17" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -4446,12 +4497,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-17)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -4464,6 +4515,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -4475,24 +4527,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-17)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-17)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -4501,11 +4553,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -4520,10 +4577,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>6:16 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -4587,7 +4641,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-18')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-18" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -4604,12 +4658,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-18)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -4622,6 +4676,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>
                 <ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>
+                <text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -4633,24 +4688,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-18)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-18)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="280" cy="48" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="280" cy="48" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="120" cy="78" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="120" cy="78" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="120" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="120" cy="78" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="120" cy="78" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="126" cy="78" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="126" cy="78" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="126" y="80.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(119, 65)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -4659,11 +4714,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -4678,10 +4738,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>5:57 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -4745,7 +4802,7 @@
         
         <!-- Garmin Connect GPS Route Map Banner -->
         <div onclick="openActivityDetailModal('w-garmin-rizky-19')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-            <!-- Garmin Dark Map Canvas -->
+            <!-- Garmin Real Street Map Canvas -->
             <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="garmin-cyan-glow-w-garmin-rizky-19" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -4762,12 +4819,12 @@
                     </filter>
                 </defs>
 
-                <!-- Base Grid & Dark Map Background -->
+                <!-- Base Grid & Street Map Background -->
                 <rect width="400" height="128" fill="#060c18" />
                 <rect width="400" height="128" fill="url(#garmin-grid-w-garmin-rizky-19)" opacity="0.75" />
 
-                <!-- City Street Network (Arterial & Secondary Grid) -->
-                <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                <!-- City Street Network (Arterial & Secondary Roads) -->
+                <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                     <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                     <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                     <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -4780,6 +4837,7 @@
                 <!-- Park / Water Venue Landmark Polygons -->
                 <path d="M 60 50 Q 200 55 350 48" stroke="#0284c7" stroke-width="3" stroke-opacity="0.25" fill="none"/>
                 
+                <text x="160" y="44" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#0284c7" opacity="0.8">Kanal Epicentrum</text>
 
                 <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                 <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -4791,24 +4849,24 @@
                 <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                 <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                <!-- 1. Deep Navy Track Underglow -->
                 <path d="M 70 82 C 90 42, 145 34, 205 44 C 265 54, 315 36, 340 54 C 352 68, 305 86, 240 82 C 175 78, 110 86, 76 84" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                <!-- 2. Garmin Signature Cyan GPS Track -->
                 <path d="M 70 82 C 90 42, 145 34, 205 44 C 265 54, 315 36, 340 54 C 352 68, 305 86, 240 82 C 175 78, 110 86, 76 84" fill="none" stroke="url(#garmin-cyan-glow-w-garmin-rizky-19)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-w-garmin-rizky-19)" />
 
                 <!-- 3. Mid-route Checkpoint Marker -->
-                <circle cx="205" cy="44" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                <circle cx="205" cy="44" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                <!-- 4. Garmin Green Start Marker (S) -->
-                <circle cx="70" cy="82" r="6.5" fill="#10B981" opacity="0.35" />
-                <circle cx="70" cy="82" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                <text x="70" y="84.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                <circle cx="70" cy="82" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="70" cy="82" r="1.8" fill="#ffffff" />
 
-                <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                <circle cx="76" cy="84" r="6.5" fill="#EF4444" opacity="0.35" />
-                <circle cx="76" cy="84" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                <text x="76" y="86.5" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                <g transform="translate(69, 71)">
+                    <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                    <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                </g>
             </svg>
 
             <!-- Top Left: Garmin Connect Brand Header -->
@@ -4817,11 +4875,16 @@
                 <span>GARMIN CONNECT™</span>
             </div>
 
-            <!-- Top Right: Telemetry & Expand HUD -->
-            <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>3D GPS FIX</span>
-                <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+            <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                    <span>27.2°</span>
+                    <span class="text-amber-500">☀️</span>
+                </div>
+                <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                    <span>GPS 3D</span>
+                    <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
             </div>
 
             <!-- Bottom Left: Venue Location Badge -->
@@ -4836,10 +4899,7 @@
                 <span class="text-cyan-400">•</span>
                 <span>5:31 /km</span>
             </div>
-        </div>
-        
-
-        <!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
+        </div><!-- Athletic Metric Strip: Karvonen Pace, TRIMP & Efficiency -->
         <div class="grid grid-cols-4 gap-2 pt-2 border-t border-border font-mono text-xs">
             <div>
                 <span class="text-[10px] text-text-secondary block">Jarak</span>
@@ -8689,43 +8749,64 @@
                     </div>
                     <!-- Map Controls: Layer Switcher & Recenter -->
                     <div class="flex items-center gap-1 text-[11px] font-mono">
-                        <button type="button" onclick="changeActivityMapLayer('dark')" id="map-layer-dark" class="px-2 py-0.5 rounded border border-tertiary bg-tertiary/10 text-tertiary font-bold transition-colors">Gelap</button>
-                        <button type="button" onclick="changeActivityMapLayer('outdoor')" id="map-layer-outdoor" class="px-2 py-0.5 rounded border border-border bg-surface text-text-secondary hover:text-text-primary transition-colors">Outdoor</button>
+                        <button type="button" onclick="changeActivityMapLayer('outdoor')" id="map-layer-outdoor" class="px-2 py-0.5 rounded border border-[#007cc3] bg-[#007cc3]/10 text-[#007cc3] font-bold transition-colors">Jalan Raya</button>
                         <button type="button" onclick="changeActivityMapLayer('satellite')" id="map-layer-satellite" class="px-2 py-0.5 rounded border border-border bg-surface text-text-secondary hover:text-text-primary transition-colors">Satelit</button>
+                        <button type="button" onclick="changeActivityMapLayer('dark')" id="map-layer-dark" class="px-2 py-0.5 rounded border border-border bg-surface text-text-secondary hover:text-text-primary transition-colors">Gelap</button>
                         <button type="button" onclick="recenterActivityMap()" title="Pusatkan Rute" class="p-1 rounded border border-border bg-surface text-text-secondary hover:text-tertiary ml-0.5 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </button>
                     </div>
                 </div>
 
-                <div id="detail-map-container" class="relative w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-border shadow-xs bg-[#111827]">
+                <div id="detail-map-container" class="relative w-full h-64 sm:h-80 rounded-xl overflow-hidden border border-border shadow-md bg-[#e5e3df] transition-all duration-200">
                     <!-- Real Leaflet interactive map element -->
                     <div id="activity-leaflet-map" class="w-full h-full z-0"></div>
 
-                    <!-- Top Left HUD: Landmark Location -->
-                    <div class="absolute top-2.5 left-2.5 z-[400] pointer-events-none flex flex-col gap-1 max-w-[75%]">
-                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/10 text-white font-mono text-[10px] shadow-sm">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-                            <span id="detail-map-location-name" class="font-bold truncate">Gelora Bung Karno, Senayan &bull; Jakarta</span>
+                    <!-- Top Left HUD: Landmark Location Badge -->
+                    <div class="absolute top-2.5 left-2.5 z-[400] pointer-events-none flex flex-col gap-1 max-w-[60%] sm:max-w-[70%]">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md border border-slate-300 text-slate-900 font-mono text-[10px] shadow-sm font-bold truncate">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                            <span id="detail-map-location-name" class="truncate">Gelora Bung Karno, Senayan &bull; Jakarta</span>
                         </div>
                     </div>
 
-                    <!-- Top Right HUD: Live Distance & Elevation Telemetry -->
-                    <div class="absolute top-2.5 right-2.5 z-[400] pointer-events-none hidden sm:flex items-center gap-1 font-mono text-[10px]">
-                        <span id="detail-map-hud-dist" class="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-tertiary font-bold border border-white/10">18.00 km</span>
-                        <span id="detail-map-hud-elev" class="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-flat-green font-bold border border-white/10">+68m</span>
+                    <!-- Top Right HUD: Garmin Weather Widget (27.2° ☀️) & Fullscreen Button -->
+                    <div class="absolute top-2.5 right-2.5 z-[400] flex items-center gap-1.5 font-mono text-xs">
+                        <div id="detail-map-weather-badge" class="px-2.5 py-1 rounded-lg bg-white/95 text-slate-800 shadow border border-slate-300 flex items-center gap-1.5 font-bold text-[11px]" title="Kondisi Cuaca Saat Sesi Lari">
+                            <span id="detail-map-weather-temp">27.2°</span>
+                            <span id="detail-map-weather-icon" class="text-amber-500">☀️</span>
+                        </div>
+                        <button type="button" onclick="toggleActivityMapFullscreen()" class="w-7 h-7 rounded-lg bg-white/95 text-slate-700 hover:text-black shadow border border-slate-300 flex items-center justify-center transition-colors" title="Layar Penuh Peta">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                        </button>
                     </div>
 
-                    <!-- Bottom Bar: Start / Finish / Garmin Legend -->
-                    <div class="absolute bottom-2 inset-x-2 z-[400] pointer-events-none flex justify-between items-center text-[10px] font-mono">
-                        <span class="px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-md text-emerald-400 border border-emerald-500/35 flex items-center gap-1 shadow-xs">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> START (0.0 km)
+                    <!-- Bottom Center Floating HUD: Garmin Activity Replay Player -->
+                    <div class="absolute bottom-3 inset-x-0 z-[400] flex justify-center items-center pointer-events-auto">
+                        <div class="px-3 py-1.5 rounded-full bg-white/95 text-slate-900 border border-slate-300 shadow-lg flex items-center gap-2 font-mono text-xs backdrop-blur-md">
+                            <button type="button" id="btn-replay-play" onclick="toggleActivityReplay()" class="w-7 h-7 rounded-full bg-[#007cc3] text-white hover:bg-[#00a3e0] flex items-center justify-center shadow transition-all active:scale-95" title="Putar Animasi Rute Lari">
+                                <svg id="icon-replay-play" class="w-3.5 h-3.5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="icon-replay-pause" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <span id="replay-progress-text" class="text-[11px] font-bold text-slate-700 w-16 text-center">0.0 km</span>
+                            <div class="w-20 sm:w-28 bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                <div id="replay-progress-bar" class="bg-[#007cc3] h-full transition-all duration-75" style="width: 0%;"></div>
+                            </div>
+                            <button type="button" onclick="resetActivityReplay()" class="p-1 text-slate-500 hover:text-slate-800 text-[10px]" title="Ulang dari Start">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Bar: Start / Stop Legend -->
+                    <div class="absolute bottom-2 left-2 z-[400] pointer-events-none hidden sm:flex items-center gap-1.5 text-[10px] font-mono">
+                        <span class="px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-slate-800 border border-slate-300 flex items-center gap-1 shadow-xs">
+                            <span class="w-2.5 h-2.5 rounded-full bg-black border border-white flex items-center justify-center"><span class="w-0.5 h-0.5 rounded-full bg-white"></span></span>
+                            <span>Mulai (◎)</span>
                         </span>
-                        <span class="px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-md text-cyan-400 border border-cyan-500/35 hidden sm:flex items-center gap-1 shadow-xs">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span> GARMIN GPS TRACK
-                        </span>
-                        <span class="px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-md text-rose-400 border border-rose-500/35 flex items-center gap-1 shadow-xs">
-                            <span class="w-2 h-2 rounded-full bg-rose-500"></span> FINISH (<span id="detail-map-hud-finish-km">18.0 km</span>)
+                        <span class="px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-slate-800 border border-slate-300 flex items-center gap-1 shadow-xs">
+                            <span class="w-2.5 h-2.5 bg-rose-600 rounded-sm flex items-center justify-center text-white text-[7px] font-bold">■</span>
+                            <span>Berhenti (⏹️)</span>
                         </span>
                     </div>
                 </div>
@@ -11502,7 +11583,12 @@
         let currentMapPolyline = null;
         let currentMapGlow = null;
         let currentMapMarkers = [];
-        let activeMapStyle = 'dark'; // 'dark' | 'outdoor' | 'satellite'
+        let currentModalRouteCoords = [];
+        let currentModalDistanceKm = 0;
+        let replayAnimationTimer = null;
+        let replayCurrentIndex = 0;
+        let replayRunnerMarker = null;
+        let activeMapStyle = 'outdoor'; // 'outdoor' (OpenStreetMap) | 'dark' | 'satellite'
 
         const MAP_TILE_PROVIDERS = {
             dark: {
@@ -11601,47 +11687,48 @@
             let venue = locationName;
             let bgPark = "";
             let bgInner = "";
+            let labelText = "";
 
             if (distNum < 1.0) {
-                // 400m Track interval at Stadion Madya GBK
                 routePath = "M 120 78 C 85 78, 85 48, 120 48 L 280 48 C 315 48, 315 78, 280 78 Z";
                 startX = 120; startY = 78; finishX = 126; finishY = 78; midX = 280; midY = 48;
                 venue = "Stadion Madya GBK Senayan • Jakarta";
                 bgPark = '<ellipse cx="200" cy="63" rx="140" ry="38" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>';
                 bgInner = '<ellipse cx="200" cy="63" rx="90" ry="18" fill="#081422" stroke="#007cc3" stroke-width="0.8" stroke-dasharray="2,2"/>';
+                labelText = '<text x="175" y="65" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#00a3e0" opacity="0.8">Trek Atletik 400m</text>';
             } else if (distNum >= 12.0 || (seed % 4 === 0)) {
-                // GBK Senayan Stadium Outer Ring (Gelora Bung Karno)
                 routePath = "M 82 76 C 75 46, 125 32, 200 32 C 275 32, 330 46, 325 74 C 320 90, 260 96, 200 96 C 135 96, 88 92, 82 80";
                 startX = 82; startY = 76; finishX = 86; finishY = 80; midX = 200; midY = 32;
                 venue = "Gelora Bung Karno (GBK) Senayan • Jakarta";
                 bgPark = '<ellipse cx="200" cy="64" rx="145" ry="42" fill="#064e3b" fill-opacity="0.20" stroke="#047857" stroke-width="0.8" stroke-opacity="0.3"/>';
                 bgInner = '<ellipse cx="200" cy="64" rx="42" ry="20" fill="#071322" stroke="#007cc3" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="3,2"/>';
+                labelText = '<text x="170" y="66" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Stadion Utama GBK</text>';
             } else if (seed % 4 === 1) {
-                // Monas National Monument Park Loop
                 routePath = "M 95 86 L 95 36 Q 95 32 99 32 L 305 32 Q 310 32 310 36 L 310 86 Q 310 90 305 90 L 102 90";
                 startX = 95; startY = 86; finishX = 102; finishY = 90; midX = 202; midY = 32;
                 venue = "Monumen Nasional (Monas) • Jakarta Pusat";
                 bgPark = '<rect x="85" y="24" width="235" height="74" rx="6" fill="#064e3b" fill-opacity="0.22" stroke="#047857" stroke-width="0.7" stroke-opacity="0.35"/>';
                 bgInner = '<rect x="180" y="48" width="45" height="26" rx="3" fill="#0f291e" stroke="#10b981" stroke-width="0.5" stroke-opacity="0.4"/>';
+                labelText = '<text x="185" y="63" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#10b981" opacity="0.8">Taman Monas</text>';
             } else if (seed % 4 === 2) {
-                // Sudirman - Semanggi - Bundaran HI Corridor
                 routePath = "M 55 90 C 105 84, 140 70, 180 58 C 215 48, 255 36, 310 30 C 332 28, 342 38, 332 44 C 295 56, 235 68, 180 76 C 130 82, 90 88, 62 90";
                 startX = 55; startY = 90; finishX = 62; finishY = 90; midX = 330; midY = 36;
                 venue = "Sudirman - Bundaran HI Track • Jakarta";
                 bgPark = '<path d="M 160 52 C 180 40, 200 40, 220 52 C 200 64, 180 64, 160 52 Z" fill="#064e3b" fill-opacity="0.25" stroke="#047857" stroke-width="0.5"/>';
                 bgInner = '<circle cx="325" cy="36" r="14" fill="#0369a1" fill-opacity="0.2" stroke="#0284c7" stroke-width="0.8" stroke-dasharray="2,2"/>';
+                labelText = '<text x="195" y="62" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#64748b" opacity="0.8">Jl. Jend. Sudirman</text>';
             } else {
-                // Kuningan Epicentrum Canal Loop
                 routePath = "M 70 82 C 90 42, 145 34, 205 44 C 265 54, 315 36, 340 54 C 352 68, 305 86, 240 82 C 175 78, 110 86, 76 84";
                 startX = 70; startY = 82; finishX = 76; finishY = 84; midX = 205; midY = 44;
                 venue = "Kuningan Rasuna Epicentrum • Jakarta";
                 bgPark = '<path d="M 60 50 Q 200 55 350 48" stroke="#0284c7" stroke-width="3" stroke-opacity="0.25" fill="none"/>';
                 bgInner = '';
+                labelText = '<text x="160" y="44" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="#0284c7" opacity="0.8">Kanal Epicentrum</text>';
             }
 
             return `<!-- Garmin Connect GPS Route Map Banner -->
             <div onclick="openActivityDetailModal('${escapeHTML(wId)}')" class="garmin-map-card relative w-full h-32 rounded-xl overflow-hidden border border-[#007cc3]/40 bg-[#060c18] cursor-pointer group hover:border-[#00a3e0] transition-all duration-200 shadow-md select-none" title="Buka Peta GPS Telemetri Garmin Connect">
-                <!-- Garmin Dark Map Canvas -->
+                <!-- Garmin Real Street Map Canvas -->
                 <svg class="w-full h-full relative z-10" viewBox="0 0 400 128" preserveAspectRatio="none">
                     <defs>
                         <linearGradient id="garmin-cyan-glow-${escapeHTML(wId)}" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -11658,12 +11745,12 @@
                         </filter>
                     </defs>
 
-                    <!-- Base Grid & Dark Map Background -->
+                    <!-- Base Grid & Street Map Background -->
                     <rect width="400" height="128" fill="#060c18" />
                     <rect width="400" height="128" fill="url(#garmin-grid-${escapeHTML(wId)})" opacity="0.75" />
 
-                    <!-- City Street Network (Arterial & Secondary Grid) -->
-                    <g stroke="#1a273a" stroke-linecap="round" opacity="0.65">
+                    <!-- City Street Network (Arterial & Secondary Roads) -->
+                    <g stroke="#1a273a" stroke-linecap="round" opacity="0.7">
                         <path d="M 0 40 Q 200 35 400 45" stroke-width="2.5" fill="none" />
                         <path d="M 0 88 Q 200 92 400 82" stroke-width="2.5" fill="none" />
                         <path d="M 120 0 L 120 128" stroke-width="1.2" stroke-dasharray="4,4" />
@@ -11676,6 +11763,7 @@
                     <!-- Park / Water Venue Landmark Polygons -->
                     ${bgPark}
                     ${bgInner}
+                    ${labelText}
 
                     <!-- Garmin GPS Telemetry Crosshairs & Coordinate Marks -->
                     <g stroke="#334155" stroke-width="0.8" opacity="0.7">
@@ -11687,24 +11775,24 @@
                     <text x="35" y="21" font-family="monospace" font-size="7" fill="#475569" opacity="0.8">106°48'E • -6°13'S</text>
                     <text x="382" y="32" font-family="monospace" font-size="7" fill="#00a3e0" opacity="0.8" text-anchor="end">N ↑</text>
 
-                    <!-- 1. Deep Navy Track Underglow (Garmin Signature Contrast) -->
+                    <!-- 1. Deep Navy Track Underglow -->
                     <path d="${routePath}" fill="none" stroke="#001a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
 
-                    <!-- 2. Garmin Signature Electric Cyan GPS Track -->
+                    <!-- 2. Garmin Signature Cyan GPS Track -->
                     <path d="${routePath}" fill="none" stroke="url(#garmin-cyan-glow-${escapeHTML(wId)})" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#garmin-track-glow-${escapeHTML(wId)})" />
 
                     <!-- 3. Mid-route Checkpoint Marker -->
-                    <circle cx="${midX}" cy="${midY}" r="2.5" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
+                    <circle cx="${midX}" cy="${midY}" r="2" fill="#007CC3" stroke="#ffffff" stroke-width="1" />
 
-                    <!-- 4. Garmin Green Start Marker (S) -->
-                    <circle cx="${startX}" cy="${startY}" r="6.5" fill="#10B981" opacity="0.35" />
-                    <circle cx="${startX}" cy="${startY}" r="4.5" fill="#10B981" stroke="#ffffff" stroke-width="1.5" />
-                    <text x="${startX}" y="${startY + 2.5}" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">S</text>
+                    <!-- 4. Garmin Start Marker (◎ - Black ring with white center) -->
+                    <circle cx="${startX}" cy="${startY}" r="5.5" fill="#000000" stroke="#ffffff" stroke-width="1.8" />
+                    <circle cx="${startX}" cy="${startY}" r="1.8" fill="#ffffff" />
 
-                    <!-- 5. Garmin Checkered / Red Finish Marker (F) -->
-                    <circle cx="${finishX}" cy="${finishY}" r="6.5" fill="#EF4444" opacity="0.35" />
-                    <circle cx="${finishX}" cy="${finishY}" r="4.5" fill="#EF4444" stroke="#ffffff" stroke-width="1.5" />
-                    <text x="${finishX}" y="${finishY + 2.5}" font-family="monospace" font-size="5.5" font-weight="900" fill="#ffffff" text-anchor="middle">F</text>
+                    <!-- 5. Garmin Stop Marker (⏹️ - Red pin with white stop square) -->
+                    <g transform="translate(${finishX - 7}, ${finishY - 13})">
+                        <path d="M7 0C3.13 0 0 3.13 0 7c0 5.25 7 10.5 7 10.5s7-5.25 7-10.5c0-3.87-3.13-7-7-7z" fill="#DC2626" stroke="#ffffff" stroke-width="1"/>
+                        <rect x="4.8" y="4.8" width="4.4" height="4.4" rx="0.5" fill="#ffffff" />
+                    </g>
                 </svg>
 
                 <!-- Top Left: Garmin Connect Brand Header -->
@@ -11713,11 +11801,16 @@
                     <span>GARMIN CONNECT™</span>
                 </div>
 
-                <!-- Top Right: Telemetry & Expand HUD -->
-                <div class="absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1 group-hover:text-white group-hover:border-cyan-400 transition-all">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span>3D GPS FIX</span>
-                    <svg class="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <!-- Top Right: Weather Widget (27.2° ☀️) & 3D GPS HUD -->
+                <div class="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 font-mono text-[10px]">
+                    <div class="px-2 py-0.5 rounded bg-white/95 text-slate-800 shadow-sm border border-slate-300 font-bold flex items-center gap-1" title="Kondisi Cuaca Sesi">
+                        <span>27.2°</span>
+                        <span class="text-amber-500">☀️</span>
+                    </div>
+                    <div class="px-2 py-0.5 rounded bg-[#00172e]/90 backdrop-blur-md border border-[#007cc3]/60 text-cyan-300 flex items-center gap-1 group-hover:text-white transition-all shadow-sm">
+                        <span>GPS 3D</span>
+                        <svg class="w-2.5 h-2.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
                 </div>
 
                 <!-- Bottom Left: Venue Location Badge -->
@@ -11804,48 +11897,58 @@
 
             if (!routeCoords || routeCoords.length === 0) return;
 
-            // 1. Deep Navy Garmin Underglow Polyline
+            currentModalRouteCoords = routeCoords;
+            currentModalDistanceKm = parseFloat(data.distance) || 10.0;
+            resetActivityReplay();
+
+            // Update Weather in HUD
+            const weatherTempEl = document.getElementById('detail-map-weather-temp');
+            if (weatherTempEl) {
+                weatherTempEl.textContent = data.temperature ? `${data.temperature}°` : '27.2°';
+            }
+
+            // 1. Garmin Underglow Track Polyline
             currentMapGlow = L.polyline(routeCoords, {
-                color: '#001a33',
-                weight: 7.5,
+                color: '#002b49',
+                weight: 7,
                 opacity: 0.85,
                 lineCap: 'round',
                 lineJoin: 'round'
             }).addTo(activityMapInstance);
 
-            // 2. Garmin Connect Signature Electric Cyan Main Track Polyline
+            // 2. Garmin Signature Cyan/Blue Track Polyline (Matching Garmin Connect)
             currentMapPolyline = L.polyline(routeCoords, {
-                color: '#00A3E0',
+                color: '#007CC3',
                 weight: 4.5,
                 opacity: 0.95,
                 lineCap: 'round',
                 lineJoin: 'round'
             }).addTo(activityMapInstance);
 
-            // 3. Garmin Start Marker (Green Pin S)
+            // 3. Garmin Start Marker: Black circle with white center (◎)
             const startPt = routeCoords[0];
             const startIcon = L.divIcon({
-                className: 'garmin-map-pin garmin-pin-start',
-                html: '<div class="w-5 h-5 rounded-full bg-emerald-500 border-2 border-white shadow-md flex items-center justify-center text-[9px] text-white font-bold">S</div>',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
+                className: 'garmin-map-pin-clean',
+                html: '<div class="w-4 h-4 rounded-full bg-black border-2 border-white shadow-md flex items-center justify-center"><div class="w-1.5 h-1.5 rounded-full bg-white"></div></div>',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8]
             });
-            const startMarker = L.marker(startPt, { icon: startIcon, title: 'Start (0.0 km)' })
+            const startMarker = L.marker(startPt, { icon: startIcon, title: 'Titik Mulai (Start ◎)' })
                 .addTo(activityMapInstance)
-                .bindPopup(`<b>Titik Mulai (Start)</b><br>0.00 km &bull; ${escapeHTML(locationName)}`);
+                .bindPopup(`<b>Titik Mulai (Start ◎)</b><br>0.00 km &bull; ${escapeHTML(locationName)}`);
             currentMapMarkers.push(startMarker);
 
-            // 4. Garmin Finish Marker (Red Checkered Flag 🏁)
+            // 4. Garmin Stop Marker: Red teardrop pin with white square stop icon (⏹️)
             const finishPt = routeCoords[routeCoords.length - 1];
             const finishIcon = L.divIcon({
-                className: 'garmin-map-pin garmin-pin-finish',
-                html: '<div class="w-5 h-5 rounded-full bg-rose-600 border-2 border-white shadow-md flex items-center justify-center text-[10px] text-white font-bold">🏁</div>',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
+                className: 'garmin-map-pin-clean',
+                html: '<div class="w-6 h-7 relative flex items-center justify-center"><svg class="w-6 h-7 drop-shadow-md" viewBox="0 0 24 30" fill="none"><path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 18 12 18s12-9 12-18c0-6.627-5.373-12-12-12z" fill="#DC2626" stroke="#ffffff" stroke-width="1.5"/><rect x="8.5" y="8.5" width="7" height="7" rx="1" fill="#ffffff" /></svg></div>',
+                iconSize: [24, 28],
+                iconAnchor: [12, 28]
             });
-            const finishMarker = L.marker(finishPt, { icon: finishIcon, title: `Garis Finis (${data.distance})` })
+            const finishMarker = L.marker(finishPt, { icon: finishIcon, title: `Garis Finis (Stop ⏹️)` })
                 .addTo(activityMapInstance)
-                .bindPopup(`<b>Garis Finis (Finish)</b><br>${data.distance} &bull; Sesi Selesai`);
+                .bindPopup(`<b>Garis Finis (Stop ⏹️)</b><br>${data.distance} &bull; Sesi Selesai`);
             currentMapMarkers.push(finishMarker);
 
             // 5. Kilometer Milestone Badges along the route
@@ -11919,6 +12022,102 @@
                 });
                 if (typeof HapticsService !== 'undefined') HapticsService.impact('LIGHT');
             }
+        }
+
+        function toggleActivityReplay() {
+            if (replayAnimationTimer) {
+                stopActivityReplay();
+            } else {
+                startActivityReplay();
+            }
+        }
+
+        function startActivityReplay() {
+            if (!activityMapInstance || !currentModalRouteCoords || currentModalRouteCoords.length < 2) return;
+            const playBtn = document.getElementById('icon-replay-play');
+            const pauseBtn = document.getElementById('icon-replay-pause');
+            if (playBtn) playBtn.classList.add('hidden');
+            if (pauseBtn) pauseBtn.classList.remove('hidden');
+
+            if (replayCurrentIndex >= currentModalRouteCoords.length - 1) {
+                replayCurrentIndex = 0;
+            }
+
+            if (!replayRunnerMarker) {
+                const runnerIcon = L.divIcon({
+                    className: 'garmin-runner-marker',
+                    html: '<div class="w-6 h-6 rounded-full bg-[#007cc3] border-2 border-white shadow-lg flex items-center justify-center text-[10px] text-white animate-pulse">🏃</div>',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+                replayRunnerMarker = L.marker(currentModalRouteCoords[replayCurrentIndex], { icon: runnerIcon, zIndexOffset: 1000 }).addTo(activityMapInstance);
+            }
+
+            replayAnimationTimer = setInterval(() => {
+                if (replayCurrentIndex < currentModalRouteCoords.length - 1) {
+                    replayCurrentIndex++;
+                    const pt = currentModalRouteCoords[replayCurrentIndex];
+                    replayRunnerMarker.setLatLng(pt);
+                    const pct = Math.round((replayCurrentIndex / (currentModalRouteCoords.length - 1)) * 100);
+                    const curDist = ((currentModalDistanceKm * replayCurrentIndex) / (currentModalRouteCoords.length - 1)).toFixed(2);
+                    const progText = document.getElementById('replay-progress-text');
+                    const progBar = document.getElementById('replay-progress-bar');
+                    if (progText) progText.textContent = `${curDist} km`;
+                    if (progBar) progBar.style.width = `${pct}%`;
+                } else {
+                    stopActivityReplay();
+                }
+            }, 60);
+        }
+
+        function stopActivityReplay() {
+            if (replayAnimationTimer) {
+                clearInterval(replayAnimationTimer);
+                replayAnimationTimer = null;
+            }
+            const playBtn = document.getElementById('icon-replay-play');
+            const pauseBtn = document.getElementById('icon-replay-pause');
+            if (playBtn) playBtn.classList.remove('hidden');
+            if (pauseBtn) pauseBtn.classList.add('hidden');
+        }
+
+        function resetActivityReplay() {
+            stopActivityReplay();
+            replayCurrentIndex = 0;
+            const progText = document.getElementById('replay-progress-text');
+            const progBar = document.getElementById('replay-progress-bar');
+            if (progText) progText.textContent = '0.0 km';
+            if (progBar) progBar.style.width = '0%';
+            if (replayRunnerMarker && currentModalRouteCoords.length > 0) {
+                replayRunnerMarker.setLatLng(currentModalRouteCoords[0]);
+            }
+        }
+
+        function toggleActivityMapFullscreen() {
+            const container = document.getElementById('detail-map-container');
+            if (!container) return;
+            const isFs = container.classList.toggle('garmin-map-fullscreen');
+            if (isFs) {
+                container.style.position = 'fixed';
+                container.style.inset = '0';
+                container.style.zIndex = '9999';
+                container.style.width = '100vw';
+                container.style.height = '100vh';
+                container.style.borderRadius = '0';
+            } else {
+                container.style.position = '';
+                container.style.inset = '';
+                container.style.zIndex = '';
+                container.style.width = '';
+                container.style.height = '';
+                container.style.borderRadius = '';
+            }
+            setTimeout(() => {
+                if (activityMapInstance) {
+                    activityMapInstance.invalidateSize();
+                    if (currentMapPolyline) activityMapInstance.fitBounds(currentMapPolyline.getBounds(), { padding: [35, 35] });
+                }
+            }, 150);
         }
 
         function openActivityDetailModal(activityId) {
