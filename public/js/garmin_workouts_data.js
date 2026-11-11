@@ -15,7 +15,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 1082,
         "avg_pace_min_per_km": 8.59,
-        "grade_adjusted_pace": 15.95,
+        "grade_adjusted_pace": 8.54,
         "aerobic_efficiency": 0.71
       }
     ]
@@ -35,7 +35,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 359,
         "avg_pace_min_per_km": 8.56,
-        "grade_adjusted_pace": 3.15,
+        "grade_adjusted_pace": 8.53,
         "aerobic_efficiency": 0.76
       }
     ]
@@ -55,7 +55,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 148,
         "avg_pace_min_per_km": 15.28,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 15.22,
         "aerobic_efficiency": 0.62
       }
     ]
@@ -75,7 +75,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 125,
         "avg_pace_min_per_km": 9.45,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 9.4,
         "aerobic_efficiency": 0.83
       }
     ]
@@ -135,7 +135,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 198,
         "avg_pace_min_per_km": 5.66,
-        "grade_adjusted_pace": 3.58,
+        "grade_adjusted_pace": 5.61,
         "aerobic_efficiency": 1.01
       }
     ]
@@ -155,7 +155,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 269,
         "avg_pace_min_per_km": 7.49,
-        "grade_adjusted_pace": 3.47,
+        "grade_adjusted_pace": 7.45,
         "aerobic_efficiency": 0.91
       }
     ]
@@ -175,7 +175,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 237,
         "avg_pace_min_per_km": 7.44,
-        "grade_adjusted_pace": 4.21,
+        "grade_adjusted_pace": 7.35,
         "aerobic_efficiency": 0.88
       }
     ]
@@ -195,7 +195,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 222,
         "avg_pace_min_per_km": 7.42,
-        "grade_adjusted_pace": 3.03,
+        "grade_adjusted_pace": 7.37,
         "aerobic_efficiency": 0.92
       }
     ]
@@ -215,7 +215,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 6,
         "avg_pace_min_per_km": 15.76,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 15.62,
         "aerobic_efficiency": 0.5
       }
     ]
@@ -235,7 +235,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 4,
         "avg_pace_min_per_km": 6.18,
-        "grade_adjusted_pace": 0.17,
+        "grade_adjusted_pace": 6.18,
         "aerobic_efficiency": 1.18
       }
     ]
@@ -255,7 +255,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 11,
         "avg_pace_min_per_km": 5.52,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 5.48,
         "aerobic_efficiency": 1.18
       }
     ]
@@ -275,7 +275,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 24,
         "avg_pace_min_per_km": 5.67,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 5.65,
         "aerobic_efficiency": 1.02
       }
     ]
@@ -295,7 +295,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 13,
         "avg_pace_min_per_km": 13.53,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 13.35,
         "aerobic_efficiency": 0.5
       }
     ]
@@ -315,7 +315,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 16,
         "avg_pace_min_per_km": 7.55,
-        "grade_adjusted_pace": 0.32,
+        "grade_adjusted_pace": 7.55,
         "aerobic_efficiency": 0.77
       }
     ]
@@ -335,7 +335,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 23,
         "avg_pace_min_per_km": 6.26,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 6.24,
         "aerobic_efficiency": 1.15
       }
     ]
@@ -355,7 +355,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 10,
         "avg_pace_min_per_km": 5.95,
-        "grade_adjusted_pace": 0.28,
+        "grade_adjusted_pace": 5.95,
         "aerobic_efficiency": 1.08
       }
     ]
@@ -375,7 +375,7 @@ window.INITIAL_GARMIN_WORKOUTS = [
       {
         "training_load": 67,
         "avg_pace_min_per_km": 5.52,
-        "grade_adjusted_pace": 1.0,
+        "grade_adjusted_pace": 5.51,
         "aerobic_efficiency": 1.27
       }
     ]
@@ -440,7 +440,7 @@ window.INITIAL_GARMIN_STATUS = {
       {
         "training_load": 1082,
         "avg_pace_min_per_km": 8.59,
-        "grade_adjusted_pace": 15.95,
+        "grade_adjusted_pace": 8.54,
         "aerobic_efficiency": 0.71
       }
     ]

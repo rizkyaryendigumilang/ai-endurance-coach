@@ -519,6 +519,14 @@ let activityMapInstance = null;
                 padding: [22, 22]
             });
 
+            // Ensure tile sizing is accurate once rendered in DOM
+            setTimeout(() => {
+                try {
+                    map.invalidateSize();
+                    map.fitBounds(track.getBounds(), { padding: [22, 22] });
+                } catch (e) {}
+            }, 60);
+
             feedMapInstances.set(containerEl, map);
         } catch (e) {
             console.warn('Feed map mount warning for ' + wId + ':', e);
@@ -550,7 +558,15 @@ let activityMapInstance = null;
             threshold: 0.01
         });
 
-        containers.forEach(el => feedMapObserver.observe(el));
+        containers.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            // If already in visible viewport, mount immediately!
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                mountFeedCardMap(el);
+            } else {
+                feedMapObserver.observe(el);
+            }
+        });
     }
 
 

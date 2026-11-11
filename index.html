@@ -9960,6 +9960,18 @@
             }
         }
 
+        function formatGapPace(val) {
+            if (!val || val === '00:00') return '-';
+            if (typeof val === 'string' && val.includes(':')) {
+                return val.includes('/km') ? val : `${val} /km`;
+            }
+            const num = parseFloat(val);
+            if (isNaN(num) || num <= 0) return '-';
+            const mins = Math.floor(num);
+            const secs = String(Math.round((num % 1) * 60)).padStart(2, '0');
+            return `${mins}:${secs} /km`;
+        }
+
         function renderActivitiesFeed(workouts) {
             const container = document.getElementById('activities-feed-container');
             if (!container) return;
@@ -10213,7 +10225,7 @@
                             ${metrics.grade_adjusted_pace && metrics.grade_adjusted_pace !== '00:00' ? `
                                 <span class="px-2 py-0.5 rounded-md bg-surface-subtle border border-border text-text-primary flex items-center gap-1">
                                     <span class="text-text-secondary">GAP:</span>
-                                    <strong class="text-flat-green">${metrics.grade_adjusted_pace}</strong>
+                                    <strong class="text-flat-green">${formatGapPace(metrics.grade_adjusted_pace)}</strong>
                                 </span>
                             ` : ''}
                             ${metrics.aerobic_efficiency ? `
@@ -10245,6 +10257,11 @@
                     </div>
                 `;
             }).join('');
+
+            // Mount real OpenStreetMap tiles on feed cards
+            if (typeof window.initFeedMapObserver === 'function') {
+                window.initFeedMapObserver();
+            }
         }
 
         async function syncCockpitWithBackend() {

@@ -951,3 +951,224 @@ class SportsEngine:
             "export_formats": ["JSON", "GARMIN_FIT_COMPLIANT"],
             "sync_ready": True
         }
+
+    @classmethod
+    def calculate_normalized_velocity(
+        cls,
+        actual_speed_mps: float,
+        gradient_pct: float = 0.0,
+        dew_point_c: float = 14.0,
+        duration_min: float = 45.0,
+        acclimatized: bool = True
+    ) -> dict:
+        """
+        Normalisasi Kecepatan Lari (v_norm):
+        1. Minetti GAP (Grade-Adjusted Pace): Koreksi energi tanjakan/turunan.
+        2. Magnus-Tetens Dew Point: Koreksi penalti suhu & kelembapan tropis.
+        """
+        v_actual = max(0.1, float(actual_speed_mps))
+        g = float(gradient_pct) / 100.0
+
+        # Minetti running energy cost relative to flat (3.6 J/kg/m)
+        c_r = 155.4 * (g ** 5) - 30.4 * (g ** 4) - 43.3 * (g ** 3) + 46.3 * (g ** 2) + 19.5 * g + 3.6
+        cost_ratio = c_r / 3.6
+        gap_factor = max(-0.35, min(1.20, cost_ratio - 1.0))
+
+        # Magnus-Tetens Dew Point heat penalty factor (baseline ideal <= 15C)
+        t_d = float(dew_point_c)
+        if t_d > 15.0:
+            heat_penalty_pct = (t_d - 15.0) * 0.40
+            if acclimatized:
+                heat_penalty_pct *= 0.75
+            if duration_min > 60.0:
+                heat_penalty_pct += (duration_min - 60.0) * 0.05
+        else:
+            heat_penalty_pct = 0.0
+
+        heat_factor = heat_penalty_pct / 100.0
+
+        # Combined equivalent speed in flat, cool conditions
+        v_norm = v_actual * (1.0 + gap_factor) * (1.0 + heat_factor)
+        norm_pace_sec = 1000.0 / max(0.1, v_norm)
+
+        return {
+            "actual_speed_mps": round(v_actual, 3),
+            "normalized_speed_mps": round(v_norm, 3),
+            "gap_factor": round(gap_factor, 4),
+            "heat_penalty_pct": round(heat_penalty_pct, 2),
+            "normalized_pace_sec": round(norm_pace_sec, 1),
+            "normalized_pace_formatted": f"{cls.format_pace_mmss(norm_pace_sec)}/km"
+        }
+
+    @staticmethod
+    def calculate_submaximal_vdot(
+        v_norm_mps: float,
+        steady_hr: float,
+        resting_hr: float,
+        max_hr: float
+    ) -> dict:
+        """
+        Submaximal Continuous VDOT Auto-Tester:
+        Menghitung kapasitas VDOT harian menggunakan rasio biaya oksigen Jack Daniels
+        terhadap persentase cadangan detak jantung (%HRR Karvonen).
+        """
+        v_norm = max(0.1, float(v_norm_mps))
+        v_m_min = v_norm * 60.0  # speed in meters per minute
+
+        # Jack Daniels Oxygen Cost formula
+        vo2_cost = -4.60 + 0.182258 * v_m_min + 0.000104 * (v_m_min ** 2)
+
+        # Karvonen %HRR with zero-division safeguard
+        r_hr = float(resting_hr or 50.0)
+        m_hr = float(max_hr or 190.0)
+        s_hr = float(steady_hr or 150.0)
+
+        hr_range = max(30.0, m_hr - r_hr)
+        hrr_ratio = (s_hr - r_hr) / hr_range
+        hrr_ratio_clamped = max(0.05, min(1.0, hrr_ratio))
+
+        vdot = vo2_cost / hrr_ratio_clamped
+
+        return {
+            "vdot": round(vdot, 1),
+            "vo2_cost": round(vo2_cost, 2),
+            "hrr_pct": round(hrr_ratio_clamped * 100.0, 1),
+            "steady_hr": int(s_hr),
+            "resting_hr": int(r_hr),
+            "max_hr": int(m_hr)
+        }
+
+    @staticmethod
+    def calculate_ewma_load(
+        daily_trimp_series: list,
+        initial_atl: float = None,
+        initial_ctl: float = None
+    ) -> dict:
+        """
+        Beban Latihan Eksponensial EWMA (Exponentially Weighted Moving Average):
+        ATL (Akut / Fatigue 7-hari, alpha = 2/8 = 0.25)
+        CTL (Kronis / Fitness 28-hari, alpha = 2/29 = 0.0689655)
+        """
+        if not daily_trimp_series:
+            return {"atl": 0.0, "ctl": 0.0, "tsb": 0.0, "acwr": 1.0}
+
+        alpha_acute = 2.0 / (7.0 + 1.0)
+        alpha_chronic = 2.0 / (28.0 + 1.0)
+
+        atl = float(initial_atl) if initial_atl is not None else float(daily_trimp_series[0])
+        ctl = float(initial_ctl) if initial_ctl is not None else float(daily_trimp_series[0])
+
+        for trimp in daily_trimp_series:
+            t = float(trimp)
+            atl = atl + alpha_acute * (t - atl)
+            ctl = ctl + alpha_chronic * (t - ctl)
+
+        tsb = ctl - atl
+        acwr = atl / max(1.0, ctl)
+
+        return {
+            "atl": round(atl, 1),
+            "ctl": round(ctl, 1),
+            "tsb": round(tsb, 1),
+            "acwr": round(acwr, 2)
+        }
+
+    @staticmethod
+    def calculate_tropical_fueling(
+        weight_kg: float,
+        duration_hours: float,
+        dew_point_c: float = 24.0
+    ) -> dict:
+        """
+        Tropical Fueling & Sweat Rate Engine:
+        Menghitung asupan karbohidrat, hidrasi, dan natrium sesuai indeks panas titik embun.
+        """
+        d = max(0.25, float(duration_hours or 1.0))
+        w = max(40.0, float(weight_kg or 65.0))
+        t_d = float(dew_point_c or 24.0)
+
+        # Carbohydrates intake (grams/hr)
+        if d < 1.0:
+            carbs_hr = 25
+        elif d <= 2.0:
+            carbs_hr = 50
+        elif d <= 3.0:
+            carbs_hr = 65
+        else:
+            carbs_hr = 85
+
+        # Hydration rate (ml/hr) based on body weight and tropical dew point
+        base_sweat = w * 10.0
+        heat_bonus = max(0.0, (t_d - 20.0) * 20.0) if t_d > 20.0 else 0.0
+        hydration_rate = min(1150.0, max(550.0, base_sweat + heat_bonus))
+
+        # Sodium replacement (mg/hr)
+        sodium_rate = (hydration_rate / 1000.0) * 850.0
+
+        # Gels required (25g carbs/gel)
+        gels_needed = max(1, math.ceil((carbs_hr * d) / 25.0))
+        freq_mins = max(25, int(round((25.0 / carbs_hr) * 60)))
+
+        return {
+            "carbs_per_hour_grams": int(carbs_hr),
+            "hydration_ml_per_hour": int(round(hydration_rate)),
+            "sodium_mg_per_hour": int(round(sodium_rate)),
+            "total_carbs_grams": int(round(carbs_hr * d)),
+            "total_fluid_liters": round((hydration_rate * d) / 1000.0, 2),
+            "total_sodium_mg": int(round(sodium_rate * d)),
+            "total_energy_gels": gels_needed,
+            "gel_frequency_minutes": freq_mins
+        }
+
+    @staticmethod
+    def calculate_aerobic_decoupling_and_cadence_fade(splits: list) -> dict:
+        """
+        Menghitung Aerobic Decoupling (Pw:HR) dan Late-Stage Cadence Drop.
+        Mendeteksi kebocoran daya tahan aerobik pada lari jarak jauh.
+        """
+        if not splits or len(splits) < 2:
+            return {
+                "decoupling_pct": 0.0,
+                "cadence_fade_spm": 0.0,
+                "endurance_leak_detected": False,
+                "status": "INSUFFICIENT_SPLITS"
+            }
+
+        mid = len(splits) // 2
+        h1 = splits[:mid]
+        h2 = splits[mid:]
+
+        # Efficiency factors
+        def calc_ef(half_splits):
+            efs = []
+            for s in half_splits:
+                hr = float(s.get("heart_rate") or s.get("hr") or 140.0)
+                spd = float(s.get("speed_mps") or (1000.0 / max(60.0, float(s.get("pace_sec_km") or s.get("pace_sec") or 300.0))))
+                if hr > 30.0:
+                    efs.append(spd / hr)
+            return sum(efs) / len(efs) if efs else 0.02
+
+        ef1 = calc_ef(h1)
+        ef2 = calc_ef(h2)
+
+        decoupling = round(((ef1 - ef2) / max(0.001, ef1)) * 100.0, 2)
+
+        # Cadence fade: first 80% vs final 20%
+        split_80 = max(1, int(len(splits) * 0.8))
+        cad_early = [float(s.get("cadence_spm") or s.get("cadence") or 175.0) for s in splits[:split_80]]
+        cad_late = [float(s.get("cadence_spm") or s.get("cadence") or 175.0) for s in splits[split_80:]]
+
+        avg_cad_early = sum(cad_early) / len(cad_early) if cad_early else 175.0
+        avg_cad_late = sum(cad_late) / len(cad_late) if cad_late else 175.0
+        cadence_fade = round(max(0.0, avg_cad_early - avg_cad_late), 1)
+
+        is_leak = bool(decoupling > 5.0 or cadence_fade >= 4.0)
+
+        return {
+            "decoupling_pct": decoupling,
+            "cadence_fade_spm": cadence_fade,
+            "endurance_leak_detected": is_leak,
+            "ef_first_half": round(ef1 * 1000.0, 2),
+            "ef_second_half": round(ef2 * 1000.0, 2),
+            "status": "ENDURANCE_LEAK_DETECTED" if is_leak else "AEROBIC_DURABILITY_OPTIMAL"
+        }

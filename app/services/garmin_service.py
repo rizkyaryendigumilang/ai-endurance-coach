@@ -327,8 +327,8 @@ class GarminDirectService:
                 if started_at in existing_timestamps:
                     continue
 
-                pace_str = sports_engine.calculate_pace(distance_km, duration_s)
-                gap_str = sports_engine.calculate_gap(distance_km, duration_s, elevation)
+                pace_val = sports_engine.calculate_pace(distance_km, duration_s)
+                gap_val = sports_engine.calculate_gap(pace_val, elevation, distance_km)
                 trimp_load = sports_engine.calculate_training_load(duration_s, avg_hr or 140, rpe=6)
                 
                 w_record = {
@@ -344,8 +344,8 @@ class GarminDirectService:
                 }
                 
                 m_record = {
-                    "avg_pace_min_per_km": pace_str,
-                    "grade_adjusted_pace": gap_str,
+                    "avg_pace_min_per_km": pace_val,
+                    "grade_adjusted_pace": gap_val,
                     "training_load": trimp_load,
                     "aerobic_efficiency": sports_engine.calculate_aerobic_efficiency(pace_str, int(avg_hr)) if avg_hr else None
                 }
