@@ -48,10 +48,11 @@ let activityMapInstance = null;
         ];
 
         function getWorkoutRouteCoordinates(workoutIdOrData, distKm = 10, workoutType = 'run') {
-            if (workoutIdOrData && typeof workoutIdOrData === 'object' && workoutIdOrData.gpsRoute && workoutIdOrData.gpsRoute.length > 0) {
+            const rawGps = (workoutIdOrData && typeof workoutIdOrData === 'object') ? (workoutIdOrData.gpsRoute || workoutIdOrData.gps_route) : null;
+            if (rawGps && Array.isArray(rawGps) && rawGps.length > 1) {
                 return {
-                    coords: workoutIdOrData.gpsRoute,
-                    locationName: workoutIdOrData.locationName || "Gelora Bung Karno Senayan • Jakarta"
+                    coords: rawGps,
+                    locationName: workoutIdOrData.locationName || workoutIdOrData.location_name || workoutIdOrData.location || "Rute Garmin Riil"
                 };
             }
 
@@ -66,8 +67,10 @@ let activityMapInstance = null;
             const isCycling = String(workoutType).toLowerCase().includes('cycl') || String(workoutType).toLowerCase().includes('bike');
             const landmark = isCycling ? JAKARTA_GPS_LANDMARKS[5] : JAKARTA_GPS_LANDMARKS[seedIdx % (JAKARTA_GPS_LANDMARKS.length - 1)];
             
-            const centerLat = landmark.lat;
-            const centerLon = landmark.lon;
+            // Prioritaskan koordinat start asli Garmin jika tercatat
+            const centerLat = (workoutIdOrData && typeof workoutIdOrData === 'object' && workoutIdOrData.start_lat) ? parseFloat(workoutIdOrData.start_lat) : landmark.lat;
+            const centerLon = (workoutIdOrData && typeof workoutIdOrData === 'object' && workoutIdOrData.start_lon) ? parseFloat(workoutIdOrData.start_lon) : landmark.lon;
+            const locName = (workoutIdOrData && typeof workoutIdOrData === 'object' && (workoutIdOrData.location_name || workoutIdOrData.locationName)) ? (workoutIdOrData.location_name || workoutIdOrData.locationName) : landmark.name;
             const distance = Math.max(1.0, distKm || 5.0);
 
             // Scale realistic geographical radius (km) matching distance
@@ -94,7 +97,7 @@ let activityMapInstance = null;
 
             return {
                 coords: coords,
-                locationName: landmark.name
+                locationName: locName || landmark.name
             };
         }
 
@@ -289,6 +292,23 @@ let activityMapInstance = null;
                         .bindPopup(`<b>Kilometer ${km}</b><br>Pace: ${data.pace || '05:30 /km'}`);
                     currentMapMarkers.push(splitMarker);
                 }
+            }
+
+            // Ambil rute GPS Garmin asli di latar belakang jika belum tersedia
+            if ((!data.gpsRoute || data.gpsRoute.length < 2) && data.id && typeof API_BASE !== 'undefined' && !data._gpsFetching) {
+                data._gpsFetching = true;
+                const reqUrl = `${API_BASE}/garmin/activity-gps/${encodeURIComponent(data.id)}`;
+                fetch(reqUrl)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(json => {
+                        data._gpsFetching = false;
+                        if (json && json.status === 'success' && Array.isArray(json.gps_route) && json.gps_route.length > 1) {
+                            data.gpsRoute = json.gps_route;
+                            if (json.location_name) data.locationName = json.location_name;
+                            renderActivityDetailMap(data);
+                        }
+                    })
+                    .catch(() => { data._gpsFetching = false; });
             }
 
             // Adjust viewport bounds with padding

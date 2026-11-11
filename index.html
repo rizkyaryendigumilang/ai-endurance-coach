@@ -38,16 +38,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS (25.8 KB) -->
-    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.2" onerror="this.onerror=null;this.href='/public/css/tailwind.min.css?v=2.9.2';">
+    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.3" onerror="this.onerror=null;this.href='/public/css/tailwind.min.css?v=2.9.3';">
     <!-- Leaflet GPS Map Engine (Garmin Connect & Strava Interactive Maps with CDN Fallback) -->
     <link rel="stylesheet" href="public/vendor/leaflet/leaflet.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';">
     <script src="public/vendor/leaflet/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';"></script>
 
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="public/js/db.js?v=2.9.2" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.2';"></script>
-    <script src="public/js/garmin_workouts_data.js?v=2.9.2" onerror="this.onerror=null;this.src='/public/js/garmin_workouts_data.js?v=2.9.2';"></script>
-    <script src="public/js/garmin_map_viewer.js?v=2.9.2" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js?v=2.9.2';"></script>
+    <script src="public/js/db.js?v=2.9.3" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.3';"></script>
+    <script src="public/js/garmin_workouts_data.js?v=2.9.3" onerror="this.onerror=null;this.src='/public/js/garmin_workouts_data.js?v=2.9.3';"></script>
+    <script src="public/js/garmin_map_viewer.js?v=2.9.3" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js?v=2.9.3';"></script>
 
 
     <style>
@@ -6347,6 +6347,24 @@
                                     PUTUSKAN
                                 </button>
                             </div>
+                            <!-- Historical Sync Actions (Opsi A + Opsi C) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                <button onclick="syncGarminHistoricalBatch()" id="btn-garmin-batch-sync" class="btn-flat-secondary py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5" title="Tarik 50 sesi aktivitas sebelumnya dari Garmin Connect">
+                                    <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>+50 SESI HISTORIS</span>
+                                </button>
+                                <button onclick="startGarminBackgroundBackfill()" id="btn-garmin-backfill" class="btn-flat-secondary py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5" title="Mulai sinkronisasi seluruh riwayat akun Garmin di latar belakang">
+                                    <svg class="w-3.5 h-3.5 text-flat-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span>SINKRON LENGKAP (BG)</span>
+                                </button>
+                            </div>
+                            <div id="garmin-backfill-progress-pill" class="hidden p-2 rounded-lg bg-surface-subtle border border-tertiary/30 text-xs font-mono flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-text-primary">
+                                    <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                                    <span id="garmin-backfill-progress-text">Sinkronisasi riwayat berjalan...</span>
+                                </span>
+                                <span id="garmin-backfill-progress-count" class="font-bold text-tertiary">0 Sesi</span>
+                            </div>
                         </div>
 
                         <!-- Login Form View -->
@@ -10059,7 +10077,7 @@
                 }
 
                 const distFloat = parseFloat(w.distance_km || 0);
-                const routeInfo = getWorkoutRouteCoordinates(w.id, distFloat, sport);
+                const routeInfo = getWorkoutRouteCoordinates(w, distFloat, sport);
 
                 ACTIVITY_FIXTURES[w.id] = {
                     id: w.id,
@@ -10401,8 +10419,8 @@
                 ACTIVITY_FIXTURES[w.id] = {
                     id: w.id,
                     sport: w.sport || 'run',
-                    locationName: w.location || 'Jakarta • Garmin Connect Track',
-                    gpsRoute: typeof getWorkoutRouteCoordinates !== 'undefined' ? getWorkoutRouteCoordinates(w.id, w.distance_km, w.sport).coords : [],
+                    locationName: w.location_name || w.location || 'Jakarta • Garmin Connect Track',
+                    gpsRoute: typeof getWorkoutRouteCoordinates !== 'undefined' ? getWorkoutRouteCoordinates(w, w.distance_km, w.sport || w.workout_type).coords : [],
                     title: { id: w.title, en: w.title },
                     date: { id: `${w.date} • Garmin Telemetri Riil`, en: `${w.date} • Real Garmin Telemetry` },
                     distance: `${w.distance_km} km`,
@@ -13390,6 +13408,105 @@
             } catch (e) {
                 loadToast.dismiss();
                 toast.error('Error Sinkronisasi', e.message);
+            }
+        }
+
+        let garminHistoricalOffset = 20;
+        let garminBackfillPollInterval = null;
+
+        async function syncGarminHistoricalBatch() {
+            const btn = document.getElementById('btn-garmin-batch-sync');
+            if (btn) btn.disabled = true;
+            const loadToast = toast.loading('Tarik Riwayat Garmin', `Mengambil 50 sesi Garmin berikutnya (offset ${garminHistoricalOffset})...`);
+            try {
+                const res = await fetch(`${API_BASE}/garmin/sync-batch?limit=50&start_index=${garminHistoricalOffset}`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                loadToast.dismiss();
+                if (btn) btn.disabled = false;
+                if (res.status === 402) {
+                    openProPaymentModal();
+                    toast.info('Fitur Coach (Pro)', 'Sinkronisasi riwayat historis membutuhkan akses Coach (Pro) atau BYOK.');
+                    return;
+                }
+                const data = await res.json();
+                if (res.ok) {
+                    garminHistoricalOffset = data.next_start_index || (garminHistoricalOffset + 50);
+                    toast.success('Riwayat Ditambahkan', data.message || `Berhasil mengimpor ${data.count || 0} sesi.`);
+                    checkGarminStatus();
+                    syncCockpitWithBackend();
+                    syncTelemetrySuite();
+                } else {
+                    toast.error('Gagal Tarik Riwayat', data.detail || 'Tidak dapat mengambil sesi historis.');
+                }
+            } catch (err) {
+                loadToast.dismiss();
+                if (btn) btn.disabled = false;
+                toast.error('Error Jaringan', err.message);
+            }
+        }
+
+        async function startGarminBackgroundBackfill() {
+            const btn = document.getElementById('btn-garmin-backfill');
+            const pill = document.getElementById('garmin-backfill-progress-pill');
+            const txt = document.getElementById('garmin-backfill-progress-text');
+            const countEl = document.getElementById('garmin-backfill-progress-count');
+
+            if (btn) btn.disabled = true;
+            if (pill) pill.classList.remove('hidden');
+            if (txt) txt.textContent = 'Memulai sinkronisasi riwayat Garmin di latar belakang...';
+
+            try {
+                const res = await fetch(`${API_BASE}/garmin/start-backfill?batch_size=50&max_batches=20`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                if (res.status === 402) {
+                    if (btn) btn.disabled = false;
+                    if (pill) pill.classList.add('hidden');
+                    openProPaymentModal();
+                    toast.info('Fitur Coach (Pro)', 'Sinkronisasi riwayat penuh membutuhkan akses Coach (Pro) atau BYOK.');
+                    return;
+                }
+                const data = await res.json();
+                if (res.ok) {
+                    toast.info('Sinkronisasi Latar Belakang Dimulai', 'Goalie sedang menarik riwayat aktivitas Garmin Anda secara bertahap.');
+                    
+                    if (garminBackfillPollInterval) clearInterval(garminBackfillPollInterval);
+                    garminBackfillPollInterval = setInterval(async () => {
+                        try {
+                            const statRes = await fetch(`${API_BASE}/garmin/sync-status`, { headers: getAuthHeaders() });
+                            if (statRes.ok) {
+                                const statData = await statRes.json();
+                                if (txt) txt.textContent = statData.message || 'Sinkronisasi sedang berjalan...';
+                                if (countEl) countEl.textContent = `${statData.total_imported || 0} Sesi`;
+
+                                if (statData.status === 'completed' || statData.status === 'failed') {
+                                    clearInterval(garminBackfillPollInterval);
+                                    garminBackfillPollInterval = null;
+                                    if (btn) btn.disabled = false;
+                                    if (statData.status === 'completed') {
+                                        toast.success('Sinkronisasi Riwayat Selesai', statData.message);
+                                        syncCockpitWithBackend();
+                                        syncTelemetrySuite();
+                                        checkGarminStatus();
+                                    } else {
+                                        toast.error('Sinkronisasi Berhenti', statData.message);
+                                    }
+                                }
+                            }
+                        } catch (e) {}
+                    }, 3000);
+                } else {
+                    if (btn) btn.disabled = false;
+                    if (pill) pill.classList.add('hidden');
+                    toast.error('Gagal Memulai Backfill', data.detail || 'Silakan coba lagi.');
+                }
+            } catch (err) {
+                if (btn) btn.disabled = false;
+                if (pill) pill.classList.add('hidden');
+                toast.error('Error Jaringan', err.message);
             }
         }
 

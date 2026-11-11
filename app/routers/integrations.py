@@ -187,3 +187,69 @@ def sync_garmin_activities(
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/v1/garmin/sync-batch", tags=["Garmin Connect"])
+def sync_garmin_batch(
+    limit: int = 50,
+    start_index: int = 0,
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    On-Demand Historical Sync: Menarik batch aktivitas Garmin berikutnya berdasarkan offset start_index.
+    """
+    if not _check_pro_access(user_id):
+        raise HTTPException(status_code=402, detail="Fitur ini memerlukan akses Coach (Pro) atau BYOK.")
+    try:
+        activities = garmin_service.sync_recent_activities(user_id, limit=limit, start_index=start_index)
+        return {
+            "status": "success",
+            "message": f"Berhasil menambahkan {len(activities)} aktivitas historis Garmin",
+            "count": len(activities),
+            "start_index": start_index,
+            "next_start_index": start_index + len(activities),
+            "activities": activities
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/api/v1/garmin/start-backfill", tags=["Garmin Connect"])
+async def start_garmin_backfill(
+    batch_size: int = 50,
+    max_batches: int = 20,
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    Background Historical Backfill: Memulai proses penarikan riwayat penuh Garmin di latar belakang.
+    """
+    if not _check_pro_access(user_id):
+        raise HTTPException(status_code=402, detail="Fitur ini memerlukan akses Coach (Pro) atau BYOK.")
+    try:
+        res = await garmin_service.start_background_backfill(user_id, batch_size=batch_size, max_batches=max_batches)
+        return {
+            "status": "success",
+            "message": "Sinkronisasi riwayat Garmin di latar belakang telah dimulai.",
+            "sync_status": res
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/api/v1/garmin/sync-status", tags=["Garmin Connect"])
+def get_garmin_sync_status(user_id: str = Depends(get_current_user_optional)):
+    """Mengambil status progres sinkronisasi historis Garmin."""
+    return garmin_service.get_sync_status(user_id)
+
+
+@router.get("/api/v1/garmin/activity-gps/{activity_id}", tags=["Garmin Connect"])
+def get_garmin_activity_gps(
+    activity_id: str,
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    Mengambil titik koordinat GPS riil (Garmin geoPolylineDTO) untuk dirender pada peta Leaflet.
+    """
+    uid = user_id or sandbox_store.OWNER_USER_ID
+    res = garmin_service.get_activity_gps(uid, activity_id)
+    return res

@@ -3,6 +3,7 @@ In-memory store for seamless sandbox/local demonstration when Supabase cloud is 
 Preserves user data during testing session so full functional workflows work out-of-the-box.
 """
 from datetime import datetime, date, timezone
+from typing import Optional, List, Dict, Any
 import uuid
 
 _USERS_DB = {}
@@ -328,9 +329,28 @@ def add_actual_workout(user_id: str, workout_data: dict, metrics_data: dict):
     store["activity_metrics"].append(m_rec)
     return w_rec, m_rec
 
-def get_recent_workouts(user_id: str, limit: int = 20):
+def get_recent_workouts(user_id: str, limit: int = 50):
     store = _get_user_store(user_id)
     return store["actual_workouts"][:limit]
+
+def get_workout_by_id(user_id: str, workout_id: str) -> Optional[dict]:
+    store = _get_user_store(user_id)
+    wid_str = str(workout_id)
+    for w in store["actual_workouts"]:
+        if str(w.get("id")) == wid_str or str(w.get("external_id")) == wid_str:
+            return w
+    return None
+
+def update_workout_gps_route(user_id: str, workout_id: str, gps_route: list, location_name: str = None) -> bool:
+    store = _get_user_store(user_id)
+    wid_str = str(workout_id)
+    for w in store["actual_workouts"]:
+        if str(w.get("id")) == wid_str or str(w.get("external_id")) == wid_str:
+            w["gps_route"] = gps_route
+            if location_name:
+                w["location_name"] = location_name
+            return True
+    return False
 
 # ==========================================
 # GOALIE V2 EVALUATED TELEMETRY & PERSISTENT MEMORY
@@ -544,6 +564,9 @@ def _ensure_seed_data():
                         "max_hr": 185,
                         "elevation_gain_m": 68.0,
                         "source": "garmin_connect",
+                        "start_lat": -6.2185,
+                        "start_lon": 106.8025,
+                        "location_name": "Gelora Bung Karno Senayan, Jakarta",
                         "activity_metrics": [
                                     {
                                                 "training_load": 1082,

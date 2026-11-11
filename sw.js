@@ -1,5 +1,5 @@
-// Goalie - Production PWA Service Worker (v3.0.1)
-const CACHE_NAME = 'goalie-cache-v3.0.1';
+// Goalie - Production PWA Service Worker (v3.0.2)
+const CACHE_NAME = 'goalie-cache-v3.0.2';
 const STATIC_ASSETS = [
     '/',
     '/index.html',

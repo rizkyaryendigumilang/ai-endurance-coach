@@ -4,6 +4,7 @@ No Garmin Developer API key, corporate contract, or approval needed.
 Pulls Daily Resting Heart Rate, Sleep Quality, HRV, Body Battery, and Activities.
 """
 import logging
+import asyncio
 from datetime import date, datetime, timedelta
 from typing import Dict, Any, Optional, List
 try:
@@ -19,6 +20,7 @@ class GarminDirectService:
     def __init__(self):
         self._clients: Dict[str, Any] = {}
         self._pending_mfa: Dict[str, Any] = {}
+        self._sync_status: Dict[str, Dict[str, Any]] = {}
 
     def authenticate_and_connect(
         self,
@@ -284,10 +286,93 @@ class GarminDirectService:
             logger.error(f"Error fetching Garmin health data: {e}")
             raise ValueError(f"Gagal mengambil data kesehatan Garmin: {e}")
 
-    def sync_recent_activities(self, user_id: str, limit: int = 15) -> List[Dict[str, Any]]:
+    def _normalize_garmin_coordinate(self, coord: Optional[float]) -> Optional[float]:
+        """Konversi koordinat Garmin semicircles ke derajat jika diperlukan."""
+        if coord is None:
+            return None
+        val = float(coord)
+        if abs(val) > 180.0:
+            val = val * (180.0 / 2147483648.0)
+        return round(val, 6)
+
+    def _process_garmin_activities_batch(self, user_id: str, activities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Memproses batch aktivitas Garmin Connect secara deterministik."""
+        existing_workouts = sandbox_store.get_recent_workouts(user_id, limit=500)
+        existing_timestamps = {
+            w.get("started_at") for w in existing_workouts 
+            if w.get("source") in ("garmin", "garmin_connect") and w.get("started_at")
+        }
+        existing_ext_ids = {
+            str(w.get("external_id")) for w in existing_workouts if w.get("external_id")
+        }
+        imported = []
+
+        for act in activities:
+            ext_id = str(act.get("activityId", ""))
+            act_type = str(act.get("activityType", {}).get("typeKey", "running")).lower()
+            distance_m = act.get("distance", 0) or 0
+            duration_s = act.get("duration", 0) or 0
+            avg_hr = act.get("averageHR")
+            elevation = act.get("elevationGain", 0) or 0
+            distance_km = round(distance_m / 1000.0, 2)
+
+            if distance_km <= 0 or duration_s <= 0:
+                continue
+
+            started_at = (
+                act.get("startTimeLocal") or 
+                act.get("startTimeGMT") or 
+                datetime.now(timezone.utc).isoformat()
+            )
+
+            # Skip duplicates
+            if started_at in existing_timestamps or (ext_id and ext_id in existing_ext_ids):
+                continue
+
+            pace_val = sports_engine.calculate_pace(distance_km, duration_s)
+            gap_val = sports_engine.calculate_gap(pace_val, elevation, distance_km)
+            trimp_load = sports_engine.calculate_training_load(duration_s, avg_hr or 140, rpe=6)
+
+            start_lat = self._normalize_garmin_coordinate(act.get("startLatitude"))
+            start_lon = self._normalize_garmin_coordinate(act.get("startLongitude"))
+            loc_name = act.get("locationName") or "Jakarta Track"
+
+            w_record = {
+                "external_id": ext_id,
+                "title": act.get("activityName", "Garmin Activity"),
+                "workout_type": "run" if "run" in act_type else ("cycling" if "cycle" in act_type or "bike" in act_type else "other"),
+                "distance_km": distance_km,
+                "duration_seconds": int(duration_s),
+                "started_at": started_at,
+                "avg_hr": int(avg_hr) if avg_hr else None,
+                "max_hr": int(act.get("maxHR")) if act.get("maxHR") else None,
+                "elevation_gain_m": round(elevation, 1),
+                "source": "garmin_connect",
+                "start_lat": start_lat,
+                "start_lon": start_lon,
+                "location_name": loc_name
+            }
+
+            aero_eff = sports_engine.calculate_aerobic_efficiency(distance_km, int(duration_s), int(avg_hr)) if avg_hr else None
+            m_record = {
+                "avg_pace_min_per_km": pace_val,
+                "grade_adjusted_pace": gap_val,
+                "training_load": trimp_load,
+                "aerobic_efficiency": aero_eff
+            }
+
+            actual_w, _ = sandbox_store.add_actual_workout(user_id, w_record, m_record)
+            existing_timestamps.add(started_at)
+            if ext_id:
+                existing_ext_ids.add(ext_id)
+            imported.append(actual_w)
+
+        return imported
+
+    def sync_recent_activities(self, user_id: str, limit: int = 20, start_index: int = 0) -> List[Dict[str, Any]]:
         """
-        Synchronizes recent workouts from Garmin directly into actual_workouts table.
-        Preserves activity timestamp and calculates deterministic metrics via Sports Engine.
+        Menyinkronkan sesi latihan Garmin secara langsung ke tabel actual_workouts.
+        Mendukung paginasi via start_index.
         """
         client = self._clients.get(user_id)
         if not client:
@@ -297,66 +382,159 @@ class GarminDirectService:
             return []
 
         try:
-            activities = client.get_activities(0, limit) or []
-            existing_workouts = sandbox_store.get_recent_workouts(user_id, 100)
-            existing_timestamps = {
-                w.get("started_at") for w in existing_workouts 
-                if w.get("source") in ("garmin", "garmin_connect") and w.get("started_at")
-            }
-            imported = []
-            
-            for act in activities:
-                # Map Garmin activity fields
-                act_type = str(act.get("activityType", {}).get("typeKey", "running")).lower()
-                distance_m = act.get("distance", 0)
-                duration_s = act.get("duration", 0)
-                avg_hr = act.get("averageHR")
-                elevation = act.get("elevationGain", 0)
-                distance_km = round(distance_m / 1000.0, 2)
-                
-                if distance_km <= 0 or duration_s <= 0:
-                    continue
-
-                started_at = (
-                    act.get("startTimeLocal") or 
-                    act.get("startTimeGMT") or 
-                    datetime.now(timezone.utc).isoformat()
-                )
-
-                # Skip duplicates
-                if started_at in existing_timestamps:
-                    continue
-
-                pace_val = sports_engine.calculate_pace(distance_km, duration_s)
-                gap_val = sports_engine.calculate_gap(pace_val, elevation, distance_km)
-                trimp_load = sports_engine.calculate_training_load(duration_s, avg_hr or 140, rpe=6)
-                
-                w_record = {
-                    "title": act.get("activityName", "Garmin Activity"),
-                    "workout_type": "run" if "run" in act_type else ("cycling" if "cycle" in act_type or "bike" in act_type else "other"),
-                    "distance_km": distance_km,
-                    "duration_seconds": int(duration_s),
-                    "started_at": started_at,
-                    "avg_hr": int(avg_hr) if avg_hr else None,
-                    "max_hr": int(act.get("maxHR")) if act.get("maxHR") else None,
-                    "elevation_gain_m": round(elevation, 1),
-                    "source": "garmin_connect"
-                }
-                
-                m_record = {
-                    "avg_pace_min_per_km": pace_val,
-                    "grade_adjusted_pace": gap_val,
-                    "training_load": trimp_load,
-                    "aerobic_efficiency": sports_engine.calculate_aerobic_efficiency(pace_str, int(avg_hr)) if avg_hr else None
-                }
-                
-                actual_w, _ = sandbox_store.add_actual_workout(user_id, w_record, m_record)
-                existing_timestamps.add(started_at)
-                imported.append(actual_w)
-
-            return imported
+            activities = client.get_activities(start_index, limit) or []
+            return self._process_garmin_activities_batch(user_id, activities)
         except Exception as e:
             logger.error(f"Error syncing Garmin activities: {e}")
             raise ValueError(f"Gagal menyinkronkan aktivitas Garmin: {e}")
+
+    async def start_background_backfill(self, user_id: str, batch_size: int = 50, max_batches: int = 20, delay_sec: float = 1.2) -> Dict[str, Any]:
+        """
+        Mengeksekusi penarikan riwayat aktivitas Garmin di latar belakang secara bertahap.
+        Menggunakan jeda delay_sec untuk melindungi akun dari rate limit Garmin.
+        """
+        client = self._clients.get(user_id)
+        if not client:
+            session = sandbox_store.get_garmin_session(user_id)
+            if not session or not session.get("is_active"):
+                raise ValueError("Garmin Connect belum terkoneksi.")
+
+        self._sync_status[user_id] = {
+            "status": "running",
+            "total_imported": 0,
+            "current_batch": 0,
+            "message": "Memulai penarikan riwayat aktivitas Garmin Connect..."
+        }
+
+        async def _backfill_worker():
+            total_imported = 0
+            start_index = 0
+            try:
+                for b_idx in range(max_batches):
+                    # client get_activities adalah panggilan I/O blocking
+                    activities = await asyncio.to_thread(client.get_activities, start_index, batch_size)
+                    if not activities:
+                        break
+
+                    imported = self._process_garmin_activities_batch(user_id, activities)
+                    total_imported += len(imported)
+                    start_index += len(activities)
+
+                    self._sync_status[user_id] = {
+                        "status": "running",
+                        "total_imported": total_imported,
+                        "current_batch": b_idx + 1,
+                        "message": f"Tersinkronisasi {total_imported} aktivitas (batch {b_idx + 1})..."
+                    }
+
+                    if len(activities) < batch_size:
+                        # Seluruh riwayat akun telah habis
+                        break
+
+                    await asyncio.sleep(delay_sec)
+
+                self._sync_status[user_id] = {
+                    "status": "completed",
+                    "total_imported": total_imported,
+                    "message": f"Sinkronisasi selesai: {total_imported} aktivitas Garmin berhasil ditambahkan."
+                }
+            except Exception as ex:
+                logger.error(f"Garmin background backfill error: {ex}")
+                self._sync_status[user_id] = {
+                    "status": "failed",
+                    "total_imported": total_imported,
+                    "message": f"Sinkronisasi terhenti: {str(ex)}"
+                }
+
+        asyncio.create_task(_backfill_worker())
+        return self._sync_status[user_id]
+
+    def get_sync_status(self, user_id: str) -> Dict[str, Any]:
+        """Mengambil status progres sinkronisasi historis Garmin."""
+        return self._sync_status.get(user_id, {
+            "status": "idle",
+            "total_imported": 0,
+            "message": "Tidak ada proses sinkronisasi aktif."
+        })
+
+    def get_activity_gps(self, user_id: str, activity_id: str) -> Dict[str, Any]:
+        """
+        Mengambil koordinat rute GPS riil dari sesi Garmin Connect (geoPolylineDTO).
+        Menyimpan koordinat ke cache lokal agar pembukaan peta berikutnya instan.
+        """
+        workout = sandbox_store.get_workout_by_id(user_id, activity_id)
+        if workout and workout.get("gps_route") and len(workout.get("gps_route")) > 1:
+            return {
+                "status": "success",
+                "activity_id": activity_id,
+                "gps_route": workout["gps_route"],
+                "location_name": workout.get("location_name") or workout.get("title") or "Rute Garmin Riil",
+                "cached": True
+            }
+
+        client = self._clients.get(user_id)
+        if not client:
+            # Fallback jika offline atau sesi demo
+            if workout and workout.get("start_lat") and workout.get("start_lon"):
+                c_lat = float(workout["start_lat"])
+                c_lon = float(workout["start_lon"])
+                mock_pts = [[c_lat, c_lon], [c_lat + 0.005, c_lon + 0.005], [c_lat + 0.01, c_lon], [c_lat, c_lon]]
+                return {
+                    "status": "success",
+                    "activity_id": activity_id,
+                    "gps_route": mock_pts,
+                    "location_name": workout.get("location_name", "Jakarta Track"),
+                    "cached": False
+                }
+            return {
+                "status": "not_found",
+                "activity_id": activity_id,
+                "gps_route": [],
+                "message": "Sesi Garmin belum terkoneksi atau data GPS tidak tersedia."
+            }
+
+        try:
+            # Panggil Garmin Connect activity details
+            ext_id = workout.get("external_id") if workout else activity_id
+            target_id = ext_id or activity_id
+            details = client.get_activity_details(target_id)
+            polyline = details.get("geoPolylineDTO", {}).get("polyline", []) or []
+
+            coords = []
+            for p in polyline:
+                raw_lat = p.get("lat")
+                raw_lon = p.get("lon")
+                norm_lat = self._normalize_garmin_coordinate(raw_lat)
+                norm_lon = self._normalize_garmin_coordinate(raw_lon)
+                if norm_lat is not None and norm_lon is not None:
+                    coords.append([norm_lat, norm_lon])
+
+            # Sampling jika koordinat terlalu padat (> 500 titik) agar render peta ringan
+            if len(coords) > 500:
+                step = max(1, len(coords) // 400)
+                coords = [coords[i] for i in range(0, len(coords), step)]
+                if coords[-1] != [coords[-1][0], coords[-1][1]]:
+                    coords.append(coords[-1])
+
+            loc_name = details.get("activityName") or (workout.get("title") if workout else "Rute Garmin Riil")
+
+            if coords:
+                sandbox_store.update_workout_gps_route(user_id, activity_id, coords, loc_name)
+
+            return {
+                "status": "success",
+                "activity_id": activity_id,
+                "gps_route": coords,
+                "location_name": loc_name,
+                "cached": False
+            }
+        except Exception as e:
+            logger.warning(f"Gagal mengambil GPS route dari Garmin untuk activity {activity_id}: {e}")
+            return {
+                "status": "error",
+                "activity_id": activity_id,
+                "gps_route": [],
+                "message": f"Gagal mengekstrak koordinat GPS: {str(e)}"
+            }
 
 garmin_service = GarminDirectService()
