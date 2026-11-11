@@ -1172,3 +1172,244 @@ class SportsEngine:
             "ef_second_half": round(ef2 * 1000.0, 2),
             "status": "ENDURANCE_LEAK_DETECTED" if is_leak else "AEROBIC_DURABILITY_OPTIMAL"
         }
+
+    # ==========================================
+    # 8. LAPISAN 3: TARGET GAP ANALYZER & STATE MACHINE
+    # ==========================================
+    @staticmethod
+    def evaluate_target_gap_and_primary_limiter(
+        current_vdot: float,
+        target_vdot: float,
+        aerobic_decoupling_pct: float,
+        acwr: float,
+        tsb: float,
+        chronic_load_ctl: float = 0.0
+    ) -> dict:
+        """
+        Lapisan 3: Target Gap Analyzer.
+        Mendeteksi selisih VDOT dan menetapkan satu faktor pembatas utama (Primary Limiter).
+        """
+        delta_vdot = round(current_vdot - target_vdot, 2)
+        decoupling_gap = round(max(0.0, aerobic_decoupling_pct - 5.0), 2)
+
+        # 1. Recovery Debt prioritised (kelelahan sistemik / risiko cedera)
+        if acwr > 1.30 or tsb < -20.0:
+            primary_limiter = "RECOVERY_DEBT"
+            explanation = "Beban latihan akut terlalu tinggi atau kelelahan berlebih (ACWR > 1.3 atau TSB < -20). Fokus pada pemulihan aktif dan regenerasi sebelum memacu intensitas."
+        # 2. Aerobic Durability (kebocoran efisiensi aerobik atau fondasi kronis minim)
+        elif aerobic_decoupling_pct > 5.0 or chronic_load_ctl < 35.0:
+            primary_limiter = "AEROBIC_DURABILITY"
+            explanation = f"Daya tahan aerobik belum optimal (aerobic decoupling {aerobic_decoupling_pct}% > ambang batas 5.0%). Prioritaskan lari lambat zona 2 untuk memperkuat densitas mitokondria."
+        # 3. Aerobic Speed (fondasi daya tahan kokoh namun kecepatan ambang/VDOT masih di bawah target lomba)
+        elif delta_vdot < 0.0:
+            primary_limiter = "AEROBIC_SPEED"
+            explanation = f"Daya tahan dasar memadai, namun kecepatan ambang laktat/VDOT masih selisih {abs(delta_vdot)} poin di bawah target lomba. Tambahkan stimulasi tempo dan interval terukur."
+        # 4. Target tercapai / fase pemeliharaan dan spesifisitas
+        else:
+            primary_limiter = "MAINTAIN_AND_SPECIFICITY"
+            explanation = "Kebugaran dan daya tahan aerobik telah selaras dengan target lomba. Pertahankan ketajaman race pace dan kesegaran fisik menuju race day."
+
+        readiness_pct = min(100.0, max(0.0, round((current_vdot / max(1.0, target_vdot)) * 100.0, 1))) if target_vdot > 0 else 100.0
+
+        return {
+            "current_vdot": current_vdot,
+            "target_vdot": target_vdot,
+            "delta_vdot": delta_vdot,
+            "decoupling_gap_pct": decoupling_gap,
+            "aerobic_decoupling_pct": aerobic_decoupling_pct,
+            "acwr": acwr,
+            "tsb": tsb,
+            "chronic_load_ctl": chronic_load_ctl,
+            "primary_limiter": primary_limiter,
+            "limiter_explanation": explanation,
+            "target_readiness_pct": readiness_pct
+        }
+
+    @staticmethod
+    def evaluate_three_session_verdict(
+        recent_session_vdots: list,
+        baseline_vdot: float,
+        decoupling_pct: float,
+        acwr: float
+    ) -> dict:
+        """
+        Lapisan 3: Verdict Engine (Aturan Konfirmasi 3 Sesi).
+        Kenaikan zona pace latihan dikunci hingga minimal 3 sesi berturut-turut melampaui baseline minimal +0.8 poin VDOT.
+        """
+        # Cek kelelahan akut
+        has_steep_drop = bool(recent_session_vdots and any(v < baseline_vdot - 2.0 for v in recent_session_vdots[-2:]))
+        if acwr > 1.35 or has_steep_drop:
+            return {
+                "verdict": "ACUTE_FATIGUE_WARNING",
+                "can_level_up": False,
+                "baseline_vdot": baseline_vdot,
+                "new_baseline_vdot": baseline_vdot,
+                "recent_vdots": recent_session_vdots[-3:] if recent_session_vdots else [],
+                "message": "Peringatan kelelahan akut atau penurunan performa terdeteksi (ACWR tinggi atau penurunan VDOT tajam). Disarankan pemulihan aktif."
+            }
+
+        # Cek konfirmasi level up: 3 sesi berturut-turut >= baseline + 0.8
+        level_up_threshold = baseline_vdot + 0.8
+        recent_3 = recent_session_vdots[-3:] if len(recent_session_vdots) >= 3 else []
+        confirmed_3_sessions = bool(len(recent_3) == 3 and all(v >= level_up_threshold for v in recent_3))
+
+        if confirmed_3_sessions:
+            new_baseline = round(sum(recent_3) / 3.0, 2)
+            return {
+                "verdict": "LEVEL_UP_CONFIRMED",
+                "can_level_up": True,
+                "baseline_vdot": baseline_vdot,
+                "new_baseline_vdot": new_baseline,
+                "recent_vdots": recent_3,
+                "message": f"Konfirmasi 3 sesi berturut-turut melampaui baseline (+0.8 VDOT). Zona kecepatan resmi dinaikkan ke baseline baru {new_baseline}!"
+            }
+
+        # Cek kebocoran daya tahan
+        if decoupling_pct > 5.0:
+            return {
+                "verdict": "ENDURANCE_LEAK_DETECTED",
+                "can_level_up": False,
+                "baseline_vdot": baseline_vdot,
+                "new_baseline_vdot": baseline_vdot,
+                "recent_vdots": recent_session_vdots[-3:] if recent_session_vdots else [],
+                "message": f"Terjadi kebocoran daya tahan aerobik di paruh akhir sesi (decoupling {decoupling_pct}% > 5.0%). Pertahankan volume dasar zona 2."
+            }
+
+        return {
+            "verdict": "ON_TRACK_PASS",
+            "can_level_up": False,
+            "baseline_vdot": baseline_vdot,
+            "new_baseline_vdot": baseline_vdot,
+            "recent_vdots": recent_session_vdots[-3:] if recent_session_vdots else [],
+            "message": "Sesi latihan konsisten dan berada di jalur yang tepat sesuai rencana periodisasi."
+        }
+
+    @staticmethod
+    def rebalance_schedule_state_machine(
+        missed_days: int,
+        current_state: str = "ON_TRACK",
+        injury_flag: bool = False,
+        days_to_race: int = 120
+    ) -> dict:
+        """
+        Lapisan 3: 5-State Schedule Rebalancing Machine.
+        Menentukan mutasi jadwal latihan periodisasi 31 minggu saat terjadi sesi terlewat, sakit, atau cedera.
+        """
+        if injury_flag or missed_days > 14 or (missed_days >= 7 and days_to_race <= 21):
+            next_state = "GOAL_RESET_GATE"
+            vol_adj = 0.50
+            clamped = True
+            action = "RESET_MARATHON_GOAL"
+            recommendation = "Absen panjang (>14 hari) atau cedera memerlukan kalibrasi ulang target lomba maraton agar tetap aman dan realistis."
+        elif missed_days >= 8:
+            next_state = "MACRO_RECALIBRATION"
+            vol_adj = 0.65
+            clamped = True
+            action = "RESET_MESOCYCLE_BLOCK"
+            recommendation = "Absen 8-14 hari: Reset blok mesocycle saat ini dan bangun ulang volume dasar aerobik sebelum masuk ke sesi spesifik."
+        elif missed_days >= 4:
+            next_state = "RETURN_TO_RUN_BRIDGE"
+            vol_adj = 0.70
+            clamped = True
+            action = "INSERT_ACCLIMATION_BRIDGE"
+            recommendation = "Absen 4-7 hari: Pasang jembatan adaptasi 3-5 hari. Kunci intensitas ke zona 2 (Easy) dan potong volume 30% untuk re-aklimatisasi."
+        elif missed_days >= 1:
+            next_state = "INTRA_WEEK_SHIFT"
+            vol_adj = 1.0
+            clamped = False
+            action = "SHIFT_WITHIN_WEEK"
+            recommendation = "1-3 sesi terlewat: Geser sesi kualitas utama ke hari istirahat dalam minggu yang sama tanpa menambah volume total mingguan."
+        else:
+            next_state = "ON_TRACK"
+            vol_adj = 1.0
+            clamped = False
+            action = "EXECUTE_AS_PLANNED"
+            recommendation = "Program berjalan optimal sesuai jadwal periodisasi awal."
+
+        return {
+            "state": next_state,
+            "previous_state": current_state,
+            "missed_days": missed_days,
+            "injury_flag": injury_flag,
+            "action_code": action,
+            "volume_adjustment_factor": vol_adj,
+            "intensity_clamped": clamped,
+            "recommendation": recommendation
+        }
+
+    @staticmethod
+    def apply_concurrent_strength_rules(workouts: list, days_to_race: int) -> list:
+        """
+        Lapisan 3: Aturan Kekuatan Simultan (Concurrent Gym Rules).
+        - Hard Days Hard: Sesi beban dipasangkan pada hari kualitas dengan jeda min 6 jam.
+        - Sterile Leg Buffer: Steril beban kaki 48-72 jam sebelum Long Run.
+        - Tapering Stop: Penghentian total beban kaki pada H-10 menuju hari lomba.
+        """
+        import copy
+        adjusted_workouts = copy.deepcopy(workouts)
+
+        day_order = {
+            "senin": 0, "monday": 0,
+            "selasa": 1, "tuesday": 1,
+            "rabu": 2, "wednesday": 2,
+            "kamis": 3, "thursday": 3,
+            "jumat": 4, "friday": 4,
+            "sabtu": 5, "saturday": 5,
+            "minggu": 6, "sunday": 6
+        }
+
+        # 1. Cari hari sesi Long Run (jarak >= 16km atau kategori LONG)
+        long_run_day_idx = None
+        for w in adjusted_workouts:
+            is_long = bool(
+                w.get("category") == "LONG" or 
+                float(w.get("distance_km") or 0) >= 16.0 or
+                "long" in str(w.get("title", "")).lower()
+            )
+            if is_long and w.get("day"):
+                d_str = str(w.get("day", "")).lower()
+                long_run_day_idx = day_order.get(d_str)
+                break
+
+        # 2. Iterasi dan terapkan aturan gym
+        for w in adjusted_workouts:
+            wtype = str(w.get("type", "")).lower()
+            wcat = str(w.get("category", "")).lower()
+            if wtype != "strength" and wcat != "gym":
+                continue
+
+            w["same_day_gap_hours"] = 0
+            w["leg_load_allowed"] = True
+            w["rule_note"] = "Standard strength session"
+
+            # Rule 1: Tapering Stop (H-10)
+            if days_to_race <= 10:
+                w["leg_load_allowed"] = False
+                w["converted_to"] = "mobility_core"
+                w["rule_note"] = "Tapering Stop H-10: Beban kaki ditiadakan untuk akumulasi glikogen dan pemulihan neuromuscular pra-lomba."
+                continue
+
+            # Rule 2: Sterile Leg Buffer (48-72 jam sebelum Long Run)
+            if long_run_day_idx is not None and w.get("day"):
+                d_str = str(w.get("day", "")).lower()
+                strength_day_idx = day_order.get(d_str, -1)
+                diff = (long_run_day_idx - strength_day_idx) % 7
+                if diff in [1, 2]:  # 24-48 jam sebelum Long Run
+                    w["leg_load_allowed"] = False
+                    w["converted_to"] = "upper_body_core"
+                    w["rule_note"] = f"Sterile Leg Buffer: Dilarang membebani kaki dalam 48 jam sebelum Long Run (Hari {w.get('day')} -> Long Run Hari {long_run_day_idx})."
+
+            # Rule 3: Hard Days Hard pairing
+            d_str = str(w.get("day", "")).lower()
+            same_day_quality_run = any(
+                str(rw.get("day", "")).lower() == d_str and 
+                (rw.get("category") in ["QUALITY", "SPEED", "INTERVAL", "TEMPO"] or "interval" in str(rw.get("title", "")).lower() or "tempo" in str(rw.get("title", "")).lower())
+                for rw in adjusted_workouts if rw.get("type") == "run"
+            )
+            if same_day_quality_run:
+                w["same_day_gap_hours"] = 6
+                w["recommended_timing"] = "evening_after_run"
+                if w.get("leg_load_allowed", True):
+                    w["rule_note"] = "Hard Days Hard: Sesi kekuatan dijadwalkan sore hari dengan jeda minimal 6 jam setelah lari kualitas pagi."
+
+        return adjusted_workouts

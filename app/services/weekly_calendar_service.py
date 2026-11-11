@@ -731,18 +731,14 @@ class WeeklyCalendarService:
         return "\r\n".join(lines)
 
     @classmethod
-    def determine_runner_state(cls, missed_count: int, reason: str) -> RunnerState:
-        """Menentukan state pelari dalam Finite State Machine (FSM)."""
-        if missed_count <= 0:
-            return RunnerState.ON_TRACK
-        elif missed_count == 1:
-            return RunnerState.INTRA_WEEK_SHIFT
-        elif missed_count <= 4:
-            return RunnerState.RETURN_TO_RUN_BRIDGE
-        elif missed_count <= 10:
-            return RunnerState.MACRO_RECALIBRATION
-        else:
-            return RunnerState.GOAL_RESET_GATE
+    def determine_runner_state(cls, missed_count: int, reason: str = "BUSY_WORK", injury_flag: bool = False, days_to_race: int = 120) -> RunnerState:
+        """Menentukan state pelari dalam Finite State Machine (FSM) via SportsEngine."""
+        fsm_res = SportsEngine.rebalance_schedule_state_machine(
+            missed_days=missed_count,
+            injury_flag=injury_flag or (reason == "MINOR_NIGGLE"),
+            days_to_race=days_to_race
+        )
+        return RunnerState(fsm_res["state"])
 
     @classmethod
     def auto_rebalance_schedule(
