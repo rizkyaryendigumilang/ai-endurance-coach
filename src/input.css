@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --garmin-blue: #007CC3;
+    --garmin-cyan: #00A3E0;
+    --garmin-navy: #00172E;
+    --garmin-dark: #060C18;
+  }
+
+  /* WCAG 2.1 AA: Accessible Keyboard Navigation Focus Indicator */
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--garmin-blue, #007CC3) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Apple WWDC Fluid Interfaces: Instant pointer-down active tactile feedback */
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active,
+  .btn-interactive:active {
+    transform: scale(0.975);
+    transition: transform 75ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Apple Human Interface Guidelines: Ergonomic 44x44pt touch bounding hitbox for coarse pointers */
+  @media (pointer: coarse) {
+    .touch-target-expand {
+      position: relative;
+    }
+    .touch-target-expand::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 44px;
+      min-height: 44px;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+@layer utilities {
+  .spring-fluid {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .vibrancy-glass {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
