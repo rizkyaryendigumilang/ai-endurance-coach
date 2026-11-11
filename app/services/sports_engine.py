@@ -1413,3 +1413,51 @@ class SportsEngine:
                     w["rule_note"] = "Hard Days Hard: Sesi kekuatan dijadwalkan sore hari dengan jeda minimal 6 jam setelah lari kualitas pagi."
 
         return adjusted_workouts
+
+    # ==========================================
+    # 9. LAPISAN 5: SAFETY GATEKEEPER & LOAD CLAMPING
+    # ==========================================
+    @staticmethod
+    def validate_ai_adaptation_gatekeeper(
+        proposed_intent: dict,
+        current_ctl: float,
+        current_atl: float,
+        current_weekly_km: float = 50.0
+    ) -> dict:
+        """
+        Lapisan 5: Safety Gatekeeper (Load Clamping & Validasi ACWR).
+        Memvalidasi usulan perubahan jadwal dari AI agar tidak melanggar batas fisiologis:
+        1. Kenaikan volume mingguan tidak boleh melebihi +10% dari volume berjalan.
+        2. ACWR terproyeksi tidak boleh melampaui 1.30 (Sweet Spot 0.8 - 1.3).
+        """
+        proposed_km = float(proposed_intent.get("proposed_weekly_km") or current_weekly_km)
+        intent_type = proposed_intent.get("intent", "MAINTAIN")
+
+        # 1. Aturan Batas Kenaikan Volume (+10% Rule)
+        max_allowed_km = round(current_weekly_km * 1.10, 2)
+        clamped = False
+        clamping_reason = None
+        sanctioned_km = proposed_km
+
+        if proposed_km > max_allowed_km:
+            clamped = True
+            sanctioned_km = max_allowed_km
+            clamping_reason = f"Load Clamping Aktif (Volume Clamped): Usulan volume {proposed_km} km melebihi batas aman +10% per minggu ({max_allowed_km} km). Volume dikunci ke {sanctioned_km} km."
+
+        # 2. Aturan ACWR Projection Guardrail
+        current_acwr = current_atl / max(1.0, current_ctl)
+        if current_acwr > 1.30:
+            clamped = True
+            cut_factor = 0.80 if current_acwr > 1.45 else 0.88
+            sanctioned_km = round(current_weekly_km * cut_factor, 2)
+            clamping_reason = f"Load Clamping Aktif (Volume Clamped): Rasio ACWR saat ini {current_acwr:.2f} melebihi batas aman 1.30. Volume mingguan dipangkas menjadi {sanctioned_km} km untuk mencegah cedera berlebih."
+
+        return {
+            "valid": True,
+            "clamped": clamped,
+            "original_proposed_km": proposed_km,
+            "sanctioned_weekly_km": sanctioned_km,
+            "clamping_reason": clamping_reason or "Usulan adaptasi AI disetujui sesuai batas fisiologis.",
+            "intent": intent_type,
+            "max_safe_volume_ceiling_km": max_allowed_km
+        }

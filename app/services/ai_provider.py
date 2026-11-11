@@ -279,6 +279,177 @@ class MultiTierAIProvider:
         res = await self.chat_with_coach(str(context_dict), prompt, tier=tier)
         return res["text"]
 
+    def assemble_unified_contract(
+        self,
+        user_id: str,
+        activity_data: dict,
+        eval_metrics: dict,
+        injury_reported: bool = False
+    ) -> dict:
+        """
+        Lapisan 4 & 5: Unified Contract Assembler.
+        Membentuk kontrak JSON data terpadu sesuai Goalie V2 Master Blueprint.
+        """
+        from app.services.sports_engine import SportsEngine
+        from app.services import sandbox_store
+
+        prof = sandbox_store.get_profile(user_id) or {}
+        weight = float(prof.get("weight_kg") or 68.0)
+        baseline_vdot = float(eval_metrics.get("baseline_vdot") or prof.get("baseline_vdot") or 44.0)
+        target_vdot = float(eval_metrics.get("target_vdot") or prof.get("target_goal_vdot") or 47.0)
+
+        # Environmental calculation
+        temp_c = float(activity_data.get("temp_c") or 28.0)
+        rh_pct = float(activity_data.get("rh_pct") or 80.0)
+        dew_point_c = SportsEngine.calculate_dew_point(temp_c, rh_pct)
+        dur_hours = float(activity_data.get("duration_seconds") or 3600) / 3600.0
+        fuel = SportsEngine.calculate_tropical_fueling(weight, dur_hours, dew_point_c)
+
+        # Smart Model Routing
+        if injury_reported or eval_metrics.get("macro_recalibration_needed", False):
+            model_route = "GEMINI_2_5_PRO"
+        else:
+            model_route = "GEMINI_2_5_FLASH"
+
+        raw_sec = int(eval_metrics.get("raw_pace_sec") or 338)
+        norm_mps = float(eval_metrics.get("v_norm_mps") or 3.25)
+        norm_sec = int(1000.0 / max(0.1, norm_mps))
+
+        raw_pace_str = f"{raw_sec // 60:02d}:{raw_sec % 60:02d}/km"
+        norm_pace_str = f"{norm_sec // 60:02d}:{norm_sec % 60:02d}/km"
+
+        primary_limiter = eval_metrics.get("primary_limiter") or (
+            "AEROBIC_DURABILITY" if eval_metrics.get("decoupling_pct", 0) > 5.0 else "AEROBIC_SPEED"
+        )
+        verdict = eval_metrics.get("verdict") or (
+            "ENDURANCE_LEAK_DETECTED" if eval_metrics.get("decoupling_pct", 0) > 5.0 else "ON_TRACK_PASS"
+        )
+
+        return {
+            "meta": {
+                "pipeline_event": "GARMIN_ACTIVITY_SYNCED",
+                "model_tier_route": model_route,
+                "program_progress": {
+                    "current_week": int(prof.get("current_training_week") or 18),
+                    "total_weeks": 31,
+                    "phase": prof.get("training_phase") or "BUILD_2"
+                }
+            },
+            "garmin_latest_auto_test": {
+                "activity_id": str(activity_data.get("activity_id") or "garmin_act_1"),
+                "workout_type": str(activity_data.get("workout_type", "run")).upper(),
+                "distance_km": float(activity_data.get("distance_km") or 0.0),
+                "environmental_context": {
+                    "temp_c": temp_c,
+                    "rh_pct": rh_pct,
+                    "dew_point_c": dew_point_c,
+                    "recommended_hydration_ml_hr": fuel["hydration_ml_per_hour"],
+                    "recommended_sodium_mg_hr": fuel["sodium_mg_per_hour"]
+                },
+                "physiological_test_results": {
+                    "raw_avg_pace": raw_pace_str,
+                    "normalized_steady_pace": norm_pace_str,
+                    "steady_karvonen_hrr_pct": float(eval_metrics.get("karvonen_hrr_pct") or 74.5),
+                    "session_effective_vdot": float(eval_metrics.get("session_vdot") or 44.8),
+                    "aerobic_decoupling_pwhr_pct": float(eval_metrics.get("decoupling_pct") or 0.0),
+                    "late_stage_cadence_drop_spm": float(eval_metrics.get("cadence_fade_spm") or 0.0),
+                    "execution_compliance_score": 88
+                }
+            },
+            "target_gap_and_load_state": {
+                "baseline_vdot": baseline_vdot,
+                "target_race_vdot": target_vdot,
+                "vdot_gap_to_goal": round(baseline_vdot - target_vdot, 2),
+                "marathon_durability_coefficient": 0.94,
+                "load_metrics_ewma": {
+                    "ctl_fitness": float(eval_metrics.get("ctl") or 52.0),
+                    "atl_fatigue": float(eval_metrics.get("atl") or 58.0),
+                    "tsb_form": float(eval_metrics.get("tsb") or -6.0),
+                    "acwr_ratio": float(eval_metrics.get("acwr") or 1.12),
+                    "garmin_hrv_status": "BALANCED"
+                },
+                "primary_limiter": primary_limiter,
+                "test_verdict": verdict
+            },
+            "deterministic_engine_prescription": {
+                "runner_state": "ON_TRACK" if not injury_reported else "GOAL_RESET_GATE",
+                "vdot_adjustment": 0.0,
+                "next_7d_safe_volume_ceiling_km": round(float(prof.get("weekly_mileage_km") or 50.0) * 1.10, 1),
+                "locked_training_paces": {
+                    "easy_pace": "05:55 - 06:20/km",
+                    "marathon_pace_clamped": "05:12/km",
+                    "threshold_pace": "04:50/km",
+                    "interval_pace": "04:26/km"
+                },
+                "concurrent_strength_slot": {
+                    "allowed_days": ["TUESDAY_PM", "THURSDAY_PM"],
+                    "focus": "SOLEUS_HEAVY_AND_UNILATERAL_STABILITY",
+                    "long_run_sterile_buffer_hours": 48
+                },
+                "mandatory_directive_for_ai": "Puji kedisiplinan pace. Berikan panduan nutrisi hidrasi sesuai suhu titik embun dan pastikan istirahat berkualitas."
+            }
+        }
+
+    def build_three_tier_context(self, user_id: str) -> dict:
+        """
+        Lapisan 4: 3-Tier Athlete Memory Context Builder.
+        Mengumpulkan Hot (7-hari), Warm Mesocycle (4-minggu), dan Persistent Dossier.
+        """
+        from app.services import sandbox_store
+
+        prof = sandbox_store.get_profile(user_id) or {}
+        recent_workouts = sandbox_store.get_recent_workouts(user_id, limit=5)
+
+        # Tier 1 - Hot Context (real-time 7 days)
+        last_workout = recent_workouts[0] if recent_workouts else {}
+        tier_1 = {
+            "last_activity": {
+                "id": last_workout.get("id"),
+                "title": last_workout.get("title"),
+                "distance_km": last_workout.get("distance_km"),
+                "duration_seconds": last_workout.get("duration_seconds"),
+                "started_at": last_workout.get("started_at")
+            },
+            "recent_load_status": {
+                "acwr": 1.12,
+                "tsb": -6.0,
+                "hrv_status": "BALANCED",
+                "sleep_quality": "OPTIMAL"
+            },
+            "upcoming_7d_volume_km": round(float(prof.get("weekly_mileage_km") or 45.0), 1)
+        }
+
+        # Tier 2 - Warm Mesocycle Digest (4-week block summary)
+        tier_2 = {
+            "current_mesocycle": "BLOCK_4_AEROBIC_EXPANSION",
+            "vdot_progression_delta": +1.2,
+            "volume_compliance_pct": 92.5,
+            "avg_aerobic_decoupling_pct": 4.8,
+            "digest_summary": "Blok 4 selesai dengan adaptasi aerobik solid. VDOT meningkat +1.2 poin dan cardiac drift stabil di bawah 5%."
+        }
+
+        # Tier 3 - Persistent Athlete Dossier
+        tier_3 = {
+            "athlete_email": user_id,
+            "full_name": prof.get("full_name") or "Rizky Aryendi Gumilang",
+            "target_race": prof.get("target_race_name") or "Maybank Marathon Bali 2026",
+            "injury_history": [
+                {"muscle": "Soleus / Achilles", "severity": "minor", "status": "resolved"}
+            ],
+            "work_lifestyle": {
+                "wfh_days": ["Selasa", "Kamis"],
+                "commute_stress": "low"
+            },
+            "gym_equipment_access": "Full commercial gym with barbell & dumbbells",
+            "gut_training_tolerance": "Toleransi 60g karbohidrat cair per jam tercapai tanpa kram lambung."
+        }
+
+        return {
+            "tier_1_hot": tier_1,
+            "tier_2_warm_mesocycle": tier_2,
+            "tier_3_persistent_dossier": tier_3
+        }
+
 
 # Backward Compatibility Alias & Singleton
 GeminiAIProvider = MultiTierAIProvider

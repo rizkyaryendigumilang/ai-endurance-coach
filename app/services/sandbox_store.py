@@ -71,6 +71,9 @@ def _get_user_store(user_id: str):
             "planned_workouts": [],
             "actual_workouts": [],
             "activity_metrics": [],
+            "garmin_activities_evaluated": [],
+            "mesocycle_digests": [],
+            "schedule_mutation_logs": [],
             "chat_history": []
         }
     return _USERS_DB[user_id]
@@ -328,6 +331,67 @@ def add_actual_workout(user_id: str, workout_data: dict, metrics_data: dict):
 def get_recent_workouts(user_id: str, limit: int = 20):
     store = _get_user_store(user_id)
     return store["actual_workouts"][:limit]
+
+# ==========================================
+# GOALIE V2 EVALUATED TELEMETRY & PERSISTENT MEMORY
+# ==========================================
+def save_evaluated_garmin_activity(user_id: str, activity_data: dict) -> dict:
+    store = _get_user_store(user_id)
+    if "garmin_activities_evaluated" not in store:
+        store["garmin_activities_evaluated"] = []
+
+    act_id = str(activity_data.get("activity_id") or f"act_eval_{uuid.uuid4().hex[:8]}")
+    rec = {
+        "activity_id": act_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        **activity_data
+    }
+    existing_idx = next((i for i, a in enumerate(store["garmin_activities_evaluated"]) if a.get("activity_id") == act_id), None)
+    if existing_idx is not None:
+        store["garmin_activities_evaluated"][existing_idx] = rec
+    else:
+        store["garmin_activities_evaluated"].insert(0, rec)
+    return rec
+
+def get_evaluated_garmin_activities(user_id: str, limit: int = 20) -> list:
+    store = _get_user_store(user_id)
+    return store.get("garmin_activities_evaluated", [])[:limit]
+
+def save_mesocycle_digest(user_id: str, digest_data: dict) -> dict:
+    store = _get_user_store(user_id)
+    if "mesocycle_digests" not in store:
+        store["mesocycle_digests"] = []
+
+    digest_id = str(digest_data.get("digest_id") or f"digest_{uuid.uuid4().hex[:8]}")
+    rec = {
+        "digest_id": digest_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        **digest_data
+    }
+    store["mesocycle_digests"].insert(0, rec)
+    return rec
+
+def get_mesocycle_digests(user_id: str) -> list:
+    store = _get_user_store(user_id)
+    return store.get("mesocycle_digests", [])
+
+def log_schedule_mutation(user_id: str, mutation_data: dict) -> dict:
+    store = _get_user_store(user_id)
+    if "schedule_mutation_logs" not in store:
+        store["schedule_mutation_logs"] = []
+
+    mut_id = str(mutation_data.get("mutation_id") or f"mut_{uuid.uuid4().hex[:8]}")
+    rec = {
+        "mutation_id": mut_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        **mutation_data
+    }
+    store["schedule_mutation_logs"].insert(0, rec)
+    return rec
+
+def get_schedule_mutations(user_id: str, limit: int = 50) -> list:
+    store = _get_user_store(user_id)
+    return store.get("schedule_mutation_logs", [])[:limit]
 
 def add_chat_message(user_id: str, role: str, content: str):
     store = _get_user_store(user_id)
