@@ -83,20 +83,20 @@
 - Modify: `app/services/weekly_calendar_service.py`
 - Test: `tests/test_v2_target_gap_and_rebalancer.py`
 
-- [ ] Write failing unit test in `tests/test_v2_target_gap_and_rebalancer.py`:
+- [x] Write failing unit test in `tests/test_v2_target_gap_and_rebalancer.py`:
   - Test `evaluate_target_gap_and_primary_limiter`: Delta VDOT, decoupling gap, primary limiters (`AEROBIC_SPEED`, `AEROBIC_DURABILITY`, `RECOVERY_DEBT`).
   - Test `evaluate_three_session_verdict`: Confirmation rule requiring 3 consecutive sessions >= baseline + 0.8 for level-up.
   - Test `rebalance_schedule_state_machine`: 5 states (`ON_TRACK`, `INTRA_WEEK_SHIFT`, `RETURN_TO_RUN_BRIDGE`, `MACRO_RECALIBRATION`, `GOAL_RESET_GATE`).
   - Test `apply_concurrent_strength_rules`: Hard days hard, 48-72h sterile leg buffer before Long Run, and H-10 race tapering stop.
-- [ ] Run test to verify failure:
+- [x] Run test to verify failure:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_target_gap_and_rebalancer.py`
-- [ ] Implement logic in `app/services/sports_engine.py` and `app/services/weekly_calendar_service.py`:
+- [x] Implement logic in `app/services/sports_engine.py` and `app/services/weekly_calendar_service.py`:
   - Add primary limiter detector and 3-session verdict engine.
   - Add 5-state schedule mutation engine.
   - Add concurrent strength scheduler with leg-sterile buffers.
-- [ ] Run test to verify pass:
+- [x] Run test to verify pass:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_target_gap_and_rebalancer.py`
-- [ ] Commit: `git commit -m "feat(v2): implement Lapisan 3 Target Gap Analyzer, 5-State Machine, and Concurrent Gym rules"`
+- [x] Commit: `git commit -m "feat(v2): implement Lapisan 3 Target Gap Analyzer, 5-State Machine, and Concurrent Gym rules"`
 
 ---
 
