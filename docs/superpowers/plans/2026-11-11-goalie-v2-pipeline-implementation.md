@@ -34,19 +34,19 @@
 - Modify: `app/services/sports_engine.py`
 - Test: `tests/test_v2_ingestion_gate.py`
 
-- [ ] Write failing unit test in `tests/test_v2_ingestion_gate.py`:
+- [x] Write failing unit test in `tests/test_v2_ingestion_gate.py`:
   - Test `slice_steady_state`: cuts first 10 minutes (600s), strips auto-pause / zero-speed stops, isolates steady pace and HR window.
   - Test `simplify_gpx_route`: applies Ramer-Douglas-Peucker (RDP) point reduction and calculates 1 km elevation gradient segments.
   - Test `validate_video_fps`: validates 60 fps / 120 fps metadata for MediaPipe ground contact time analysis.
-- [ ] Run test to verify failure:
+- [x] Run test to verify failure:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_ingestion_gate.py`
-- [ ] Implement `IngestionGate` in `app/services/ingestion_gate.py`:
+- [x] Implement `IngestionGate` in `app/services/ingestion_gate.py`:
   - `slice_steady_state(stream_points, cardiac_lag_seconds=600)`
   - `simplify_gpx_route(raw_coords, epsilon=0.0001)`
   - `validate_video_metadata(fps, width, height)`
-- [ ] Run test to verify pass:
+- [x] Run test to verify pass:
   `.\venv\Scripts\python.exe -m unittest tests/test_v2_ingestion_gate.py`
-- [ ] Commit: `git commit -m "feat(v2): implement Lapisan 1 Ingestion and Pre-Processing Gate"`
+- [x] Commit: `git commit -m "feat(v2): implement Lapisan 1 Ingestion and Pre-Processing Gate"`
 
 ---
 
