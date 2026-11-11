@@ -1,20 +1,20 @@
-// Goalie - Production PWA Service Worker (v3.0.2)
-const CACHE_NAME = 'goalie-cache-v3.0.2';
+// Goalie - Production PWA Service Worker (v3.0.3)
+const CACHE_NAME = 'goalie-cache-v3.0.3';
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/login.html',
-    '/admin.html',
-    '/manifest.json',
-    '/favicon.ico',
-    '/apple-touch-icon.png',
-    '/public/icons/pwa/icon-192x192.png',
-    '/public/icons/pwa/icon-512x512.png',
-    '/public/css/tailwind.min.css',
-    '/public/js/db.js',
-    '/public/js/garmin_map_viewer.js',
-    '/public/vendor/leaflet/leaflet.js',
-    '/public/vendor/leaflet/leaflet.css',
+    './',
+    'index.html',
+    'login.html',
+    'admin.html',
+    'manifest.json',
+    'favicon.ico',
+    'apple-touch-icon.png',
+    'public/icons/pwa/icon-192x192.png',
+    'public/icons/pwa/icon-512x512.png',
+    'public/css/tailwind.min.css',
+    'public/js/db.js',
+    'public/js/garmin_map_viewer.js',
+    'public/vendor/leaflet/leaflet.js',
+    'public/vendor/leaflet/leaflet.css',
     'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap'
 ];
 
@@ -51,7 +51,7 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
     // Bypass non-GET requests and API calls (let them go directly to network)
-    if (event.request.method !== 'GET' || url.pathname.startsWith('/api/')) {
+    if (event.request.method !== 'GET' || url.pathname.includes('/api/')) {
         return;
     }
 
@@ -73,7 +73,7 @@ self.addEventListener('fetch', (event) => {
                 })
                 .catch(() => {
                     return caches.match(event.request).then((cached) => {
-                        return cached || caches.match('/index.html') || caches.match('/');
+                        return cached || caches.match('index.html') || caches.match('./') || caches.match('/');
                     });
                 })
         );

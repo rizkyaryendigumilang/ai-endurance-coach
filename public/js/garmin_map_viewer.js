@@ -590,6 +590,7 @@ let activityMapInstance = null;
     }
 
 
+    window.MAP_TILE_PROVIDERS = MAP_TILE_PROVIDERS;
     window.mountFeedCardMap = mountFeedCardMap;
     window.initFeedMapObserver = initFeedMapObserver;
     window.getWorkoutRouteCoordinates = getWorkoutRouteCoordinates;

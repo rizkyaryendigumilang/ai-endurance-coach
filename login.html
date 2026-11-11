@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
     
-    <title>Athlete Sign In — Goalie</title>
+    <title>Athlete Sign In - Goalie</title>
     <meta name="description" content="Access your Goalie endurance performance dashboard, training load analytics, and Gemini AI coach.">
     
     <!-- PWA & App Icons -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/public/icons/pwa/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/public/icons/pwa/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/public/icons/pwa/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/icons/pwa/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/icons/pwa/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/icons/pwa/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="Goalie">
     <meta name="application-name" content="Goalie">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -26,10 +26,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS (25.8 KB) -->
-    <link rel="stylesheet" href="/public/css/tailwind.min.css?v=2.9.3">
+    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.3" onerror="this.onerror=null;this.href=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/css/tailwind.min.css?v=2.9.3';">
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="public/js/db.js?v=2.9.3" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.3';"></script>
+    <script src="public/js/db.js?v=2.9.3" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/db.js?v=2.9.3';"></script>
 
     <!-- Instant Theme Anti-FOUC Initialization -->
     <script>
@@ -359,8 +359,8 @@
     <!-- Header Navigation -->
     <header class="h-14 border-b-2 border-border bg-surface sticky top-0 z-[100] flex items-center">
         <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
-            <a href="/" class="flex items-center gap-2.5">
-                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border">
+            <a href="./" class="flex items-center gap-2.5">
+                <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
                 <div class="flex items-baseline gap-1.5">
                     <span class="font-display font-bold text-lg tracking-tight text-text-primary">Goalie</span>
                     <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-md bg-tertiary text-white">PRO</span>
@@ -368,12 +368,12 @@
             </a>
 
             <div class="flex items-center gap-1.5 sm:gap-3">
-                <a href="/admin" class="flex text-xs text-text-secondary hover:text-text-primary items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" title="Admin Command Center">
+                <a href="admin" class="flex text-xs text-text-secondary hover:text-text-primary items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" title="Admin Command Center">
                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     <span data-i18n="login_nav_admin" class="font-medium hidden xs:inline">Pusat Kendali Admin</span>
                     <span class="font-medium xs:hidden">Admin</span>
                 </a>
-                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 px-2.5 sm:px-3 py-1.5 hover:bg-surface-subtle rounded-full border border-transparent transition-colors touch-target-expand">
+                <a href="./" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 px-2.5 sm:px-3 py-1.5 hover:bg-surface-subtle rounded-full border border-transparent transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span data-i18n="login_nav_home" class="hidden sm:inline">Beranda</span>
                 </a>
@@ -569,7 +569,7 @@
     <footer class="border-t-2 border-border py-4 bg-surface text-xs text-text-secondary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-md object-contain border border-border">
+                <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
                 <span>&copy; 2026 Goalie Athletics Inc. Deterministic Physiological Computing.</span>
             </div>
             <div class="flex items-center gap-4 text-[11px]">

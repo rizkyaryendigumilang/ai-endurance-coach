@@ -8,11 +8,11 @@
     <meta name="description" content="Platform observability, mathematical engine calibration, and athlete telemetry monitoring.">
     
     <!-- PWA & App Icons -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/public/icons/pwa/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/public/icons/pwa/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/public/icons/pwa/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/icons/pwa/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/icons/pwa/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/icons/pwa/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="Goalie">
     <meta name="application-name" content="Goalie">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -26,10 +26,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS -->
-    <link rel="stylesheet" href="/public/css/tailwind.min.css?v=2.9.3">
+    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.3" onerror="this.onerror=null;this.href=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/css/tailwind.min.css?v=2.9.3';">
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="public/js/db.js?v=2.9.3" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.3';"></script>
+    <script src="public/js/db.js?v=2.9.3" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/db.js?v=2.9.3';"></script>
 
     <!-- Instant Theme Anti-FOUC Initialization -->
     <script>
@@ -366,8 +366,8 @@
         <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
             
             <div class="flex items-center gap-3">
-                <a href="/admin" class="flex items-center gap-2.5">
-                    <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border">
+                <a href="admin" class="flex items-center gap-2.5">
+                    <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
                     <div class="flex items-baseline gap-2">
                         <span class="font-display font-bold text-base tracking-tight text-text-primary">Goalie Admin</span>
                         <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-2 py-0.5 rounded-full border border-border hidden xs:inline-block">SUPERUSER</span>
@@ -381,7 +381,7 @@
             </div>
 
             <div class="flex items-center gap-2 sm:gap-2.5">
-                <a href="/" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
+                <a href="./" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span data-i18n="admin_nav_athlete_terminal" class="hidden sm:inline">Terminal Atlet</span>
                     <span class="sm:hidden">App</span>
@@ -991,7 +991,7 @@
     <footer class="border-t-2 border-border py-4 bg-surface text-xs text-text-secondary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <img src="/public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-md object-contain border border-border">
+                <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
                 <span>&copy; 2026 Goalie Athletics Inc. • System Observability & Governance.</span>
             </div>
             <div class="flex items-center gap-4 text-[11px] font-mono">
