@@ -38,16 +38,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Compiled Static Tailwind CSS (25.8 KB) -->
-    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.1" onerror="this.onerror=null;this.href='/public/css/tailwind.min.css?v=2.9.1';">
+    <link rel="stylesheet" href="public/css/tailwind.min.css?v=2.9.2" onerror="this.onerror=null;this.href='/public/css/tailwind.min.css?v=2.9.2';">
     <!-- Leaflet GPS Map Engine (Garmin Connect & Strava Interactive Maps with CDN Fallback) -->
     <link rel="stylesheet" href="public/vendor/leaflet/leaflet.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';">
     <script src="public/vendor/leaflet/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';"></script>
 
     
     <!-- Goalie Athlete IndexedDB Storage Layer -->
-    <script src="public/js/db.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.1';"></script>
-    <script src="public/js/garmin_workouts_data.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/garmin_workouts_data.js?v=2.9.1';"></script>
-    <script src="public/js/garmin_map_viewer.js?v=2.9.1" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js?v=2.9.1';"></script>
+    <script src="public/js/db.js?v=2.9.2" onerror="this.onerror=null;this.src='/public/js/db.js?v=2.9.2';"></script>
+    <script src="public/js/garmin_workouts_data.js?v=2.9.2" onerror="this.onerror=null;this.src='/public/js/garmin_workouts_data.js?v=2.9.2';"></script>
+    <script src="public/js/garmin_map_viewer.js?v=2.9.2" onerror="this.onerror=null;this.src='/public/js/garmin_map_viewer.js?v=2.9.2';"></script>
 
 
     <style>
@@ -8829,14 +8829,14 @@
             let tileUrl, attribution;
 
             if (style === 'outdoor') {
-                tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                attribution = '&copy; OpenStreetMap';
+                tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+                attribution = '&copy; Esri World Street Map';
             } else if (style === 'satellite') {
                 tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
                 attribution = '&copy; Esri World Imagery';
             } else {
-                tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-                attribution = '&copy; CartoDB Dark';
+                tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+                attribution = '&copy; Esri World Dark Gray Base';
             }
 
             raceCourseMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 19, attribution }).addTo(raceCourseMapInstance);
@@ -9490,8 +9490,9 @@
                     attributionControl: false
                 });
 
-                telemetryTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    maxZoom: 19
+                telemetryTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 19,
+                    attribution: '&copy; Esri World Dark Gray Base'
                 }).addTo(telemetryHeatmapInstance);
 
                 L.control.zoom({ position: 'topleft' }).addTo(telemetryHeatmapInstance);

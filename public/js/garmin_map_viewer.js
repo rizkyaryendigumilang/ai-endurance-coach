@@ -19,14 +19,14 @@ let activityMapInstance = null;
 
         const MAP_TILE_PROVIDERS = {
             dark: {
-                url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                attribution: '&copy; Esri World Dark Gray Base',
+                subdomains: 'abc',
                 maxZoom: 19
             },
             outdoor: {
-                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+                attribution: '&copy; Esri World Street Map',
                 subdomains: 'abc',
                 maxZoom: 19
             },
@@ -473,10 +473,10 @@ let activityMapInstance = null;
                 keyboard: false
             });
 
-            // Clean, bright outdoor street map tiles (CartoDB Voyager)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                subdomains: 'abcd',
-                maxZoom: 19
+            // Clean, authentic street map tiles (Esri World Street Map - No API key required)
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 19,
+                attribution: '&copy; Esri'
             }).addTo(map);
 
             // 1. Navy underglow for high contrast
