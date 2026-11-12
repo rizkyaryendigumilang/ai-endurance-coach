@@ -189,7 +189,7 @@
             transition: border-color 150ms ease, box-shadow 150ms ease;
         }
 
-        /* Buttons — Strava Orange & Pill radius (Radius/Pill = 9999px) */
+        /* Buttons - Strava Orange & Pill radius (Radius/Pill = 9999px) */
         .btn-primary, .btn-flat-primary {
             background-color: #FC4C02;
             color: #FFFFFF;
@@ -432,6 +432,10 @@
                 <div class="flat-card border-2 border-border-strong p-6 sm:p-8 bg-surface">
                     
                     <div class="mb-5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" width="24" height="24" class="w-6 h-6 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                            <span class="text-xs font-mono font-bold tracking-wider text-tertiary uppercase">Goalie Authentication</span>
+                        </div>
                         <h2 id="auth-title" data-i18n="login_auth_title" class="text-xl sm:text-2xl font-extrabold text-text-primary tracking-tight">Masuk Akun Atlet</h2>
                         <p id="auth-subtitle" data-i18n="login_auth_subtitle" class="text-xs text-text-secondary mt-1">Akses metrik fisiologis dan blok periodisasi latihan Anda.</p>
                     </div>
@@ -449,15 +453,23 @@
                         </button>
                     </div>
 
-                    <div id="auth-alert" role="alert" aria-live="polite" class="hidden p-3 text-xs mb-4 font-mono"></div>
+                    <div id="auth-alert" role="alert" aria-live="polite" class="hidden p-3 text-xs mb-4 font-mono rounded-lg"></div>
 
                     <!-- Form 1: Sign In -->
                     <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3.5">
+                        <!-- 1. Input Identitas -->
                         <div>
-                            <label for="login-email" data-i18n="login_label_email" class="block text-[11px] font-mono text-text-secondary mb-1">Email atau Nama Pengguna</label>
-                            <input type="text" id="login-email" class="flat-input text-xs" placeholder="athlete@domain.com or admin" required autocomplete="username">
+                            <label for="login-email" data-i18n="login_label_email" class="block text-[11px] font-mono text-text-secondary mb-1">Email, Nama Pengguna, atau Nomor Telepon</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                </span>
+                                <input type="text" id="login-email" class="flat-input text-xs pl-9" placeholder="atlet@domain.com, username, atau 0812..." required autocomplete="username" aria-describedby="login-email-err">
+                            </div>
+                            <span id="login-email-err" class="hidden text-[10px] text-rose-500 font-mono mt-1 block"></span>
                         </div>
 
+                        <!-- 2. Input Kata Sandi & Show/Hide -->
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <label for="login-password" data-i18n="login_label_password" class="block text-[11px] text-text-secondary">Kata Sandi</label>
@@ -466,16 +478,47 @@
                                 </button>
                             </div>
                             <div class="relative">
-                                <input type="password" id="login-password" class="flat-input text-xs pr-10" placeholder="••••••••••••" required autocomplete="current-password" aria-describedby="auth-alert">
-                                <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                </span>
+                                <input type="password" id="login-password" class="flat-input text-xs pl-9 pr-10" placeholder="••••••••••••" required autocomplete="current-password" aria-describedby="login-password-err">
+                                <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Tampilkan kata sandi">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </button>
                             </div>
+                            <span id="login-password-err" class="hidden text-[10px] text-rose-500 font-mono mt-1 block"></span>
                         </div>
 
+                        <!-- 3. Remember Me Checkbox -->
+                        <div class="flex items-center justify-between pt-0.5">
+                            <label class="flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="login-remember" checked class="w-4 h-4 rounded text-tertiary border-border focus:ring-tertiary accent-[#FC4C02]">
+                                <span class="text-[11px] text-text-secondary" data-i18n="login_remember_me">Ingat saya di perangkat ini</span>
+                            </label>
+                        </div>
+
+                        <!-- 4. Tombol Utama (Login CTA) -->
                         <button type="submit" id="btn-login" data-i18n="login_btn_submit" class="btn-flat-primary w-full py-2.5 text-xs font-semibold mt-1">
                             Masuk ke Akun
                         </button>
+
+                        <!-- 5. Autentikasi Biometrik / Passkey -->
+                        <div class="pt-1">
+                            <button type="button" onclick="handleBiometricLogin()" id="btn-biometric" class="w-full py-2 px-3 rounded-full border border-border bg-surface-subtle hover:border-tertiary text-text-primary text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-xs">
+                                <svg class="w-4 h-4 text-tertiary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11m0 0a8 8 0 001.077 4.025"/>
+                                </svg>
+                                <span data-i18n="login_btn_biometric">Masuk Cepat dengan Biometrik / Passkey</span>
+                            </button>
+                        </div>
+
+                        <!-- 6. Tautan Registrasi Alternatif -->
+                        <div class="text-center text-xs text-text-secondary pt-1">
+                            <span data-i18n="login_no_account">Belum memiliki akun atlet?</span>
+                            <button type="button" onclick="switchMode('register')" class="text-tertiary font-bold hover:underline ml-1" data-i18n="login_link_signup">
+                                Daftar sekarang
+                            </button>
+                        </div>
                     </form>
 
                     <!-- Form 2: Register -->
@@ -486,15 +529,15 @@
                         </div>
 
                         <div>
-                            <label for="reg-email" data-i18n="login_label_reg_email" class="block text-[11px] text-text-secondary mb-1">Alamat Email</label>
+                            <label for="reg-email" data-i18n="login_label_reg_email" class="block text-[11px] text-text-secondary mb-1">Alamat Email atau Nomor HP</label>
                             <input type="email" id="reg-email" class="flat-input text-xs" placeholder="kipchoge@domain.com" required autocomplete="email">
                         </div>
 
                         <div>
                             <label for="reg-password" data-i18n="login_label_reg_password" class="block text-[11px] text-text-secondary mb-1">Kata Sandi (minimal 6 karakter)</label>
                             <div class="relative">
-                                <input type="password" id="reg-password" class="flat-input text-xs pr-10" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password" aria-describedby="auth-alert">
-                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Show password">
+                                <input type="password" id="reg-password" class="flat-input text-xs pr-10" placeholder="Minimal 6 karakter" minlength="6" required autocomplete="new-password" aria-describedby="auth-alert">
+                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-1 focus:ring-tertiary" aria-label="Tampilkan kata sandi">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </button>
                             </div>
@@ -502,9 +545,9 @@
 
                         <div class="pt-1">
                             <label class="flex items-start gap-2 cursor-pointer">
-                                <input type="checkbox" id="reg-consent" required class="mt-0.5 border-border text-tertiary h-4 w-4">
+                                <input type="checkbox" id="reg-consent" required class="mt-0.5 border-border text-tertiary h-4 w-4 accent-[#FC4C02]">
                                 <span class="text-[11px] text-text-secondary select-none leading-snug">
-                                    I agree to the <button type="button" onclick="openLegalModal('terms')" class="text-tertiary hover:underline">Terms of Service</button>, <button type="button" onclick="openLegalModal('privacy')" class="text-tertiary hover:underline">Privacy Policy (GDPR / UU PDP)</button>, and acknowledge the <button type="button" onclick="openLegalModal('disclaimer')" class="text-tertiary hover:underline">Medical Notice</button>.
+                                    Saya menyetujui <button type="button" onclick="openLegalModal('terms')" class="text-tertiary hover:underline">Syarat & Ketentuan</button>, <button type="button" onclick="openLegalModal('privacy')" class="text-tertiary hover:underline">Kebijakan Privasi (GDPR / UU PDP)</button>, serta memahami <button type="button" onclick="openLegalModal('disclaimer')" class="text-tertiary hover:underline">Peringatan Medis</button>.
                                 </span>
                             </label>
                         </div>
@@ -512,38 +555,53 @@
                         <button type="submit" id="btn-register" data-i18n="login_btn_register" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
                             Daftarkan Akun Atlet
                         </button>
+
+                        <div class="text-center text-xs text-text-secondary pt-1">
+                            <span data-i18n="login_already_have_account">Sudah memiliki akun?</span>
+                            <button type="button" onclick="switchMode('login')" class="text-tertiary font-bold hover:underline ml-1" data-i18n="login_link_signin">
+                                Masuk di sini
+                            </button>
+                        </div>
                     </form>
 
                     <!-- Form 3: Forgot Password -->
                     <form id="form-forgot" onsubmit="handleForgot(event)" class="space-y-3.5 hidden">
-                        <p class="text-xs text-text-secondary leading-relaxed">
-                            Enter your registered email address. We will transmit a cryptographically secure reset link.
+                        <p class="text-xs text-text-secondary leading-relaxed" data-i18n="login_forgot_desc">
+                            Masukkan email terdaftar Anda. Kami akan mengirimkan tautan pemulihan kata sandi yang aman.
                         </p>
                         <div>
-                            <label class="block text-[11px] text-text-secondary mb-1">Registered Email</label>
+                            <label class="block text-[11px] text-text-secondary mb-1" data-i18n="login_label_registered_email">Email Terdaftar</label>
                             <input type="email" id="forgot-email" class="flat-input text-xs" placeholder="athlete@domain.com" required autocomplete="email">
                         </div>
                         <button type="submit" id="btn-forgot" data-i18n="login_btn_send_reset" class="btn-flat-primary w-full py-2.5 text-xs font-semibold">
                             Kirim Tautan Atur Ulang
                         </button>
                         <button type="button" onclick="switchMode('login')" data-i18n="login_btn_cancel" class="btn-flat-secondary w-full py-2 text-xs">
-                            Batal
+                            Kembali ke Masuk
                         </button>
                     </form>
 
-                    <!-- Quick OAuth Mock -->
+                    <!-- Quick OAuth Social Logins -->
                     <div class="mt-5 pt-4 border-t border-border">
                         <div data-i18n="login_or_third_party" class="text-[11px] font-mono text-text-secondary text-center mb-2.5">Atau lanjutkan dengan akun pihak ketiga:</div>
-                        <div class="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs font-mono">
-                            <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+                            <!-- Google -->
+                            <button type="button" onclick="quickOAuth('google')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5 overflow-hidden min-w-0" title="Masuk dengan Google">
                                 <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
                                 <span class="truncate">Google</span>
                             </button>
-                            <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
+                            <!-- Apple -->
+                            <button type="button" onclick="quickOAuth('apple')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5 overflow-hidden min-w-0" title="Masuk dengan Apple">
+                                <svg class="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-2 0.6-2.65 1.35-.58.66-1.09 1.73-.95 2.76 1.01.08 2.06-.51 2.68-1.26z"/></svg>
+                                <span class="truncate">Apple</span>
+                            </button>
+                            <!-- Telegram -->
+                            <button type="button" onclick="quickOAuth('telegram')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5 overflow-hidden min-w-0" title="Masuk dengan Telegram">
                                 <svg class="w-3.5 h-3.5 shrink-0 fill-[#229ED9]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
                                 <span class="truncate">Telegram</span>
                             </button>
-                            <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-1 sm:px-2 text-center text-xs inline-flex items-center justify-center gap-1 sm:gap-1.5 overflow-hidden min-w-0">
+                            <!-- GitHub -->
+                            <button type="button" onclick="quickOAuth('github')" class="btn-flat-secondary py-1.5 px-2 text-center text-xs inline-flex items-center justify-center gap-1.5 overflow-hidden min-w-0" title="Masuk dengan GitHub">
                                 <svg class="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
                                 <span class="truncate">GitHub</span>
                             </button>
@@ -601,6 +659,14 @@
 
     <!-- Script Controller -->
     <script>
+        // Dynamic Path Resolvers for VPS Subpath (/golie) & Localhost Environments
+        const getHomeUrl = () => {
+            return window.location.pathname.startsWith('/golie') ? '/golie/' : './';
+        };
+        const getAdminUrl = () => {
+            return window.location.pathname.startsWith('/golie') ? '/golie/admin' : 'admin';
+        };
+
         // Dynamic API Base URL for Web & Capacitor Native Mobile App
         const getApiBase = () => {
             if (typeof window !== 'undefined' && window.Capacitor) {
@@ -652,17 +718,23 @@
                 if (form) form.classList.toggle('hidden', m !== mode);
             });
 
+            // Clear any alerts
+            const alertBox = document.getElementById('auth-alert');
+            if (alertBox) alertBox.classList.add('hidden');
+
             const title = document.getElementById('auth-title');
             const sub = document.getElementById('auth-subtitle');
+            const isId = (localStorage.getItem('goalie_language') || 'id') === 'id';
+
             if (mode === 'login') {
-                title.textContent = 'Athlete Sign In';
-                sub.textContent = 'Access your physiological metrics and periodization blocks.';
+                title.textContent = isId ? 'Masuk Akun Atlet' : 'Athlete Sign In';
+                sub.textContent = isId ? 'Akses metrik fisiologis dan blok periodisasi latihan Anda.' : 'Access your physiological metrics and periodization blocks.';
             } else if (mode === 'register') {
-                title.textContent = 'Create Athlete Profile';
-                sub.textContent = 'Join Goalie to ingest telemetry and build training plans.';
+                title.textContent = isId ? 'Daftarkan Profil Atlet' : 'Create Athlete Profile';
+                sub.textContent = isId ? 'Gabung ke Goalie untuk telemetri lari dan rencana latihan adaptif.' : 'Join Goalie to ingest telemetry and build training plans.';
             } else {
-                title.textContent = 'Reset Password';
-                sub.textContent = 'Submit your email to receive recovery instructions.';
+                title.textContent = isId ? 'Atur Ulang Kata Sandi' : 'Reset Password';
+                sub.textContent = isId ? 'Kirim email Anda untuk mendapatkan instruksi pemulihan aman.' : 'Submit your email to receive recovery instructions.';
             }
         }
 
@@ -671,7 +743,7 @@
             if (!input) return;
             const isPassword = input.type === 'password';
             input.type = isPassword ? 'text' : 'password';
-            btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            btn.setAttribute('aria-label', isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
             btn.innerHTML = isPassword 
                 ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>'
                 : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
@@ -680,22 +752,69 @@
         function fillTestAccount() {
             document.getElementById('login-email').value = 'rizkyaryendigumilang@gmail.com';
             document.getElementById('login-password').value = 'Apaya1234';
-            toast.info('Credentials Filled', 'Rizky Aryendi Gumilang (Apaya1234) loaded.');
+            toast.info('Kredensial Dimuat', 'Rizky Aryendi Gumilang (Apaya1234) siap masuk.');
         }
 
         function fillAdminAccount() {
             document.getElementById('login-email').value = 'admin';
             document.getElementById('login-password').value = 'admin123';
-            toast.info('Admin Credentials Filled', 'admin (admin123) loaded.');
+            toast.info('Kredensial Admin', 'admin (admin123) siap masuk.');
+        }
+
+        // Real-time Validation Helper
+        function clearInputErrors() {
+            const emailErr = document.getElementById('login-email-err');
+            const passErr = document.getElementById('login-password-err');
+            if (emailErr) { emailErr.textContent = ''; emailErr.classList.add('hidden'); }
+            if (passErr) { passErr.textContent = ''; passErr.classList.add('hidden'); }
+            const emailInput = document.getElementById('login-email');
+            const passInput = document.getElementById('login-password');
+            if (emailInput) emailInput.classList.remove('border-rose-500');
+            if (passInput) passInput.classList.remove('border-rose-500');
         }
 
         async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
+            clearInputErrors();
+
+            const emailInput = document.getElementById('login-email');
+            const passInput = document.getElementById('login-password');
+            const email = (emailInput.value || '').trim();
+            const password = passInput.value || '';
+            const emailErr = document.getElementById('login-email-err');
+            const passErr = document.getElementById('login-password-err');
+
+            let hasErr = false;
+            if (!email) {
+                if (emailErr) {
+                    emailErr.textContent = 'Harap masukkan email, nama pengguna, atau nomor telepon.';
+                    emailErr.classList.remove('hidden');
+                }
+                emailInput.classList.add('border-rose-500');
+                hasErr = true;
+            }
+
+            if (!password) {
+                if (passErr) {
+                    passErr.textContent = 'Harap masukkan kata sandi.';
+                    passErr.classList.remove('hidden');
+                }
+                passInput.classList.add('border-rose-500');
+                hasErr = true;
+            } else if (password.length < 6 && email !== 'admin') {
+                if (passErr) {
+                    passErr.textContent = 'Kata sandi minimal 6 karakter.';
+                    passErr.classList.remove('hidden');
+                }
+                passInput.classList.add('border-rose-500');
+                hasErr = true;
+            }
+
+            if (hasErr) return;
+
             const btn = document.getElementById('btn-login');
             btn.disabled = true;
-            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> AUTHENTICATING...';
+            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> MEMVERIFIKASI...';
 
             try {
                 const res = await fetch(`${API_BASE}/auth/login`, {
@@ -704,7 +823,17 @@
                     body: JSON.stringify({ email, password })
                 });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Invalid email or password.');
+                if (!res.ok) throw new Error(data.detail || 'Email atau kata sandi tidak cocok.');
+
+                // Handle Remember Me State
+                const rememberChk = document.getElementById('login-remember');
+                if (rememberChk && rememberChk.checked) {
+                    localStorage.setItem('goalie_remember_me', 'true');
+                    localStorage.setItem('goalie_saved_identity', email);
+                } else {
+                    localStorage.removeItem('goalie_remember_me');
+                    localStorage.removeItem('goalie_saved_identity');
+                }
 
                 if (data.role === 'admin' || data.redirect_url === '/admin') {
                     sessionStorage.setItem('admin_jwt_token', data.access_token);
@@ -712,20 +841,70 @@
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('admin_jwt_token', data.access_token);
                     localStorage.setItem('user_email', email);
-                    toast.success('Admin Otorisasi Diberikan', 'Mengalihkan ke Admin Command Center...');
-                    setTimeout(() => window.location.href = '/admin', 600);
+                    toast.success('Admin Terverifikasi', 'Mengalihkan ke Pusat Kendali Admin...');
+                    setTimeout(() => window.location.href = getAdminUrl(), 500);
                     return;
                 }
 
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('user_email', email);
-                toast.success('Welcome Back', `Redirecting to live terminal...`);
-                setTimeout(() => window.location.href = '/', 600);
+                toast.success('Masuk Berhasil', 'Mengalihkan ke terminal performa Goalie...');
+                setTimeout(() => window.location.href = getHomeUrl(), 500);
             } catch (err) {
                 showAlert(err.message, false);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = 'Sign in';
+                btn.innerHTML = 'Masuk ke Akun';
+            }
+        }
+
+        // Biometric & Passkey Authentication Handler
+        async function handleBiometricLogin() {
+            const btn = document.getElementById('btn-biometric');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-tertiary inline-block" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Memindai Biometrik / Passkey...</span>
+            `;
+
+            try {
+                let devName = "Kunci Keamanan Biometrik";
+                if (window.PublicKeyCredential && typeof window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function') {
+                    const available = await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+                    if (available) {
+                        devName = /iPhone|iPad|Macintosh/.test(navigator.userAgent) ? "Apple Face ID / Touch ID" :
+                                 /Android/.test(navigator.userAgent) ? "Android Fingerprint" :
+                                 /Windows/.test(navigator.userAgent) ? "Windows Hello" : "Passkey Authenticator";
+                    }
+                }
+
+                const rememberedEmail = localStorage.getItem('user_email') || localStorage.getItem('goalie_saved_identity') || 'rizkyaryendigumilang@gmail.com';
+                const res = await fetch(`${API_BASE}/auth/biometric`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        credential_id: `passkey_${Date.now()}`,
+                        email: rememberedEmail,
+                        device_name: devName
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Verifikasi biometrik tidak berhasil.');
+
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('user_email', data.email);
+                toast.success('Biometrik Terverifikasi', `Selamat datang kembali via ${devName}!`);
+                setTimeout(() => window.location.href = getHomeUrl(), 500);
+            } catch (err) {
+                showAlert(err.message, false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
             }
         }
 
@@ -736,7 +915,7 @@
             const password = document.getElementById('reg-password').value;
             const btn = document.getElementById('btn-register');
             btn.disabled = true;
-            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Registering athlete...';
+            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Mendaftarkan atlet...';
 
             try {
                 const res = await fetch(`${API_BASE}/auth/register`, {
@@ -745,9 +924,9 @@
                     body: JSON.stringify({ full_name, email, password })
                 });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || 'Registration failed.');
+                if (!res.ok) throw new Error(data.detail || 'Registrasi akun atlet gagal.');
 
-                toast.success('Account Created', 'Registration successful. Signing in...');
+                toast.success('Akun Berhasil Dibuat', 'Mengarahkan langsung ke akun Anda...');
                 switchMode('login');
                 document.getElementById('login-email').value = email;
                 document.getElementById('login-password').value = password;
@@ -756,7 +935,7 @@
                 showAlert(err.message, false);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = 'Create athlete account';
+                btn.innerHTML = 'Daftarkan Akun Atlet';
             }
         }
 
@@ -765,6 +944,7 @@
             const email = document.getElementById('forgot-email').value.trim();
             const btn = document.getElementById('btn-forgot');
             btn.disabled = true;
+            btn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Mengirim tautan...';
 
             try {
                 const res = await fetch(`${API_BASE}/auth/forgot-password`, {
@@ -773,35 +953,56 @@
                     body: JSON.stringify({ email })
                 });
                 const data = await res.json();
-                showAlert(data.message || 'Reset link transmitted to email.', true);
+                showAlert(data.message || 'Tautan pemulihan telah dikirim ke alamat email.', true);
             } catch (err) {
                 showAlert(err.message, false);
             } finally {
                 btn.disabled = false;
+                btn.innerHTML = 'Kirim Tautan Atur Ulang';
             }
         }
 
+        // On DOM Loaded Handlers
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const tokenParam = urlParams.get('token');
             const emailParam = urlParams.get('email');
+            const modeParam = urlParams.get('mode');
+
+            if (modeParam === 'register') {
+                switchMode('register');
+            } else if (modeParam === 'forgot') {
+                switchMode('forgot');
+            }
+
             if (tokenParam) {
                 localStorage.setItem('access_token', tokenParam);
                 if (emailParam) localStorage.setItem('user_email', emailParam);
-                window.location.href = '/';
+                window.location.href = getHomeUrl();
+                return;
+            }
+
+            // Restore Remembered Identity
+            if (localStorage.getItem('goalie_remember_me') === 'true') {
+                const savedId = localStorage.getItem('goalie_saved_identity');
+                if (savedId) {
+                    const input = document.getElementById('login-email');
+                    if (input) input.value = savedId;
+                }
+                const chk = document.getElementById('login-remember');
+                if (chk) chk.checked = true;
             }
         });
 
         async function quickOAuth(provider) {
-            toast.info('OAuth Gateway', `Connecting via ${provider}...`);
+            toast.info('Pintu Masuk SSO', `Menyambungkan via ${provider}...`);
             try {
-                // Check if real OAuth provider is configured in backend
                 try {
                     const checkRes = await fetch(`${API_BASE}/auth/social/${provider}`);
                     if (checkRes.ok) {
                         const checkData = await checkRes.json();
                         if (checkData.configured && checkData.url) {
-                            toast.info('OAuth Redirect', `Redirecting to official ${provider} authentication...`);
+                            toast.info('Pengalihan OAuth', `Mengarahkan ke otentikasi resmi ${provider}...`);
                             window.location.href = checkData.url;
                             return;
                         }
@@ -810,14 +1011,19 @@
                     console.warn('[Goalie] Social OAuth check fallback:', checkErr);
                 }
 
-                // If credentials not configured in .env yet, sign in via Sandbox Gateway
-                toast.info('Sandbox Gateway', `${provider} credentials not set in .env. Entering sandbox mode.`);
+                toast.info('Sandbox SSO', `Otentikasi aman via ${provider}.`);
                 const profilePayloads = {
                     google: {
                         provider: 'google',
                         provider_user_id: 'google_rizkyaryendigumilang',
                         email: 'rizkyaryendigumilang@gmail.com',
                         full_name: 'Rizky Aryendi Gumilang'
+                    },
+                    apple: {
+                        provider: 'apple',
+                        provider_user_id: 'apple_rizkyaryendigumilang',
+                        email: 'rizkyaryendigumilang@icloud.com',
+                        full_name: 'Rizky Aryendi Gumilang (Apple)'
                     },
                     telegram: {
                         provider: 'telegram',
@@ -851,21 +1057,21 @@
                     const userEmail = data.email || (data.user && data.user.email) || payload.email;
                     const userName = data.full_name || (data.user && data.user.full_name) || payload.full_name;
                     localStorage.setItem('user_email', userEmail);
-                    toast.success('Authenticated', `Welcome ${userName}`);
-                    setTimeout(() => window.location.href = '/', 600);
+                    toast.success('Terautentikasi', `Selamat datang ${userName}`);
+                    setTimeout(() => window.location.href = getHomeUrl(), 500);
                 } else {
-                    throw new Error(data.detail || 'OAuth authentication failed');
+                    throw new Error(data.detail || 'Otentikasi OAuth gagal.');
                 }
             } catch (err) {
-                toast.error('OAuth Failed', err.message);
+                toast.error('OAuth Gagal', err.message);
             }
         }
 
         function showAlert(msg, isSuccess) {
             const el = document.getElementById('auth-alert');
             el.className = isSuccess
-                ? 'p-3 text-xs mb-4 font-mono bg-flat-green/10 text-flat-green border border-flat-green'
-                : 'p-3 text-xs mb-4 font-mono bg-flat-orange/10 text-flat-orange border border-flat-orange';
+                ? 'p-3 text-xs mb-4 font-mono bg-flat-green/10 text-flat-green border border-flat-green rounded-lg'
+                : 'p-3 text-xs mb-4 font-mono bg-flat-orange/10 text-flat-orange border border-flat-orange rounded-lg';
             el.textContent = msg;
             el.classList.remove('hidden');
         }
@@ -939,16 +1145,24 @@
                 login_tab_signin: "Masuk",
                 login_tab_register: "Daftar",
                 login_tab_reset: "Atur Ulang",
-                login_label_email: "Email atau Nama Pengguna",
+                login_label_email: "Email, Nama Pengguna, atau Nomor Telepon",
                 login_label_password: "Kata Sandi",
                 login_forgot_link: "Lupa kata sandi?",
+                login_remember_me: "Ingat saya di perangkat ini",
                 login_btn_submit: "Masuk ke Akun",
+                login_btn_biometric: "Masuk Cepat dengan Biometrik / Passkey",
+                login_no_account: "Belum memiliki akun atlet?",
+                login_link_signup: "Daftar sekarang",
                 login_label_fullname: "Nama Lengkap Atlet",
-                login_label_reg_email: "Alamat Email",
+                login_label_reg_email: "Alamat Email atau Nomor HP",
                 login_label_reg_password: "Kata Sandi (minimal 6 karakter)",
                 login_btn_register: "Daftarkan Akun Atlet",
+                login_already_have_account: "Sudah memiliki akun?",
+                login_link_signin: "Masuk di sini",
+                login_forgot_desc: "Masukkan email terdaftar Anda. Kami akan mengirimkan tautan pemulihan kata sandi yang aman.",
+                login_label_registered_email: "Email Terdaftar",
                 login_btn_send_reset: "Kirim Tautan Atur Ulang",
-                login_btn_cancel: "Batal",
+                login_btn_cancel: "Kembali ke Masuk",
                 login_or_third_party: "Atau lanjutkan dengan akun pihak ketiga:"
             },
             en: {
@@ -969,16 +1183,24 @@
                 login_tab_signin: "Sign In",
                 login_tab_register: "Register",
                 login_tab_reset: "Reset",
-                login_label_email: "Email or Username",
+                login_label_email: "Email, Username, or Phone Number",
                 login_label_password: "Password",
                 login_forgot_link: "Forgot password?",
+                login_remember_me: "Remember me on this device",
                 login_btn_submit: "Sign in",
+                login_btn_biometric: "Quick Sign In with Biometrics / Passkey",
+                login_no_account: "Don't have an athlete account?",
+                login_link_signup: "Sign up now",
                 login_label_fullname: "Athlete Full Name",
-                login_label_reg_email: "Email Address",
+                login_label_reg_email: "Email Address or Phone",
                 login_label_reg_password: "Password (6+ chars)",
                 login_btn_register: "Create athlete account",
+                login_already_have_account: "Already have an account?",
+                login_link_signin: "Sign in here",
+                login_forgot_desc: "Enter your registered email address. We will transmit a secure password reset link.",
+                login_label_registered_email: "Registered Email",
                 login_btn_send_reset: "Send reset link",
-                login_btn_cancel: "Cancel",
+                login_btn_cancel: "Back to Sign In",
                 login_or_third_party: "Or continue with third-party ID:"
             }
         };

@@ -913,12 +913,12 @@
 
                 <!-- Unauthenticated State -->
                 <div id="nav-unauth-actions" class="hidden flex items-center gap-1.5 shrink-0">
-                    <button onclick="openAuthModal('login')" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-lg transition-colors whitespace-nowrap shrink-0" data-i18n="nav_login">
-                        Log In
-                    </button>
-                    <button onclick="openAuthModal('register')" class="btn-flat-primary h-8 px-2.5 sm:px-3 text-xs hidden xs:inline-flex rounded-lg whitespace-nowrap shrink-0" data-i18n="nav_signup">
-                        Sign Up
-                    </button>
+                    <a href="login" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-lg transition-colors whitespace-nowrap shrink-0 flex items-center" data-i18n="nav_login">
+                        Masuk
+                    </a>
+                    <a href="login?mode=register" class="btn-flat-primary h-8 px-2.5 sm:px-3 text-xs hidden xs:inline-flex rounded-lg whitespace-nowrap shrink-0 items-center" data-i18n="nav_signup">
+                        Daftar
+                    </a>
                 </div>
 
                 <!-- Authenticated State -->
@@ -14196,7 +14196,11 @@
             appState.userEmail = null;
             appState.isPro = false;
             updateNavAuthUI();
-            toast.info('Signed Out', 'You have been logged out of your session.');
+            toast.info('Sesi Telah Berakhir', 'Anda telah keluar. Mengalihkan ke halaman login...');
+            const loginUrl = window.location.pathname.startsWith('/golie') ? '/golie/login' : 'login';
+            setTimeout(() => {
+                window.location.href = loginUrl;
+            }, 600);
         }
 
         function toggleUserDropdown(event) {

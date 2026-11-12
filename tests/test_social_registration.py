@@ -269,5 +269,31 @@ class TestSocialRegistrationFlows(unittest.TestCase):
         self.assertIn("access_token", login_data)
         self.assertEqual(login_data["email"], test_email)
 
+    def test_08_biometric_login_flow(self):
+        """Verify biometric and passkey authentication endpoint returns valid JWT token."""
+        bio_res = self.client.post("/api/v1/auth/biometric", json={
+            "credential_id": "passkey_cred_test_123",
+            "email": "rizkyaryendigumilang@gmail.com",
+            "device_name": "Apple Face ID / Touch ID"
+        })
+        self.assertEqual(bio_res.status_code, 200)
+        data = bio_res.json()
+        self.assertIn("access_token", data)
+        self.assertEqual(data["auth_method"], "biometric_passkey")
+        self.assertEqual(data["email"], "rizkyaryendigumilang@gmail.com")
+
+    def test_09_apple_and_extended_oauth_login_flow(self):
+        """Verify extended social OAuth providers including Apple return valid JWT."""
+        apple_res = self.client.post("/api/v1/auth/oauth", json={
+            "provider": "apple",
+            "email": "athlete_apple@goalie.fit",
+            "full_name": "Apple Athlete Runner"
+        })
+        self.assertEqual(apple_res.status_code, 200)
+        data = apple_res.json()
+        self.assertIn("access_token", data)
+        self.assertEqual(data["provider"], "apple")
+        self.assertEqual(data["email"], "athlete_apple@goalie.fit")
+
 if __name__ == "__main__":
     unittest.main()

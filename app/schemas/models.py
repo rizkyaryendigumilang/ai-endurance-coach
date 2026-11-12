@@ -16,7 +16,7 @@ class ForgotPasswordInput(BaseModel):
     email: str
 
 class OAuthLoginInput(BaseModel):
-    provider: str  # 'google' | 'github' | 'telegram'
+    provider: str  # 'google' | 'github' | 'telegram' | 'apple' | 'microsoft' | 'passkey' | 'biometric'
     provider_token: Optional[str] = None
     provider_user_id: Optional[str] = None
     email: Optional[str] = None
@@ -24,6 +24,12 @@ class OAuthLoginInput(BaseModel):
     full_name: Optional[str] = None
     handle: Optional[str] = None
     avatar_url: Optional[str] = None
+
+class BiometricLoginInput(BaseModel):
+    credential_id: Optional[str] = None
+    email: Optional[str] = None
+    device_name: Optional[str] = None
+    platform: Optional[str] = None
 
 class UserAuthInput(BaseModel):
     email: str

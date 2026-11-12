@@ -7,6 +7,7 @@ from typing import Optional, List, Dict, Any
 import uuid
 import json
 import os
+import sys
 import threading
 
 # --- Persistence Layer ---
@@ -19,6 +20,11 @@ _LOCK = threading.Lock()
 _USERS_DB = {}
 
 
+def _is_testing() -> bool:
+    """Detect if running under automated unittest suite to maintain test isolation."""
+    return "unittest" in sys.modules or bool(os.environ.get("GOALIE_TESTING"))
+
+
 def _default_serializer(obj):
     """Handle non-JSON-serializable objects gracefully."""
     if isinstance(obj, (datetime, date)):
@@ -27,8 +33,10 @@ def _default_serializer(obj):
 
 
 def _load_persisted_store():
-    """Load persisted _USERS_DB from JSON file on startup."""
+    """Load persisted _USERS_DB from JSON file on startup (skipped in test runner)."""
     global _USERS_DB
+    if _is_testing():
+        return
     runtime_dir = os.path.dirname(_STORE_PATH)
     os.makedirs(runtime_dir, exist_ok=True)
     if not os.path.exists(_STORE_PATH):
@@ -44,7 +52,9 @@ def _load_persisted_store():
 
 
 def _persist_store():
-    """Write _USERS_DB to JSON file (thread-safe). Skips non-serializable keys silently."""
+    """Write _USERS_DB to JSON file (thread-safe). Skipped in test runner to keep tests isolated."""
+    if _is_testing():
+        return
     runtime_dir = os.path.dirname(_STORE_PATH)
     os.makedirs(runtime_dir, exist_ok=True)
     try:
