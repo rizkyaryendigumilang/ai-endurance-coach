@@ -5,7 +5,7 @@ Pulls Daily Resting Heart Rate, Sleep Quality, HRV, Body Battery, and Activities
 """
 import logging
 import asyncio
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Dict, Any, Optional, List
 try:
     import garminconnect
@@ -21,6 +21,32 @@ class GarminDirectService:
         self._clients: Dict[str, Any] = {}
         self._pending_mfa: Dict[str, Any] = {}
         self._sync_status: Dict[str, Dict[str, Any]] = {}
+
+    def _try_restore_session(self, user_id: str) -> bool:
+        """
+        Attempt to restore a Garmin session from persisted tokenstore.
+        Returns True if restored successfully, False otherwise.
+        """
+        if garminconnect is None:
+            return False
+        if user_id in self._clients:
+            return True
+        try:
+            session = sandbox_store.get_garmin_session(user_id)
+            if not session or not session.get("is_active"):
+                return False
+            tokenstore = session.get("session_data", {}).get("tokenstore")
+            if not tokenstore:
+                return False
+            email = session.get("email", "")
+            client = garminconnect.Garmin(email, "")
+            client.client.loads(tokenstore)
+            self._clients[user_id] = client
+            logger.info(f"[GarminService] Sesi Garmin berhasil dipulihkan dari tokenstore untuk {email}")
+            return True
+        except Exception as e:
+            logger.warning(f"[GarminService] Gagal memulihkan sesi Garmin dari tokenstore: {e}")
+            return False
 
     def authenticate_and_connect(
         self,
@@ -210,6 +236,11 @@ class GarminDirectService:
 
         client = self._clients.get(user_id)
         
+        # Try to restore session from persisted tokenstore before falling back
+        if not client:
+            if self._try_restore_session(user_id):
+                client = self._clients.get(user_id)
+        
         # If client not in memory, try demo mock or prompt relogin
         if not client:
             session = sandbox_store.get_garmin_session(user_id)
@@ -376,6 +407,10 @@ class GarminDirectService:
         """
         client = self._clients.get(user_id)
         if not client:
+            # Attempt token restore before giving up
+            if self._try_restore_session(user_id):
+                client = self._clients.get(user_id)
+        if not client:
             session = sandbox_store.get_garmin_session(user_id)
             if not session or not session.get("is_active"):
                 raise ValueError("Garmin Connect belum terkoneksi.")
@@ -383,10 +418,41 @@ class GarminDirectService:
 
         try:
             activities = client.get_activities(start_index, limit) or []
-            return self._process_garmin_activities_batch(user_id, activities)
+            synced = self._process_garmin_activities_batch(user_id, activities)
+            # F1: Auto preload GPS untuk 5 aktivitas pertama yang belum ada GPS route
+            self._auto_preload_gps(user_id, synced)
+            return synced
         except Exception as e:
             logger.error(f"Error syncing Garmin activities: {e}")
             raise ValueError(f"Gagal menyinkronkan aktivitas Garmin: {e}")
+
+    def _auto_preload_gps(self, user_id: str, synced_activities: List[Dict[str, Any]]) -> None:
+        """
+        F1: Otomatis prefetch koordinat GPS riil untuk hingga 5 aktivitas pertama
+        yang sudah punya titik koordinat awal tapi belum punya rute lengkap.
+        """
+        prefetch_count = 0
+        for act in synced_activities[:10]:
+            if prefetch_count >= 5:
+                break
+            act_id = str(act.get("id") or act.get("external_id") or "")
+            if not act_id:
+                continue
+            # Skip jika sudah punya GPS route
+            existing = sandbox_store.get_workout_by_id(user_id, act_id)
+            if existing and existing.get("gps_route") and len(existing.get("gps_route", [])) > 1:
+                continue
+            # Hanya prefetch jika ada titik koordinat awal
+            if not (act.get("start_lat") or (existing and existing.get("start_lat"))):
+                continue
+            try:
+                result = self.get_activity_gps(user_id, act_id)
+                if result.get("gps_route") and len(result["gps_route"]) > 1:
+                    prefetch_count += 1
+                    logger.info(f"[GarminService] GPS prefetch berhasil untuk aktivitas {act_id} ({prefetch_count}/5)")
+            except Exception as e:
+                logger.debug(f"[GarminService] GPS prefetch skip untuk {act_id}: {e}")
+                continue
 
     async def start_background_backfill(self, user_id: str, batch_size: int = 50, max_batches: int = 20, delay_sec: float = 1.2) -> Dict[str, Any]:
         """
@@ -473,6 +539,10 @@ class GarminDirectService:
             }
 
         client = self._clients.get(user_id)
+        if not client:
+            # Try restore from persisted tokenstore
+            if self._try_restore_session(user_id):
+                client = self._clients.get(user_id)
         if not client:
             # Fallback jika offline atau sesi demo
             if workout and workout.get("start_lat") and workout.get("start_lon"):

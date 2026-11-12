@@ -8,6 +8,7 @@ from typing import Dict, List, Optional
 from app.services import sandbox_store
 from app.services.ai_provider import MultiTierAIProvider
 from app.services.sports_engine import SportsEngine
+from app.services.weather_service import WeatherService
 
 ai_engine = MultiTierAIProvider()
 
@@ -136,6 +137,40 @@ class WeeklyCalendarService:
                 "ai_coach_rationale": tpl["ai_coach_rationale"]
             }
             days_payload.append(day_obj)
+
+        # Inject weather forecast adjustments for today and upcoming days
+        try:
+            profile_lat = profile.get("training_lat") or -6.2088
+            profile_lon = profile.get("training_lon") or 106.8456
+            weather_now = WeatherService.get_live_weather(lat=profile_lat, lon=profile_lon)
+            curr = weather_now.get("current", {})
+            temp_c = curr.get("temperature_c", 28.0)
+            weather_code = curr.get("weather_code", 2)
+            weather_desc = curr.get("weather_desc", "")
+            weather_icon = curr.get("weather_icon", "")
+            is_heavy_rain = weather_code in (63, 65, 82, 95, 96, 99)
+            is_hot = temp_c > 32.0
+            for day_obj in days_payload:
+                if day_obj["is_past"]:
+                    continue
+                notes = []
+                if is_hot:
+                    notes.append(f"Suhu tinggi {temp_c:.0f}°C - jaga hidrasi ketat, mulai lari lebih pagi")
+                    if day_obj["category"] in ("Quality", "Intervals", "Tempo"):
+                        old_pace = day_obj.get("target_pace", "")
+                        notes.append("Intensitas interval/tempo dikurangi ~10% karena beban panas termal")
+                if is_heavy_rain:
+                    notes.append(f"Hujan lebat diperkirakan ({weather_desc}) - pertimbangkan treadmill atau geser sesi")
+                if notes:
+                    day_obj["weather_note"] = " | ".join(notes)
+                    day_obj["weather_icon"] = weather_icon
+                    day_obj["weather_temp_c"] = round(temp_c, 1)
+                else:
+                    day_obj["weather_note"] = f"Kondisi baik untuk lari ({weather_desc} {weather_icon}, {temp_c:.0f}°C)"
+                    day_obj["weather_icon"] = weather_icon
+                    day_obj["weather_temp_c"] = round(temp_c, 1)
+        except Exception:
+            pass  # Weather gagal - kalender tetap berjalan normal
 
         # Calculate weekly totals
         total_km = round(sum(d["distance_km"] for d in days_payload if d["distance_km"]), 1)

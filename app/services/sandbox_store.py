@@ -1,12 +1,63 @@
 """
-In-memory store for seamless sandbox/local demonstration when Supabase cloud is unreachable or paused.
-Preserves user data during testing session so full functional workflows work out-of-the-box.
+Persistent store for Goalie athlete data.
+Data is written to .runtime/goalie_store.json and survives server restarts and deploys.
 """
 from datetime import datetime, date, timezone
 from typing import Optional, List, Dict, Any
 import uuid
+import json
+import os
+import threading
+
+# --- Persistence Layer ---
+_STORE_PATH = os.environ.get(
+    "GOALIE_STORE_PATH",
+    os.path.join(os.path.dirname(__file__), "..", "..", ".runtime", "goalie_store.json")
+)
+_LOCK = threading.Lock()
 
 _USERS_DB = {}
+
+
+def _default_serializer(obj):
+    """Handle non-JSON-serializable objects gracefully."""
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    return str(obj)
+
+
+def _load_persisted_store():
+    """Load persisted _USERS_DB from JSON file on startup."""
+    global _USERS_DB
+    runtime_dir = os.path.dirname(_STORE_PATH)
+    os.makedirs(runtime_dir, exist_ok=True)
+    if not os.path.exists(_STORE_PATH):
+        return
+    try:
+        with open(_STORE_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            _USERS_DB.update(data)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"[sandbox_store] Failed to load persisted store: {e}")
+
+
+def _persist_store():
+    """Write _USERS_DB to JSON file (thread-safe). Skips non-serializable keys silently."""
+    runtime_dir = os.path.dirname(_STORE_PATH)
+    os.makedirs(runtime_dir, exist_ok=True)
+    try:
+        with _LOCK:
+            with open(_STORE_PATH, "w", encoding="utf-8") as f:
+                json.dump(_USERS_DB, f, default=_default_serializer, ensure_ascii=False, indent=2)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"[sandbox_store] Failed to persist store: {e}")
+
+
+# Load persisted data on module import
+_load_persisted_store()
 
 def _is_owner_user(user_id: str, profile_data: dict = None) -> bool:
     if not user_id:
@@ -94,6 +145,7 @@ def update_profile(user_id: str, data: dict):
             "expires_at": "2030-12-31T23:59:59Z"
         }
         store["profile"]["subscription_tier"] = "pro"
+    _persist_store()
     return store["profile"]
 
 def get_daily_chat_count(user_id: str) -> int:
@@ -260,6 +312,7 @@ def add_race(user_id: str, race_data: dict):
         **race_data
     }
     store["races"].append(record)
+    _persist_store()
     return record
 
 def get_races(user_id: str):
@@ -290,6 +343,7 @@ def save_training_plan(user_id: str, race_id: str, plan_data: dict, workouts: li
         }
         store["planned_workouts"].append(w_rec)
         saved_workouts.append(w_rec)
+    _persist_store()
     return plan_record, saved_workouts
 
 def get_latest_plan(user_id: str):
@@ -327,6 +381,7 @@ def add_actual_workout(user_id: str, workout_data: dict, metrics_data: dict):
     w_rec["activity_metrics"] = [m_rec]
     store["actual_workouts"].insert(0, w_rec)
     store["activity_metrics"].append(m_rec)
+    _persist_store()
     return w_rec, m_rec
 
 def get_recent_workouts(user_id: str, limit: int = 50):
@@ -349,6 +404,7 @@ def update_workout_gps_route(user_id: str, workout_id: str, gps_route: list, loc
             w["gps_route"] = gps_route
             if location_name:
                 w["location_name"] = location_name
+            _persist_store()
             return True
     return False
 
@@ -371,6 +427,7 @@ def save_evaluated_garmin_activity(user_id: str, activity_data: dict) -> dict:
         store["garmin_activities_evaluated"][existing_idx] = rec
     else:
         store["garmin_activities_evaluated"].insert(0, rec)
+    _persist_store()
     return rec
 
 def get_evaluated_garmin_activities(user_id: str, limit: int = 20) -> list:
@@ -389,6 +446,7 @@ def save_mesocycle_digest(user_id: str, digest_data: dict) -> dict:
         **digest_data
     }
     store["mesocycle_digests"].insert(0, rec)
+    _persist_store()
     return rec
 
 def get_mesocycle_digests(user_id: str) -> list:
@@ -422,6 +480,7 @@ def add_chat_message(user_id: str, role: str, content: str):
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     store["chat_history"].append(msg)
+    _persist_store()
     return msg
 
 def get_chat_history(user_id: str, limit: int = 50):
@@ -439,6 +498,7 @@ def save_garmin_health_metric(user_id: str, metric_data: dict):
         **metric_data
     }
     store["garmin_health"].insert(0, record)
+    _persist_store()
     return record
 
 
@@ -455,6 +515,7 @@ def save_garmin_session(user_id: str, email: str, session_data: dict = None):
         "is_active": True,
         "session_data": session_data or {}
     }
+    _persist_store()
     return store["garmin_session"]
 
 
@@ -466,6 +527,7 @@ def get_garmin_session(user_id: str):
 def save_race_course(user_id: str, course_data: dict):
     store = _get_user_store(user_id)
     store["race_course"] = course_data
+    _persist_store()
     return store["race_course"]
 
 
@@ -1418,6 +1480,7 @@ def save_post_run_debrief(user_id: str, debrief: dict) -> dict:
     debrief["id"] = debrief_id
     debrief["created_at"] = datetime.now(timezone.utc).isoformat()
     store["post_run_debriefs"].insert(0, debrief)
+    _persist_store()
     return debrief
 
 def get_post_run_debriefs(user_id: str, limit: int = 10) -> list:
