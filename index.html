@@ -293,11 +293,89 @@
             backdrop-filter: blur(16px) saturate(140%);
             -webkit-backdrop-filter: blur(16px) saturate(140%);
             border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         html.dark .apple-glass-track {
             background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===================================================
+           SORVO ADAPTIVE NAVIGATION & RAIL MODE
+           =================================================== */
+        :root {
+            --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .collapse-btn {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.25s var(--ease-fluid);
+        }
+
+        .collapse-btn svg {
+            transition: transform 0.45s var(--ease-fluid);
+        }
+
+        .is-rail .collapse-btn svg,
+        .apple-glass-track.is-rail + .collapse-btn svg,
+        .is-rail.collapse-btn svg {
+            transform: scaleX(-1);
+        }
+
+        /* Sorvo Anti-Wrapping Text Fade */
+        .tab-btn {
+            position: relative;
+            transition: padding 0.35s var(--ease-fluid), background-color 0.2s ease, transform 0.15s ease;
+        }
+
+        .tab-btn .tab-label {
+            transition: opacity 0.22s ease, transform 0.22s var(--ease-fluid);
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .apple-glass-track.is-rail .tab-btn {
+            padding-left: 0.65rem;
+            padding-right: 0.65rem;
+        }
+
+        .apple-glass-track.is-rail .tab-btn .tab-label {
+            opacity: 0;
+            transform: translateX(-8px);
+            position: absolute;
+            pointer-events: none;
+            width: 0;
+            overflow: hidden;
+        }
+
+        /* Sorvo Badge Counter Morphing */
+        .tab-badge {
+            transition: all 0.35s var(--ease-fluid);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .apple-glass-track.is-rail .tab-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            min-width: 7px;
+            width: 7px;
+            height: 7px;
+            padding: 0;
+            font-size: 0;
+            border-radius: 9999px;
+            box-shadow: 0 0 0 2px var(--surface-color, #ffffff);
+        }
+
+        /* Sorvo Glass Sheen & Rim Highlight */
+        .glass-sorvo {
+            backdrop-filter: blur(20px) saturate(170%);
+            -webkit-backdrop-filter: blur(20px) saturate(170%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 20px -2px rgba(0, 0, 0, 0.08);
         }
 
         /* Cadra Status Spills (Capsule Pills) */
@@ -850,7 +928,12 @@
             <!-- Logo & Brand Badge (Goalie) -->
             <div class="flex items-center gap-2 xl:gap-3 shrink-0">
                 <a href="javascript:void(0)" onclick="if(typeof switchWorkstationTab==='function')switchWorkstationTab('cockpit');" class="flex items-center gap-2.5 group shrink-0 cursor-pointer" aria-label="Goalie Cockpit Home">
-                    <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" width="32" height="32" class="w-8 h-8 rounded-lg object-contain border border-border shadow-xs shrink-0" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center shadow-xs border border-white/20 shrink-0 text-white overflow-hidden group-hover:scale-105 transition-transform duration-200" aria-hidden="true">
+                        <svg viewBox="0 0 192 192" class="w-5 h-5" fill="none">
+                            <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+                            <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+                        </svg>
+                    </div>
                     <div class="flex items-baseline gap-1.5 shrink-0">
                         <span class="font-display font-extrabold text-xl tracking-tight text-text-primary whitespace-nowrap group-hover:text-tertiary transition-colors">GOALIE</span>
                     </div>
@@ -1582,40 +1665,49 @@
         <div id="workstation" class="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
             
             <!-- Workstation Tab Switcher -->
-            <div class="flex items-center justify-start sm:justify-center border-b-2 border-border pb-4 overflow-x-auto no-scrollbar">
+            <div class="flex items-center justify-start sm:justify-center gap-2 border-b-2 border-border pb-4 overflow-x-auto no-scrollbar">
 
                 <!-- Tabs (Apple Floating Glass Capsule Track) -->
                 <div class="p-1.5 apple-glass-track rounded-full inline-flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-xs" role="tablist" aria-label="Workstation View Navigation">
                     <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97">
                         <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        <span data-i18n="tab_cockpit">Kokpit Performa</span>
+                        <span class="tab-label" data-i18n="tab_cockpit">Kokpit Performa</span>
                     </button>
                     <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                        <span data-i18n="tab_chat">Chat Pelatih AI</span>
+                        <span class="tab-label" data-i18n="tab_chat">Chat Pelatih AI</span>
+                        <span class="tab-badge px-1.5 py-0.2 text-[9px] font-mono font-bold bg-tertiary text-white rounded-full">PRO</span>
                     </button>
                     <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <span data-i18n="tab_telemetry">Telemetri</span>
-                        <span class="w-1.5 h-1.5 bg-flat-green rounded-full shrink-0"></span>
+                        <span class="tab-label" data-i18n="tab_telemetry">Telemetri</span>
+                        <span class="tab-badge w-1.5 h-1.5 bg-flat-green rounded-full shrink-0"></span>
                     </button>
                     <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        <span data-i18n="tab_biomechanics">Run Analyzer</span>
+                        <span class="tab-label" data-i18n="tab_biomechanics">Run Analyzer</span>
                     </button>
                     <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span data-i18n="tab_schedule">Jadwal & iCal</span>
+                        <span class="tab-label" data-i18n="tab_schedule">Jadwal & iCal</span>
                     </button>
                     <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        <span data-i18n="tab_integrations">Integrasi</span>
+                        <span class="tab-label" data-i18n="tab_integrations">Integrasi</span>
                     </button>
                     <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span data-i18n="tab_settings">Pengaturan</span>
+                        <span class="tab-label" data-i18n="tab_settings">Pengaturan</span>
                     </button>
                 </div>
+
+                <!-- Sorvo Collapse / Expand Toggle Button -->
+                <button type="button" onclick="toggleNavRail()" id="sorvo-rail-toggle-btn" class="collapse-btn p-2 rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-tertiary transition-colors shadow-xs shrink-0" aria-label="Toggle Navigation Rail Mode" title="Toggle Rail Mode [">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                        <rect x="3.5" y="4.5" width="17" height="15" rx="3" />
+                        <path d="M9.5 4.5v15M16 10l-2 2 2 2" />
+                    </svg>
+                </button>
             </div>
 
             <!-- TAB 0: PERFORMANCE COCKPIT (DATA TRACKING & MONITORING HUB) -->
@@ -6890,7 +6982,12 @@
             <!-- Col 1: Brand (4 cols) -->
             <div class="md:col-span-4 space-y-3">
                 <div class="flex items-center gap-2">
-                    <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-6 h-6 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                    <div class="w-6 h-6 rounded-md bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center shadow-xs border border-white/20 shrink-0 text-white overflow-hidden" aria-hidden="true">
+                        <svg viewBox="0 0 192 192" class="w-3.5 h-3.5" fill="none">
+                            <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+                            <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+                        </svg>
+                    </div>
                     <span class="font-display font-bold text-base text-text-primary">Goalie Athletics</span>
                 </div>
                 <p class="text-xs font-mono text-text-secondary max-w-sm">
@@ -7190,7 +7287,12 @@
         <div class="flat-card border-2 border-border-strong max-w-md w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
-                    <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" width="24" height="24" class="w-6 h-6 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                    <div class="w-6 h-6 rounded-md bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center shadow-xs border border-white/20 shrink-0 text-white overflow-hidden" aria-hidden="true">
+                        <svg viewBox="0 0 192 192" class="w-3.5 h-3.5" fill="none">
+                            <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+                            <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+                        </svg>
+                    </div>
                     <h3 id="auth-modal-title" class="font-display font-bold text-base text-text-primary">Sign In to Goalie</h3>
                 </div>
                 <button onclick="closeAuthModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close authentication dialog">
@@ -8137,6 +8239,59 @@
                 if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
                     e.preventDefault();
                     focusGlobalSearch();
+                }
+            });
+
+            // Sorvo Navigation Rail Mode Controller & '[' Keyboard Shortcut
+            window.toggleNavRail = function() {
+                const track = document.querySelector('.apple-glass-track[role="tablist"]');
+                const btn = document.getElementById('sorvo-rail-toggle-btn');
+                if (!track) return;
+                const isRail = track.classList.toggle('is-rail');
+                if (btn) {
+                    btn.classList.toggle('is-rail', isRail);
+                    btn.setAttribute('aria-expanded', (!isRail).toString());
+                    btn.setAttribute('title', isRail ? 'Expand [' : 'Collapse [');
+                }
+                // Update tooltips on tabs when rail mode is active
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    const lbl = b.querySelector('.tab-label');
+                    if (lbl) {
+                        b.title = isRail ? lbl.textContent.trim() : '';
+                    }
+                });
+                try {
+                    localStorage.setItem('app:rail', isRail ? '1' : '0');
+                } catch (e) {}
+            };
+
+            // Hydrate Sorvo rail mode from localStorage
+            try {
+                if (localStorage.getItem('app:rail') === '1') {
+                    const track = document.querySelector('.apple-glass-track[role="tablist"]');
+                    const btn = document.getElementById('sorvo-rail-toggle-btn');
+                    if (track) {
+                        track.classList.add('is-rail');
+                        if (btn) {
+                            btn.classList.add('is-rail');
+                            btn.setAttribute('aria-expanded', 'false');
+                            btn.setAttribute('title', 'Expand [');
+                        }
+                        document.querySelectorAll('.tab-btn').forEach(b => {
+                            const lbl = b.querySelector('.tab-label');
+                            if (lbl) b.title = lbl.textContent.trim();
+                        });
+                    }
+                }
+            } catch (e) {}
+
+            // Keyboard shortcut '[' to toggle Sorvo Rail
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '[' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) && !e.target.isContentEditable) {
+                    e.preventDefault();
+                    if (typeof window.toggleNavRail === 'function') {
+                        window.toggleNavRail();
+                    }
                 }
             });
 
@@ -10207,7 +10362,9 @@
                              STRAVA
                            </span>`
                         : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-tertiary/12 text-tertiary border border-tertiary/30">
-                             <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-2.5 h-2.5 rounded-xs shrink-0" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                             <span class="w-2.5 h-2.5 rounded-xs bg-[#fc4c02] inline-flex items-center justify-center shrink-0 text-white overflow-hidden" aria-hidden="true">
+                               <svg viewBox="0 0 192 192" class="w-2 h-2" fill="none"><path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" /><path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" /></svg>
+                             </span>
                              GOALIE LOG
                            </span>`);
 

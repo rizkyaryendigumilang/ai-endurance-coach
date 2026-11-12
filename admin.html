@@ -366,8 +366,13 @@
         <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
             
             <div class="flex items-center gap-3">
-                <a href="admin" class="flex items-center gap-2.5">
-                    <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" width="28" height="28" class="w-7 h-7 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                <a href="admin" class="flex items-center gap-2.5 group">
+                    <div class="w-7 h-7 rounded-md bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center shadow-xs border border-white/20 shrink-0 text-white overflow-hidden group-hover:scale-105 transition-transform duration-200" aria-hidden="true">
+                        <svg viewBox="0 0 192 192" class="w-4 h-4" fill="none">
+                            <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+                            <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+                        </svg>
+                    </div>
                     <div class="flex items-baseline gap-2">
                         <span class="font-display font-bold text-base tracking-tight text-text-primary">Goalie Admin</span>
                         <span class="text-[10px] font-mono text-tertiary bg-surface-subtle px-2 py-0.5 rounded-full border border-border hidden xs:inline-block">SUPERUSER</span>
@@ -991,7 +996,12 @@
     <footer class="border-t-2 border-border py-4 bg-surface text-xs text-text-secondary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <img src="public/icons/pwa/icon-192x192.png" alt="Goalie" class="w-4 h-4 rounded-md object-contain border border-border" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/icons/pwa/icon-192x192.png';}">
+                <div class="w-4 h-4 rounded-xs bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center shadow-xs border border-white/20 shrink-0 text-white overflow-hidden" aria-hidden="true">
+                    <svg viewBox="0 0 192 192" class="w-2.5 h-2.5" fill="none">
+                        <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+                        <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+                    </svg>
+                </div>
                 <span>&copy; 2026 Goalie Athletics Inc. • System Observability & Governance.</span>
             </div>
             <div class="flex items-center gap-4 text-[11px] font-mono">

@@ -127,17 +127,39 @@ app.include_router(admin_router)
 public_path = os.path.join(os.path.dirname(__file__), "..", "public")
 if os.path.exists(public_path):
     app.mount("/public", StaticFiles(directory=public_path), name="public")
+    app.mount("/golie/public", StaticFiles(directory=public_path), name="golie_public")
     icons_path = os.path.join(public_path, "icons")
     if os.path.exists(icons_path):
         app.mount("/icons", StaticFiles(directory=icons_path), name="icons")
+        app.mount("/golie/icons", StaticFiles(directory=icons_path), name="golie_icons")
 
 
 @app.get("/", include_in_schema=False)
+@app.get("/golie", include_in_schema=False)
+@app.get("/golie/", include_in_schema=False)
 def serve_frontend():
     index_path = os.path.join(os.path.dirname(__file__), "..", "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
     return {"message": "Goalie API is running. Docs: /docs"}
+
+
+@app.get("/logo.svg", include_in_schema=False)
+@app.get("/golie/logo.svg", include_in_schema=False)
+def serve_logo_svg():
+    logo_path = os.path.join(os.path.dirname(__file__), "..", "public", "icons", "goalie-logo.svg")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path, media_type="image/svg+xml")
+    raise HTTPException(status_code=404, detail="logo.svg not found")
+
+
+@app.get("/public/icons/pwa/icon-192x192.png", include_in_schema=False)
+@app.get("/golie/public/icons/pwa/icon-192x192.png", include_in_schema=False)
+def serve_icon_192():
+    icon_path = os.path.join(os.path.dirname(__file__), "..", "public", "icons", "pwa", "icon-192x192.png")
+    if os.path.exists(icon_path):
+        return FileResponse(icon_path, media_type="image/png")
+    raise HTTPException(status_code=404, detail="icon not found")
 
 
 @app.get("/manifest.json", include_in_schema=False)

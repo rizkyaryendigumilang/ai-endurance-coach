@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goalieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fc4c02" />
+      <stop offset="100%" stop-color="#e03d00" />
+    </linearGradient>
+  </defs>
+  <!-- Background rounded squircle -->
+  <rect width="192" height="192" rx="42" fill="url(#goalieGrad)" />
+  <!-- Upper Chevron -->
+  <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+  <!-- Lower Summit Chevron -->
+  <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+</svg>

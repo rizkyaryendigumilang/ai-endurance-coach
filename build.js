@@ -17,7 +17,8 @@ const filesToCopy = [
   'manifest.json',
   'sw.js',
   'favicon.ico',
-  'apple-touch-icon.png'
+  'apple-touch-icon.png',
+  'logo.svg'
 ];
 
 for (const file of filesToCopy) {
