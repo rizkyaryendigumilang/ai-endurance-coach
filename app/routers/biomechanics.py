@@ -1,5 +1,5 @@
 """
-Goalie — Biomechanics & Run Form Analysis Router
+Goalie - Biomechanics & Run Form Analysis Router
 Stateless AI vision analysis for running form, cadence, stride, posture, and gait.
 Accepts both photos (JPG, PNG, WEBP) and video clips (MP4, MOV, WEBM).
 """
@@ -17,7 +17,7 @@ router = APIRouter(tags=["Analysis"])
 async def analyze_form(request: Request, file: UploadFile = File(...)):
     """
     Stateless AI vision endpoint. Analyzes running form from a photo or video clip.
-    No data is stored — result is returned immediately with skeletal landmark metrics.
+    No data is stored - result is returned immediately with skeletal landmark metrics.
     """
     vision_rate_limiter.check(request)
     ctype = (file.content_type or "").lower()

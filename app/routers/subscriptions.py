@@ -1,5 +1,5 @@
 """
-Goalie — Subscriptions Router
+Goalie - Subscriptions Router
 Manages athlete subscription status, BYOK activation, checkout orders (QRIS / VA), and activation.
 """
 

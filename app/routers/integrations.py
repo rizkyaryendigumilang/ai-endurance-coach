@@ -1,6 +1,6 @@
 """
-Goalie — Integrations Router
-Manages Strava OAuth redirect alias, Intervals.icu iCal feed alias, and Garmin Connect session synchronization.
+Goalie - Integrations Router
+Provides Strava OAuth redirect alias, Intervals.icu iCal feed alias, and Garmin Connect session synchronization.
 """
 
 from typing import Optional

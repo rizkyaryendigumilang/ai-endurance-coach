@@ -1,5 +1,5 @@
 """
-Goalie — Training & Marathon Router
+Goalie - Training & Marathon Router
 Manages race plan generation, weekly AI calendar, 31-week marathon periodization, splits calculation, and recommendations.
 """
 

@@ -56,6 +56,7 @@
     <script src="public/js/modules/settings-controller.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/settings-controller.js?v=1.0.0';"></script>
     <script src="public/js/modules/map-elevation-scrubber.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/map-elevation-scrubber.js?v=1.0.0';"></script>
     <script src="public/js/modules/mobile-native.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/mobile-native.js?v=1.0.0';"></script>
+    <script src="public/js/modules/enterprise-hub.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/enterprise-hub.js?v=1.0.0';"></script>
 
 
     <style>
@@ -1022,6 +1023,42 @@
                         <span class="whitespace-nowrap font-bold">SUMMIT PRO</span>
                     </button>
 
+                    <!-- 6. Notifications: Notification Center Trigger & Drawer -->
+                    <div class="relative shrink-0" id="notification-bell-container">
+                        <button type="button" onclick="GoalieEnterprise.toggleNotificationCenter()" id="nav-notif-btn" aria-label="Notifikasi & Peringatan" class="relative h-8.5 w-8.5 rounded-lg border border-border bg-surface-subtle flex items-center justify-center text-text-secondary hover:text-text-primary hover:border-tertiary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            <span id="nav-notif-badge" class="hidden absolute -top-1 -right-1 min-w-[17px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold font-mono flex items-center justify-center">0</span>
+                        </button>
+
+                        <div id="notification-center-drawer" class="absolute right-0 mt-1.5 w-80 sm:w-96 bg-surface border-2 border-border-strong rounded-xl p-3 hidden z-50 shadow-2xl font-sans text-xs">
+                            <div class="flex items-center justify-between pb-2 border-b border-border">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-sm text-text-primary">Pusat Notifikasi</span>
+                                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-tertiary/15 text-tertiary font-bold">Realtime</span>
+                                </div>
+                                <button type="button" onclick="GoalieEnterprise.markAllAsRead()" class="text-[11px] font-semibold text-tertiary hover:underline">Tandai Dibaca</button>
+                            </div>
+                            
+                            <div class="flex items-center gap-1.5 py-2 border-b border-border">
+                                <button type="button" onclick="GoalieEnterprise.filterNotifications('all')" id="notif-tab-all" class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-tertiary text-white">Semua</button>
+                                <button type="button" onclick="GoalieEnterprise.filterNotifications('alert')" id="notif-tab-alert" class="px-2.5 py-1 text-[11px] font-medium text-text-secondary hover:text-text-primary rounded-md">Peringatan</button>
+                                <button type="button" onclick="GoalieEnterprise.filterNotifications('reminder')" id="notif-tab-reminder" class="px-2.5 py-1 text-[11px] font-medium text-text-secondary hover:text-text-primary rounded-md">Pengingat</button>
+                            </div>
+
+                            <div id="notification-items-list" class="max-h-80 overflow-y-auto divide-y divide-border/60 py-1 space-y-1">
+                                <!-- Populated by GoalieEnterprise -->
+                            </div>
+
+                            <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] text-text-secondary">
+                                <button type="button" onclick="GoalieEnterprise.closeNotificationCenter(); switchWorkstationTab('settings'); if (window.switchSettingsCategory) window.switchSettingsCategory('preferences');" class="hover:text-text-primary flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span>Preferensi Notifikasi</span>
+                                </button>
+                                <span class="font-mono text-[10px]">Auto-Sync Garmin</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Athlete Profile Avatar Pill & Dropdown Hub -->
                     <div class="relative shrink-0" id="user-profile-menu-container">
                         <button type="button" onclick="toggleUserDropdown(event)" id="user-dropdown-btn" aria-expanded="false" aria-haspopup="true" class="h-8.5 px-2.5 rounded-lg border border-border bg-surface-subtle flex items-center gap-2 text-xs font-semibold text-text-primary hover:border-tertiary transition-all whitespace-nowrap shrink-0 group">
@@ -1031,7 +1068,7 @@
                             <svg class="w-3 h-3 text-text-secondary group-hover:text-tertiary transition-transform group-aria-expanded:rotate-180 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                         
-                        <div id="user-dropdown-menu" class="absolute right-0 mt-1.5 w-64 bg-surface border-2 border-border-strong rounded-xl p-2 hidden z-50 shadow-xl font-mono text-xs space-y-1">
+                        <div id="user-dropdown-menu" class="absolute right-0 mt-1.5 w-72 bg-surface border-2 border-border-strong rounded-xl p-2 hidden z-50 shadow-2xl font-mono text-xs space-y-1">
                             <!-- Athlete Card Header -->
                             <div class="p-2.5 bg-surface-subtle border border-border rounded-lg mb-1.5">
                                 <div class="flex items-center gap-2.5">
@@ -1047,40 +1084,62 @@
                                 </div>
                             </div>
 
-                            <!-- Menu Items -->
-                            <button onclick="switchWorkstationTab('settings'); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <!-- Menu Items: Enterprise Suite (6 - 12) -->
+                            <!-- 7. User Management: Tim & Squad -->
+                            <button onclick="GoalieEnterprise.openUserManagementModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
-                                    <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                    <span>Profil &amp; Fisiologi Atlet</span>
+                                    <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    <span>Manajemen Tim &amp; Roster</span>
                                 </span>
-                                <span class="text-[10px] text-tertiary font-bold">RHR 61</span>
+                                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-blue-500/10 text-blue-500">SQUAD</span>
                             </button>
 
-                            <button onclick="switchWorkstationTab('integrations'); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
-                                <span class="flex items-center gap-2">
-                                    <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                    <span>Integrasi Jam &amp; Sensor</span>
-                                </span>
-                                <span class="text-[9px] text-flat-green font-bold">Garmin OK</span>
-                            </button>
-
-                            <button onclick="switchWorkstationTab('settings'); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <!-- 8. Settings: Profil, Preferensi & Tampilan -->
+                            <button onclick="switchWorkstationTab('settings'); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    <span>Pengaturan Sistem</span>
+                                    <span>Pengaturan &amp; Preferensi</span>
                                 </span>
+                                <span class="text-[9px] font-mono text-tertiary">v2.0</span>
                             </button>
 
-                            <!-- Helpdesk SSO Handoff in Profile Dropdown -->
-                            <button onclick="openHelpdeskModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-flat-orange hover:bg-flat-orange/10 rounded-lg flex items-center justify-between transition-colors font-bold">
+                            <!-- 9. Analytics & Reports: Laporan Performa & Export -->
+                            <button onclick="GoalieEnterprise.openAnalyticsReportsModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
-                                    <svg class="w-3.5 h-3.5 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                                    <span>Bantuan &amp; Laporkan Kendala</span>
+                                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                                    <span>Analitik &amp; Laporan Atlet</span>
                                 </span>
-                                <span class="text-[9px] font-mono bg-flat-orange/20 text-flat-orange px-1 py-0.2 rounded">SSO</span>
+                                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">CSV/JSON</span>
                             </button>
 
-                            <a href="admin" class="flex items-center justify-between px-2.5 py-2 text-xs text-text-primary hover:bg-surface-subtle rounded-lg transition-colors">
+                            <!-- 10. Billing: Langganan & Tagihan -->
+                            <button onclick="GoalieEnterprise.openBillingHubModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                    <span>Langganan &amp; Tagihan</span>
+                                </span>
+                                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">INVOICE</span>
+                            </button>
+
+                            <!-- 11. Help & Support: Pusat Bantuan & FAQ -->
+                            <button onclick="GoalieEnterprise.openSupportCenterModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-amber-500 hover:bg-amber-500/10 rounded-lg flex items-center justify-between transition-colors font-bold">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                    <span>Pusat Bantuan &amp; Dukungan</span>
+                                </span>
+                                <span class="text-[9px] font-mono bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1 py-0.2 rounded">FAQ</span>
+                            </button>
+
+                            <!-- 12. System Pages: Preview Status Sistem -->
+                            <button onclick="GoalieEnterprise.showSystemPage('404'); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-secondary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    <span>Status Sistem &amp; Error Pages</span>
+                                </span>
+                                <span class="text-[9px] font-mono text-text-secondary">404-500</span>
+                            </button>
+
+                            <a href="admin" class="flex items-center justify-between px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                     <span>Pusat Kendali Admin</span>
@@ -1089,7 +1148,7 @@
                             </a>
 
                             <div class="border-t border-border pt-1 mt-1">
-                                <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2.5 py-2 text-xs text-rose-500 hover:bg-rose-500/10 rounded-lg flex items-center gap-2 font-semibold transition-colors">
+                                <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-rose-500 hover:bg-rose-500/10 rounded-lg flex items-center gap-2 font-semibold transition-colors">
                                     <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                     <span>Keluar Akun (Log Out)</span>
                                 </button>
@@ -14983,6 +15042,12 @@
                 const btn = document.getElementById('user-dropdown-btn');
                 if (btn) btn.setAttribute('aria-expanded', 'false');
             }
+
+            const notifContainer = document.getElementById('notification-bell-container');
+            const notifDrawer = document.getElementById('notification-center-drawer');
+            if (notifDrawer && !notifDrawer.classList.contains('hidden') && notifContainer && !notifContainer.contains(e.target)) {
+                notifDrawer.classList.add('hidden');
+            }
         });
 
         // Pro Payment & BYOK Modal Controller
@@ -16410,6 +16475,366 @@
                 <button type="button" onclick="confirmAutoRebalanceFromModal()" class="btn-flat-primary px-4 py-1.5 text-xs font-bold">
                     REBALANCE JADWAL OTOMATIS
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- ENTERPRISE 7: USER MANAGEMENT & SQUAD ROSTER MODAL                 -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="user-management-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-500 flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-text-primary">Manajemen Tim &amp; Roster Atlet</h3>
+                        <p class="text-[11px] text-text-secondary">Kelola akses pelatih, staf tim, dan izin telemetri skuad maraton.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="GoalieEnterprise.closeUserManagementModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+                <!-- Invite Box -->
+                <form onsubmit="GoalieEnterprise.submitTeamInvite(event)" class="p-3.5 bg-surface-subtle border border-border rounded-xl flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+                    <div class="flex-1">
+                        <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Undang Anggota / Atlet Baru</label>
+                        <input type="email" id="team-invite-email" required placeholder="nama@klublari.com" class="flat-input text-xs w-full">
+                    </div>
+                    <div class="w-full sm:w-44">
+                        <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Peran Akses</label>
+                        <select id="team-invite-role" class="flat-input text-xs w-full">
+                            <option value="athlete" selected>Atlet Reguler</option>
+                            <option value="assistant_coach">Assistant Coach</option>
+                            <option value="head_coach">Head Coach</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-flat-primary px-4 py-2 text-xs font-bold shrink-0 flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Kirim Undangan</span>
+                    </button>
+                </form>
+
+                <!-- Roster Table -->
+                <div class="border border-border rounded-xl overflow-hidden bg-surface">
+                    <div class="p-3 bg-surface-subtle border-b border-border flex items-center justify-between">
+                        <span class="font-mono text-xs font-bold text-text-primary">Roster Skuad Aktif (Jakarta Racing Squad)</span>
+                        <span class="text-[10px] font-mono text-text-secondary">4 Anggota Terdaftar</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-subtle/50 text-[10px] font-mono text-text-secondary uppercase border-b border-border">
+                                <tr>
+                                    <th class="py-2 px-3">Nama Atlet</th>
+                                    <th class="py-2 px-3">Peran / Role</th>
+                                    <th class="py-2 px-3 hidden sm:table-cell">Izin Akses</th>
+                                    <th class="py-2 px-3 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="team-members-table-body" class="divide-y divide-border/50">
+                                <!-- Populated dynamically by GoalieEnterprise -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-3.5 border-t border-border flex items-center justify-between bg-surface-subtle text-[11px] text-text-secondary">
+                <span>Multi-role RBAC: Pelatih kepala dapat menyetujui program latihan dan ekspor data tim.</span>
+                <button type="button" onclick="GoalieEnterprise.closeUserManagementModal()" class="btn-flat-secondary px-4 py-1.5 text-xs">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- ENTERPRISE 9: ANALYTICS & REPORTS MODAL                            -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="analytics-reports-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+            <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-text-primary">Analitik Lanjutan &amp; Laporan Atletik</h3>
+                        <p class="text-[11px] text-text-secondary">Visualisasi beban latihan, efisiensi aerobik, dan laporan komprehensif.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="GoalieEnterprise.closeAnalyticsReportsModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+                <!-- Summary Digest Cards -->
+                <div id="analytics-digest-summary">
+                    <!-- Populated dynamically by GoalieEnterprise.generatePerformanceDigest() -->
+                </div>
+
+                <!-- Physiological Insights Breakdown -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-xs text-text-primary">Indikator Fisiologi Utama</span>
+                            <span class="font-mono text-[10px] text-tertiary font-bold">DETERMINISTIK</span>
+                        </div>
+                        <div class="space-y-1.5 font-mono text-[11px]">
+                            <div class="flex justify-between py-1 border-b border-border/50">
+                                <span class="text-text-secondary">VDOT Jack Daniels:</span>
+                                <strong class="text-text-primary">53.4 (Target Sub-3:30)</strong>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-border/50">
+                                <span class="text-text-secondary">Threshold Heart Rate (LT):</span>
+                                <strong class="text-text-primary">172 bpm</strong>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-border/50">
+                                <span class="text-text-secondary">Heart Rate Reserve (HRR):</span>
+                                <strong class="text-text-primary">131 bpm (48 - 179)</strong>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-text-secondary">Magnus-Tetens Dew Point:</span>
+                                <strong class="text-text-primary">+8 detik/km (Tropis)</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-surface-subtle border border-border rounded-xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-xs text-text-primary">Status Risiko Cedera (ACWR)</span>
+                            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">ZONA AMAN</span>
+                        </div>
+                        <p class="text-[11px] text-text-secondary leading-relaxed">
+                            Rasio beban akut vs kronis berada pada angka 1.08. Beban latihan minggu ini berkembang secara stabil dalam koridor Gabbett Sweet Spot (0.8 - 1.3), meminimalkan risiko cedera tendon dan overtraining.
+                        </p>
+                        <div class="w-full bg-border/60 rounded-full h-2 overflow-hidden">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 58%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Suite -->
+                <div class="p-3.5 bg-surface border border-border rounded-xl flex items-center justify-between">
+                    <div>
+                        <strong class="text-xs text-text-primary block">Ekspor Berkas Telemetri</strong>
+                        <span class="text-[11px] text-text-secondary">Unduh dataset metrik fisiologis atlet untuk analisis mandiri.</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="GoalieEnterprise.downloadAnalyticsCsv()" class="btn-flat-primary px-3 py-1.5 text-xs font-bold flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            <span>Unduh CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3.5 border-t border-border flex items-center justify-between bg-surface-subtle text-[11px] text-text-secondary">
+                <span>Data dikompilasi dari sinkronisasi Garmin Connect dan Strava Webhooks.</span>
+                <button type="button" onclick="GoalieEnterprise.closeAnalyticsReportsModal()" class="btn-flat-secondary px-4 py-1.5 text-xs">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- ENTERPRISE 10: BILLING & INVOICES MODAL                            -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="billing-hub-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+            <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-text-primary">Langganan &amp; Riwayat Tagihan</h3>
+                        <p class="text-[11px] text-text-secondary">Pengelolaan paket lisensi, metode pembayaran, dan faktur resmi.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="GoalieEnterprise.closeBillingHubModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+                <!-- Current Tier Banner -->
+                <div class="p-4 bg-tertiary/10 border border-tertiary/30 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-sm text-text-primary">Paket Aktif: PRO COACH // BYOK</span>
+                            <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold">SEUMUR HIDUP</span>
+                        </div>
+                        <p class="text-[11px] text-text-secondary leading-snug">
+                            Akses tak terbatas ke Garmin telemetry sync, analisis elevasi 3D GPX, dan integrasi kunci Gemini AI API.
+                        </p>
+                    </div>
+                    <button type="button" onclick="openProPaymentModal(); GoalieEnterprise.closeBillingHubModal();" class="btn-flat-primary px-3.5 py-1.5 text-xs font-bold whitespace-nowrap shrink-0">
+                        Kelola Lisensi
+                    </button>
+                </div>
+
+                <!-- Invoices Table -->
+                <div class="border border-border rounded-xl overflow-hidden bg-surface">
+                    <div class="p-3 bg-surface-subtle border-b border-border flex items-center justify-between">
+                        <span class="font-mono text-xs font-bold text-text-primary">Riwayat Pembayaran &amp; Faktur (Invoices)</span>
+                        <span class="text-[10px] font-mono text-text-secondary">Midtrans QRIS &amp; Kartu Kredit</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-subtle/50 text-[10px] font-mono text-text-secondary uppercase border-b border-border">
+                                <tr>
+                                    <th class="py-2 px-3">No. Faktur</th>
+                                    <th class="py-2 px-3">Tanggal</th>
+                                    <th class="py-2 px-3">Deskripsi</th>
+                                    <th class="py-2 px-3">Jumlah</th>
+                                    <th class="py-2 px-3 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="billing-invoices-tbody" class="divide-y divide-border/50">
+                                <!-- Populated dynamically by GoalieEnterprise -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3.5 border-t border-border flex items-center justify-between bg-surface-subtle text-[11px] text-text-secondary">
+                <span>Faktur resmi dikirimkan secara otomatis ke alamat email akun terdaftar.</span>
+                <button type="button" onclick="GoalieEnterprise.closeBillingHubModal()" class="btn-flat-secondary px-4 py-1.5 text-xs">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- ENTERPRISE 11: HELP & SUPPORT CENTER MODAL                         -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="support-center-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+            <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-text-primary">Pusat Bantuan, FAQ &amp; Masukan</h3>
+                        <p class="text-[11px] text-text-secondary">Panduan fisiologi, tanya jawab teknis, dan saluran komunikasi langsung.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="GoalieEnterprise.closeSupportCenterModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+            </div>
+
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4">
+                <!-- FAQ Accordion -->
+                <div class="space-y-2">
+                    <span class="font-mono text-xs font-bold text-text-primary block">Pertanyaan yang Sering Diajukan (FAQ)</span>
+                    
+                    <details class="p-3 bg-surface-subtle border border-border rounded-xl cursor-pointer group">
+                        <summary class="font-bold text-xs text-text-primary flex items-center justify-between list-none">
+                            <span>Bagaimana cara kerja sinkronisasi otomatis Garmin Connect?</span>
+                            <span class="text-text-secondary group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <p class="mt-2 text-[11px] text-text-secondary leading-relaxed">
+                            Goalie menghubungkan akun Garmin melalui OAuth session token terenkripsi. Telemetri detak jantung per detik, cadence, elevasi, dan pace disinkronkan secara deterministik langsung ke database lokal browser dan server.
+                        </p>
+                    </details>
+
+                    <details class="p-3 bg-surface-subtle border border-border rounded-xl cursor-pointer group">
+                        <summary class="font-bold text-xs text-text-primary flex items-center justify-between list-none">
+                            <span>Mengapa formula ACWR Gabbett digunakan untuk proteksi cedera?</span>
+                            <span class="text-text-secondary group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <p class="mt-2 text-[11px] text-text-secondary leading-relaxed">
+                            Acute:Chronic Workload Ratio (ACWR) membandingkan beban 7 hari terakhir terhadap rata-rata beban 28 hari. Ketika rasio berada di angka 0.8 sampai 1.3, risiko cedera minimal sedangkan kebugaran aerobik meningkat optimal.
+                        </p>
+                    </details>
+
+                    <details class="p-3 bg-surface-subtle border border-border rounded-xl cursor-pointer group">
+                        <summary class="font-bold text-xs text-text-primary flex items-center justify-between list-none">
+                            <span>Apakah aplikasi ini dapat digunakan secara offline tanpa internet?</span>
+                            <span class="text-text-secondary group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <p class="mt-2 text-[11px] text-text-secondary leading-relaxed">
+                            Ya. Goalie dilengkapi Progressive Web App (PWA) Service Worker dan IndexedDB lokal. Seluruh kalkulator pace, zona detak jantung Karvonen, dan visualisasi rute tetap berfungsi penuh saat lari tanpa sinyal seluler.
+                        </p>
+                    </details>
+                </div>
+
+                <!-- Feedback Form -->
+                <form onsubmit="GoalieEnterprise.submitSupportFeedback(event)" class="p-3.5 bg-surface border border-border rounded-xl space-y-3">
+                    <span class="font-mono text-xs font-bold text-text-primary block">Kirim Masukan atau Laporan Kendala</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Kategori</label>
+                            <select id="support-feedback-category" class="flat-input text-xs w-full">
+                                <option value="feature_request">Usulan Fitur Baru</option>
+                                <option value="bug_report">Laporan Kendala Teknis</option>
+                                <option value="sports_science">Konsultasi Fisiologi Latihan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Judul Masukan</label>
+                            <input type="text" id="support-feedback-subject" required placeholder="Contoh: Tambah metrik running cadence" class="flat-input text-xs w-full">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Pesan Lengkap</label>
+                        <textarea id="support-feedback-message" required rows="3" placeholder="Jelaskan masukan atau situasi yang Anda temui secara rinci..." class="flat-input text-xs w-full"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="btn-flat-primary px-4 py-2 text-xs font-bold flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                            <span>Kirim Masukan ke Tim Pelatih</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="p-3.5 border-t border-border flex items-center justify-between bg-surface-subtle text-[11px] text-text-secondary">
+                <span>Tim teknis merespons masukan dalam 1x24 jam kerja.</span>
+                <button type="button" onclick="GoalieEnterprise.closeSupportCenterModal()" class="btn-flat-secondary px-4 py-1.5 text-xs">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- ENTERPRISE 12: SYSTEM PAGES OVERLAY (404, 403, 500, MAINTENANCE)  -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="system-page-overlay" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-200">
+        <div class="relative w-full max-w-lg bg-surface border-2 border-border-strong rounded-2xl shadow-2xl overflow-hidden p-6 text-center font-mono">
+            <button type="button" onclick="GoalieEnterprise.closeSystemPage()" class="absolute top-4 right-4 text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
+
+            <!-- Code Badge -->
+            <div class="inline-block px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-500 font-bold text-xs mb-3 tracking-widest" id="sys-page-code">
+                404
+            </div>
+
+            <h2 class="font-display font-bold text-xl sm:text-2xl text-text-primary mb-2" id="sys-page-title">
+                Halaman Tidak Ditemukan
+            </h2>
+
+            <p class="text-xs text-text-secondary leading-relaxed mb-6 max-w-sm mx-auto" id="sys-page-desc">
+                Jalur tautan atau rute telemetri yang Anda tuju tidak tersedia dalam workstation ini.
+            </p>
+
+            <!-- Action Button -->
+            <div class="flex justify-center mb-6">
+                <button type="button" id="sys-page-action-btn" class="btn-flat-primary px-5 py-2.5 text-xs font-bold">
+                    Kembali ke Cockpit
+                </button>
+            </div>
+
+            <!-- State Preview Switcher for Development & Testing -->
+            <div class="pt-4 border-t border-border/60">
+                <span class="text-[10px] text-text-secondary uppercase block mb-2">Simulasi Status Sistem:</span>
+                <div class="flex flex-wrap items-center justify-center gap-1.5 text-[10px]">
+                    <button type="button" onclick="GoalieEnterprise.showSystemPage('404')" class="px-2 py-0.5 rounded border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">404</button>
+                    <button type="button" onclick="GoalieEnterprise.showSystemPage('403')" class="px-2 py-0.5 rounded border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">403</button>
+                    <button type="button" onclick="GoalieEnterprise.showSystemPage('500')" class="px-2 py-0.5 rounded border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">500</button>
+                    <button type="button" onclick="GoalieEnterprise.showSystemPage('maintenance')" class="px-2 py-0.5 rounded border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">Maintenance</button>
+                    <button type="button" onclick="GoalieEnterprise.showSystemPage('offline')" class="px-2 py-0.5 rounded border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">Offline</button>
+                    <button type="button" onclick="GoalieEnterprise.showSystemPage('session_expired')" class="px-2 py-0.5 rounded border border-border bg-surface-subtle text-text-secondary hover:text-text-primary">Auth Expired</button>
+                </div>
             </div>
         </div>
     </div>

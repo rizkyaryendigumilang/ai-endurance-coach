@@ -1,5 +1,5 @@
 """
-Goalie — Application Assembler & Gateway
+Goalie - Application Assembler & Gateway
 Precision athletic performance platform: Strava, Intervals.icu, Gemini AI, Run Form Analysis.
 Assembles middleware, static file serving, central exception handling, and modular APIRouters.
 """
@@ -26,6 +26,7 @@ from app.routers.integrations import router as integrations_router
 from app.routers.biomechanics import router as biomechanics_router
 from app.routers.subscriptions import router as subscriptions_router
 from app.routers.admin import router as admin_router
+from app.routers.enterprise import router as enterprise_router
 
 logger = logging.getLogger("goalie")
 
@@ -119,6 +120,7 @@ app.include_router(integrations_router)
 app.include_router(biomechanics_router)
 app.include_router(subscriptions_router)
 app.include_router(admin_router)
+app.include_router(enterprise_router)
 
 
 # ─────────────────────────────────────────────

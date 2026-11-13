@@ -1,5 +1,5 @@
 """
-Goalie — Admin Command Center Router (RBAC Protected)
+Goalie - Admin Command Center Router (RBAC Protected)
 Provides athlete directory, platform telemetry, audit/webhook logs, system broadcast, and impersonation.
 """
 

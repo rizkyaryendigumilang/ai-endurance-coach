@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
     'public/js/modules/settings-controller.js',
     'public/js/modules/map-elevation-scrubber.js',
     'public/js/modules/mobile-native.js',
+    'public/js/modules/enterprise-hub.js',
     'public/vendor/leaflet/leaflet.js',
     'public/vendor/leaflet/leaflet.css'
 ];
