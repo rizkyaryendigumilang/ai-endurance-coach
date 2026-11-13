@@ -22,8 +22,8 @@ def get_dashboard_data(user_id: str) -> dict:
     workouts_data = []
     profile_data = {}
 
-    try:
-        if supabase:
+    if supabase is not None:
+        try:
             races = (
                 supabase.table("races")
                 .select("*")
@@ -47,9 +47,11 @@ def get_dashboard_data(user_id: str) -> dict:
 
             profile = supabase.table("profiles").select("*").eq("id", user_id).execute()
             profile_data = profile.data[0] if profile.data else {}
-        else:
-            raise Exception("Supabase unconfigured")
-    except Exception:
+        except Exception:
+            races_data = sandbox_store.get_races(user_id)
+            workouts_data = sandbox_store.get_recent_workouts(user_id, 50)
+            profile_data = sandbox_store.get_profile(user_id)
+    else:
         races_data = sandbox_store.get_races(user_id)
         workouts_data = sandbox_store.get_recent_workouts(user_id, 50)
         profile_data = sandbox_store.get_profile(user_id)
@@ -281,8 +283,8 @@ def log_workout(log: WorkoutLogInput, user_id: str = Depends(get_current_user)):
         "aerobic_efficiency": eff,
     }
 
-    try:
-        if supabase:
+    if supabase is not None:
+        try:
             act = supabase.table("actual_workouts").insert({
                 "user_id": user_id,
                 **workout_data
@@ -292,9 +294,9 @@ def log_workout(log: WorkoutLogInput, user_id: str = Depends(get_current_user)):
                     "actual_workout_id": act.data[0]["id"],
                     **metrics_data
                 }).execute()
-        else:
-            raise Exception("Supabase unconfigured")
-    except Exception:
+        except Exception:
+            sandbox_store.add_actual_workout(user_id, workout_data, metrics_data)
+    else:
         sandbox_store.add_actual_workout(user_id, workout_data, metrics_data)
 
     return {
@@ -359,8 +361,8 @@ async def upload_activity_file(file: UploadFile = File(...), user_id: str = Depe
         "grade_adjusted_pace": gap,
     }
 
-    try:
-        if supabase:
+    if supabase is not None:
+        try:
             act = supabase.table("actual_workouts").insert({
                 "user_id": user_id,
                 **workout_data
@@ -370,9 +372,9 @@ async def upload_activity_file(file: UploadFile = File(...), user_id: str = Depe
                     "actual_workout_id": act.data[0]["id"],
                     **metrics_data
                 }).execute()
-        else:
-            raise Exception("Supabase unconfigured")
-    except Exception:
+        except Exception:
+            sandbox_store.add_actual_workout(user_id, workout_data, metrics_data)
+    else:
         sandbox_store.add_actual_workout(user_id, workout_data, metrics_data)
 
     return {
@@ -393,8 +395,8 @@ async def upload_activity_file(file: UploadFile = File(...), user_id: str = Depe
 @router.get("/api/v1/workouts", tags=["Workouts"])
 def get_workouts(user_id: str = Depends(get_current_user_optional), limit: int = 50):
     """Returns a paginated list of the user's workout history with metrics."""
-    try:
-        if supabase:
+    if supabase is not None:
+        try:
             res = (
                 supabase.table("actual_workouts")
                 .select("*, activity_metrics(*)")
@@ -405,8 +407,8 @@ def get_workouts(user_id: str = Depends(get_current_user_optional), limit: int =
             )
             if res.data is not None and len(res.data) > 0:
                 return {"workouts": res.data, "count": len(res.data)}
-    except Exception:
-        pass
+        except Exception:
+            pass
 
     workouts = sandbox_store.get_recent_workouts(user_id, limit)
     return {"workouts": workouts, "count": len(workouts)}

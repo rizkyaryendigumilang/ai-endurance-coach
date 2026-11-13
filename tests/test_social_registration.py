@@ -269,6 +269,14 @@ class TestSocialRegistrationFlows(unittest.TestCase):
         self.assertIn("access_token", login_data)
         self.assertEqual(login_data["email"], test_email)
 
+        # Test rejection with invalid password (password verification security)
+        bad_login = self.client.post("/api/v1/auth/login", json={
+            "email": test_email,
+            "password": "wrongpassword999"
+        })
+        self.assertEqual(bad_login.status_code, 401)
+        self.assertIn("salah", bad_login.json()["detail"].lower())
+
     def test_08_biometric_login_flow(self):
         """Verify biometric and passkey authentication endpoint returns valid JWT token."""
         bio_res = self.client.post("/api/v1/auth/biometric", json={

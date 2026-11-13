@@ -51,6 +51,9 @@ def register(user: UserRegisterInput):
     # Resilient Sandbox Isolation
     demo_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, email))
     sandbox_store.update_profile(demo_id, {"full_name": full_name, "id": demo_id})
+    if user.password:
+        pwd_hash = sandbox_store.hash_password(user.password)
+        sandbox_store.save_user_credential(demo_id, email, pwd_hash)
     return {
         "message": f"Registrasi berhasil untuk {full_name}! Silakan masuk dengan email dan password Anda.",
         "user_id": demo_id
@@ -109,19 +112,23 @@ def login(user: UserLoginInput):
         if "invalid login credentials" in err_msg.lower() or "invalid_credentials" in err_msg.lower():
             raise HTTPException(status_code=401, detail="Email atau kata sandi salah.")
 
-    # 2. Resilient demo/sandbox token
-    if len(user.password) >= 6:
-        demo_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, email))
-        token = create_demo_token(demo_id, email)
-        return {
-            "access_token": token,
-            "token_type": "bearer",
-            "user_id": demo_id,
-            "email": email,
-            "mode": "sandbox"
-        }
-    
-    raise HTTPException(status_code=401, detail="Kata sandi minimal 6 karakter.")
+    # 2. Resilient demo/sandbox token with credential verification
+    demo_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, email))
+    stored_cred = sandbox_store.get_user_credential(demo_id)
+    if stored_cred and stored_cred.get("password_hash"):
+        if not sandbox_store.verify_password(user.password, stored_cred["password_hash"]):
+            raise HTTPException(status_code=401, detail="Email atau kata sandi salah.")
+    elif len(user.password) < 6:
+        raise HTTPException(status_code=401, detail="Kata sandi minimal 6 karakter.")
+
+    token = create_demo_token(demo_id, email)
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user_id": demo_id,
+        "email": email,
+        "mode": "sandbox"
+    }
 
 
 @router.post("/api/v1/auth/forgot-password", tags=["Auth"])

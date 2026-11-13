@@ -9,6 +9,8 @@ import json
 import os
 import sys
 import threading
+import hashlib
+import secrets
 
 # --- Persistence Layer ---
 _STORE_PATH = os.environ.get(
@@ -18,6 +20,25 @@ _STORE_PATH = os.environ.get(
 _LOCK = threading.Lock()
 
 _USERS_DB = {}
+
+
+def hash_password(password: str) -> str:
+    """Generate salted PBKDF2-HMAC-SHA256 password hash for local user accounts."""
+    salt = secrets.token_hex(16)
+    key = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), bytes.fromhex(salt), 100_000)
+    return f"{salt}:{key.hex()}"
+
+
+def verify_password(password: str, hashed_value: str) -> bool:
+    """Verify password against stored salt:hash string."""
+    if not hashed_value or ":" not in hashed_value:
+        return False
+    try:
+        salt, key_hex = hashed_value.split(":", 1)
+        check_key = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), bytes.fromhex(salt), 100_000)
+        return secrets.compare_digest(check_key.hex(), key_hex)
+    except Exception:
+        return False
 
 
 def _is_testing() -> bool:
@@ -52,15 +73,17 @@ def _load_persisted_store():
 
 
 def _persist_store():
-    """Write _USERS_DB to JSON file (thread-safe). Skipped in test runner to keep tests isolated."""
+    """Write _USERS_DB to JSON file atomically (thread-safe). Skipped in test runner to keep tests isolated."""
     if _is_testing():
         return
     runtime_dir = os.path.dirname(_STORE_PATH)
     os.makedirs(runtime_dir, exist_ok=True)
+    temp_path = f"{_STORE_PATH}.tmp"
     try:
         with _LOCK:
-            with open(_STORE_PATH, "w", encoding="utf-8") as f:
+            with open(temp_path, "w", encoding="utf-8") as f:
                 json.dump(_USERS_DB, f, default=_default_serializer, ensure_ascii=False, indent=2)
+            os.replace(temp_path, _STORE_PATH)
     except Exception as e:
         import logging
         logging.getLogger(__name__).warning(f"[sandbox_store] Failed to persist store: {e}")
@@ -157,6 +180,21 @@ def update_profile(user_id: str, data: dict):
         store["profile"]["subscription_tier"] = "pro"
     _persist_store()
     return store["profile"]
+
+def save_user_credential(user_id: str, email: str, password_hash: str):
+    """Save user login credential hash in local store."""
+    store = _get_user_store(user_id)
+    store["auth_credential"] = {
+        "email": email.strip().lower(),
+        "password_hash": password_hash,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    _persist_store()
+
+def get_user_credential(user_id: str) -> Optional[dict]:
+    """Get stored user authentication credential if available."""
+    store = _get_user_store(user_id)
+    return store.get("auth_credential")
 
 def get_daily_chat_count(user_id: str) -> int:
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")

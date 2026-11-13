@@ -51,13 +51,17 @@ class SportsEngine:
         if first_half_hr <= 0 or second_half_hr <= 0 or first_half_pace <= 0 or second_half_pace <= 0:
             return 0.0
         
-        ef_first = first_half_pace / first_half_hr
-        ef_second = second_half_pace / second_half_hr
+        # In sports science (Joe Friel EF), Efficiency Factor = Speed / Heart Rate
+        # Since pace is in min/km, speed in km/min is 1.0 / pace
+        speed_first = 1.0 / first_half_pace
+        speed_second = 1.0 / second_half_pace
+        ef_first = speed_first / first_half_hr
+        ef_second = speed_second / second_half_hr
         
         if ef_first <= 0:
             return 0.0
         
-        drift_pct = ((ef_first - ef_second) / ef_first) * 100
+        drift_pct = ((ef_first - ef_second) / ef_first) * 100.0
         return round(drift_pct, 2)
 
     @staticmethod

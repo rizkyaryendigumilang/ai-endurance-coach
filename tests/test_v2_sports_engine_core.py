@@ -116,6 +116,20 @@ class TestV2SportsEngineCore(unittest.TestCase):
         self.assertGreater(res["cadence_fade_spm"], 4.0) # Cadence drop detected
         self.assertTrue(res["endurance_leak_detected"])
 
+    def test_06_calculate_hr_drift_accuracy(self):
+        """Verify SportsEngine.calculate_hr_drift uses Joe Friel Speed:HR formula."""
+        # 1. Cardiac fatigue: constant pace 5:00/km (5.0), HR rises from 140 to 150 bpm
+        drift_hr = SportsEngine.calculate_hr_drift(140.0, 5.0, 150.0, 5.0)
+        self.assertAlmostEqual(drift_hr, 6.67, delta=0.1)
+
+        # 2. Pace fade: constant HR 145 bpm, pace slows from 5:00/km (5.0) to 5:30/km (5.5)
+        drift_pace = SportsEngine.calculate_hr_drift(145.0, 5.0, 145.0, 5.5)
+        self.assertAlmostEqual(drift_pace, 9.09, delta=0.1)
+
+        # 3. Edge cases: zero HR or pace returns 0.0
+        self.assertEqual(SportsEngine.calculate_hr_drift(0, 5.0, 150.0, 5.0), 0.0)
+        self.assertEqual(SportsEngine.calculate_hr_drift(140.0, 0, 150.0, 5.0), 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()

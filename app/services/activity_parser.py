@@ -301,20 +301,42 @@ def parse_fit(file_bytes: bytes) -> Dict[str, Any]:
                 elif record_data.name == 'total_ascent' and record_data.value:
                     elev_gain = float(record_data.value)
 
-        # If session message was missing, scan record points
-        if total_dist_m == 0:
-            for record in fitfile.get_messages('record'):
-                for record_data in record:
-                    if record_data.name == 'distance' and record_data.value:
-                        total_dist_m = max(total_dist_m, float(record_data.value))
-                    elif record_data.name == 'heart_rate' and record_data.value:
-                        hr_list.append(int(record_data.value))
+        # Scan record points for distance, HR, and real GPS coordinates
+        gps_points = []
+        for record in fitfile.get_messages('record'):
+            pt_lat = None
+            pt_lon = None
+            for record_data in record:
+                if record_data.name == 'position_lat' and record_data.value is not None:
+                    try:
+                        pt_lat = float(record_data.value) * (180.0 / 2147483648.0)
+                    except (ValueError, TypeError):
+                        pass
+                elif record_data.name == 'position_long' and record_data.value is not None:
+                    try:
+                        pt_lon = float(record_data.value) * (180.0 / 2147483648.0)
+                    except (ValueError, TypeError):
+                        pass
+                elif record_data.name == 'distance' and record_data.value:
+                    total_dist_m = max(total_dist_m, float(record_data.value))
+                elif record_data.name == 'heart_rate' and record_data.value:
+                    hr_list.append(int(record_data.value))
+            if pt_lat is not None and pt_lon is not None and abs(pt_lat) <= 90.0 and abs(pt_lon) <= 180.0:
+                gps_points.append([round(pt_lat, 6), round(pt_lon, 6)])
+
+        # Downsample GPS points for map rendering (max 600 points)
+        sampled_route = []
+        if gps_points:
+            step = max(1, len(gps_points) // 600)
+            sampled_route = gps_points[::step]
+            if sampled_route[-1] != gps_points[-1]:
+                sampled_route.append(gps_points[-1])
 
         dist_km = round(total_dist_m / 1000.0, 2)
         avg_hr = int(sum(hr_list) / len(hr_list)) if hr_list else None
         max_hr = max(hr_list) if hr_list else None
 
-        return {
+        res = {
             "format": "fit",
             "distance_km": dist_km,
             "duration_seconds": max(duration_sec, 60),
@@ -322,6 +344,12 @@ def parse_fit(file_bytes: bytes) -> Dict[str, Any]:
             "avg_hr": avg_hr,
             "max_hr": max_hr
         }
+        if sampled_route and len(sampled_route) > 1:
+            res["gps_route"] = sampled_route
+            res["start_lat"] = sampled_route[0][0]
+            res["start_lon"] = sampled_route[0][1]
+
+        return res
     except Exception as e:
         raise ValueError(f"Gagal mem-parsing file .FIT: {str(e)}")
 

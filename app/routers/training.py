@@ -88,26 +88,30 @@ def generate_plan(race: RaceInput, user_id: str = Depends(get_current_user)):
         "total_weeks": gen["total_weeks"],
     }
 
-    try:
-        race_res = supabase.table("races").insert({
-            "user_id": user_id,
-            **race_record
-        }).execute()
-        race_id = race_res.data[0]["id"]
+    if supabase is not None:
+        try:
+            race_res = supabase.table("races").insert({
+                "user_id": user_id,
+                **race_record
+            }).execute()
+            race_id = race_res.data[0]["id"]
 
-        plan_res = supabase.table("training_plans").insert({
-            "user_id": user_id,
-            "race_id": race_id,
-            **plan_record
-        }).execute()
-        plan_id = plan_res.data[0]["id"]
+            plan_res = supabase.table("training_plans").insert({
+                "user_id": user_id,
+                "race_id": race_id,
+                **plan_record
+            }).execute()
+            plan_id = plan_res.data[0]["id"]
 
-        workouts_to_insert = [
-            {**w, "training_plan_id": plan_id, "user_id": user_id}
-            for w in gen["workouts"]
-        ]
-        supabase.table("planned_workouts").insert(workouts_to_insert).execute()
-    except Exception:
+            workouts_to_insert = [
+                {**w, "training_plan_id": plan_id, "user_id": user_id}
+                for w in gen["workouts"]
+            ]
+            supabase.table("planned_workouts").insert(workouts_to_insert).execute()
+        except Exception:
+            r_saved = sandbox_store.add_race(user_id, race_record)
+            sandbox_store.save_training_plan(user_id, r_saved["id"], plan_record, gen["workouts"])
+    else:
         r_saved = sandbox_store.add_race(user_id, race_record)
         sandbox_store.save_training_plan(user_id, r_saved["id"], plan_record, gen["workouts"])
 
@@ -123,27 +127,28 @@ def generate_plan(race: RaceInput, user_id: str = Depends(get_current_user)):
 @router.get("/api/v1/training-plan")
 def get_training_plan(user_id: str = Depends(get_current_user)):
     """Returns the latest training plan with all scheduled workouts."""
-    try:
-        plan = (
-            supabase.table("training_plans")
-            .select("*")
-            .eq("user_id", user_id)
-            .order("created_at", desc=True)
-            .limit(1)
-            .execute()
-        )
-        if plan.data:
-            plan_id = plan.data[0]["id"]
-            workouts = (
-                supabase.table("planned_workouts")
+    if supabase is not None:
+        try:
+            plan = (
+                supabase.table("training_plans")
                 .select("*")
-                .eq("training_plan_id", plan_id)
-                .order("scheduled_date")
+                .eq("user_id", user_id)
+                .order("created_at", desc=True)
+                .limit(1)
                 .execute()
             )
-            return {"plan": plan.data[0], "workouts": workouts.data or []}
-    except Exception:
-        pass
+            if plan.data:
+                plan_id = plan.data[0]["id"]
+                workouts = (
+                    supabase.table("planned_workouts")
+                    .select("*")
+                    .eq("training_plan_id", plan_id)
+                    .order("scheduled_date")
+                    .execute()
+                )
+                return {"plan": plan.data[0], "workouts": workouts.data or []}
+        except Exception:
+            pass
 
     latest_plan, plan_workouts = sandbox_store.get_latest_plan(user_id)
     return {"plan": latest_plan, "workouts": plan_workouts}

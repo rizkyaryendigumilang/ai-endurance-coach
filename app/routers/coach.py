@@ -44,23 +44,27 @@ async def chat(chat_input: ChatMessageInput, request: Request, user_id: str = De
     """
     chat_rate_limiter.check(request)
     history = []
-    try:
-        supabase.table("chat_history").insert({
-            "user_id": user_id,
-            "role": "user",
-            "content": chat_input.message,
-        }).execute()
+    if supabase is not None:
+        try:
+            supabase.table("chat_history").insert({
+                "user_id": user_id,
+                "role": "user",
+                "content": chat_input.message,
+            }).execute()
 
-        history_res = (
-            supabase.table("chat_history")
-            .select("role, content")
-            .eq("user_id", user_id)
-            .order("created_at", desc=True)
-            .limit(10)
-            .execute()
-        )
-        history = list(reversed(history_res.data or []))
-    except Exception:
+            history_res = (
+                supabase.table("chat_history")
+                .select("role, content")
+                .eq("user_id", user_id)
+                .order("created_at", desc=True)
+                .limit(10)
+                .execute()
+            )
+            history = list(reversed(history_res.data or []))
+        except Exception:
+            sandbox_store.add_chat_message(user_id, "user", chat_input.message)
+            history = sandbox_store.get_chat_history(user_id, 10)
+    else:
         sandbox_store.add_chat_message(user_id, "user", chat_input.message)
         history = sandbox_store.get_chat_history(user_id, 10)
 
@@ -159,13 +163,16 @@ Workout terbaru: {[{'title': w.get('title'), 'distance': w.get('distance_km'), '
     provider_used = ai_result.get("provider_used", "AI Coach") if isinstance(ai_result, dict) else "AI Coach"
     tier_used = ai_result.get("tier", "free") if isinstance(ai_result, dict) else "free"
 
-    try:
-        supabase.table("chat_history").insert({
-            "user_id": user_id,
-            "role": "assistant",
-            "content": reply,
-        }).execute()
-    except Exception:
+    if supabase is not None:
+        try:
+            supabase.table("chat_history").insert({
+                "user_id": user_id,
+                "role": "assistant",
+                "content": reply,
+            }).execute()
+        except Exception:
+            sandbox_store.add_chat_message(user_id, "assistant", reply)
+    else:
         sandbox_store.add_chat_message(user_id, "assistant", reply)
 
     # Increment quota only for non-owner users
@@ -265,19 +272,20 @@ def get_coach_tiers():
 @router.get("/api/v1/coach/history")
 def get_chat_history(user_id: str = Depends(get_current_user), limit: int = 50):
     """Returns the user's AI coach conversation history."""
-    try:
-        res = (
-            supabase.table("chat_history")
-            .select("role, content, created_at")
-            .eq("user_id", user_id)
-            .order("created_at")
-            .limit(limit)
-            .execute()
-        )
-        if res.data is not None:
-            return {"history": res.data}
-    except Exception:
-        pass
+    if supabase is not None:
+        try:
+            res = (
+                supabase.table("chat_history")
+                .select("role, content, created_at")
+                .eq("user_id", user_id)
+                .order("created_at")
+                .limit(limit)
+                .execute()
+            )
+            if res.data is not None:
+                return {"history": res.data}
+        except Exception:
+            pass
 
     return {"history": sandbox_store.get_chat_history(user_id, limit)}
 
