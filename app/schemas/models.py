@@ -35,6 +35,10 @@ class UserAuthInput(BaseModel):
     email: str
     password: str
 
+class ChangePasswordInput(BaseModel):
+    current_password: str
+    new_password: str
+
 class UserProfileUpdate(BaseModel):
     full_name: Optional[str] = None
     date_of_birth: Optional[date] = None

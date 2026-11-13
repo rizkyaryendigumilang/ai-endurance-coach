@@ -6805,44 +6805,62 @@
                                             <div>
                                                 <div class="flex justify-between items-center mb-1">
                                                     <label data-i18n="settings_resting_hr_label" class="text-[11px] text-text-secondary">Detak Jantung Istirahat (RHR bpm)</label>
-                                                    <span class="text-[10px] font-mono text-flat-green">40-60 ideal</span>
+                                                    <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">40-60 ideal</span>
                                                 </div>
-                                                <input type="number" id="settings-resting-hr" oninput="markSettingsUnsaved(); updateKarvonenCalculation();" inputmode="numeric" class="flat-input text-xs" placeholder="48" required>
+                                                <input type="number" id="settings-resting-hr" oninput="markSettingsUnsaved(); updateKarvonenCalculation();" inputmode="numeric" class="flat-input text-xs font-mono" placeholder="48" required>
                                             </div>
                                             <div>
                                                 <div class="flex justify-between items-center mb-1">
                                                     <label data-i18n="settings_max_hr_label" class="text-[11px] text-text-secondary">Detak Jantung Maksimal (Max HR bpm)</label>
-                                                    <span class="text-[10px] font-mono text-flat-orange">Aerobic ceiling</span>
+                                                    <span class="text-[10px] font-mono text-text-secondary">Aerobic ceiling</span>
                                                 </div>
-                                                <input type="number" id="settings-max-hr" oninput="markSettingsUnsaved(); updateKarvonenCalculation();" inputmode="numeric" class="flat-input text-xs" placeholder="192" required>
+                                                <input type="number" id="settings-max-hr" oninput="markSettingsUnsaved(); updateKarvonenCalculation();" inputmode="numeric" class="flat-input text-xs font-mono" placeholder="192" required>
                                             </div>
                                             <div>
                                                 <div class="flex justify-between items-center mb-1">
                                                     <label data-i18n="settings_lt_hr_label" class="text-[11px] text-text-secondary">Ambang Batas Laktat HR (bpm)</label>
                                                     <span class="text-[10px] font-mono text-tertiary">LT2 Threshold</span>
                                                 </div>
-                                                <input type="number" id="settings-lt-hr" oninput="markSettingsUnsaved()" inputmode="numeric" class="flat-input text-xs" placeholder="168">
+                                                <input type="number" id="settings-lt-hr" oninput="markSettingsUnsaved()" inputmode="numeric" class="flat-input text-xs font-mono" placeholder="168">
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Interactive Realtime Karvonen HRR Display -->
-                                    <div class="p-3.5 bg-surface-subtle border border-border rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                        <div class="flex items-center gap-2.5">
-                                            <span class="w-2.5 h-2.5 rounded-full bg-flat-green"></span>
-                                            <div>
-                                                <span class="font-bold text-xs text-text-primary">Kalkulasi Cadangan Jantung (Karvonen HRR):</span>
-                                                <p class="text-[10px] font-mono text-text-secondary">HRR = Max HR - RHR. Basis fondasi zona latihan aerobik.</p>
+                                    <!-- Interactive Realtime Karvonen HRR Display & 5-Zone Model -->
+                                    <div class="p-4 bg-surface-subtle border border-border rounded-xl space-y-3">
+                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                                <span class="font-bold text-xs text-text-primary">Cadangan Jantung Fisiologis (Karvonen HRR):</span>
+                                                <span class="text-[10px] font-mono text-text-secondary">HRR = Max HR - RHR</span>
+                                            </div>
+                                            <div class="text-xs font-mono">
+                                                <span class="text-text-secondary text-[10px] mr-1.5">HRR:</span>
+                                                <strong id="settings-hrr-display" class="text-emerald-600 dark:text-emerald-400 font-bold text-sm">144 bpm</strong>
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-4 text-xs font-mono">
-                                            <div>
-                                                <span class="text-text-secondary text-[10px] block">HRR Aktif:</span>
-                                                <strong id="settings-hrr-display" class="text-flat-green font-bold text-sm">144 bpm</strong>
+
+                                        <!-- 5-Zone Karvonen Strip -->
+                                        <div class="pt-2 border-t border-border grid grid-cols-2 sm:grid-cols-5 gap-2 text-[10px] font-mono">
+                                            <div class="p-2 rounded-lg bg-surface border border-border">
+                                                <span class="text-text-secondary block">Z1 Recovery (&lt;60%)</span>
+                                                <strong id="settings-z1-range" class="text-text-primary font-bold block mt-0.5">&lt; 134 bpm</strong>
                                             </div>
-                                            <div>
-                                                <span class="text-text-secondary text-[10px] block">Zona 2 Aerobik (60-70%):</span>
-                                                <strong id="settings-z2-range" class="text-tertiary font-bold text-sm">134 - 149 bpm</strong>
+                                            <div class="p-2 rounded-lg bg-tertiary/10 border border-tertiary/30">
+                                                <span class="text-tertiary font-bold block">Z2 Aerobic (60-70%)</span>
+                                                <strong id="settings-z2-range" class="text-tertiary font-bold block mt-0.5">134 - 149 bpm</strong>
+                                            </div>
+                                            <div class="p-2 rounded-lg bg-surface border border-border">
+                                                <span class="text-text-secondary block">Z3 Tempo (70-80%)</span>
+                                                <strong id="settings-z3-range" class="text-text-primary font-bold block mt-0.5">149 - 163 bpm</strong>
+                                            </div>
+                                            <div class="p-2 rounded-lg bg-surface border border-border">
+                                                <span class="text-text-secondary block">Z4 Threshold (80-90%)</span>
+                                                <strong id="settings-z4-range" class="text-text-primary font-bold block mt-0.5">163 - 178 bpm</strong>
+                                            </div>
+                                            <div class="p-2 rounded-lg bg-surface border border-border">
+                                                <span class="text-text-secondary block">Z5 VO2max (&gt;90%)</span>
+                                                <strong id="settings-z5-range" class="text-text-primary font-bold block mt-0.5">&gt; 178 bpm</strong>
                                             </div>
                                         </div>
                                     </div>
@@ -6866,11 +6884,11 @@
                                         </div>
                                         <div>
                                             <label data-i18n="settings_racedate_label" class="block text-[11px] text-text-secondary mb-1">Tanggal Lomba Target</label>
-                                            <input type="date" id="settings-race-date" onchange="markSettingsUnsaved()" class="flat-input text-xs">
+                                            <input type="date" id="settings-race-date" onchange="markSettingsUnsaved()" class="flat-input text-xs font-mono">
                                         </div>
                                         <div>
                                             <label data-i18n="settings_weekly_vol_label" class="block text-[11px] text-text-secondary mb-1">Target Volume Mingguan (km)</label>
-                                            <input type="number" step="1" id="settings-weekly-mileage" oninput="markSettingsUnsaved()" inputmode="numeric" class="flat-input text-xs" placeholder="50">
+                                            <input type="number" step="1" id="settings-weekly-mileage" oninput="markSettingsUnsaved()" inputmode="numeric" class="flat-input text-xs font-mono" placeholder="50">
                                         </div>
                                     </div>
 
@@ -6895,7 +6913,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-border">
                                         <div>
                                             <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_units_label">Sistem Pengukuran</label>
                                             <select id="settings-units" onchange="markSettingsUnsaved()" class="flat-input text-xs font-sans">
@@ -6905,9 +6923,19 @@
                                         </div>
                                         <div>
                                             <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_language_label">Bahasa Aplikasi</label>
-                                            <select id="settings-language" onchange="changeLanguage(this.value); markSettingsUnsaved();" class="flat-input text-xs">
+                                            <select id="settings-language" onchange="changeLanguage(this.value); markSettingsUnsaved();" class="flat-input text-xs font-sans">
                                                 <option value="id" selected>Bahasa Indonesia (ID)</option>
                                                 <option value="en">English (US)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block font-mono text-[11px] text-text-secondary mb-1">Bilah Pembuka Awal</label>
+                                            <select id="settings-default-tab" onchange="localStorage.setItem('goalie_default_tab', this.value); markSettingsUnsaved();" class="flat-input text-xs font-sans">
+                                                <option value="cockpit" selected>Cockpit (Beranda)</option>
+                                                <option value="schedule">Kalender Rencana</option>
+                                                <option value="chat">AI Coach Chat</option>
+                                                <option value="telemetry">Telemetri Suite</option>
+                                                <option value="integrations">Integrasi</option>
                                             </select>
                                         </div>
                                     </div>
@@ -6928,9 +6956,9 @@
                                         <div>
                                             <label class="block font-mono text-[11px] text-text-secondary mb-2">Pilihan Mode Tema</label>
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <label class="p-3.5 border-2 border-border rounded-xl cursor-pointer hover:border-text-primary flex items-center justify-between transition-colors bg-surface-subtle">
+                                                <label class="p-4 border-2 border-border rounded-xl cursor-pointer hover:border-tertiary flex items-center justify-between transition-colors bg-surface-subtle">
                                                     <div class="flex items-center gap-3">
-                                                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center border border-amber-300">
+                                                        <div class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-text-primary">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                                                         </div>
                                                         <div>
@@ -6938,20 +6966,20 @@
                                                             <span class="text-[10px] text-text-secondary">Latar cerah bersih dengan kontras tinggi</span>
                                                         </div>
                                                     </div>
-                                                    <input type="radio" name="ui-theme-radio" value="light" onchange="applyTheme('light'); markSettingsUnsaved();" checked class="text-tertiary">
+                                                    <input type="radio" name="ui-theme-radio" id="ui-theme-light" value="light" onchange="applyTheme('light'); markSettingsUnsaved();" checked class="text-tertiary">
                                                 </label>
 
-                                                <label class="p-3.5 border-2 border-border rounded-xl cursor-pointer hover:border-text-primary flex items-center justify-between transition-colors bg-surface-subtle">
+                                                <label class="p-4 border-2 border-border rounded-xl cursor-pointer hover:border-tertiary flex items-center justify-between transition-colors bg-surface-subtle">
                                                     <div class="flex items-center gap-3">
-                                                        <div class="w-8 h-8 rounded-lg bg-slate-800 text-slate-200 flex items-center justify-center border border-slate-700">
+                                                        <div class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-text-primary">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                                                         </div>
                                                         <div>
                                                             <strong class="text-xs text-text-primary block">Mode Gelap (Dark)</strong>
-                                                            <span class="text-[10px] text-text-secondary">OLED deep black untuk sesi malam</span>
+                                                            <span class="text-[10px] text-text-secondary">OLED deep neutral untuk sesi malam</span>
                                                         </div>
                                                     </div>
-                                                    <input type="radio" name="ui-theme-radio" value="dark" onchange="applyTheme('dark'); markSettingsUnsaved();" class="text-tertiary">
+                                                    <input type="radio" name="ui-theme-radio" id="ui-theme-dark" value="dark" onchange="applyTheme('dark'); markSettingsUnsaved();" class="text-tertiary">
                                                 </label>
                                             </div>
                                             <!-- Hidden select to maintain DOM compatibility -->
@@ -6964,7 +6992,7 @@
                                         <div class="pt-4 border-t border-border flex items-center justify-between gap-4">
                                             <div>
                                                 <strong class="text-xs text-text-primary block">Sorvo Navigation Rail</strong>
-                                                <p class="text-[11px] text-text-secondary mt-0.5">Menciutkan bilah navigasi dengan animasi halus (Gunakan tombol keyboard `[`)</p>
+                                                <p class="text-[11px] text-text-secondary mt-0.5">Menciutkan bilah navigasi dengan animasi halus (Pintasan keyboard `[`)</p>
                                             </div>
                                             <button type="button" onclick="if(window.toggleRail)window.toggleRail(); else { const t=document.querySelector('.apple-glass-track'); if(t)t.classList.toggle('is-rail'); }" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono">
                                                 Toggle Rail `[`
@@ -6984,7 +7012,7 @@
                                                 Konfigurasi model kecerdasan buatan dan alur kerja sinkronisasi otomatis
                                             </p>
                                         </div>
-                                        <span class="text-[10px] font-mono text-flat-orange bg-flat-orange/10 px-2 py-0.5 rounded border border-flat-orange/30 font-bold">MULTI-TIER ENGINE</span>
+                                        <span class="text-[10px] font-mono text-tertiary bg-tertiary/10 px-2 py-0.5 rounded border border-tertiary/30 font-bold">MULTI-TIER ENGINE</span>
                                     </div>
 
                                     <div>
@@ -6999,21 +7027,21 @@
                                     <div class="pt-3 border-t border-border space-y-3">
                                         <span class="text-[11px] font-bold text-text-primary block">Aturan Otomasi Latar Belakang</span>
                                         
-                                        <div class="p-3 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
+                                        <label class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:border-tertiary transition-colors">
                                             <div>
                                                 <strong class="text-xs text-text-primary block">Otomatis Preload Rute GPS FIT</strong>
                                                 <p class="text-[10px] text-text-secondary">Mengunduh 5 rute aktivitas GPS Garmin terbaru secara instan saat sinkronisasi selesai</p>
                                             </div>
-                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">AKTIF</span>
-                                        </div>
+                                            <input type="checkbox" id="settings-toggle-preload-gps" onchange="handleAutomationToggle('preload_gps', this.checked)" checked class="rounded text-tertiary focus:ring-0">
+                                        </label>
 
-                                        <div class="p-3 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
+                                        <label class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:border-tertiary transition-colors">
                                             <div>
                                                 <strong class="text-xs text-text-primary block">Penyesuaian Cuaca Ekstrem (Magnus-Tetens)</strong>
-                                                <p class="text-[10px] text-text-secondary">Otomatis kalkulasi penalti dehidrasi dan perlambatan pace jika suhu > 32°C atau titik embun tinggi</p>
+                                                <p class="text-[10px] text-text-secondary">Kalkulasi penalti hidrasi dan perlambatan pace jika suhu &gt; 32°C atau titik embun tinggi</p>
                                             </div>
-                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">AKTIF</span>
-                                        </div>
+                                            <input type="checkbox" id="settings-toggle-weather-adjust" onchange="handleAutomationToggle('weather_adjust', this.checked)" checked class="rounded text-tertiary focus:ring-0">
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -7037,23 +7065,29 @@
                                         <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
                                             <div class="flex items-center justify-between">
                                                 <strong class="text-xs text-text-primary">Garmin Connect (Garth)</strong>
-                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">TERHUBUNG</span>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30">TERHUBUNG</span>
                                             </div>
                                             <p class="text-[11px] text-text-secondary">Sesi terautentikasi dan tokenstore tersimpan aman di runtime VPS.</p>
+                                            <button type="button" onclick="if(typeof syncGarminActivities==='function')syncGarminActivities(); else if(typeof triggerGarminFullSync==='function')triggerGarminFullSync(); else toast.info('Garmin Sync', 'Memulai sinkronisasi telemetri...');" class="btn-flat-primary px-3 py-1 text-[11px] font-mono font-bold mt-1">
+                                                Sinkronkan Garmin Sekarang
+                                            </button>
                                         </div>
 
                                         <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
                                             <div class="flex items-center justify-between">
                                                 <strong class="text-xs text-text-primary">Strava Athlete Suite</strong>
-                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-flat-orange/10 text-flat-orange font-bold border border-flat-orange/30">SIAP SYNC</span>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-tertiary/10 text-tertiary font-bold border border-tertiary/30">SIAP SYNC</span>
                                             </div>
                                             <p class="text-[11px] text-text-secondary">Analisis form dan stream elevasi Strava Pro terintegrasi.</p>
+                                            <button type="button" onclick="switchWorkstationTab('telemetry')" class="btn-flat-secondary px-3 py-1 text-[11px] font-mono mt-1">
+                                                Lihat Data Strava &gt;
+                                            </button>
                                         </div>
 
                                         <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
                                             <div class="flex items-center justify-between">
                                                 <strong class="text-xs text-text-primary">TrainingPeaks &amp; Intervals.icu</strong>
-                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-surface border border-border text-text-secondary font-bold">OPTIONAL</span>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-surface border border-border text-text-secondary font-bold">OPSIONAL</span>
                                             </div>
                                             <p class="text-[11px] text-text-secondary">Dukungan impor file TSS dan TRIMP makrosiklus.</p>
                                         </div>
@@ -7061,7 +7095,7 @@
                                         <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
                                             <div class="flex items-center justify-between">
                                                 <strong class="text-xs text-text-primary">Open-Meteo Weather Service</strong>
-                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">ONLINE</span>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30">ONLINE</span>
                                             </div>
                                             <p class="text-[11px] text-text-secondary">Feed suhu dan kelembaban udara otomatis untuk simulasi lomba.</p>
                                         </div>
@@ -7085,7 +7119,34 @@
                                                 <strong class="text-xs text-text-primary block">Algoritma Kredensial</strong>
                                                 <p class="text-[10px] text-text-secondary">Kata sandi terenkripsi aman menggunakan PBKDF2-HMAC-SHA256 dengan garam unik (salt)</p>
                                             </div>
-                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">ENCRYPTED</span>
+                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30">ENCRYPTED</span>
+                                        </div>
+
+                                        <!-- Form Ubah Kata Sandi -->
+                                        <div class="p-4 border border-border rounded-xl bg-surface-subtle space-y-3">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Ubah Kata Sandi Akun</strong>
+                                                <p class="text-[10px] text-text-secondary">Perbarui kata sandi login Anda untuk meningkatkan keamanan akun.</p>
+                                            </div>
+                                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                <div>
+                                                    <label class="block text-[10px] font-mono text-text-secondary mb-1">Kata Sandi Saat Ini</label>
+                                                    <input type="password" id="settings-pwd-current" class="flat-input text-xs" placeholder="••••••••">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-mono text-text-secondary mb-1">Kata Sandi Baru</label>
+                                                    <input type="password" id="settings-pwd-new" class="flat-input text-xs" placeholder="Min. 6 karakter">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-mono text-text-secondary mb-1">Ulangi Kata Sandi Baru</label>
+                                                    <input type="password" id="settings-pwd-confirm" class="flat-input text-xs" placeholder="Konfirmasi kata sandi">
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-end pt-1">
+                                                <button type="button" onclick="handlePasswordChangeInSettings()" id="btn-change-pwd-settings" class="btn-flat-secondary px-3.5 py-1.5 text-xs font-mono font-bold hover:border-tertiary">
+                                                    Simpan Kata Sandi Baru
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
@@ -7093,7 +7154,7 @@
                                                 <strong class="text-xs text-text-primary block">Autentikasi Biometrik / Passkey</strong>
                                                 <p class="text-[10px] text-text-secondary">Dukungan masuk cepat menggunakan Face ID, Touch ID, atau kunci keamanan perangkat</p>
                                             </div>
-                                            <button type="button" onclick="toast.info('Passkey Tersedia', 'Anda dapat login langsung via tombol Biometrik di halaman Masuk.');" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono">
+                                            <button type="button" onclick="toast.info('Passkey Siap', 'Anda dapat login langsung via tombol Biometrik di halaman Masuk.');" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono">
                                                 Cek Status
                                             </button>
                                         </div>
@@ -7103,7 +7164,7 @@
                                                 <strong class="text-xs text-text-primary block">Sesi Pengguna Saat Ini</strong>
                                                 <p class="text-[10px] text-text-secondary">Koneksi aman TLS 1.3 dengan otorisasi Bearer JWT</p>
                                             </div>
-                                            <button type="button" onclick="if(confirm('Keluar dari sesi ini?')){ localStorage.removeItem('access_token'); window.location.href='login.html'; }" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono text-flat-orange hover:border-flat-orange">
+                                            <button type="button" onclick="if(confirm('Keluar dari sesi ini?')){ localStorage.removeItem('access_token'); window.location.href='login.html'; }" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono text-red-600 dark:text-red-400 hover:border-red-500">
                                                 Keluar (Sign Out)
                                             </button>
                                         </div>
@@ -7132,11 +7193,15 @@
                                         </div>
 
                                         <div class="p-4 border border-border rounded-xl bg-surface-subtle space-y-2">
-                                            <strong class="text-xs text-text-primary block">Penyimpanan IndexedDB Lokal</strong>
-                                            <p class="text-[11px] text-text-secondary">Basis data offline `GoalieAthleteDB` menyimpan antrean aksi saat tidak ada koneksi internet.</p>
-                                            <div class="flex items-center gap-2 pt-2">
-                                                <span class="w-2 h-2 rounded-full bg-flat-green"></span>
-                                                <span class="text-[10px] font-mono text-flat-green font-bold">INDEXEDDB SIAP</span>
+                                            <strong class="text-xs text-text-primary block">Impor Cadangan Data</strong>
+                                            <p class="text-[11px] text-text-secondary">Pulihkan data sesi telemetri dari file backup JSON sebelumnya.</p>
+                                            <div class="flex items-center gap-2 mt-2">
+                                                <input type="file" id="settings-import-file" accept=".json" class="hidden" onchange="handleAthleteDataImport(event)">
+                                                <button type="button" onclick="document.getElementById('settings-import-file').click()" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono inline-flex items-center gap-1.5">
+                                                    <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                                    <span>Pilih File JSON</span>
+                                                </button>
+                                                <span id="settings-import-filename" class="text-[10px] font-mono text-text-secondary truncate max-w-[140px]"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -7144,14 +7209,14 @@
                                     <!-- Danger Zone -->
                                     <div class="p-4 rounded-xl border-2 border-red-500/30 bg-red-500/5 space-y-3">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-                                            <strong class="text-xs text-red-500 font-bold uppercase tracking-wider">Zona Bahaya (Danger Zone)</strong>
+                                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                            <strong class="text-xs text-red-600 dark:text-red-400 font-bold uppercase tracking-wider">Zona Bahaya (Danger Zone)</strong>
                                         </div>
                                         <p class="text-[11px] text-text-secondary leading-relaxed">
                                             Bersihkan cache lokal PWA atau reset riwayat telemetri sesi jika terjadi masalah tampilan. Tindakan ini tidak menghapus akun utama Anda.
                                         </p>
                                         <div class="flex flex-wrap items-center gap-2 pt-1">
-                                            <button type="button" onclick="resetSandboxData()" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono text-red-500 hover:border-red-500">
+                                            <button type="button" onclick="resetSandboxData()" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono text-red-600 dark:text-red-400 hover:border-red-500">
                                                 RESET LOCAL CACHE
                                             </button>
                                         </div>
@@ -7169,10 +7234,10 @@
                                                 Status paket atlet, akses fitur pro, dan manajemen kuota AI
                                             </p>
                                         </div>
-                                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-flat-green/10 text-flat-green border border-flat-green/30">LIFETIME PRO</span>
+                                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">LIFETIME PRO</span>
                                     </div>
 
-                                    <div class="p-4 border-2 border-tertiary/30 bg-tertiary/5 rounded-xl space-y-3">
+                                    <div class="p-4 border-2 border-tertiary/30 bg-surface-subtle rounded-xl space-y-3">
                                         <div class="flex items-center justify-between">
                                             <strong class="font-display font-bold text-sm text-text-primary">Paket Goalie Pro Athlete</strong>
                                             <span class="text-xs font-mono font-bold text-tertiary">AKTIF</span>
@@ -7188,7 +7253,7 @@
                                     <div class="p-4 border border-border rounded-xl bg-surface-subtle space-y-2">
                                         <strong class="text-xs text-text-primary block">Bawa Kunci API Sendiri (BYOK Gemini)</strong>
                                         <p class="text-[11px] text-text-secondary">Anda dapat menggunakan API Key Google Gemini pribadi untuk analitik AI tanpa batas kuota.</p>
-                                        <input type="password" id="settings-byok-key" class="flat-input text-xs" placeholder="AIzaSy... (Opsional)">
+                                        <input type="password" id="settings-byok-key" oninput="localStorage.setItem('goalie_byok_gemini', this.value.trim()); markSettingsUnsaved();" class="flat-input text-xs font-mono" placeholder="AIzaSy... (Opsional)">
                                     </div>
                                 </div>
                             </div>
@@ -7206,10 +7271,10 @@
                                     <div class="p-4 rounded-xl bg-surface-subtle border-2 border-border space-y-3">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2">
-                                                <span class="w-2.5 h-2.5 rounded-full bg-flat-orange animate-pulse"></span>
+                                                <span class="w-2 h-2 rounded-full bg-tertiary"></span>
                                                 <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Tiket Bantuan Helpdesk</h4>
                                             </div>
-                                            <span class="text-[9px] font-mono bg-flat-orange/10 text-flat-orange border border-flat-orange/30 px-1.5 py-0.2 rounded font-bold">SSO READY</span>
+                                            <span class="text-[9px] font-mono bg-surface border border-border text-text-secondary px-1.5 py-0.2 rounded font-bold">SSO READY</span>
                                         </div>
                                         <p class="text-xs text-text-secondary font-mono leading-relaxed">
                                             Mengalami kendala sinkronisasi telemetri Garmin, analisis biomekanika, atau kalkulasi pacing? Buka formulir tiket langsung ke sistem VPS Helpdesk terpusat.
@@ -7219,6 +7284,15 @@
                                             <span>Buka Formulir Tiket Bantuan</span>
                                         </button>
                                     </div>
+
+                                    <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] font-mono">
+                                        <span class="text-text-secondary">Status Sistem Server VPS:</span>
+                                        <a href="api/v1/health" target="_blank" class="text-tertiary hover:underline font-bold">
+                                            Cek Status API /health &gt;
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
 
                                     <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] font-mono">
                                         <span class="text-text-secondary">Status Sistem Server VPS:</span>
@@ -8657,7 +8731,8 @@
             if (window.INITIAL_GARMIN_WORKOUTS && window.INITIAL_GARMIN_WORKOUTS.length > 0) {
                 renderActivitiesFeed(window.INITIAL_GARMIN_WORKOUTS);
             }
-            switchWorkstationTab('cockpit');
+            const defaultTab = localStorage.getItem('goalie_default_tab') || 'cockpit';
+            switchWorkstationTab(defaultTab);
             setupAccessibleModals();
 
             // Hydrate Target Race Countdown & GPX Course Inputs
@@ -8886,6 +8961,14 @@
                 if (moonIcon) moonIcon.classList.remove('hidden');
             }
             localStorage.setItem('theme', theme);
+            const lightRadio = document.getElementById('ui-theme-light');
+            const darkRadio = document.getElementById('ui-theme-dark');
+            const themeSelect = document.getElementById('settings-theme');
+            if (lightRadio && darkRadio) {
+                if (theme === 'dark') darkRadio.checked = true;
+                else lightRadio.checked = true;
+            }
+            if (themeSelect) themeSelect.value = theme;
             if (typeof initNativeStatusBar === 'function') {
                 initNativeStatusBar();
             }
@@ -15606,6 +15689,26 @@
                 setVal('settings-theme', localStorage.getItem('theme') || 'light');
                 setVal('settings-language', localStorage.getItem('goalie_language') || 'id');
 
+                // Hydrate SaaS Settings preferences & automation
+                setVal('settings-default-tab', localStorage.getItem('goalie_default_tab') || 'cockpit');
+                
+                const byokKey = localStorage.getItem('user_gemini_api_key') || localStorage.getItem('goalie_byok_gemini') || appState.customApiKey || '';
+                setVal('settings-byok-key', byokKey);
+
+                const chkGps = document.getElementById('settings-toggle-preload-gps');
+                if (chkGps) chkGps.checked = localStorage.getItem('goalie_auto_preload_gps') !== '0';
+
+                const chkWx = document.getElementById('settings-toggle-weather-adjust');
+                if (chkWx) chkWx.checked = localStorage.getItem('goalie_auto_weather_adjust') !== '0';
+
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                const lightRadio = document.getElementById('ui-theme-light');
+                const darkRadio = document.getElementById('ui-theme-dark');
+                if (lightRadio && darkRadio) {
+                    if (currentTheme === 'dark') darkRadio.checked = true;
+                    else lightRadio.checked = true;
+                }
+
                 // Sync sidebar quick athlete identity preview card
                 const nameEl = document.getElementById('settings-user-display-name');
                 const emailEl = document.getElementById('settings-user-display-email');
@@ -15659,13 +15762,35 @@
             const maxHr = parseInt(document.getElementById('settings-max-hr')?.value) || 192;
             const rhr = parseInt(document.getElementById('settings-resting-hr')?.value) || 48;
             const hrr = Math.max(0, maxHr - rhr);
-            const z2Min = Math.round(rhr + (hrr * 0.60));
-            const z2Max = Math.round(rhr + (hrr * 0.70));
             
+            // Karvonen Target Heart Rate Zones:
+            // Zone 1 Active Recovery (< 60% HRR)
+            // Zone 2 Aerobic Base (60% - 70% HRR)
+            // Zone 3 Tempo Aerobic (70% - 80% HRR)
+            // Zone 4 Sub-Threshold / LT2 (80% - 90% HRR)
+            // Zone 5 Neuromuscular & VO2 Max (> 90% HRR)
+            const z1Max = Math.round(rhr + (hrr * 0.60));
+            const z2Min = z1Max;
+            const z2Max = Math.round(rhr + (hrr * 0.70));
+            const z3Min = z2Max;
+            const z3Max = Math.round(rhr + (hrr * 0.80));
+            const z4Min = z3Max;
+            const z4Max = Math.round(rhr + (hrr * 0.90));
+            const z5Min = z4Max;
+
             const hrrEl = document.getElementById('settings-hrr-display');
+            const z1El = document.getElementById('settings-z1-range');
             const z2El = document.getElementById('settings-z2-range');
+            const z3El = document.getElementById('settings-z3-range');
+            const z4El = document.getElementById('settings-z4-range');
+            const z5El = document.getElementById('settings-z5-range');
+
             if (hrrEl) hrrEl.textContent = `${hrr} bpm`;
+            if (z1El) z1El.textContent = `< ${z1Max} bpm`;
             if (z2El) z2El.textContent = `${z2Min} - ${z2Max} bpm`;
+            if (z3El) z3El.textContent = `${z3Min} - ${z3Max} bpm`;
+            if (z4El) z4El.textContent = `${z4Min} - ${z4Max} bpm`;
+            if (z5El) z5El.textContent = `> ${z5Min} bpm`;
         }
 
         function markSettingsUnsaved() {
@@ -15674,6 +15799,140 @@
                 statusBadge.textContent = 'PERUBAHAN BELUM DISIMPAN';
                 statusBadge.className = 'flat-badge border-flat-orange text-flat-orange font-mono';
             }
+        }
+
+        function handleAutomationToggle(key, isChecked) {
+            localStorage.setItem(`goalie_auto_${key}`, isChecked ? '1' : '0');
+            markSettingsUnsaved();
+            const label = key === 'preload_gps' ? 'Pre-load GPX & Elevasi' : 'Penyesuaian Cuaca & Suhu';
+            toast.info('Preferensi Otomasi Disimpan', `${label} ${isChecked ? 'diaktifkan' : 'dinonaktifkan'}.`);
+        }
+
+        async function handlePasswordChangeInSettings() {
+            const curEl = document.getElementById('settings-pwd-current');
+            const newEl = document.getElementById('settings-pwd-new');
+            const confEl = document.getElementById('settings-pwd-confirm');
+            const btn = document.getElementById('btn-change-pwd-settings');
+
+            const currentPassword = curEl ? curEl.value.trim() : '';
+            const newPassword = newEl ? newEl.value.trim() : '';
+            const confirmPassword = confEl ? confEl.value.trim() : '';
+
+            if (!currentPassword) {
+                toast.warning('Kata Sandi Diperlukan', 'Masukkan kata sandi akun Anda saat ini.');
+                if (curEl) curEl.focus();
+                return;
+            }
+            if (!newPassword || newPassword.length < 6) {
+                toast.warning('Kata Sandi Terlalu Pendek', 'Kata sandi baru minimal harus 6 karakter.');
+                if (newEl) newEl.focus();
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                toast.error('Kata Sandi Tidak Cocok', 'Konfirmasi kata sandi baru tidak sama.');
+                if (confEl) confEl.focus();
+                return;
+            }
+            if (newPassword === currentPassword) {
+                toast.warning('Kata Sandi Sama', 'Kata sandi baru harus berbeda dari kata sandi lama.');
+                if (newEl) newEl.focus();
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'MEMPERBARUI...';
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok) {
+                    const msg = data.detail || 'Gagal mengubah kata sandi. Periksa kata sandi saat ini.';
+                    toast.error('Gagal Memperbarui', msg);
+                    return;
+                }
+
+                if (curEl) curEl.value = '';
+                if (newEl) newEl.value = '';
+                if (confEl) confEl.value = '';
+
+                toast.success('Kata Sandi Diperbarui', 'Kata sandi akun Anda berhasil diperbarui dengan hashing aman PBKDF2.');
+            } catch (err) {
+                console.error('[Goalie] Change password error:', err);
+                toast.error('Koneksi Gagal', 'Gagal menghubungi server untuk memperbarui kata sandi.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Simpan Kata Sandi Baru';
+                }
+            }
+        }
+
+        function handleAthleteDataImport(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const filenameEl = document.getElementById('settings-import-filename');
+            if (filenameEl) filenameEl.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data || typeof data !== 'object') {
+                        throw new Error('Format file tidak valid');
+                    }
+
+                    if (data.cockpit_telemetry) {
+                        cockpitData = {
+                            ...cockpitData,
+                            ...data.cockpit_telemetry
+                        };
+                    }
+
+                    if (data.athlete) {
+                        if (data.athlete.email && !appState.userEmail) {
+                            appState.userEmail = data.athlete.email;
+                        }
+                        if (typeof data.athlete.is_pro === 'boolean') {
+                            appState.isPro = data.athlete.is_pro;
+                            localStorage.setItem('user_is_pro_subscription', data.athlete.is_pro ? 'true' : 'false');
+                        }
+                        if (data.athlete.selected_coach_tier) {
+                            selectCoachTier(data.athlete.selected_coach_tier, false);
+                        }
+                    }
+
+                    if (typeof updateCockpitVisuals === 'function') {
+                        updateCockpitVisuals();
+                    }
+
+                    toast.success('Data Berhasil Diimpor', `File cadangan ${file.name} berhasil dipulihkan ke sesi atlet.`);
+                } catch (err) {
+                    console.error('[Goalie] Import data error:', err);
+                    toast.error('Format Tidak Cocok', 'File JSON tidak berisi struktur telemetri Goalie yang valid.');
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.onerror = function() {
+                toast.error('Gagal Membaca File', 'Terjadi kesalahan saat membaca file dari penyimpanan perangkat.');
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         }
 
         function resetSettingsToDefaults() {
@@ -15695,6 +15954,8 @@
             setVal('settings-units', 'metric');
             setVal('settings-theme', 'light');
             setVal('settings-language', 'id');
+            setVal('settings-default-tab', 'cockpit');
+            applyTheme('light');
             updateKarvonenCalculation();
             markSettingsUnsaved();
             toast.info('Default Dimuat', 'Pengaturan dikembalikan ke parameter standar. Tekan Simpan Pengaturan untuk mengunci.');
@@ -15713,6 +15974,19 @@
 
             const chosenLang = getVal('settings-language') || 'id';
             changeLanguage(chosenLang, false);
+
+            const chosenTheme = getVal('settings-theme') || (document.getElementById('ui-theme-dark')?.checked ? 'dark' : 'light');
+            applyTheme(chosenTheme);
+
+            const byokInput = document.getElementById('settings-byok-key');
+            if (byokInput) {
+                const byokVal = byokInput.value.trim();
+                localStorage.setItem('goalie_byok_gemini', byokVal);
+                localStorage.setItem('user_gemini_api_key', byokVal);
+                appState.customApiKey = byokVal;
+                if (byokVal) appState.isPro = true;
+                if (typeof updateByokUI === 'function') updateByokUI();
+            }
 
             const payload = {
                 full_name: getVal('settings-name'),

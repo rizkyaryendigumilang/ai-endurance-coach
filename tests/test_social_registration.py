@@ -303,5 +303,57 @@ class TestSocialRegistrationFlows(unittest.TestCase):
         self.assertEqual(data["provider"], "apple")
         self.assertEqual(data["email"], "athlete_apple@goalie.fit")
 
+    def test_10_change_password_flow(self):
+        """Verify change-password endpoint validates old password and saves updated PBKDF2 hash."""
+        test_email = "test.pwd.change@goalie.fit"
+        init_pwd = "initial_password_123"
+        new_pwd = "brand_new_secure_pass_456"
+
+        reg_res = self.client.post("/api/v1/auth/register", json={
+            "full_name": "Test Pwd Runner",
+            "email": test_email,
+            "password": init_pwd
+        })
+        self.assertEqual(reg_res.status_code, 200)
+
+        login_init = self.client.post("/api/v1/auth/login", json={
+            "email": test_email,
+            "password": init_pwd
+        })
+        self.assertEqual(login_init.status_code, 200)
+        token = login_init.json()["access_token"]
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 1. Reject if new password is too short
+        res_short = self.client.post("/api/v1/auth/change-password", headers=headers, json={
+            "current_password": init_pwd,
+            "new_password": "123"
+        })
+        self.assertEqual(res_short.status_code, 400)
+        self.assertIn("minimal", res_short.json()["detail"].lower())
+
+        # 2. Reject if current password is wrong
+        res_wrong = self.client.post("/api/v1/auth/change-password", headers=headers, json={
+            "current_password": "wrong_old_pwd",
+            "new_password": new_pwd
+        })
+        self.assertEqual(res_wrong.status_code, 400)
+        self.assertIn("tidak cocok", res_wrong.json()["detail"].lower())
+
+        # 3. Accept valid change
+        res_ok = self.client.post("/api/v1/auth/change-password", headers=headers, json={
+            "current_password": init_pwd,
+            "new_password": new_pwd
+        })
+        self.assertEqual(res_ok.status_code, 200)
+
+        # 4. Verify login with new password succeeds
+        login_res = self.client.post("/api/v1/auth/login", json={
+            "email": test_email,
+            "password": new_pwd
+        })
+        self.assertEqual(login_res.status_code, 200)
+        self.assertIn("access_token", login_res.json())
+
 if __name__ == "__main__":
     unittest.main()

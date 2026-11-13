@@ -9,7 +9,8 @@ from app.core.auth import (
 from datetime import datetime, timezone
 from app.schemas.models import (
     UserRegisterInput, UserLoginInput, ForgotPasswordInput,
-    OAuthLoginInput, BiometricLoginInput, UserProfileUpdate
+    OAuthLoginInput, BiometricLoginInput, UserProfileUpdate,
+    ChangePasswordInput
 )
 from app.services.sports_engine import SportsEngine
 from app.services import sandbox_store
@@ -149,6 +150,32 @@ def forgot_password(req: ForgotPasswordInput):
     return {
         "message": f"Instruksi pemulihan password telah dikirim ke {email}. Silakan periksa kotak masuk atau spam email Anda."
     }
+
+
+@router.post("/api/v1/auth/change-password", tags=["Auth"])
+def change_password(req: ChangePasswordInput, user_id: str = Depends(get_current_user)):
+    """
+    Ubah Kata Sandi Atlet: Memvalidasi kata sandi lama dan memperbarui hash salted PBKDF2.
+    """
+    if len(req.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Kata sandi baru minimal 6 karakter.")
+
+    cred = sandbox_store.get_user_credential(user_id)
+    if cred and cred.get("password_hash"):
+        if not sandbox_store.verify_password(req.current_password, cred["password_hash"]):
+            raise HTTPException(status_code=400, detail="Kata sandi saat ini tidak cocok.")
+
+    new_hash = sandbox_store.hash_password(req.new_password)
+    user_email = (cred and cred.get("email")) or f"{user_id}@goalie.fit"
+    sandbox_store.save_user_credential(user_id, user_email, new_hash)
+
+    try:
+        if supabase:
+            supabase.auth.admin.update_user_by_id(user_id, {"password": req.new_password})
+    except Exception:
+        pass
+
+    return {"message": "Kata sandi berhasil diperbarui."}
 
 
 @router.post("/api/v1/auth/oauth", tags=["Auth"])
