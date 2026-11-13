@@ -6616,217 +6616,681 @@
                 </div>
             </div>
 
-            <!-- TAB 6: ATHLETE SETTINGS (PROFILE, BIOMETRICS & PREFERENCES) -->
+            <!-- TAB 6: ATHLETE SETTINGS (MODERN SAAS ARCHITECTURE) -->
             <div id="tab-content-settings" class="hidden space-y-6">
-                <div class="flat-card border-2 border-border-strong p-6 bg-surface space-y-6">
-                    
-                    <!-- Header -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-border gap-2">
+                <!-- Settings Command Header Bar -->
+                <div class="flat-card border-2 border-border-strong p-4 sm:p-5 bg-surface flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-tertiary/10 text-tertiary flex items-center justify-center border border-tertiary/20 shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="w-3 h-3 bg-tertiary"></span>
-                                <h3 class="font-display font-bold text-base text-text-primary">Athlete Settings &amp; Biometrics</h3>
+                                <h2 class="font-display font-extrabold text-base sm:text-lg text-text-primary tracking-tight">Pusat Pengaturan SaaS</h2>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-subtle border border-border text-text-secondary font-bold">V2.4 CONFIG</span>
                             </div>
                             <p class="text-xs font-mono text-text-secondary mt-0.5">
-                                Physiological Anchors &bull; RHR &bull; Target Race &bull; Coaching Tier
+                                Kelola identitas atlet, parameter fisiologis, mesin kecerdasan buatan, dan preferensi aplikasi
                             </p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="flat-badge border-flat-green text-flat-green font-mono" id="settings-save-status">UP TO DATE</span>
                         </div>
                     </div>
 
-                    <form onsubmit="handleSettingsSave(event)" class="space-y-6 text-xs">
-                        
-                        <!-- 1. Physiological Biometrics -->
-                        <div>
-                            <div class="flex items-center gap-2 pb-2 mb-3 border-b border-border">
-                                <span data-i18n="settings_bio_title" class="text-xs font-semibold text-text-primary">Biometrik Fisiologis</span>
-                                <span data-i18n="settings_bio_subtitle" class="text-[10px] text-text-secondary font-mono">(Parameter utama mesin Banister &amp; Daniels VDOT)</span>
-                            </div>
+                    <!-- Search Input & Live Save Status -->
+                    <div class="flex items-center gap-3">
+                        <div class="relative w-full sm:w-60">
+                            <input type="text" id="settings-search-input" oninput="filterSettingsSections(this.value)" placeholder="Cari pengaturan..." class="flat-input text-xs pl-8 py-1.5 w-full bg-surface-subtle">
+                            <svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-text-secondary pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <span class="flat-badge border-flat-green text-flat-green font-mono shrink-0" id="settings-save-status">UP TO DATE</span>
+                    </div>
+                </div>
+
+                <!-- 2-Column SaaS Layout Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- LEFT COLUMN: Categories Navigation (Sidebar) -->
+                    <aside class="md:col-span-4 lg:col-span-3 space-y-4">
+                        <div class="flat-card border-2 border-border-strong p-2 sm:p-3 bg-surface space-y-1">
+                            <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary px-2.5 py-1.5 block">Kategori Pengaturan</span>
                             
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <div>
-                                    <label data-i18n="settings_fullname_label" class="block text-[11px] text-text-secondary mb-1">Nama Lengkap</label>
-                                    <input type="text" id="settings-name" class="flat-input text-xs" placeholder="Rizky Aryendi Gumilang" required>
-                                </div>
-                                <div>
-                                    <label data-i18n="settings_weight_label" class="block text-[11px] text-text-secondary mb-1">Berat Badan (kg)</label>
-                                    <input type="number" step="0.1" id="settings-weight" inputmode="decimal" class="flat-input text-xs" placeholder="68.5" required>
-                                </div>
-                                <div>
-                                    <label data-i18n="settings_height_label" class="block text-[11px] text-text-secondary mb-1">Tinggi Badan (cm)</label>
-                                    <input type="number" step="0.5" id="settings-height" inputmode="decimal" class="flat-input text-xs" placeholder="175" required>
-                                </div>
-                                <div>
-                                    <label data-i18n="settings_gender_label" class="block text-[11px] text-text-secondary mb-1">Profil Biologis / Gender</label>
-                                    <select id="settings-gender" class="flat-input text-xs">
-                                        <option value="male" data-i18n="settings_gender_opt_male">Pria</option>
-                                        <option value="female" data-i18n="settings_gender_opt_female">Wanita</option>
-                                        <option value="unspecified" data-i18n="settings_gender_opt_other">Pilih untuk tidak menyebutkan</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <nav id="settings-category-nav" class="space-y-1 flex md:flex-col overflow-x-auto md:overflow-x-visible pb-1 md:pb-0" role="tablist">
+                                <!-- 1. Profile -->
+                                <button type="button" onclick="switchSettingsCategory('profile')" id="settings-cat-btn-profile" data-cat="profile" class="settings-cat-btn active w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold bg-tertiary/10 text-tertiary border border-tertiary/20 transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        <span>Profil &amp; Biometrik</span>
+                                    </span>
+                                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-tertiary/20 text-tertiary font-bold ml-2">INTI</span>
+                                </button>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <label data-i18n="settings_resting_hr_label" class="text-[11px] text-text-secondary">Detak Jantung Istirahat (bpm)</label>
-                                        <span class="text-[10px] font-mono text-flat-green">40-60 bpm ideal</span>
-                                    </div>
-                                    <input type="number" id="settings-resting-hr" inputmode="numeric" class="flat-input text-xs" placeholder="48" required>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <label data-i18n="settings_max_hr_label" class="text-[11px] text-text-secondary">Detak Jantung Maksimal (bpm)</label>
-                                        <span class="text-[10px] font-mono text-flat-orange">Max aerobic ceiling</span>
-                                    </div>
-                                    <input type="number" id="settings-max-hr" inputmode="numeric" class="flat-input text-xs" placeholder="192" required>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <label data-i18n="settings_lt_hr_label" class="text-[11px] text-text-secondary">Ambang Batas Laktat HR (bpm)</label>
-                                        <span class="text-[10px] font-mono text-tertiary">LT2 Threshold</span>
-                                    </div>
-                                    <input type="number" id="settings-lt-hr" inputmode="numeric" class="flat-input text-xs" placeholder="168">
-                                </div>
-                            </div>
+                                <!-- 2. Preferences -->
+                                <button type="button" onclick="switchSettingsCategory('preferences')" id="settings-cat-btn-preferences" data-cat="preferences" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                                        <span>Target &amp; Preferensi</span>
+                                    </span>
+                                </button>
+
+                                <!-- 3. Appearance -->
+                                <button type="button" onclick="switchSettingsCategory('appearance')" id="settings-cat-btn-appearance" data-cat="appearance" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4 4 0 014-4 4 4 0 014 4 4 4 0 01-4 4zm0 0l4.5-4.5M12 3v4m0 10v4M3 12h4m10 0h4"/></svg>
+                                        <span>Tampilan &amp; UI</span>
+                                    </span>
+                                </button>
+
+                                <!-- 4. AI Coach -->
+                                <button type="button" onclick="switchSettingsCategory('ai-coach')" id="settings-cat-btn-ai-coach" data-cat="ai-coach" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        <span>AI Coach &amp; Otomasi</span>
+                                    </span>
+                                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-flat-orange/10 text-flat-orange font-bold ml-2">GEMINI</span>
+                                </button>
+
+                                <!-- 5. Integrations -->
+                                <button type="button" onclick="switchSettingsCategory('integrations')" id="settings-cat-btn-integrations" data-cat="integrations" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span>Integrasi Eksternal</span>
+                                    </span>
+                                </button>
+
+                                <!-- 6. Security -->
+                                <button type="button" onclick="switchSettingsCategory('security')" id="settings-cat-btn-security" data-cat="security" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                        <span>Keamanan &amp; Sesi</span>
+                                    </span>
+                                </button>
+
+                                <!-- 7. Data & Storage -->
+                                <button type="button" onclick="switchSettingsCategory('data')" id="settings-cat-btn-data" data-cat="data" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7M4 7c0-2 1.5-3 3.5-3h9c2 0 3.5 1 3.5 3M4 7h16m-8 4v6m-3-3l3 3 3-3"/></svg>
+                                        <span>Data &amp; Penyimpanan</span>
+                                    </span>
+                                </button>
+
+                                <!-- 8. Subscription & Billing -->
+                                <button type="button" onclick="switchSettingsCategory('billing')" id="settings-cat-btn-billing" data-cat="billing" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                        <span>Langganan &amp; Lisensi</span>
+                                    </span>
+                                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-flat-green/10 text-flat-green font-bold ml-2">PRO</span>
+                                </button>
+
+                                <!-- 9. Help & Support -->
+                                <button type="button" onclick="switchSettingsCategory('support')" id="settings-cat-btn-support" data-cat="support" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                        <span>Bantuan &amp; Tiket</span>
+                                    </span>
+                                </button>
+
+                                <!-- 10. About -->
+                                <button type="button" onclick="switchSettingsCategory('about')" id="settings-cat-btn-about" data-cat="about" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>Tentang Aplikasi</span>
+                                    </span>
+                                </button>
+                            </nav>
                         </div>
 
-                        <!-- 2. Target Race & Training Periodization -->
-                        <div>
-                            <div class="flex items-center gap-2 pb-2 mb-3 border-b border-border">
-                                <span data-i18n="settings_race_title" class="text-xs font-semibold text-text-primary">Target Lomba &amp; Periodisasi</span>
-                                <span data-i18n="settings_race_subtitle" class="text-[10px] text-text-secondary font-mono">(Menentukan progres makrosiklus &amp; tapering TSB)</span>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div>
-                                    <label data-i18n="settings_racename_label" class="block text-[11px] text-text-secondary mb-1">Nama Lomba Target</label>
-                                    <input type="text" id="settings-race-name" class="flat-input text-xs" placeholder="BTN Jakarta International Marathon (JAKIM) 2026">
+                        <!-- Quick Athlete Card in Sidebar -->
+                        <div class="hidden md:block flat-card border border-border p-3.5 bg-surface-subtle rounded-xl space-y-2.5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center text-white font-bold text-xs uppercase shadow-xs shrink-0" id="settings-avatar-preview">
+                                    R
                                 </div>
-                                <div>
-                                    <label data-i18n="settings_racedate_label" class="block text-[11px] text-text-secondary mb-1">Tanggal Lomba Target</label>
-                                    <input type="date" id="settings-race-date" class="flat-input text-xs">
-                                </div>
-                                <div>
-                                    <label data-i18n="settings_weekly_vol_label" class="block text-[11px] text-text-secondary mb-1">Target Volume Mingguan (km)</label>
-                                    <input type="number" step="1" id="settings-weekly-mileage" inputmode="numeric" class="flat-input text-xs" placeholder="50">
+                                <div class="overflow-hidden">
+                                    <div class="font-bold text-xs text-text-primary truncate" id="settings-user-display-name">Rizky Aryendi Gumilang</div>
+                                    <div class="text-[10px] font-mono text-text-secondary truncate" id="settings-user-display-email">athlete@goalie.fit</div>
                                 </div>
                             </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label data-i18n="settings_sport_focus_label" class="block text-[11px] text-text-secondary mb-1">Fokus Olahraga Utama</label>
-                                    <select id="settings-sport-focus" class="flat-input text-xs">
-                                        <option value="running">Marathon &amp; Distance Running</option>
-                                        <option value="trail">Trail &amp; Ultra Running</option>
-                                        <option value="cycling">Road Cycling &amp; Gran Fondo</option>
-                                        <option value="triathlon">Triathlon (70.3 / Ironman)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label data-i18n="settings_tier_level_label" class="block text-[11px] text-text-secondary mb-1">Tingkat Atletik Saat Ini</label>
-                                    <select id="settings-fitness-level" class="flat-input text-xs font-sans">
-                                        <option value="beginner" data-i18n="fitness_level_beginner">Pemula / Fondasi Dasar (&lt; 30 km/minggu)</option>
-                                        <option value="intermediate" selected data-i18n="fitness_level_intermediate">Menengah Kompetitif (30-70 km/minggu)</option>
-                                        <option value="advanced" data-i18n="fitness_level_advanced">Mahir / Sub-Elite (70-120 km/minggu)</option>
-                                        <option value="elite" data-i18n="fitness_level_elite">Elite / Podium Utama (&gt; 120 km/minggu)</option>
-                                    </select>
-                                </div>
+                            <div class="pt-2 border-t border-border flex justify-between items-center text-[10px] font-mono">
+                                <span class="text-text-secondary">Lisensi Aktif:</span>
+                                <span class="text-tertiary font-bold bg-tertiary/10 px-1.5 py-0.5 rounded border border-tertiary/30">GOALIE PRO</span>
                             </div>
                         </div>
+                    </aside>
 
-                        <!-- 3. Coach Tier & Interface Preferences -->
-                        <div>
-                            <div class="flex items-center gap-2 pb-2 mb-3 border-b border-border">
-                                <span class="text-xs font-semibold text-text-primary" data-i18n="settings_pref_title">Coach Engine &amp; Display Preferences</span>
+                    <!-- RIGHT COLUMN: Active Settings Content Panes -->
+                    <section class="md:col-span-8 lg:col-span-9">
+                        <form onsubmit="handleSettingsSave(event)" class="space-y-6 text-xs">
+                            
+                            <!-- PANE 1: Profil & Biometrik Fisiologis -->
+                            <div id="settings-pane-profile" class="settings-pane space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <div>
+                                            <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Identitas Atlet &amp; Biometrik Fisiologis</h3>
+                                            <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                                Parameter inti penentu model Banister, Jack Daniels VDOT, dan ambang batas laktat
+                                            </p>
+                                        </div>
+                                        <span class="text-[10px] font-mono text-text-secondary bg-surface-subtle px-2 py-0.5 rounded border border-border">MODUL DETERMINISTIK</span>
+                                    </div>
+
+                                    <!-- Core Body Metrics Grid -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div>
+                                            <label data-i18n="settings_fullname_label" class="block text-[11px] text-text-secondary mb-1">Nama Lengkap</label>
+                                            <input type="text" id="settings-name" oninput="markSettingsUnsaved()" class="flat-input text-xs" placeholder="Rizky Aryendi Gumilang" required>
+                                        </div>
+                                        <div>
+                                            <label data-i18n="settings_weight_label" class="block text-[11px] text-text-secondary mb-1">Berat Badan (kg)</label>
+                                            <input type="number" step="0.1" id="settings-weight" oninput="markSettingsUnsaved()" inputmode="decimal" class="flat-input text-xs" placeholder="68.5" required>
+                                        </div>
+                                        <div>
+                                            <label data-i18n="settings_height_label" class="block text-[11px] text-text-secondary mb-1">Tinggi Badan (cm)</label>
+                                            <input type="number" step="0.5" id="settings-height" oninput="markSettingsUnsaved()" inputmode="decimal" class="flat-input text-xs" placeholder="175" required>
+                                        </div>
+                                        <div>
+                                            <label data-i18n="settings_gender_label" class="block text-[11px] text-text-secondary mb-1">Profil Biologis / Gender</label>
+                                            <select id="settings-gender" onchange="markSettingsUnsaved()" class="flat-input text-xs font-sans">
+                                                <option value="male" data-i18n="settings_gender_opt_male">Pria</option>
+                                                <option value="female" data-i18n="settings_gender_opt_female">Wanita</option>
+                                                <option value="unspecified" data-i18n="settings_gender_opt_other">Pilih untuk tidak menyebutkan</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Heart Rate Anchors Grid -->
+                                    <div class="pt-2 border-t border-border">
+                                        <span class="text-[11px] font-bold text-text-primary block mb-3">Jangkar Detak Jantung (Heart Rate Anchors)</span>
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                            <div>
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <label data-i18n="settings_resting_hr_label" class="text-[11px] text-text-secondary">Detak Jantung Istirahat (RHR bpm)</label>
+                                                    <span class="text-[10px] font-mono text-flat-green">40-60 ideal</span>
+                                                </div>
+                                                <input type="number" id="settings-resting-hr" oninput="markSettingsUnsaved(); updateKarvonenCalculation();" inputmode="numeric" class="flat-input text-xs" placeholder="48" required>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <label data-i18n="settings_max_hr_label" class="text-[11px] text-text-secondary">Detak Jantung Maksimal (Max HR bpm)</label>
+                                                    <span class="text-[10px] font-mono text-flat-orange">Aerobic ceiling</span>
+                                                </div>
+                                                <input type="number" id="settings-max-hr" oninput="markSettingsUnsaved(); updateKarvonenCalculation();" inputmode="numeric" class="flat-input text-xs" placeholder="192" required>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <label data-i18n="settings_lt_hr_label" class="text-[11px] text-text-secondary">Ambang Batas Laktat HR (bpm)</label>
+                                                    <span class="text-[10px] font-mono text-tertiary">LT2 Threshold</span>
+                                                </div>
+                                                <input type="number" id="settings-lt-hr" oninput="markSettingsUnsaved()" inputmode="numeric" class="flat-input text-xs" placeholder="168">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Interactive Realtime Karvonen HRR Display -->
+                                    <div class="p-3.5 bg-surface-subtle border border-border rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2.5">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-flat-green"></span>
+                                            <div>
+                                                <span class="font-bold text-xs text-text-primary">Kalkulasi Cadangan Jantung (Karvonen HRR):</span>
+                                                <p class="text-[10px] font-mono text-text-secondary">HRR = Max HR - RHR. Basis fondasi zona latihan aerobik.</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4 text-xs font-mono">
+                                            <div>
+                                                <span class="text-text-secondary text-[10px] block">HRR Aktif:</span>
+                                                <strong id="settings-hrr-display" class="text-flat-green font-bold text-sm">144 bpm</strong>
+                                            </div>
+                                            <div>
+                                                <span class="text-text-secondary text-[10px] block">Zona 2 Aerobik (60-70%):</span>
+                                                <strong id="settings-z2-range" class="text-tertiary font-bold text-sm">134 - 149 bpm</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <div>
-                                    <label class="block text-[11px] text-text-secondary mb-1" data-i18n="settings_coach_engine">Default AI Coach Engine</label>
-                                    <select id="settings-coach-tier" class="flat-input text-xs font-sans" onchange="selectCoachTier(this.value)">
-                                        <option value="pemula" data-i18n="coach_tier_pemula">Pemula (Gratis) - Deterministik Offline</option>
-                                        <option value="free" selected data-i18n="coach_tier_free">Coach (Gratis) - Google Gemini 3.8 Flash</option>
-                                        <option value="pro" data-i18n="coach_tier_pro">Coach (Pro) - Google Gemini 3.8 Flash Pro</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_units_label">Measurement System</label>
-                                    <select id="settings-units" class="flat-input text-xs font-sans">
-                                        <option value="metric" selected data-i18n="units_metric">Metrik (km, kg, pace min/km, °C)</option>
-                                        <option value="imperial" data-i18n="units_imperial">Imperial (mil, lbs, pace min/mil, °F)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_theme_label">Color Theme</label>
-                                    <select id="settings-theme" class="flat-input text-xs font-sans" onchange="applyTheme(this.value)">
-                                        <option value="light" data-i18n="theme_light">Mode Terang</option>
-                                        <option value="dark" data-i18n="theme_dark">Mode Gelap</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_language_label">Language / Bahasa</label>
-                                    <select id="settings-language" class="flat-input text-xs" onchange="changeLanguage(this.value)">
-                                        <option value="id" selected>Bahasa Indonesia (ID)</option>
-                                        <option value="en">English (US)</option>
-                                    </select>
+                            <!-- PANE 2: Target & Preferensi Lomba -->
+                            <div id="settings-pane-preferences" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border">
+                                        <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Target Lomba &amp; Perilaku Periodisasi</h3>
+                                        <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                            Mengendalikan makrosiklus periodisasi, proyeksi volume mingguan, dan kalkulasi tapering TSB
+                                        </p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div>
+                                            <label data-i18n="settings_racename_label" class="block text-[11px] text-text-secondary mb-1">Nama Lomba Target</label>
+                                            <input type="text" id="settings-race-name" oninput="markSettingsUnsaved()" class="flat-input text-xs" placeholder="BTN Jakarta International Marathon (JAKIM) 2026">
+                                        </div>
+                                        <div>
+                                            <label data-i18n="settings_racedate_label" class="block text-[11px] text-text-secondary mb-1">Tanggal Lomba Target</label>
+                                            <input type="date" id="settings-race-date" onchange="markSettingsUnsaved()" class="flat-input text-xs">
+                                        </div>
+                                        <div>
+                                            <label data-i18n="settings_weekly_vol_label" class="block text-[11px] text-text-secondary mb-1">Target Volume Mingguan (km)</label>
+                                            <input type="number" step="1" id="settings-weekly-mileage" oninput="markSettingsUnsaved()" inputmode="numeric" class="flat-input text-xs" placeholder="50">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
+                                        <div>
+                                            <label data-i18n="settings_sport_focus_label" class="block text-[11px] text-text-secondary mb-1">Fokus Olahraga Utama</label>
+                                            <select id="settings-sport-focus" onchange="markSettingsUnsaved()" class="flat-input text-xs font-sans">
+                                                <option value="running">Marathon &amp; Distance Running</option>
+                                                <option value="trail">Trail &amp; Ultra Running</option>
+                                                <option value="cycling">Road Cycling &amp; Gran Fondo</option>
+                                                <option value="triathlon">Triathlon (70.3 / Ironman)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label data-i18n="settings_tier_level_label" class="block text-[11px] text-text-secondary mb-1">Tingkat Atletik Saat Ini</label>
+                                            <select id="settings-fitness-level" onchange="markSettingsUnsaved()" class="flat-input text-xs font-sans">
+                                                <option value="beginner" data-i18n="fitness_level_beginner">Pemula / Fondasi Dasar (&lt; 30 km/minggu)</option>
+                                                <option value="intermediate" selected data-i18n="fitness_level_intermediate">Menengah Kompetitif (30-70 km/minggu)</option>
+                                                <option value="advanced" data-i18n="fitness_level_advanced">Mahir / Sub-Elite (70-120 km/minggu)</option>
+                                                <option value="elite" data-i18n="fitness_level_elite">Elite / Podium Utama (&gt; 120 km/minggu)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
+                                        <div>
+                                            <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_units_label">Sistem Pengukuran</label>
+                                            <select id="settings-units" onchange="markSettingsUnsaved()" class="flat-input text-xs font-sans">
+                                                <option value="metric" selected data-i18n="units_metric">Metrik (km, kg, pace min/km, °C)</option>
+                                                <option value="imperial" data-i18n="units_imperial">Imperial (mil, lbs, pace min/mil, °F)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block font-mono text-[11px] text-text-secondary mb-1" data-i18n="settings_language_label">Bahasa Aplikasi</label>
+                                            <select id="settings-language" onchange="changeLanguage(this.value); markSettingsUnsaved();" class="flat-input text-xs">
+                                                <option value="id" selected>Bahasa Indonesia (ID)</option>
+                                                <option value="en">English (US)</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- 3.5 Helpdesk Support & SSO Ticket Center -->
-                        <div class="p-4 rounded-xl bg-surface-subtle border-2 border-border space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
+                            <!-- PANE 3: Tampilan & UI -->
+                            <div id="settings-pane-appearance" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border">
+                                        <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Desain Antarmuka &amp; Gaya Tampilan</h3>
+                                        <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                            Kustomisasi tema warna, kerapatan layout, dan mode navigasi bilah sisi
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block font-mono text-[11px] text-text-secondary mb-2">Pilihan Mode Tema</label>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                <label class="p-3.5 border-2 border-border rounded-xl cursor-pointer hover:border-text-primary flex items-center justify-between transition-colors bg-surface-subtle">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center border border-amber-300">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                                        </div>
+                                                        <div>
+                                                            <strong class="text-xs text-text-primary block">Mode Terang (Light)</strong>
+                                                            <span class="text-[10px] text-text-secondary">Latar cerah bersih dengan kontras tinggi</span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="radio" name="ui-theme-radio" value="light" onchange="applyTheme('light'); markSettingsUnsaved();" checked class="text-tertiary">
+                                                </label>
+
+                                                <label class="p-3.5 border-2 border-border rounded-xl cursor-pointer hover:border-text-primary flex items-center justify-between transition-colors bg-surface-subtle">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-8 h-8 rounded-lg bg-slate-800 text-slate-200 flex items-center justify-center border border-slate-700">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                                                        </div>
+                                                        <div>
+                                                            <strong class="text-xs text-text-primary block">Mode Gelap (Dark)</strong>
+                                                            <span class="text-[10px] text-text-secondary">OLED deep black untuk sesi malam</span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="radio" name="ui-theme-radio" value="dark" onchange="applyTheme('dark'); markSettingsUnsaved();" class="text-tertiary">
+                                                </label>
+                                            </div>
+                                            <!-- Hidden select to maintain DOM compatibility -->
+                                            <select id="settings-theme" class="hidden">
+                                                <option value="light">light</option>
+                                                <option value="dark">dark</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="pt-4 border-t border-border flex items-center justify-between gap-4">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Sorvo Navigation Rail</strong>
+                                                <p class="text-[11px] text-text-secondary mt-0.5">Menciutkan bilah navigasi dengan animasi halus (Gunakan tombol keyboard `[`)</p>
+                                            </div>
+                                            <button type="button" onclick="if(window.toggleRail)window.toggleRail(); else { const t=document.querySelector('.apple-glass-track'); if(t)t.classList.toggle('is-rail'); }" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono">
+                                                Toggle Rail `[`
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 4: AI Coach & Otomasi -->
+                            <div id="settings-pane-ai-coach" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <div>
+                                            <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Mesin AI Coach &amp; Otomasi Telemetri</h3>
+                                            <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                                Konfigurasi model kecerdasan buatan dan alur kerja sinkronisasi otomatis
+                                            </p>
+                                        </div>
+                                        <span class="text-[10px] font-mono text-flat-orange bg-flat-orange/10 px-2 py-0.5 rounded border border-flat-orange/30 font-bold">MULTI-TIER ENGINE</span>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[11px] text-text-secondary mb-2" data-i18n="settings_coach_engine">Pilihan Tingkat AI Coach</label>
+                                        <select id="settings-coach-tier" class="flat-input text-xs font-sans" onchange="selectCoachTier(this.value); markSettingsUnsaved();">
+                                            <option value="pemula" data-i18n="coach_tier_pemula">Pemula (Gratis) - Deterministik Offline (Tanpa Kuota)</option>
+                                            <option value="free" selected data-i18n="coach_tier_free">Coach Standar (Gratis) - Google Gemini 3.8 Flash</option>
+                                            <option value="pro" data-i18n="coach_tier_pro">Coach Pro - Google Gemini 3.8 Flash Pro (Penalaran Mendalam)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="pt-3 border-t border-border space-y-3">
+                                        <span class="text-[11px] font-bold text-text-primary block">Aturan Otomasi Latar Belakang</span>
+                                        
+                                        <div class="p-3 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Otomatis Preload Rute GPS FIT</strong>
+                                                <p class="text-[10px] text-text-secondary">Mengunduh 5 rute aktivitas GPS Garmin terbaru secara instan saat sinkronisasi selesai</p>
+                                            </div>
+                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">AKTIF</span>
+                                        </div>
+
+                                        <div class="p-3 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Penyesuaian Cuaca Ekstrem (Magnus-Tetens)</strong>
+                                                <p class="text-[10px] text-text-secondary">Otomatis kalkulasi penalti dehidrasi dan perlambatan pace jika suhu > 32°C atau titik embun tinggi</p>
+                                            </div>
+                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">AKTIF</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 5: Integrasi Eksternal -->
+                            <div id="settings-pane-integrations" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border flex justify-between items-center">
+                                        <div>
+                                            <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Integrasi Layanan &amp; Ekosistem Sensor</h3>
+                                            <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                                Status sinkronisasi platform pihak ketiga dan jembatan data wearable
+                                            </p>
+                                        </div>
+                                        <button type="button" onclick="switchWorkstationTab('integrations')" class="btn-flat-secondary px-3 py-1 text-xs font-mono">
+                                            Buka Hub Integrasi &gt;
+                                        </button>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <strong class="text-xs text-text-primary">Garmin Connect (Garth)</strong>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">TERHUBUNG</span>
+                                            </div>
+                                            <p class="text-[11px] text-text-secondary">Sesi terautentikasi dan tokenstore tersimpan aman di runtime VPS.</p>
+                                        </div>
+
+                                        <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <strong class="text-xs text-text-primary">Strava Athlete Suite</strong>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-flat-orange/10 text-flat-orange font-bold border border-flat-orange/30">SIAP SYNC</span>
+                                            </div>
+                                            <p class="text-[11px] text-text-secondary">Analisis form dan stream elevasi Strava Pro terintegrasi.</p>
+                                        </div>
+
+                                        <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <strong class="text-xs text-text-primary">TrainingPeaks &amp; Intervals.icu</strong>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-surface border border-border text-text-secondary font-bold">OPTIONAL</span>
+                                            </div>
+                                            <p class="text-[11px] text-text-secondary">Dukungan impor file TSS dan TRIMP makrosiklus.</p>
+                                        </div>
+
+                                        <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <strong class="text-xs text-text-primary">Open-Meteo Weather Service</strong>
+                                                <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">ONLINE</span>
+                                            </div>
+                                            <p class="text-[11px] text-text-secondary">Feed suhu dan kelembaban udara otomatis untuk simulasi lomba.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 6: Keamanan & Sesi -->
+                            <div id="settings-pane-security" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border">
+                                        <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Keamanan Akun, Enkripsi &amp; Sesi Aktif</h3>
+                                        <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                            Proteksi data biometrik dengan standar salted hashing dan autentikasi modern
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Algoritma Kredensial</strong>
+                                                <p class="text-[10px] text-text-secondary">Kata sandi terenkripsi aman menggunakan PBKDF2-HMAC-SHA256 dengan garam unik (salt)</p>
+                                            </div>
+                                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-flat-green/10 text-flat-green font-bold border border-flat-green/30">ENCRYPTED</span>
+                                        </div>
+
+                                        <div class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Autentikasi Biometrik / Passkey</strong>
+                                                <p class="text-[10px] text-text-secondary">Dukungan masuk cepat menggunakan Face ID, Touch ID, atau kunci keamanan perangkat</p>
+                                            </div>
+                                            <button type="button" onclick="toast.info('Passkey Tersedia', 'Anda dapat login langsung via tombol Biometrik di halaman Masuk.');" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono">
+                                                Cek Status
+                                            </button>
+                                        </div>
+
+                                        <div class="pt-3 border-t border-border flex items-center justify-between gap-4">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Sesi Pengguna Saat Ini</strong>
+                                                <p class="text-[10px] text-text-secondary">Koneksi aman TLS 1.3 dengan otorisasi Bearer JWT</p>
+                                            </div>
+                                            <button type="button" onclick="if(confirm('Keluar dari sesi ini?')){ localStorage.removeItem('access_token'); window.location.href='login.html'; }" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono text-flat-orange hover:border-flat-orange">
+                                                Keluar (Sign Out)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 7: Data & Penyimpanan -->
+                            <div id="settings-pane-data" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border">
+                                        <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Pengelolaan Data, Ekspor &amp; Penyimpanan Lokal</h3>
+                                        <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                            Manajemen penyimpanan IndexedDB lokal dan pencadangan riwayat latihan
+                                        </p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div class="p-4 border border-border rounded-xl bg-surface-subtle space-y-2">
+                                            <strong class="text-xs text-text-primary block">Ekspor Portabilitas Data</strong>
+                                            <p class="text-[11px] text-text-secondary">Unduh seluruh riwayat lari, telemetri Garmin, dan konfigurasi profil dalam format JSON standar.</p>
+                                            <button type="button" onclick="exportAthleteData()" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono inline-flex items-center gap-1.5 mt-2">
+                                                <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                                <span>Unduh Ekspor (.JSON)</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="p-4 border border-border rounded-xl bg-surface-subtle space-y-2">
+                                            <strong class="text-xs text-text-primary block">Penyimpanan IndexedDB Lokal</strong>
+                                            <p class="text-[11px] text-text-secondary">Basis data offline `GoalieAthleteDB` menyimpan antrean aksi saat tidak ada koneksi internet.</p>
+                                            <div class="flex items-center gap-2 pt-2">
+                                                <span class="w-2 h-2 rounded-full bg-flat-green"></span>
+                                                <span class="text-[10px] font-mono text-flat-green font-bold">INDEXEDDB SIAP</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Danger Zone -->
+                                    <div class="p-4 rounded-xl border-2 border-red-500/30 bg-red-500/5 space-y-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                            <strong class="text-xs text-red-500 font-bold uppercase tracking-wider">Zona Bahaya (Danger Zone)</strong>
+                                        </div>
+                                        <p class="text-[11px] text-text-secondary leading-relaxed">
+                                            Bersihkan cache lokal PWA atau reset riwayat telemetri sesi jika terjadi masalah tampilan. Tindakan ini tidak menghapus akun utama Anda.
+                                        </p>
+                                        <div class="flex flex-wrap items-center gap-2 pt-1">
+                                            <button type="button" onclick="resetSandboxData()" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono text-red-500 hover:border-red-500">
+                                                RESET LOCAL CACHE
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 8: Langganan & Lisensi -->
+                            <div id="settings-pane-billing" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border flex justify-between items-center">
+                                        <div>
+                                            <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Langganan &amp; Lisensi SaaS Goalie</h3>
+                                            <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                                Status paket atlet, akses fitur pro, dan manajemen kuota AI
+                                            </p>
+                                        </div>
+                                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-flat-green/10 text-flat-green border border-flat-green/30">LIFETIME PRO</span>
+                                    </div>
+
+                                    <div class="p-4 border-2 border-tertiary/30 bg-tertiary/5 rounded-xl space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <strong class="font-display font-bold text-sm text-text-primary">Paket Goalie Pro Athlete</strong>
+                                            <span class="text-xs font-mono font-bold text-tertiary">AKTIF</span>
+                                        </div>
+                                        <ul class="text-[11px] text-text-secondary space-y-1.5 list-disc list-inside">
+                                            <li>Akses lengkap Mesin Deterministik Jack Daniels VDOT &amp; ACWR Banister</li>
+                                            <li>Analisis Form Biomekanika 33-Titik MediaPipe Pose sagittal view</li>
+                                            <li>Kalkulasi Grade-Adjusted Pace (GAP Minetti) &amp; Dekopling Aerobik Joe Friel</li>
+                                            <li>Visualisasi peta GPS interaktif elevasi 3D dan waypoint JAKIM</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="p-4 border border-border rounded-xl bg-surface-subtle space-y-2">
+                                        <strong class="text-xs text-text-primary block">Bawa Kunci API Sendiri (BYOK Gemini)</strong>
+                                        <p class="text-[11px] text-text-secondary">Anda dapat menggunakan API Key Google Gemini pribadi untuk analitik AI tanpa batas kuota.</p>
+                                        <input type="password" id="settings-byok-key" class="flat-input text-xs" placeholder="AIzaSy... (Opsional)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 9: Bantuan & Tiket -->
+                            <div id="settings-pane-support" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border">
+                                        <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Pusat Bantuan, FAQ &amp; Tiket Kendala</h3>
+                                        <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                            Layanan bantuan teknis SSO Just-In-Time dan dokumentasi formula sains olahraga
+                                        </p>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-surface-subtle border-2 border-border space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-flat-orange animate-pulse"></span>
+                                                <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Tiket Bantuan Helpdesk</h4>
+                                            </div>
+                                            <span class="text-[9px] font-mono bg-flat-orange/10 text-flat-orange border border-flat-orange/30 px-1.5 py-0.2 rounded font-bold">SSO READY</span>
+                                        </div>
+                                        <p class="text-xs text-text-secondary font-mono leading-relaxed">
+                                            Mengalami kendala sinkronisasi telemetri Garmin, analisis biomekanika, atau kalkulasi pacing? Buka formulir tiket langsung ke sistem VPS Helpdesk terpusat.
+                                        </p>
+                                        <button type="button" onclick="openHelpdeskModal()" class="btn-flat-primary py-2 px-4 text-xs font-mono font-bold inline-flex items-center gap-2 shadow-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                            <span>Buka Formulir Tiket Bantuan</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] font-mono">
+                                        <span class="text-text-secondary">Status Sistem Server VPS:</span>
+                                        <a href="api/v1/health" target="_blank" class="text-tertiary hover:underline font-bold">
+                                            Cek Status API /health &gt;
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE 10: Tentang Aplikasi -->
+                            <div id="settings-pane-about" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border">
+                                        <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Tentang Mesin Komputasi Fisiologis Goalie</h3>
+                                        <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                            Informasi versi, lisensi, kepatuhan privasi data, dan disclaimer medis
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center text-xs pb-2 border-b border-border">
+                                            <span class="text-text-secondary">Versi Mesin Deterministik:</span>
+                                            <strong class="font-mono text-text-primary">Goalie Sports Science v2.4.1</strong>
+                                        </div>
+                                        <div class="flex justify-between items-center text-xs pb-2 border-b border-border">
+                                            <span class="text-text-secondary">PWA Service Worker:</span>
+                                            <strong class="font-mono text-text-primary">goalie-cache-v3.2.0</strong>
+                                        </div>
+                                        <div class="flex justify-between items-center text-xs pb-2 border-b border-border">
+                                            <span class="text-text-secondary">Hak Cipta:</span>
+                                            <span class="text-text-primary">&copy; 2026 Goalie Athletics Inc.</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-3 bg-surface-subtle border border-border rounded-xl text-[11px] text-text-secondary leading-relaxed">
+                                        <strong class="text-text-primary block mb-1">Disclaimer Medis Olahraga:</strong>
+                                        Goalie menyajikan pemodelan matematika fisiologis berdasarkan data telemetri. Konsultasikan selalu dengan dokter spesialis kedokteran olahraga sebelum menjalankan latihan intensitas tinggi.
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-3 pt-2">
+                                        <button type="button" onclick="openLegalModal('terms')" class="text-xs text-tertiary hover:underline font-mono">Terms of Service</button>
+                                        <button type="button" onclick="openLegalModal('privacy')" class="text-xs text-tertiary hover:underline font-mono">Privacy Policy (UU PDP)</button>
+                                        <button type="button" onclick="openLegalModal('disclaimer')" class="text-xs text-tertiary hover:underline font-mono">Medical Disclaimer</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STICKY ACTION TOOLBAR AT BOTTOM -->
+                            <div class="sticky bottom-4 z-20 flat-card border-2 border-border-strong p-3.5 bg-surface/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shadow-lg rounded-xl">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-flat-orange animate-pulse"></span>
-                                    <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Pusat Bantuan &amp; Laporkan Kendala</h4>
-                                    <span class="text-[9px] font-mono bg-flat-orange/10 text-flat-orange border border-flat-orange/30 px-1.5 py-0.2 rounded font-bold">SSO JUST-IN-TIME</span>
+                                    <button type="button" onclick="resetSettingsToDefaults()" class="text-xs font-mono text-text-secondary hover:text-text-primary underline px-2 py-1">
+                                        Reset ke Default
+                                    </button>
+                                    <button type="button" onclick="exportAthleteData()" class="btn-flat-secondary px-3 py-1.5 text-xs font-mono inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        <span data-i18n="settings_export_btn">EKSPOR JSON</span>
+                                    </button>
                                 </div>
-                                <span class="text-[10px] font-mono text-text-secondary">Slug: ai-endurance</span>
-                            </div>
-                            <p class="text-xs text-text-secondary font-mono leading-relaxed">
-                                Mengalami kendala sinkronisasi telemetri Garmin, analisis biomekanika, atau kalkulasi pacing? Buka formulir tiket langsung ke sistem VPS Helpdesk terpusat tanpa perlu login atau registrasi ulang.
-                            </p>
-                            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                                <div class="flex items-center gap-2 text-[11px] font-mono text-text-secondary">
-                                    <span>Sesi Pengguna:</span>
-                                    <strong class="text-flat-green font-bold flex items-center gap-1.5">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
-                                        <span id="helpdesk-session-user">Rizky Aryendi Gumilang (Pro Coach)</span>
-                                    </strong>
+
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="switchWorkstationTab('cockpit')" class="btn-flat-secondary px-4 py-1.5 text-xs font-mono" data-i18n="settings_back_btn">
+                                        KEMBALI KE COCKPIT
+                                    </button>
+                                    <button type="submit" id="btn-save-settings" class="btn-flat-primary px-6 py-1.5 text-xs font-mono font-bold shadow-xs" data-i18n="settings_save_btn">
+                                        SIMPAN PENGATURAN &gt;
+                                    </button>
                                 </div>
-                                <button type="button" onclick="openHelpdeskModal()" class="btn-flat-primary py-2 px-4 text-xs font-mono font-bold inline-flex items-center gap-2 shadow-xs hover:scale-[1.01] active:scale-98">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                                    <span>🆘 Bantuan / Laporkan Kendala</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 4. Data Management & Export Actions -->
-                        <div class="pt-2 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button type="button" onclick="exportAthleteData()" class="btn-flat-secondary px-3 py-2 text-xs font-mono inline-flex items-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                    <span data-i18n="settings_export_btn">EXPORT DATA (.JSON)</span>
-                                </button>
-                                <button type="button" onclick="resetSandboxData()" class="btn-flat-secondary px-3 py-2 text-xs font-mono text-flat-orange hover:border-flat-orange" data-i18n="settings_reset_btn">
-                                    RESET LOCAL CACHE
-                                </button>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <button type="button" onclick="switchWorkstationTab('cockpit')" class="btn-flat-secondary px-4 py-2 text-xs font-mono" data-i18n="settings_back_btn">
-                                    BACK TO COCKPIT
-                                </button>
-                                <button type="submit" id="btn-save-settings" class="btn-flat-primary px-6 py-2 text-xs font-mono font-bold" data-i18n="settings_save_btn">
-                                    SAVE ATHLETE SETTINGS &gt;
-                                </button>
-                            </div>
-                        </div>
-
-                    </form>
+                        </form>
+                    </section>
                 </div>
             </div>
 
@@ -15141,9 +15605,99 @@
                 setVal('settings-units', p.unit_preference || 'metric');
                 setVal('settings-theme', localStorage.getItem('theme') || 'light');
                 setVal('settings-language', localStorage.getItem('goalie_language') || 'id');
+
+                // Sync sidebar quick athlete identity preview card
+                const nameEl = document.getElementById('settings-user-display-name');
+                const emailEl = document.getElementById('settings-user-display-email');
+                const avatarEl = document.getElementById('settings-avatar-preview');
+                const fullName = p.full_name || 'Rizky Aryendi Gumilang';
+                if (nameEl) nameEl.textContent = fullName;
+                if (emailEl) emailEl.textContent = p.email || appState.userEmail || 'athlete@goalie.fit';
+                if (avatarEl) avatarEl.textContent = (fullName[0] || 'R').toUpperCase();
+                updateKarvonenCalculation();
             } catch (err) {
                 console.warn('[Goalie] Load profile settings:', err);
             }
+        }
+
+        // ══════════════════════════════════════════════════════════
+        // SAAS SETTINGS COMPONENT INTERACTION CONTROLLERS
+        // ══════════════════════════════════════════════════════════
+
+        function switchSettingsCategory(categoryId) {
+            const categories = ['profile', 'preferences', 'appearance', 'ai-coach', 'integrations', 'security', 'data', 'billing', 'support', 'about'];
+            categories.forEach(cat => {
+                const pane = document.getElementById(`settings-pane-${cat}`);
+                const btn = document.getElementById(`settings-cat-btn-${cat}`);
+                if (pane) pane.classList.toggle('hidden', cat !== categoryId);
+                if (btn) {
+                    if (cat === categoryId) {
+                        btn.className = 'settings-cat-btn active w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold bg-tertiary/10 text-tertiary border border-tertiary/20 transition-all text-left whitespace-nowrap shrink-0';
+                    } else {
+                        btn.className = 'settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0';
+                    }
+                }
+            });
+        }
+
+        function filterSettingsSections(query) {
+            const q = (query || '').toLowerCase().trim();
+            const panes = document.querySelectorAll('.settings-pane');
+            if (!q) {
+                const activeBtn = document.querySelector('.settings-cat-btn.active');
+                const activeCat = activeBtn ? activeBtn.dataset.cat : 'profile';
+                switchSettingsCategory(activeCat);
+                return;
+            }
+            panes.forEach(pane => {
+                const text = pane.textContent.toLowerCase();
+                pane.classList.toggle('hidden', !text.includes(q));
+            });
+        }
+
+        function updateKarvonenCalculation() {
+            const maxHr = parseInt(document.getElementById('settings-max-hr')?.value) || 192;
+            const rhr = parseInt(document.getElementById('settings-resting-hr')?.value) || 48;
+            const hrr = Math.max(0, maxHr - rhr);
+            const z2Min = Math.round(rhr + (hrr * 0.60));
+            const z2Max = Math.round(rhr + (hrr * 0.70));
+            
+            const hrrEl = document.getElementById('settings-hrr-display');
+            const z2El = document.getElementById('settings-z2-range');
+            if (hrrEl) hrrEl.textContent = `${hrr} bpm`;
+            if (z2El) z2El.textContent = `${z2Min} - ${z2Max} bpm`;
+        }
+
+        function markSettingsUnsaved() {
+            const statusBadge = document.getElementById('settings-save-status');
+            if (statusBadge) {
+                statusBadge.textContent = 'PERUBAHAN BELUM DISIMPAN';
+                statusBadge.className = 'flat-badge border-flat-orange text-flat-orange font-mono';
+            }
+        }
+
+        function resetSettingsToDefaults() {
+            if (!confirm('Kembalikan semua nilai pengaturan ke setelan standar atletik bawaan?')) return;
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val;
+            };
+            setVal('settings-weight', 68.5);
+            setVal('settings-height', 175);
+            setVal('settings-gender', 'male');
+            setVal('settings-resting-hr', 48);
+            setVal('settings-max-hr', 192);
+            setVal('settings-lt-hr', 168);
+            setVal('settings-weekly-mileage', 50);
+            setVal('settings-sport-focus', 'running');
+            setVal('settings-fitness-level', 'intermediate');
+            setVal('settings-coach-tier', 'free');
+            setVal('settings-units', 'metric');
+            setVal('settings-theme', 'light');
+            setVal('settings-language', 'id');
+            updateKarvonenCalculation();
+            markSettingsUnsaved();
+            toast.info('Default Dimuat', 'Pengaturan dikembalikan ke parameter standar. Tekan Simpan Pengaturan untuk mengunci.');
         }
 
         async function handleSettingsSave(e) {
@@ -15189,17 +15743,24 @@
                     statusBadge.className = 'flat-badge border-flat-green text-flat-green font-mono';
                 }
 
+                if (payload.full_name) {
+                    const nameEl = document.getElementById('settings-user-display-name');
+                    const avatarEl = document.getElementById('settings-avatar-preview');
+                    if (nameEl) nameEl.textContent = payload.full_name;
+                    if (avatarEl) avatarEl.textContent = (payload.full_name[0] || 'R').toUpperCase();
+                }
+
                 if (payload.preferred_coach_tier) {
                     selectCoachTier(payload.preferred_coach_tier, false);
                 }
 
-                toast.success('Settings Saved', 'Athlete physiological profile and training goals updated.');
+                toast.success('Pengaturan Disimpan', 'Profil fisiologis atlet dan preferensi aplikasi berhasil diperbarui.');
             } catch (err) {
-                toast.success('Local Settings Saved', 'Biometrics updated in local training session.');
+                toast.success('Pengaturan Lokal Disimpan', 'Biometrik tersimpan di sesi latihan lokal perangkat.');
             } finally {
                 if (btn) {
                     btn.disabled = false;
-                    btn.textContent = 'SAVE ATHLETE SETTINGS >';
+                    btn.textContent = 'SIMPAN PENGATURAN >';
                 }
             }
         }
