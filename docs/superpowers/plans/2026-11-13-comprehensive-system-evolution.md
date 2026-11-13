@@ -46,24 +46,24 @@
 - Produces: `SQLiteStore` class with `init_db()`, `migrate_from_json(json_path)`, `get_user_credential(user_id)`, `save_user_credential(user_id, email, password_hash)`, `get_profile(user_id)`, `save_profile(user_id, profile)`, `get_workouts(user_id)`, `save_workouts(user_id, workouts)`.
 - Consumes: Standard library `sqlite3`, `json`, `pathlib`, `os`.
 
-- [ ] **Step 1: Write the failing test for SQLite persistence**
+- [x] **Step 1: Write the failing test for SQLite persistence**
   Create `tests/test_sqlite_persistence.py` testing database creation, table initialization, WAL mode, CRUD for users and profiles, and migration from a sample JSON file.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
   Run: `.\venv\Scripts\python.exe -m unittest tests/test_sqlite_persistence.py`
   Expected: FAIL (module `app.services.db_storage` not found).
 
-- [ ] **Step 3: Implement `app/services/db_storage.py`**
+- [x] **Step 3: Implement `app/services/db_storage.py`**
   Implement thread-safe SQLite storage with WAL mode, parameterized queries, and automatic JSON migration on initial load.
 
-- [ ] **Step 4: Connect `app/services/sandbox_store.py` to `SQLiteStore`**
+- [x] **Step 4: Connect `app/services/sandbox_store.py` to `SQLiteStore`**
   Ensure all existing functions (`get_profile`, `save_profile`, `get_user_credential`, `save_user_credential`, etc.) read and write through `db_storage`, while maintaining in-memory caching for speed.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
   Run: `.\venv\Scripts\python.exe -m unittest tests/test_sqlite_persistence.py`
   Expected: PASS.
 
-- [ ] **Step 6: Run full test suite**
+- [x] **Step 6: Run full test suite**
   Run: `.\venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"`
   Expected: 89+ tests PASS.
 
@@ -82,20 +82,20 @@
   - `SportsEngine.calculate_course_fueling(distance_km: float, total_ascent_m: float, avg_temp_c: float, weight_kg: float, expected_duration_hours: float) -> dict`
   - Endpoint `POST /api/v1/telemetry/daily-readiness-sync` in `app/routers/telemetry.py`.
 
-- [ ] **Step 1: Write failing tests for HRV readiness and course fueling**
+- [x] **Step 1: Write failing tests for HRV readiness and course fueling**
   Create `tests/test_hrv_and_fueling_engine.py` verifying autonomic balance categories (Balanced, Parasympathetic Saturation, Sympathetic Overreach), intensity capping, and hydration calculation.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
   Run: `.\venv\Scripts\python.exe -m unittest tests/test_hrv_and_fueling_engine.py`
   Expected: FAIL (`calculate_hrv_readiness` not found).
 
-- [ ] **Step 3: Implement deterministic functions in `app/services/sports_engine.py`**
+- [x] **Step 3: Implement deterministic functions in `app/services/sports_engine.py`**
   Add `calculate_hrv_readiness` and `calculate_course_fueling`.
 
-- [ ] **Step 4: Implement readiness sync endpoint in `app/routers/telemetry.py`**
+- [x] **Step 4: Implement readiness sync endpoint in `app/routers/telemetry.py`**
   Add `POST /api/v1/telemetry/daily-readiness-sync` integrating Garmin daily telemetry with the readiness calculation.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
   Run: `.\venv\Scripts\python.exe -m unittest tests/test_hrv_and_fueling_engine.py`
   Expected: PASS.
 
@@ -113,19 +113,19 @@
 **Interfaces:**
 - Produces: Clean modular ES-compatible script files exposing necessary functions on `window` (`GoalieSportsMath`, `GoalieSettings`, `GoalieElevationScrubber`, `GoalieMobile`).
 
-- [ ] **Step 1: Create `public/js/modules/sports-math.js`**
+- [x] **Step 1: Create `public/js/modules/sports-math.js`**
   Extract client-side Karvonen, pace conversions, GAP, and split calculations into a focused module.
 
-- [ ] **Step 2: Create `public/js/modules/settings-controller.js`**
+- [x] **Step 2: Create `public/js/modules/settings-controller.js`**
   Extract SaaS Settings controllers: `switchSettingsCategory`, `filterSettingsSections`, `updateKarvonenCalculation`, `handlePasswordChangeInSettings`, `handleAthleteDataImport`, `handleAutomationToggle`.
 
-- [ ] **Step 3: Create `public/js/modules/mobile-native.js`**
+- [x] **Step 3: Create `public/js/modules/mobile-native.js`**
   Implement haptic feedback handlers, offline status watchers, and pull-to-refresh listener.
 
-- [ ] **Step 4: Update `index.html` to reference modules**
+- [x] **Step 4: Update `index.html` to reference modules**
   Include module scripts cleanly in `index.html` with backward-compatible global bindings.
 
-- [ ] **Step 5: Run frontend build**
+- [x] **Step 5: Run frontend build**
   Run: `npm run build`
   Expected: Build succeeds with asset distribution to `dist/` and mobile targets.
 
@@ -142,16 +142,16 @@
 - Produces: Interactive scrubber connecting the course elevation profile with a synced map marker pin on the Leaflet course map.
 - Produces: Enhanced Service Worker with offline schedule caching and queueing.
 
-- [ ] **Step 1: Implement `public/js/modules/map-elevation-scrubber.js`**
+- [x] **Step 1: Implement `public/js/modules/map-elevation-scrubber.js`**
   Create cross-scrubber attaching hover/touch events on the elevation Canvas/SVG that updates a dedicated Leaflet pulsing waypoint icon on the course map.
 
-- [ ] **Step 2: Wire scrubber into Course Map section in `index.html`**
+- [x] **Step 2: Wire scrubber into Course Map section in `index.html`**
   Connect course GPX stream to the elevation scrubber module.
 
-- [ ] **Step 3: Enhance `sw.js` with offline caching rules**
+- [x] **Step 3: Enhance `sw.js` with offline caching rules**
   Add cache rules for `/api/v1/training/calendar` and core assets to enable full offline schedule viewing.
 
-- [ ] **Step 4: Build and test frontend**
+- [x] **Step 4: Build and test frontend**
   Run: `npm run build`
   Expected: PASS.
 
@@ -159,16 +159,16 @@
 
 ### Task 5: Verification, Zero Em-Dash Audit, & VPS Deployment
 
-- [ ] **Step 1: Run complete backend test suite**
+- [x] **Step 1: Run complete backend test suite**
   Run: `.\venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"`
   Expected: 90+ tests PASS.
 
-- [ ] **Step 2: Run frontend build and Capacitor sync**
+- [x] **Step 2: Run frontend build and Capacitor sync**
   Run: `npm run build`
   Expected: PASS.
 
-- [ ] **Step 3: Audit for zero em-dash compliance**
+- [x] **Step 3: Audit for zero em-dash compliance**
   Run check across all modified files for `\u2014`. Expected: 0 matches.
 
-- [ ] **Step 4: Git commit and push**
+- [x] **Step 4: Git commit and push**
   Stage all files, commit with conventional commit message, and push to `origin/main`.
