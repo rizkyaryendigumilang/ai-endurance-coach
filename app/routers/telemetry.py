@@ -3,7 +3,7 @@ import os
 import re
 import uuid
 from typing import Optional
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Request
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Request, Body
 from app.core.config import supabase
 from app.core.auth import get_current_user, get_current_user_optional
 from app.schemas.models import (
@@ -617,4 +617,86 @@ def get_deep_zones_and_heatmaps(user_id: str = Depends(get_current_user_optional
             "average_hr_trend": "Turun 4 bpm pada pace yang sama (Adaptasi Aerobik Positif)",
             "aerobic_efficiency_improvement": "+6.4% vs 60 hari lalu"
         }
+    }
+
+
+@router.post("/api/v1/telemetry/daily-readiness-sync", tags=["Telemetry"])
+def sync_daily_readiness_endpoint(
+    payload: Optional[dict] = Body(default=None),
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    Sinkronisasi Kesiapan Latihan Harian berbasis rMSSD (Heart Rate Variability) Garmin.
+    Menerima telemetri pemulihan Garmin (HRV rMSSD, Resting HR, Sleep Score, Body Battery)
+    dan menyimpannya secara terstruktur di SQLite.
+    """
+    from datetime import datetime, timezone
+    from app.services.db_storage import sqlite_store
+    
+    uid = user_id or sandbox_store.OWNER_USER_ID
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
+    profile = sandbox_store.get_profile(uid) or {}
+    base_rhr = int(profile.get("resting_hr") or 48)
+
+    data = payload or {}
+    hrv_rmssd = float(data.get("hrv_rmssd") or 62.0)
+    hrv_baseline_7d = float(data.get("hrv_baseline_7d") or 60.0)
+    resting_hr = int(data.get("resting_hr") or base_rhr)
+    sleep_score = data.get("sleep_score")
+    body_battery = data.get("body_battery")
+
+    readiness = SportsEngine.calculate_hrv_readiness(
+        hrv_rmssd=hrv_rmssd,
+        hrv_baseline_7d=hrv_baseline_7d,
+        resting_hr=resting_hr,
+        baseline_rhr=base_rhr,
+        sleep_score=sleep_score,
+        body_battery=body_battery
+    )
+
+    # Persist into SQLite
+    sqlite_store.save_daily_readiness(uid, today, {
+        **readiness,
+        "hrv_rmssd": hrv_rmssd,
+        "resting_hr": resting_hr,
+        "sleep_score": sleep_score,
+        "body_battery": body_battery
+    })
+
+    return {
+        "status": "success",
+        "date": today,
+        "athlete_id": uid,
+        "readiness": readiness
+    }
+
+
+@router.post("/api/v1/telemetry/course-fueling", tags=["Telemetry"])
+def calculate_course_fueling_endpoint(
+    payload: dict = Body(...),
+    user_id: str = Depends(get_current_user_optional)
+):
+    """
+    Kalkulasi nutrisi dan hidrasi lomba berbasis elevasi rute dan suhu.
+    """
+    uid = user_id or sandbox_store.OWNER_USER_ID
+    profile = sandbox_store.get_profile(uid) or {}
+    weight_kg = float(payload.get("weight_kg") or profile.get("weight_kg") or 68.0)
+    
+    dist_km = float(payload.get("distance_km") or 42.195)
+    ascent_m = float(payload.get("total_ascent_m") or 180.0)
+    temp_c = float(payload.get("avg_temp_c") or 28.0)
+    dur_hrs = float(payload.get("expected_duration_hours") or 3.5)
+
+    res = SportsEngine.calculate_course_fueling(
+        distance_km=dist_km,
+        total_ascent_m=ascent_m,
+        avg_temp_c=temp_c,
+        weight_kg=weight_kg,
+        expected_duration_hours=dur_hrs
+    )
+    return {
+        "status": "success",
+        "course_fueling": res
     }

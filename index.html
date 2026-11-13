@@ -51,6 +51,11 @@
     <script src="public/js/db.js?v=2.9.3" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/db.js?v=2.9.3';"></script>
     <script src="public/js/garmin_workouts_data.js?v=2.9.3" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/garmin_workouts_data.js?v=2.9.3';"></script>
     <script src="public/js/garmin_map_viewer.js?v=2.9.3" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/garmin_map_viewer.js?v=2.9.3';"></script>
+    <!-- Goalie Modular Architecture Modules -->
+    <script src="public/js/modules/sports-math.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/sports-math.js?v=1.0.0';"></script>
+    <script src="public/js/modules/settings-controller.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/settings-controller.js?v=1.0.0';"></script>
+    <script src="public/js/modules/map-elevation-scrubber.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/map-elevation-scrubber.js?v=1.0.0';"></script>
+    <script src="public/js/modules/mobile-native.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/mobile-native.js?v=1.0.0';"></script>
 
 
     <style>
@@ -918,6 +923,12 @@
 
     <!-- Toast Notifications Root -->
     <div id="sonner-toaster" aria-live="polite"></div>
+
+    <!-- Offline Network Resilience Status Pill -->
+    <div id="network-offline-pill" class="hidden fixed top-3 left-1/2 -translate-x-1/2 z-[110] px-3.5 py-1.5 rounded-full bg-amber-500 text-white font-mono text-[11px] font-bold shadow-lg flex items-center gap-2 backdrop-blur-md transition-all">
+        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        <span>Mode Offline Aktif (Cache Tersimpan)</span>
+    </div>
 
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- NAVIGATION BAR: Apple Translucent Frosted Glass Chrome     -->
@@ -8773,6 +8784,17 @@
                 checkSubscriptionStatus()
             ]);
 
+            // Mobile Native Pull-To-Refresh on Activity Feed
+            if (window.GoalieMobile && typeof window.GoalieMobile.initPullToRefresh === 'function') {
+                window.GoalieMobile.initPullToRefresh('activities-feed-container', () => {
+                    if (typeof triggerGarminFullSync === 'function') {
+                        triggerGarminFullSync();
+                    } else if (typeof syncGarminActivities === 'function') {
+                        syncGarminActivities();
+                    }
+                });
+            }
+
             // Shortcut ⌘K
             document.addEventListener('keydown', (e) => {
                 if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -9111,6 +9133,9 @@
 
 
         function switchWorkstationTab(tabName) {
+            if (window.GoalieMobile && typeof window.GoalieMobile.triggerHaptic === 'function') {
+                window.GoalieMobile.triggerHaptic('selection');
+            }
             const tabs = ['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'];
             tabs.forEach(t => {
                 const content = document.getElementById(`tab-content-${t}`);

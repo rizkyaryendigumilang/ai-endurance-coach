@@ -11,6 +11,7 @@ import sys
 import threading
 import hashlib
 import secrets
+from app.services.db_storage import sqlite_store
 
 # --- Persistence Layer ---
 _STORE_PATH = os.environ.get(
@@ -67,6 +68,10 @@ def _load_persisted_store():
             data = json.load(f)
         if isinstance(data, dict):
             _USERS_DB.update(data)
+            try:
+                sqlite_store.migrate_from_json(_STORE_PATH)
+            except Exception:
+                pass
     except Exception as e:
         import logging
         logging.getLogger(__name__).warning(f"[sandbox_store] Failed to load persisted store: {e}")
@@ -179,10 +184,14 @@ def update_profile(user_id: str, data: dict):
         }
         store["profile"]["subscription_tier"] = "pro"
     _persist_store()
+    try:
+        sqlite_store.save_profile(user_id, store["profile"])
+    except Exception:
+        pass
     return store["profile"]
 
 def save_user_credential(user_id: str, email: str, password_hash: str):
-    """Save user login credential hash in local store."""
+    """Save user login credential hash in local store and SQLite."""
     store = _get_user_store(user_id)
     store["auth_credential"] = {
         "email": email.strip().lower(),
@@ -190,11 +199,24 @@ def save_user_credential(user_id: str, email: str, password_hash: str):
         "updated_at": datetime.now(timezone.utc).isoformat()
     }
     _persist_store()
+    try:
+        sqlite_store.save_user_credential(user_id, email, password_hash)
+    except Exception:
+        pass
 
 def get_user_credential(user_id: str) -> Optional[dict]:
     """Get stored user authentication credential if available."""
     store = _get_user_store(user_id)
-    return store.get("auth_credential")
+    cred = store.get("auth_credential")
+    if not cred:
+        try:
+            sql_cred = sqlite_store.get_user_credential(user_id)
+            if sql_cred:
+                store["auth_credential"] = sql_cred
+                return sql_cred
+        except Exception:
+            pass
+    return cred
 
 def get_daily_chat_count(user_id: str) -> int:
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")

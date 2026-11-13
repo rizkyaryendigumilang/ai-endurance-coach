@@ -1,5 +1,5 @@
-// Goalie - Production PWA Service Worker (v3.2.0)
-const CACHE_NAME = 'goalie-cache-v3.2.0';
+// Goalie - Production PWA Service Worker (v3.3.0)
+const CACHE_NAME = 'goalie-cache-v3.3.0';
 const STATIC_ASSETS = [
     './',
     'index.html',
@@ -16,6 +16,10 @@ const STATIC_ASSETS = [
     'public/css/tailwind.min.css',
     'public/js/db.js',
     'public/js/garmin_map_viewer.js',
+    'public/js/modules/sports-math.js',
+    'public/js/modules/settings-controller.js',
+    'public/js/modules/map-elevation-scrubber.js',
+    'public/js/modules/mobile-native.js',
     'public/vendor/leaflet/leaflet.js',
     'public/vendor/leaflet/leaflet.css'
 ];

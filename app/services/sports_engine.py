@@ -1465,3 +1465,141 @@ class SportsEngine:
             "intent": intent_type,
             "max_safe_volume_ceiling_km": max_allowed_km
         }
+
+    # ==========================================
+    # 10. HRV rMSSD READINESS & AUTONOMIC BALANCE
+    # ==========================================
+    @staticmethod
+    def calculate_hrv_readiness(
+        hrv_rmssd: float,
+        hrv_baseline_7d: float,
+        resting_hr: int,
+        baseline_rhr: int,
+        sleep_score: Optional[int] = None,
+        body_battery: Optional[int] = None
+    ) -> dict:
+        """
+        Kalkulasi Kesiapan Latihan Harian berbasis rMSSD (Heart Rate Variability) Garmin.
+        Menganalisis keseimbangan sistem saraf otonom (Parasympathetic vs Sympathetic)
+        serta menentukan batas intensitas latihan yang diizinkan (intensity ceiling).
+        """
+        baseline_hrv = max(10.0, float(hrv_baseline_7d or 50.0))
+        current_hrv = max(5.0, float(hrv_rmssd or baseline_hrv))
+        hrv_ratio = current_hrv / baseline_hrv
+        rhr_delta = int(resting_hr - baseline_rhr)
+
+        # Autonomic State Determination
+        if hrv_ratio >= 0.90 and hrv_ratio <= 1.20 and rhr_delta <= 2:
+            autonomic_state = "Optimal Recovery / Balanced"
+            intensity_ceiling = "Full Quality / Threshold / Interval Ready"
+            base_score = 88.0 + min(12.0, (hrv_ratio - 1.0) * 20.0)
+            rec = "Sistem saraf otonom dalam kondisi optimal. Siap mengeksekusi sesi kualitas tinggi atau interval threshold."
+        elif hrv_ratio < 0.85 or rhr_delta >= 4:
+            autonomic_state = "Sympathetic Stress / High Fatigue"
+            intensity_ceiling = "Active Recovery / Zone 1 Only or Rest Day"
+            base_score = max(35.0, 60.0 - (1.0 - hrv_ratio) * 50.0 - (rhr_delta * 3.0))
+            rec = "Aktivitas simpatetik dominan akibat kelelahan akumulatif. Batasi latihan pada Zona 1 pemulihan atau istirahat total."
+        elif hrv_ratio > 1.25 and rhr_delta <= -2:
+            autonomic_state = "Parasympathetic Saturation"
+            intensity_ceiling = "Aerobic Base / Zone 2 Steady"
+            base_score = 72.0
+            rec = "Saturasi parasimpatis terdeteksi. Disarankan lari aerobik ringan Zona 2 untuk reaktivasi sistem kardiovaskular."
+        else:
+            autonomic_state = "Moderate Recovery"
+            intensity_ceiling = "Aerobic Base / Zone 2 Steady"
+            base_score = 75.0
+            rec = "Kondisi fisik cukup baik. Lakukan latihan aerobik dasar Zona 2 dan hindari beban anaerobik maksimal."
+
+        # Weight blending with Sleep Score & Body Battery if available
+        weights_total = 0.60
+        weighted_sum = base_score * 0.60
+
+        if sleep_score is not None and 0 <= sleep_score <= 100:
+            weighted_sum += float(sleep_score) * 0.25
+            weights_total += 0.25
+
+        if body_battery is not None and 0 <= body_battery <= 100:
+            weighted_sum += float(body_battery) * 0.15
+            weights_total += 0.15
+
+        final_score = round(weighted_sum / weights_total, 1)
+
+        # Ensure consistency between final score and intensity ceiling
+        if final_score < 60.0:
+            intensity_ceiling = "Active Recovery / Zone 1 Only or Rest Day"
+            if autonomic_state == "Optimal Recovery / Balanced":
+                autonomic_state = "Sympathetic Stress / High Fatigue"
+        elif final_score >= 80.0 and autonomic_state != "Sympathetic Stress / High Fatigue":
+            intensity_ceiling = "Full Quality / Threshold / Interval Ready"
+
+        return {
+            "readiness_score": final_score,
+            "autonomic_state": autonomic_state,
+            "intensity_ceiling": intensity_ceiling,
+            "hrv_ratio": round(hrv_ratio, 3),
+            "resting_hr_delta": rhr_delta,
+            "recommendation": rec
+        }
+
+    # ==========================================
+    # 11. COURSE FUELING & HYDRATION WITH ELEVATION
+    # ==========================================
+    @staticmethod
+    def calculate_course_fueling(
+        distance_km: float,
+        total_ascent_m: float,
+        avg_temp_c: float,
+        weight_kg: float = 68.0,
+        expected_duration_hours: float = 3.5
+    ) -> dict:
+        """
+        Kalkulasi strategi nutrisi dan hidrasi lomba berbasis profil elevasi rute dan suhu.
+        """
+        dist = max(1.0, float(distance_km))
+        dur_hrs = max(0.25, float(expected_duration_hours))
+        wt = max(40.0, float(weight_kg))
+        ascent = max(0.0, float(total_ascent_m))
+        temp = float(avg_temp_c)
+
+        # Total energy expenditure including gravitational ascent work
+        flat_cal = dist * wt * 1.036
+        climb_cal = ascent * wt * 0.003
+        total_cal = round(flat_cal + climb_cal, 1)
+
+        # Carbohydrate intake scaling
+        if dur_hrs < 1.25:
+            carbs_hr = 30
+            interval_min = 30
+        elif dur_hrs <= 2.5:
+            carbs_hr = 60
+            interval_min = 30
+        else:
+            climb_intensity = min(15, int((ascent / dist) * 2.0))
+            carbs_hr = min(90, 60 + climb_intensity)
+            interval_min = 25
+
+        total_carbs = int(carbs_hr * dur_hrs)
+
+        # Hydration and Electrolytes
+        heat_penalty_ml = max(0.0, temp - 20.0) * 35.0
+        ascent_penalty_ml = (ascent / dist) * 10.0
+        hydration_hr = int(round(500.0 + heat_penalty_ml + ascent_penalty_ml))
+        total_hydration = int(hydration_hr * dur_hrs)
+
+        sodium_hr = int(round(min(1000.0, 500.0 + max(0.0, temp - 22.0) * 25.0)))
+
+        summary = (
+            f"Kebutuhan energi {total_cal} kkal ({carbs_hr}g karbohidrat per jam setiap {interval_min} menit). "
+            f"Target hidrasi {hydration_hr} ml/jam dengan asupan sodium {sodium_hr} mg/jam untuk mengimbangi suhu {temp:.1f}°C dan tanjakan {ascent:.0f} m."
+        )
+
+        return {
+            "total_calories_burned": total_cal,
+            "carbs_per_hour_g": carbs_hr,
+            "total_carbs_g": total_carbs,
+            "hydration_ml_per_hour": hydration_hr,
+            "total_hydration_ml": total_hydration,
+            "sodium_mg_per_hour": sodium_hr,
+            "fueling_interval_minutes": interval_min,
+            "fuel_strategy_summary": summary
+        }

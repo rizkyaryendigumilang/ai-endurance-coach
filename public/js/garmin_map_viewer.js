@@ -311,6 +311,10 @@ let activityMapInstance = null;
                     .catch(() => { data._gpsFetching = false; });
             }
 
+            if (window.GoalieElevationScrubber && typeof window.GoalieElevationScrubber.init === 'function') {
+                window.GoalieElevationScrubber.init(activityMapInstance, routeCoords, distNum);
+            }
+
             // Adjust viewport bounds with padding
             setTimeout(() => {
                 if (activityMapInstance && currentMapPolyline) {
