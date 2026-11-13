@@ -1,4 +1,4 @@
-# GLOSSARY.md — AI Endurance Coach Domain Vocabulary
+# GLOSSARY.md - AI Endurance Coach Domain Vocabulary
 
 This document establishes the canonical terminology and physiological definitions for Goalie. All code symbols, tests, issue discussions, and UI copy must adhere to these definitions.
 
@@ -75,3 +75,12 @@ A finite state machine tracking runner continuity:
 - `MISSED_CRITICAL`: Missed Tier 1 anchor workout; recalibrating weekly structure.
 - `DELOAD`: Entering scheduled recovery or post-illness ramp-up.
 - `INJURED`: Program suspended; active rehab mode.
+
+### rMSSD (Root Mean Square of Successive Differences)
+The primary time-domain metric of Heart Rate Variability (HRV) measured in milliseconds (ms). Reflects beat-to-beat variations driven by vagal parasympathetic modulation. Higher baseline rMSSD indicates superior cardiovascular autonomic recovery; acute drops indicate accumulated physiological fatigue or systemic stress.
+
+### Autonomic Nervous Balance (Keseimbangan Saraf Otonom)
+The dynamic equilibrium between sympathetic tone (fight-or-flight catabolic state) and parasympathetic tone (rest-and-digest anabolic recovery). Evaluated by Goalie via the ratio of current nightly rMSSD to rolling 7-day baseline combined with resting heart rate deviation ($HR_{rest} - HR_{baseline}$).
+
+### Course Elevation Fueling
+Nutritional and hydration strategy dynamically scaled according to the gravitational energetic cost of elevation ascent. Ascending climbs burn additional carbohydrates per meter gained, requiring elevated hourly carbohydrate targets (up to 90g/hr) and higher fluid/sodium replenishment rates based on ambient temperature and gradient.

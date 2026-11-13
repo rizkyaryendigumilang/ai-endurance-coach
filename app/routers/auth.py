@@ -275,7 +275,7 @@ def update_profile(profile: UserProfileUpdate, user_id: str = Depends(get_curren
     update_data = {k: v for k, v in profile.model_dump().items() if v is not None}
     if not update_data:
         raise HTTPException(400, "Tidak ada data yang diupdate.")
-    update_data["updated_at"] = "now()"
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
     try:
         if supabase:
