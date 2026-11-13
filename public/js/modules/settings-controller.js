@@ -8,19 +8,26 @@
     'use strict';
 
     function switchSettingsCategory(categoryId) {
-        const categories = ['profile', 'preferences', 'appearance', 'ai-coach', 'integrations', 'security', 'data', 'billing', 'support', 'about'];
+        const categories = ['profile', 'preferences', 'appearance', 'notifications', 'security', 'integrations', 'data', 'billing', 'support', 'about', 'ai-coach'];
         categories.forEach(cat => {
             const pane = document.getElementById(`settings-pane-${cat}`);
             const btn = document.getElementById(`settings-cat-btn-${cat}`);
             if (pane) pane.classList.toggle('hidden', cat !== categoryId);
             if (btn) {
                 if (cat === categoryId) {
-                    btn.className = 'settings-cat-btn active w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold bg-tertiary/10 text-tertiary border border-tertiary/20 transition-all text-left whitespace-nowrap shrink-0';
+                    btn.className = 'settings-cat-btn active w-full flex items-center justify-between p-2.5 rounded-xl bg-tertiary/10 border border-tertiary/20 text-left transition-all group';
                 } else {
-                    btn.className = 'settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0';
+                    btn.className = 'settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-surface-subtle border border-transparent text-left transition-all group';
                 }
             }
         });
+
+        if (window.innerWidth < 768) {
+            const paneEl = document.getElementById(`settings-pane-${categoryId}`);
+            if (paneEl) {
+                paneEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
     }
 
     function filterSettingsSections(query) {

@@ -6718,94 +6718,147 @@
                 <!-- 2-Column SaaS Layout Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     
-                    <!-- LEFT COLUMN: Categories Navigation (Sidebar) -->
-                    <aside class="md:col-span-4 lg:col-span-3 space-y-4">
-                        <div class="flat-card border-2 border-border-strong p-2 sm:p-3 bg-surface space-y-1">
-                            <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary px-2.5 py-1.5 block">Kategori Pengaturan</span>
-                            
-                            <nav id="settings-category-nav" class="space-y-1 flex md:flex-col overflow-x-auto md:overflow-x-visible pb-1 md:pb-0" role="tablist">
-                                <!-- 1. Profile -->
-                                <button type="button" onclick="switchSettingsCategory('profile')" id="settings-cat-btn-profile" data-cat="profile" class="settings-cat-btn active w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold bg-tertiary/10 text-tertiary border border-tertiary/20 transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                        <span>Profil &amp; Biometrik</span>
-                                    </span>
-                                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-tertiary/20 text-tertiary font-bold ml-2">INTI</span>
+                    <!-- LEFT COLUMN: Categories Navigation (Sidebar / Master Settings Card) -->
+                    <aside class="md:col-span-5 lg:col-span-4 space-y-4">
+                        <div class="flat-card border-2 border-border-strong p-4 sm:p-5 bg-surface rounded-2xl shadow-sm space-y-3">
+                            <!-- Card Header: Settings + Recommended Badge -->
+                            <div class="flex items-center justify-between pb-3 border-b border-border">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <h3 class="font-bold text-base text-text-primary font-display">Settings</h3>
+                                </div>
+                                <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-500/10 dark:text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-mono">Recommended</span>
+                            </div>
+
+                            <!-- List of 10 Settings Components (Exact Layout) -->
+                            <nav id="settings-category-nav" class="space-y-1 flex flex-col" role="tablist">
+                                <!-- 1. Account & Profile -->
+                                <button type="button" onclick="switchSettingsCategory('profile')" id="settings-cat-btn-profile" data-cat="profile" class="settings-cat-btn active w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Account &amp; Profile</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Informasi dan identitas pengguna</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
                                 <!-- 2. Preferences -->
-                                <button type="button" onclick="switchSettingsCategory('preferences')" id="settings-cat-btn-preferences" data-cat="preferences" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                                        <span>Target &amp; Preferensi</span>
-                                    </span>
+                                <button type="button" onclick="switchSettingsCategory('preferences')" id="settings-cat-btn-preferences" data-cat="preferences" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Preferences</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Preferensi dan perilaku aplikasi</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
                                 <!-- 3. Appearance -->
-                                <button type="button" onclick="switchSettingsCategory('appearance')" id="settings-cat-btn-appearance" data-cat="appearance" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4 4 0 014-4 4 4 0 014 4 4 4 0 01-4 4zm0 0l4.5-4.5M12 3v4m0 10v4M3 12h4m10 0h4"/></svg>
-                                        <span>Tampilan &amp; UI</span>
-                                    </span>
+                                <button type="button" onclick="switchSettingsCategory('appearance')" id="settings-cat-btn-appearance" data-cat="appearance" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4 4 0 014-4 4 4 0 014 4 4 4 0 01-4 4zm0 0l4.5-4.5M12 3v4m0 10v4M3 12h4m10 0h4"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Appearance</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Tema, warna, dan tampilan</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
-                                <!-- 4. AI Coach -->
-                                <button type="button" onclick="switchSettingsCategory('ai-coach')" id="settings-cat-btn-ai-coach" data-cat="ai-coach" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                        <span>AI Coach &amp; Otomasi</span>
-                                    </span>
-                                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-flat-orange/10 text-flat-orange font-bold ml-2">GEMINI</span>
+                                <!-- 4. Notifications -->
+                                <button type="button" onclick="switchSettingsCategory('notifications')" id="settings-cat-btn-notifications" data-cat="notifications" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Notifications</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Pengaturan notifikasi</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
-                                <!-- 5. Integrations -->
-                                <button type="button" onclick="switchSettingsCategory('integrations')" id="settings-cat-btn-integrations" data-cat="integrations" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        <span>Integrasi Eksternal</span>
-                                    </span>
+                                <!-- 5. Security & Privacy -->
+                                <button type="button" onclick="switchSettingsCategory('security')" id="settings-cat-btn-security" data-cat="security" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Security &amp; Privacy</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Keamanan dan privasi akun</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
-                                <!-- 6. Security -->
-                                <button type="button" onclick="switchSettingsCategory('security')" id="settings-cat-btn-security" data-cat="security" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                        <span>Keamanan &amp; Sesi</span>
-                                    </span>
+                                <!-- 6. Integrations -->
+                                <button type="button" onclick="switchSettingsCategory('integrations')" id="settings-cat-btn-integrations" data-cat="integrations" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Integrations</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Koneksi dengan layanan eksternal</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
                                 <!-- 7. Data & Storage -->
-                                <button type="button" onclick="switchSettingsCategory('data')" id="settings-cat-btn-data" data-cat="data" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7M4 7c0-2 1.5-3 3.5-3h9c2 0 3.5 1 3.5 3M4 7h16m-8 4v6m-3-3l3 3 3-3"/></svg>
-                                        <span>Data &amp; Penyimpanan</span>
-                                    </span>
+                                <button type="button" onclick="switchSettingsCategory('data')" id="settings-cat-btn-data" data-cat="data" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7M4 7c0-2 1.5-3 3.5-3h9c2 0 3.5 1 3.5 3M4 7h16m-8 4v6m-3-3l3 3 3-3"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Data &amp; Storage</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Pengelolaan dan ekspor data</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
                                 <!-- 8. Subscription & Billing -->
-                                <button type="button" onclick="switchSettingsCategory('billing')" id="settings-cat-btn-billing" data-cat="billing" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                        <span>Langganan &amp; Lisensi</span>
-                                    </span>
-                                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-flat-green/10 text-flat-green font-bold ml-2">PRO</span>
+                                <button type="button" onclick="switchSettingsCategory('billing')" id="settings-cat-btn-billing" data-cat="billing" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Subscription &amp; Billing</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Paket, pembayaran, dan tagihan</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
                                 <!-- 9. Help & Support -->
-                                <button type="button" onclick="switchSettingsCategory('support')" id="settings-cat-btn-support" data-cat="support" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                                        <span>Bantuan &amp; Tiket</span>
-                                    </span>
+                                <button type="button" onclick="switchSettingsCategory('support')" id="settings-cat-btn-support" data-cat="support" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">Help &amp; Support</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Bantuan dan dokumentasi</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
 
                                 <!-- 10. About -->
-                                <button type="button" onclick="switchSettingsCategory('about')" id="settings-cat-btn-about" data-cat="about" class="settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0">
-                                    <span class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>Tentang Aplikasi</span>
-                                    </span>
+                                <button type="button" onclick="switchSettingsCategory('about')" id="settings-cat-btn-about" data-cat="about" class="settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left group">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-text-secondary group-hover:text-text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-xs text-text-primary truncate">About</div>
+                                            <div class="text-[11px] text-text-secondary truncate">Informasi aplikasi dan versi</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-text-secondary/50 group-hover:text-text-primary transition-transform group-hover:translate-x-0.5 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
+
+                                <!-- Sign Out Divider & Red Button -->
+                                <div class="pt-2 border-t border-border mt-2">
+                                    <button type="button" onclick="logout()" class="w-full flex items-center gap-3 p-2.5 text-rose-500 hover:bg-rose-500/10 rounded-xl font-semibold text-xs transition-colors">
+                                        <svg class="w-5 h-5 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                        <span>Sign Out</span>
+                                    </button>
+                                </div>
                             </nav>
                         </div>
 
@@ -6828,7 +6881,7 @@
                     </aside>
 
                     <!-- RIGHT COLUMN: Active Settings Content Panes -->
-                    <section class="md:col-span-8 lg:col-span-9">
+                    <section class="md:col-span-7 lg:col-span-8">
                         <form onsubmit="handleSettingsSave(event)" class="space-y-6 text-xs">
                             
                             <!-- PANE 1: Profil & Biometrik Fisiologis -->
@@ -7072,7 +7125,73 @@
                                 </div>
                             </div>
 
-                            <!-- PANE 4: AI Coach & Otomasi -->
+                            <!-- PANE 4: Notifications (Pengaturan Notifikasi) -->
+                            <div id="settings-pane-notifications" class="settings-pane hidden space-y-6">
+                                <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
+                                    <div class="pb-3 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <div>
+                                            <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Pengaturan Notifikasi &amp; Saluran Peringatan</h3>
+                                            <p class="text-[11px] font-mono text-text-secondary mt-0.5">
+                                                Atur frekuensi peringatan fisiologis, pengingat latihan maraton, dan integrasi push notifikasi
+                                            </p>
+                                        </div>
+                                        <button type="button" onclick="GoalieEnterprise.toggleNotificationCenter()" class="btn-flat-secondary px-3 py-1 text-xs font-mono">
+                                            Buka Notification Center &gt;
+                                        </button>
+                                    </div>
+
+                                    <!-- Channel Toggles -->
+                                    <div class="space-y-3">
+                                        <span class="text-[11px] font-bold text-text-primary block">Saluran Pengiriman Notifikasi</span>
+
+                                        <label class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:border-tertiary transition-colors">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Push Notification &amp; Web Alert</strong>
+                                                <p class="text-[10px] text-text-secondary">Pemberitahuan langsung di layar perangkat saat sinkronisasi Garmin selesai atau jadwal lari tiba</p>
+                                            </div>
+                                            <input type="checkbox" id="settings-notif-push" checked onchange="markSettingsUnsaved()" class="rounded text-tertiary focus:ring-0">
+                                        </label>
+
+                                        <label class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:border-tertiary transition-colors">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Peringatan Risiko Beban ACWR Gabbett</strong>
+                                                <p class="text-[10px] text-text-secondary">Alert prioritas tinggi jika rasio beban akut vs kronis melewati batas aman (&gt; 1.30 atau &lt; 0.80)</p>
+                                            </div>
+                                            <input type="checkbox" id="settings-notif-acwr" checked onchange="markSettingsUnsaved()" class="rounded text-tertiary focus:ring-0">
+                                        </label>
+
+                                        <label class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:border-tertiary transition-colors">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Laporan Ringkasan Performa Mingguan (Digest Email)</strong>
+                                                <p class="text-[10px] text-text-secondary">Kirim evaluasi berkala capaian kilometer, cardiac drift, dan rekomendasi taper maraton</p>
+                                            </div>
+                                            <input type="checkbox" id="settings-notif-email" checked onchange="markSettingsUnsaved()" class="rounded text-tertiary focus:ring-0">
+                                        </label>
+
+                                        <label class="p-3.5 bg-surface-subtle border border-border rounded-xl flex items-center justify-between gap-3 cursor-pointer hover:border-tertiary transition-colors">
+                                            <div>
+                                                <strong class="text-xs text-text-primary block">Umpan Balik Getaran Haptic &amp; Suara</strong>
+                                                <p class="text-[10px] text-text-secondary">Getaran taktil saat menavigasi workstation dan interval lari aktif</p>
+                                            </div>
+                                            <input type="checkbox" id="settings-notif-haptic" checked onchange="markSettingsUnsaved()" class="rounded text-tertiary focus:ring-0">
+                                        </label>
+                                    </div>
+
+                                    <!-- Quiet Hours Policy -->
+                                    <div class="pt-3 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[11px] text-text-secondary mb-1">Jam Mode Hening / Istirahat (Mulai)</label>
+                                            <input type="time" id="settings-notif-quiet-start" value="22:00" class="flat-input text-xs w-full" onchange="markSettingsUnsaved()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] text-text-secondary mb-1">Jam Mode Hening / Istirahat (Selesai)</label>
+                                            <input type="time" id="settings-notif-quiet-end" value="05:00" class="flat-input text-xs w-full" onchange="markSettingsUnsaved()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANE: AI Coach & Otomasi -->
                             <div id="settings-pane-ai-coach" class="settings-pane hidden space-y-6">
                                 <div class="flat-card border-2 border-border-strong p-5 bg-surface space-y-5">
                                     <div class="pb-3 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-1">
@@ -15818,19 +15937,26 @@
         // ══════════════════════════════════════════════════════════
 
         function switchSettingsCategory(categoryId) {
-            const categories = ['profile', 'preferences', 'appearance', 'ai-coach', 'integrations', 'security', 'data', 'billing', 'support', 'about'];
+            const categories = ['profile', 'preferences', 'appearance', 'notifications', 'security', 'integrations', 'data', 'billing', 'support', 'about', 'ai-coach'];
             categories.forEach(cat => {
                 const pane = document.getElementById(`settings-pane-${cat}`);
                 const btn = document.getElementById(`settings-cat-btn-${cat}`);
                 if (pane) pane.classList.toggle('hidden', cat !== categoryId);
                 if (btn) {
                     if (cat === categoryId) {
-                        btn.className = 'settings-cat-btn active w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold bg-tertiary/10 text-tertiary border border-tertiary/20 transition-all text-left whitespace-nowrap shrink-0';
+                        btn.className = 'settings-cat-btn active w-full flex items-center justify-between p-2.5 rounded-xl bg-tertiary/10 border border-tertiary/20 text-left transition-all group';
                     } else {
-                        btn.className = 'settings-cat-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle border border-transparent transition-all text-left whitespace-nowrap shrink-0';
+                        btn.className = 'settings-cat-btn w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-surface-subtle border border-transparent text-left transition-all group';
                     }
                 }
             });
+
+            if (window.innerWidth < 768) {
+                const paneEl = document.getElementById(`settings-pane-${categoryId}`);
+                if (paneEl) {
+                    paneEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         }
 
         function filterSettingsSections(query) {
