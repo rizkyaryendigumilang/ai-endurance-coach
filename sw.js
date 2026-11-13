@@ -1,5 +1,5 @@
-// Goalie - Production PWA Service Worker (v3.0.3)
-const CACHE_NAME = 'goalie-cache-v3.0.3';
+// Goalie - Production PWA Service Worker (v3.2.0)
+const CACHE_NAME = 'goalie-cache-v3.2.0';
 const STATIC_ASSETS = [
     './',
     'index.html',
@@ -8,14 +8,16 @@ const STATIC_ASSETS = [
     'manifest.json',
     'favicon.ico',
     'apple-touch-icon.png',
+    'logo.svg',
+    'public/logo.svg',
+    'public/icons/goalie-logo.svg',
     'public/icons/pwa/icon-192x192.png',
     'public/icons/pwa/icon-512x512.png',
     'public/css/tailwind.min.css',
     'public/js/db.js',
     'public/js/garmin_map_viewer.js',
     'public/vendor/leaflet/leaflet.js',
-    'public/vendor/leaflet/leaflet.css',
-    'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap'
+    'public/vendor/leaflet/leaflet.css'
 ];
 
 // Install: Cache shell assets
@@ -30,9 +32,29 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-// Activate: Clean up legacy caches
+// Activate: Clean up legacy caches immediately and claim clients
 self.addEventListener('activate', (event) => {
     event.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.map((key) => {
+                    if (key !== CACHE_NAME) {
+                        console.log('[SW] Deleting legacy cache:', key);
+                        return caches.delete(key);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim();
+});
+
+// Communication channel for forced update / cache eviction
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+    if (event.data && event.data.type === 'PURGE_OLD_CACHES') {
         caches.keys().then((keys) => {
             return Promise.all(
                 keys.map((key) => {
@@ -41,9 +63,8 @@ self.addEventListener('activate', (event) => {
                     }
                 })
             );
-        })
-    );
-    self.clients.claim();
+        });
+    }
 });
 
 // Fetch: Network-First for HTML navigation, Stale-While-Revalidate for static assets

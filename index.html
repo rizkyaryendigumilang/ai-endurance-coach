@@ -8303,7 +8303,7 @@
                 dateInput.value = d.toISOString().split('T')[0];
             }
 
-            // Service worker with automatic controller change refresh
+            // Service worker with automatic controller change refresh and active cache purging
             if ('serviceWorker' in navigator) {
                 let refreshing = false;
                 navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -8313,14 +8313,47 @@
                     }
                 });
 
-                const swPath = (window.location.pathname.startsWith('/golie') ? '/golie' : '') + '/sw.js';
+                const swPath = (window.location.pathname.startsWith('/golie') ? '/golie' : '') + '/sw.js?v=3.2.0';
                 navigator.serviceWorker.register(swPath)
                     .then(r => {
                         console.log('[PWA] Service Worker active:', r.scope);
+                        if (r.waiting) {
+                            r.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        }
                         if (r.update) r.update();
                     })
                     .catch(err => console.warn('[PWA] SW register:', err));
             }
+
+            // Proactively evict any legacy CacheStorage buckets
+            if ('caches' in window) {
+                caches.keys().then((keys) => {
+                    keys.forEach((key) => {
+                        if (key !== 'goalie-cache-v3.2.0') {
+                            console.log('[Goalie PWA] Evicting outdated cache bucket:', key);
+                            caches.delete(key);
+                        }
+                    });
+                });
+            }
+
+            // Self-healing: replace any legacy broken logo image tags with inline vector SVG
+            const healLegacyLogos = () => {
+                const legacyLogos = document.querySelectorAll('img[alt="Goalie"], img[src*="icon-192x192"]');
+                legacyLogos.forEach(img => {
+                    const container = document.createElement('div');
+                    container.className = 'w-8 h-8 rounded-lg bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center shadow-xs border border-white/20 shrink-0 text-white overflow-hidden';
+                    container.innerHTML = `
+                        <svg viewBox="0 0 192 192" class="w-5 h-5" fill="none">
+                            <path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" />
+                            <path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" />
+                        </svg>
+                    `;
+                    img.parentNode && img.parentNode.replaceChild(container, img);
+                });
+            };
+            healLegacyLogos();
+            setTimeout(healLegacyLogos, 500);
         });
 
         // PWA Install prompt listener
