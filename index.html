@@ -1523,12 +1523,12 @@
                             <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
                             <span data-i18n="hero_telemetry_live">Aliran Telemetri Langsung</span>
                         </span>
-                        <span data-i18n="hero_target_block" class="text-text-secondary text-[11px]">Target Maraton 5:30:00 (Pace 7:49/km) &bull; 13 Jun 2027</span>
+                        <span id="hero-target-block" data-i18n="hero_target_block" class="text-text-secondary text-[11px]">Target Maraton 5:30:00 (Pace 7:49/km) &bull; 13 Jun 2027</span>
                     </div>
                     <div class="flex items-center gap-3 text-[11px] text-text-secondary">
                         <span>Rencana Latihan: <strong class="text-text-primary">31 Minggu &bull; 977.2 km</strong></span>
                         <span class="hidden md:inline text-border">&bull;</span>
-                        <span class="hidden md:inline">Readiness: <strong class="text-flat-green">94% (Fresh)</strong></span>
+                        <span class="hidden md:inline">Readiness: <strong id="hud-readiness-val" class="text-flat-green">94% (Fresh)</strong></span>
                     </div>
                 </div>
 
@@ -7216,7 +7216,7 @@
                                 </div>
 
                                 <!-- AI Coach & Otomasi Telemetri Card Embedded -->
-                                <div id="settings-pane-ai-coach" class="flat-card border border-border/80 p-5 sm:p-6 bg-surface rounded-2xl shadow-xs space-y-5">
+                                <div id="settings-card-ai-coach" class="flat-card border border-border/80 p-5 sm:p-6 bg-surface rounded-2xl shadow-xs space-y-5">
                                     <div class="pb-3 border-b border-border/70 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                                         <div>
                                             <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">Mesin AI Coach &amp; Otomasi Telemetri</h3>
@@ -13323,7 +13323,7 @@
                 if (dropEmail) dropEmail.textContent = email;
                 const dropName = document.getElementById('dropdown-athlete-name');
                 if (dropName) dropName.textContent = fullName;
-                const hdUser = document.getElementById('helpdesk-session-user');
+                const hdUser = document.getElementById('helpdesk-modal-user') || document.getElementById('helpdesk-session-user');
                 if (hdUser) hdUser.textContent = `${fullName} (${appState.isPro ? 'Pro Coach' : 'Pemula'})`;
                 if (statusEl) statusEl.textContent = `${email} (Authenticated)`;
 
@@ -16157,7 +16157,7 @@
         // ══════════════════════════════════════════════════════════
 
         function switchSettingsCategory(categoryId) {
-            const categories = ['profile', 'preferences', 'appearance', 'notifications', 'security', 'integrations', 'data', 'billing', 'support', 'about', 'ai-coach'];
+            const categories = ['profile', 'preferences', 'appearance', 'notifications', 'security', 'integrations', 'data', 'billing', 'support', 'about'];
             categories.forEach(cat => {
                 const pane = document.getElementById(`settings-pane-${cat}`);
                 const btn = document.getElementById(`settings-cat-btn-${cat}`);
@@ -16519,7 +16519,7 @@
                 },
                 athlete: {
                     email: appState.userEmail || 'athlete@goalie.fit',
-                    full_name: document.getElementById('settings-athlete-name')?.value || 'Rizky Aryendi Gumilang',
+                    full_name: (document.getElementById('settings-name') || document.getElementById('settings-athlete-name'))?.value || 'Rizky Aryendi Gumilang',
                     is_pro: Boolean(appState.isPro),
                     selected_coach_tier: appState.selectedCoachTier || 'pro',
                     biometrics: {

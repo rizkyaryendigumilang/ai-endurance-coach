@@ -612,7 +612,7 @@ async def generate_post_run_debrief(data: PostRunDebriefInput, user_id: str = De
             "query": ai_prompt
         })
         if llm_response and len(llm_response.strip()) > 20:
-            clean_llm = llm_response.strip().replace("—", " - ")
+            clean_llm = llm_response.strip().replace("\u2014", " - ")
             debrief_summary = f"{clean_llm} {cadence_note}"
     except Exception:
         pass
