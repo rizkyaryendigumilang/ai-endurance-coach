@@ -138,7 +138,95 @@
             if (!modal) return;
             modal.classList.remove('hidden');
             if (window.GoalieMobile) window.GoalieMobile.triggerHaptic('selection');
+            GoalieEnterprise.switchTeamTab('leaderboard');
+        },
 
+        switchTeamTab: function (tab) {
+            const viewLeaderboard = document.getElementById('team-view-leaderboard');
+            const viewRoster = document.getElementById('team-view-roster');
+            const btnLeaderboard = document.getElementById('team-tab-btn-leaderboard');
+            const btnRoster = document.getElementById('team-tab-btn-roster');
+
+            if (tab === 'leaderboard') {
+                if (viewLeaderboard) viewLeaderboard.classList.remove('hidden');
+                if (viewRoster) viewRoster.classList.add('hidden');
+                if (btnLeaderboard) {
+                    btnLeaderboard.className = 'px-3 py-1.5 text-xs font-mono font-bold rounded-t-lg bg-surface border-t border-x border-border text-tertiary';
+                }
+                if (btnRoster) {
+                    btnRoster.className = 'px-3 py-1.5 text-xs font-mono font-medium text-text-secondary hover:text-text-primary rounded-t-lg';
+                }
+                GoalieEnterprise.loadSquadLeaderboard();
+            } else {
+                if (viewLeaderboard) viewLeaderboard.classList.add('hidden');
+                if (viewRoster) viewRoster.classList.remove('hidden');
+                if (btnRoster) {
+                    btnRoster.className = 'px-3 py-1.5 text-xs font-mono font-bold rounded-t-lg bg-surface border-t border-x border-border text-tertiary';
+                }
+                if (btnLeaderboard) {
+                    btnLeaderboard.className = 'px-3 py-1.5 text-xs font-mono font-medium text-text-secondary hover:text-text-primary rounded-t-lg';
+                }
+                GoalieEnterprise.loadTeamSquad();
+            }
+        },
+
+        loadSquadLeaderboard: async function () {
+            const container = document.getElementById('squad-leaderboard-container');
+            if (!container) return;
+            try {
+                const apiBase = window.API_BASE || '/golie/api/v1';
+                const headers = (typeof window.getAuthHeaders === 'function') ? window.getAuthHeaders() : {};
+                const res = await fetch(`${apiBase}/team/leaderboard`, { headers });
+                if (res.ok) {
+                    const data = await res.json();
+                    GoalieEnterprise.renderSquadLeaderboard(data.leaderboard || []);
+                }
+            } catch (e) {
+                console.warn('[Goalie] Leaderboard fetch error:', e);
+            }
+        },
+
+        renderSquadLeaderboard: function (list) {
+            const container = document.getElementById('squad-leaderboard-container');
+            if (!container) return;
+            if (!list || list.length === 0) {
+                container.innerHTML = '<div class="p-4 text-center text-text-secondary text-xs">Belum ada aktivitas mingguan tercatat.</div>';
+                return;
+            }
+            const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+            const badgeClasses = {
+                1: 'border-amber-500/50 bg-amber-500/5 text-amber-500',
+                2: 'border-slate-400/50 bg-slate-400/5 text-slate-300',
+                3: 'border-amber-700/50 bg-amber-700/5 text-amber-600'
+            };
+
+            container.innerHTML = `
+                <div class="space-y-2.5">
+                    ${list.map(item => `
+                        <div class="p-3 bg-surface border ${item.rank <= 3 ? badgeClasses[item.rank] : 'border-border'} rounded-xl flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl font-bold font-mono w-7 text-center">${medals[item.rank] || '#' + item.rank}</span>
+                                <div>
+                                    <div class="font-bold text-xs text-text-primary flex items-center gap-1.5">
+                                        <span>${item.name}</span>
+                                        ${item.rank === 1 ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 font-mono font-bold">LEADER</span>' : ''}
+                                    </div>
+                                    <div class="text-[10px] font-mono text-text-secondary">
+                                        ${item.runs_count} sesi • Long run: ${item.longest_run_km} km • Pace: ${item.avg_pace}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-extrabold text-sm font-mono text-text-primary">${item.total_km} km</div>
+                                <div class="text-[10px] font-mono text-flat-green font-bold">Skor: ${item.true_execution_score}%</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        },
+
+        loadTeamSquad: async function () {
             try {
                 const apiBase = window.API_BASE || '/golie/api/v1';
                 const headers = (typeof window.getAuthHeaders === 'function') ? window.getAuthHeaders() : {};

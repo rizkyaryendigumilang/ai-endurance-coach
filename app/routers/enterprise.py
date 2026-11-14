@@ -296,3 +296,73 @@ def get_system_status():
             "open_meteo_weather": "operational"
         }
     }
+
+
+@router.get("/api/v1/team/leaderboard", tags=["User Management"])
+def get_team_leaderboard(user_id: str = Depends(get_current_user_optional)):
+    """
+    Mengambil leaderboard mingguan Running Squad (volume total km, longest run, skor eksekusi, podium ranking).
+    """
+    uid = user_id or sandbox_store.OWNER_USER_ID
+    prof = sandbox_store.get_profile(uid) or {}
+    owner_name = prof.get("full_name", "Rizky Aryendi Gumilang")
+
+    leaderboard = [
+        {
+            "rank": 1,
+            "badge": "EMAS",
+            "athlete_id": uid,
+            "name": owner_name,
+            "total_km": 68.4,
+            "runs_count": 5,
+            "longest_run_km": 24.2,
+            "avg_pace": "05:18 min/km",
+            "true_execution_score": 96,
+            "streak_weeks": 8
+        },
+        {
+            "rank": 2,
+            "badge": "PERAK",
+            "athlete_id": "squad-athlete-02",
+            "name": "Budi Santoso",
+            "total_km": 54.2,
+            "runs_count": 4,
+            "longest_run_km": 18.0,
+            "avg_pace": "05:42 min/km",
+            "true_execution_score": 91,
+            "streak_weeks": 5
+        },
+        {
+            "rank": 3,
+            "badge": "PERUNGGU",
+            "athlete_id": "squad-coach-03",
+            "name": "Sarah Coach",
+            "total_km": 42.0,
+            "runs_count": 4,
+            "longest_run_km": 14.5,
+            "avg_pace": "05:25 min/km",
+            "true_execution_score": 94,
+            "streak_weeks": 12
+        },
+        {
+            "rank": 4,
+            "badge": "RUNNER",
+            "athlete_id": "squad-athlete-04",
+            "name": "Dimas Pratama",
+            "total_km": 36.8,
+            "runs_count": 3,
+            "longest_run_km": 12.0,
+            "avg_pace": "06:10 min/km",
+            "true_execution_score": 87,
+            "streak_weeks": 3
+        }
+    ]
+
+    return {
+        "status": "success",
+        "club_name": "Goalie Jakarta Racing Squad",
+        "period": "Minggu Ini (Senin - Minggu)",
+        "total_active_runners": len(leaderboard),
+        "team_volume_km": round(sum(m["total_km"] for m in leaderboard), 1),
+        "leaderboard": leaderboard
+    }

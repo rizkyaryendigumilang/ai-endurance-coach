@@ -1173,9 +1173,14 @@
                     checkAdminAuth();
                     showToast('Otorisasi Diberikan', 'Selamat datang di Goalie Admin Command Center.', 'success');
                 } else {
-                    err.textContent = data.detail || 'Passcode administrator tidak valid. Akses ditolak.';
+                    if (res.status === 429) {
+                        err.textContent = data.detail || 'Terlalu banyak percobaan passcode gagal. Akses admin dikunci sementara.';
+                        showToast('Keamanan Terkunci (429)', 'Akses admin diblokir sementara karena brute-force.', 'error');
+                    } else {
+                        err.textContent = data.detail || 'Passcode administrator tidak valid. Akses ditolak.';
+                        showToast('Akses Ditolak', 'Passcode tidak valid.', 'error');
+                    }
                     err.classList.remove('hidden');
-                    showToast('Akses Ditolak', 'Passcode tidak valid.', 'error');
                 }
             } catch (errNet) {
                 err.textContent = 'Gagal memverifikasi ke server. Pastikan backend aktif.';

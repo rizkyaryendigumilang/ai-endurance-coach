@@ -323,6 +323,46 @@ class SportsEngine:
                 "milestone": f"Approx km {round((minute / (hours * 60)) * distance_km, 1)}"
             })
 
+        # KM-based Gel Checkpoints
+        avg_pace_min_km = (hours * 60.0) / max(1.0, distance_km)
+        gel_checkpoints = []
+        if distance_km >= 40.0:
+            km_markers = [7.0, 14.0, 21.1, 28.0, 35.0, 39.0]
+        elif distance_km >= 20.0:
+            km_markers = [5.0, 10.0, 15.0, 18.0]
+        elif distance_km >= 10.0:
+            km_markers = [4.0, 7.5]
+        else:
+            km_markers = [round(distance_km * 0.5, 1)]
+
+        for idx, km in enumerate(km_markers, 1):
+            est_minutes = int(round(km * avg_pace_min_km))
+            hrs = est_minutes // 60
+            mins = est_minutes % 60
+            time_str = f"{hrs:02d}:{mins:02d}"
+            is_caffeine = (km >= 28.0 and distance_km >= 40.0) or (km >= 15.0 and distance_km >= 20.0 and idx == len(km_markers) - 1)
+            gel_checkpoints.append({
+                "sequence": idx,
+                "kilometer": km,
+                "estimated_race_time": time_str,
+                "gel_type": "Gel Kafein (25g Carbs + 50mg Caffeine)" if is_caffeine else ("Gel Elektrolit Isotonik" if km >= 21.0 else "Gel Isotonik Cepat Cerna"),
+                "water_ml": 150,
+                "action": "Dukungan sistem saraf pusat & fokus akhir" if is_caffeine else ("Jaga keseimbangan sodium & elektrolit" if km >= 21.0 else "Pertahankan glukosa darah stabil")
+            })
+
+        # H-3 Carbohydrate Loading Protocol (8-10 g/kg)
+        daily_target_g = int(round(8.5 * weight_kg))
+        carb_loading_h3 = {
+            "daily_target_grams": daily_target_g,
+            "ratio_g_per_kg": 8.5,
+            "stages": [
+                {"day": "H-3 Lomba", "title": "Fase Saturasi Glikogen", "target_grams": daily_target_g, "notes": "Tingkatkan karbohidrat kompleks: Nasi putih, kentang, pasta, oatmeal, dan pisang matang."},
+                {"day": "H-2 Lomba", "title": "Puncak Glikogen & Reduksi Serat", "target_grams": int(round(9.0 * weight_kg)), "notes": "Kurangi makanan berserat tinggi untuk mencegah gangguan lambung saat lomba. Minum jus buah & sport drink."},
+                {"day": "H-1 Lomba", "title": "Pemeliharaan & Hidrasi", "target_grams": daily_target_g, "notes": "Makan malam rendah lemak sebelum pukul 19:00 WIB. Minum 2.5 liter air berlarutan elektrolit sepanjang hari."},
+                {"day": "Hari H (Pagi)", "title": "Sarapan Pra-Flag Off (H-3 Jam)", "target_grams": int(round(1.8 * weight_kg)), "notes": "Sarapan 3 jam sebelum start: Oatmeal madu, 2 buah pisang, roti selai stroberi, dan 400ml air."}
+            ]
+        }
+
         return {
             "sport_type": sport_type,
             "distance_km": distance_km,
@@ -337,7 +377,9 @@ class SportsEngine:
             "sodium_target_mg_per_hr": sodium_mg_per_hr,
             "total_sodium_mg": total_sodium_mg,
             "strategy_summary": strategy,
-            "timeline_schedule": schedule[:12]
+            "timeline_schedule": schedule[:12],
+            "gel_checkpoints": gel_checkpoints,
+            "carb_loading_h3": carb_loading_h3
         }
 
     @staticmethod

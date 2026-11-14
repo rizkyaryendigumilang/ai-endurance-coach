@@ -5,8 +5,9 @@ Provides athlete directory, platform telemetry, audit/webhook logs, system broad
 
 import os
 from datetime import datetime, timezone
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
+import time
+from typing import Optional, Dict, List
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.services import sandbox_store
 from app.core.auth import require_admin_role, create_admin_token, create_demo_token
@@ -21,13 +22,32 @@ from app.schemas.models import (
 
 router = APIRouter(tags=["Admin"])
 
+# In-memory brute force lockout cache (5 failed attempts -> 15 min lock)
+_ADMIN_FAILED_ATTEMPTS: Dict[str, List[float]] = {}
+
 
 @router.post("/api/v1/admin/auth/login")
-def admin_login(data: AdminLoginInput):
+def admin_login(data: AdminLoginInput, request: Request):
     """
     Authenticate administrator credentials and issue a signed Bearer JWT token.
     Mendukung passcode fleksibel: admin, admin123, Apaya1234, atau ADMIN_PASSCODE environment variable.
+    Dilindungi proteksi brute-force: 5 percobaan gagal berturut-turut mengunci akses selama 15 menit.
     """
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    now = time.time()
+
+    # Periksa status penguncian brute-force
+    attempts = _ADMIN_FAILED_ATTEMPTS.get(client_ip, [])
+    valid_attempts = [t for t in attempts if now - t < 900]
+    _ADMIN_FAILED_ATTEMPTS[client_ip] = valid_attempts
+
+    if len(valid_attempts) >= 5:
+        remaining = int(900 - (now - valid_attempts[0]))
+        raise HTTPException(
+            status_code=429,
+            detail=f"Terlalu banyak percobaan passcode gagal. Akses admin dikunci sementara selama {remaining} detik."
+        )
+
     admin_secret = os.getenv("ADMIN_SECRET_KEY", "goalie-admin-secret-2026")
     admin_passcode = os.getenv("ADMIN_PASSCODE", "admin123")
     code = (data.passcode or "").strip()
@@ -43,6 +63,9 @@ def admin_login(data: AdminLoginInput):
     }
 
     if code.lower() in valid_passcodes or code in (admin_secret, admin_passcode, "Apaya1234", "admin", "admin123"):
+        if client_ip in _ADMIN_FAILED_ATTEMPTS:
+            del _ADMIN_FAILED_ATTEMPTS[client_ip]
+
         token = create_admin_token(username="admin")
         sandbox_store.add_audit_log(
             "ADMIN_LOGIN",
@@ -56,7 +79,17 @@ def admin_login(data: AdminLoginInput):
             "role": "admin",
             "expires_in": 86400 * 7
         }
-    raise HTTPException(status_code=401, detail="Passcode administrator tidak valid.")
+
+    # Catat kegagalan
+    attempts = _ADMIN_FAILED_ATTEMPTS.get(client_ip, [])
+    attempts.append(now)
+    _ADMIN_FAILED_ATTEMPTS[client_ip] = attempts
+
+    remaining_chances = max(0, 5 - len(attempts))
+    raise HTTPException(
+        status_code=401,
+        detail=f"Passcode administrator tidak valid. Sisa percobaan: {remaining_chances} sebelum akses dikunci."
+    )
 
 
 @router.get("/api/v1/admin/auth/verify")
