@@ -386,7 +386,7 @@
             </div>
 
             <div class="flex items-center gap-2 sm:gap-2.5">
-                <a href="./" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand">
+                <a href="javascript:void(0)" onclick="window.location.href = window.location.pathname.startsWith('/golie') ? '/golie/' : './';" class="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-border rounded-full hover:border-text-primary transition-colors touch-target-expand" title="Kembali ke Dashboard Atlet">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     <span data-i18n="admin_nav_athlete_terminal" class="hidden sm:inline">Terminal Atlet</span>
                     <span class="sm:hidden">App</span>

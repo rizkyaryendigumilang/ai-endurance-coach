@@ -1002,12 +1002,6 @@
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
-                <!-- Admin Link -->
-                <a href="admin" class="hidden 2xl:flex text-xs font-semibold text-text-secondary hover:text-text-primary h-8 px-2.5 items-center gap-1.5 border border-border rounded-lg hover:border-text-primary transition-colors whitespace-nowrap shrink-0 touch-target-expand" aria-label="Open Admin Command Center">
-                    <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    <span class="whitespace-nowrap">Admin</span>
-                </a>
-
                 <!-- Unauthenticated State -->
                 <div id="nav-unauth-actions" class="hidden flex items-center gap-1.5 shrink-0">
                     <a href="login" class="h-8 px-2.5 sm:px-3 text-xs font-semibold text-text-primary hover:bg-surface-subtle border border-border rounded-lg transition-colors whitespace-nowrap shrink-0 flex items-center" data-i18n="nav_login">
@@ -1141,7 +1135,7 @@
                                 <span class="text-[9px] font-mono text-text-secondary">404-500</span>
                             </button>
 
-                            <a href="admin" class="flex items-center justify-between px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg transition-colors">
+                            <a href="javascript:void(0)" onclick="window.location.href = window.location.pathname.startsWith('/golie') ? '/golie/admin' : 'admin';" class="flex items-center justify-between px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                     <span>Pusat Kendali Admin</span>
@@ -9617,7 +9611,34 @@
             if (window.GoalieCalendarWidget && typeof window.GoalieCalendarWidget.render === 'function') {
                 window.GoalieCalendarWidget.render();
             }
+
+            // Sync URL hash state for deep-linking & browser history (Opsi C: Athlete Navigation)
+            if (window.history && window.history.replaceState) {
+                const currentHash = (window.location.hash || '').replace('#', '');
+                if (currentHash !== tabName && (currentHash || tabName !== 'cockpit')) {
+                    window.history.replaceState(null, null, tabName === 'cockpit' ? (window.location.pathname + window.location.search) : `#${tabName}`);
+                }
+            }
         }
+
+        // Deep-linking URL hash handler (e.g. #calculator, #schedule, #settings)
+        function handleHashNavigation() {
+            const rawHash = (window.location.hash || '').replace('#', '').trim().toLowerCase();
+            if (!rawHash) return;
+
+            if (rawHash === 'calculator' || rawHash === 'calculator-pace' || rawHash === 'splits') {
+                switchWorkstationTab('cockpit');
+                if (typeof switchCockpitSubTab === 'function') {
+                    switchCockpitSubTab('splits');
+                }
+            } else if (['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'].includes(rawHash)) {
+                switchWorkstationTab(rawHash);
+            }
+        }
+        window.addEventListener('hashchange', handleHashNavigation);
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(handleHashNavigation, 80);
+        });
 
         // ══════════════════════════════════════════════════════
         // Target Full Marathon Event Configuration & Dynamic Countdown
