@@ -139,6 +139,10 @@ if os.path.exists(public_path):
 @app.get("/", include_in_schema=False)
 @app.get("/golie", include_in_schema=False)
 @app.get("/golie/", include_in_schema=False)
+@app.get("/athlete", include_in_schema=False)
+@app.get("/golie/athlete", include_in_schema=False)
+@app.get("/athlate", include_in_schema=False)
+@app.get("/golie/athlate", include_in_schema=False)
 def serve_frontend():
     index_path = os.path.join(os.path.dirname(__file__), "..", "index.html")
     if os.path.exists(index_path):
@@ -198,6 +202,8 @@ def serve_apple_touch_icon():
 
 @app.get("/login", include_in_schema=False)
 @app.get("/login.html", include_in_schema=False)
+@app.get("/golie/login", include_in_schema=False)
+@app.get("/golie/login.html", include_in_schema=False)
 def serve_login_page():
     login_path = os.path.join(os.path.dirname(__file__), "..", "login.html")
     if os.path.exists(login_path):
@@ -207,6 +213,8 @@ def serve_login_page():
 
 @app.get("/admin", include_in_schema=False)
 @app.get("/admin.html", include_in_schema=False)
+@app.get("/golie/admin", include_in_schema=False)
+@app.get("/golie/admin.html", include_in_schema=False)
 def serve_admin_page():
     admin_path = os.path.join(os.path.dirname(__file__), "..", "admin.html")
     if os.path.exists(admin_path):

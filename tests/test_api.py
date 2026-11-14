@@ -25,10 +25,20 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertIn("ai_engines", data)
 
     def test_02_frontend_root_serving(self):
-        """Verify root endpoint serves frontend HTML."""
-        response = self.client.get("/")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("Goalie", response.text)
+        """Verify root and subpath endpoints serve frontend, athlete, admin, and login HTML."""
+        for path in ["/", "/golie", "/athlete", "/golie/athlete", "/athlate", "/golie/athlate"]:
+            response = self.client.get(path)
+            self.assertEqual(response.status_code, 200, f"Failed serving {path}")
+            self.assertIn("Goalie", response.text)
+
+        for admin_path in ["/admin", "/golie/admin"]:
+            response = self.client.get(admin_path)
+            self.assertEqual(response.status_code, 200, f"Failed serving {admin_path}")
+            self.assertIn("Admin", response.text)
+
+        for login_path in ["/login", "/golie/login"]:
+            response = self.client.get(login_path)
+            self.assertEqual(response.status_code, 200, f"Failed serving {login_path}")
 
     def test_03_auth_and_session(self):
         """Verify user login and JWT bearer token issuance."""
