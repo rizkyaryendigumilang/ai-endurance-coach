@@ -253,3 +253,22 @@ def get_garmin_activity_gps(
     uid = user_id or sandbox_store.OWNER_USER_ID
     res = garmin_service.get_activity_gps(uid, activity_id)
     return res
+
+
+@router.post("/api/v1/garmin/auto-sync-check", tags=["Garmin Connect"])
+def check_garmin_auto_sync(user_id: str = Depends(get_current_user_optional)):
+    """
+    Pemeriksaan cepat aktivitas Garmin baru (Near-Real-Time Auto Sync).
+    Mengecek apakah atlet baru saja menyelesaikan latihan dan menyimpan di jam tangan Garmin.
+    """
+    uid = user_id or sandbox_store.OWNER_USER_ID
+    return garmin_service.check_new_activities(uid)
+
+
+@router.post("/api/v1/garmin/preload-unmapped-gps", tags=["Garmin Connect"])
+def preload_unmapped_gps(user_id: str = Depends(get_current_user_optional)):
+    """
+    Mengunduh titik koordinat GPS riil di latar belakang untuk aktivitas yang belum memiliki rute peta.
+    """
+    uid = user_id or sandbox_store.OWNER_USER_ID
+    return garmin_service.preload_unmapped_workouts_gps(uid)

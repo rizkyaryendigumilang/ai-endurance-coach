@@ -57,6 +57,7 @@
     <script src="public/js/modules/map-elevation-scrubber.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/map-elevation-scrubber.js?v=1.0.0';"></script>
     <script src="public/js/modules/mobile-native.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/mobile-native.js?v=1.0.0';"></script>
     <script src="public/js/modules/enterprise-hub.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/enterprise-hub.js?v=1.0.0';"></script>
+    <script src="public/js/modules/garmin-sync-manager.js?v=1.0.0" onerror="this.onerror=null;this.src=(window.location.pathname.startsWith('/golie')?'/golie':'')+'/public/js/modules/garmin-sync-manager.js?v=1.0.0';"></script>
 
 
     <style>
@@ -2245,6 +2246,35 @@
                                 <button onclick="switchWorkstationTab('chat')" class="btn-outline rounded-full px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                                     <span data-i18n="presc_adapt_btn">Ask AI to Adapt</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Telemetry Live Sync & GPS Status Header -->
+                        <div class="flat-card border-2 border-border p-3 sm:p-4 bg-surface flex flex-wrap items-center justify-between gap-3 shadow-xs rounded-xl">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-[#007cc3]/10 border border-[#007cc3]/20 flex items-center justify-center shrink-0">
+                                    <svg class="w-4 h-4 text-[#007cc3]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 5l5.5 11h-11L12 7z"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold font-display text-text-primary flex items-center gap-2">
+                                        <span>Garmin Telemetry Stream</span>
+                                        <span class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">LIVE BATCH</span>
+                                    </h4>
+                                    <p class="text-[10px] font-mono text-text-secondary mt-0.5">
+                                        Rute satelit GPS riil &amp; telemetri beban latihan pasca-latihan
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="garmin-sync-status-pill px-3 py-1 rounded-full bg-surface-subtle border border-border flex items-center gap-1.5 shadow-2xs">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span class="text-[11px] font-mono text-text-secondary">Garmin Auto-Sync:</span>
+                                    <strong class="text-[11px] font-mono text-emerald-500 font-bold">Aktif</strong>
+                                </div>
+                                <button type="button" onclick="if(typeof GarminSyncManager !== 'undefined') GarminSyncManager.checkNow(true); else if(typeof triggerGarminFullSync === 'function') triggerGarminFullSync();" class="btn-flat-primary px-3 py-1 text-xs font-mono font-bold flex items-center gap-1.5 shadow-2xs" title="Cek &amp; Sinkronkan Aktivitas Garmin Baru">
+                                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                    <span>Sync</span>
                                 </button>
                             </div>
                         </div>
@@ -7251,15 +7281,36 @@
                                     </div>
 
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
+                                        <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-3">
                                             <div class="flex items-center justify-between">
-                                                <strong class="text-xs text-text-primary">Garmin Connect (Garth)</strong>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                    <strong class="text-xs text-text-primary">Garmin Connect (Direct Cloud)</strong>
+                                                </div>
                                                 <span class="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30">TERHUBUNG</span>
                                             </div>
-                                            <p class="text-[11px] text-text-secondary">Sesi terautentikasi dan tokenstore tersimpan aman di runtime VPS.</p>
-                                            <button type="button" onclick="if(typeof syncGarminActivities==='function')syncGarminActivities(); else if(typeof triggerGarminFullSync==='function')triggerGarminFullSync(); else toast.info('Garmin Sync', 'Memulai sinkronisasi telemetri...');" class="btn-flat-primary px-3 py-1 text-[11px] font-mono font-bold mt-1">
-                                                Sinkronkan Garmin Sekarang
-                                            </button>
+                                            <p class="text-[11px] text-text-secondary">Sesi terautentikasi aktif dengan sinkronisasi batch dan penarikan koordinat satelit GPS riil.</p>
+                                            
+                                            <!-- Auto-Sync Toggle Control -->
+                                            <div class="pt-2 border-t border-border flex items-center justify-between">
+                                                <div>
+                                                    <span class="text-xs font-bold text-text-primary block">Auto-Sync Saat Tab Aktif</span>
+                                                    <span class="text-[10px] text-text-secondary font-mono">Deteksi aktivitas baru otomatis saat membuka aplikasi</span>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" id="settings-garmin-autosync-toggle" checked onchange="if(typeof GarminSyncManager!=='undefined')GarminSyncManager.setAutoSyncEnabled(this.checked)" class="sr-only peer">
+                                                    <div class="w-9 h-5 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                                                </label>
+                                            </div>
+
+                                            <div class="flex flex-wrap items-center gap-2 pt-1">
+                                                <button type="button" onclick="if(typeof GarminSyncManager!=='undefined')GarminSyncManager.checkNow(true); else if(typeof triggerGarminFullSync==='function')triggerGarminFullSync(); else toast.info('Garmin Sync', 'Memulai sinkronisasi telemetri...');" class="btn-flat-primary px-3 py-1 text-[11px] font-mono font-bold">
+                                                    Sinkronkan Garmin Sekarang
+                                                </button>
+                                                <button type="button" onclick="fetch(`${API_BASE}/garmin/preload-unmapped-gps`,{method:'POST',headers:getAuthHeaders()}).then(r=>r.json()).then(d=>toast.success('GPS Preload', d.message||'Selesai')).catch(e=>toast.error('Gagal', e.message))" class="btn-flat-secondary px-2.5 py-1 text-[11px] font-mono" title="Unduh polyline satelit riil untuk aktivitas yang belum memiliki rute GPS">
+                                                    Unduh Rute Satelit GPS
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="p-4 border-2 border-border rounded-xl bg-surface-subtle space-y-2">
@@ -11071,6 +11122,8 @@
                     sport: sport === 'cycling' ? 'cycling' : 'run',
                     gpsRoute: routeInfo.coords,
                     locationName: routeInfo.locationName,
+                    isRealGps: Boolean(routeInfo.isRealGps),
+                    isSynthetic: Boolean(routeInfo.isSynthetic),
                     title: { id: w.title, en: w.title },
                     date: {
                         id: `${formatWorkoutDate(w.started_at)} • Jakarta, Indonesia`,
@@ -11103,7 +11156,7 @@
             container.innerHTML = workouts.map(w => {
                 const metrics = (w.activity_metrics && w.activity_metrics[0]) || {};
                 const distFloat = parseFloat(w.distance_km || 0);
-                const routeInfo = getWorkoutRouteCoordinates(w.id, distFloat, w.workout_type);
+                const routeInfo = getWorkoutRouteCoordinates(w, distFloat, w.workout_type);
                 const sport = (w.workout_type || 'run').toLowerCase();
                 const feedType = sport === 'cycling' ? 'cycling' : (sport === 'strength' ? 'strength' : 'run');
                 const distKm = parseFloat(w.distance_km || 0).toFixed(2);

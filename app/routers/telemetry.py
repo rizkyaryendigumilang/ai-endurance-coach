@@ -563,7 +563,7 @@ def get_deep_zones_and_heatmaps(user_id: str = Depends(get_current_user_optional
     hr_stream = []
 
     for idx, w in enumerate(workouts):
-        coords = w.get("gpsRoute")
+        coords = w.get("gps_route") or w.get("gpsRoute")
         if not coords or len(coords) < 2:
             # Fallback simulated polyline for demo workouts
             center_lat, center_lon = -6.2183, 106.8025

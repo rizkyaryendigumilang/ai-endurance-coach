@@ -684,6 +684,41 @@ def _ensure_seed_data():
                 "created_at": "2026-11-09T17:13:00Z"
             }
         ]
+        def _build_polyline(waypoints, steps_per_leg=6):
+            pts = []
+            for i in range(len(waypoints) - 1):
+                p1, p2 = waypoints[i], waypoints[i+1]
+                for t in range(steps_per_leg):
+                    pts.append([
+                        round(p1[0] + (p2[0] - p1[0]) * t / steps_per_leg, 6),
+                        round(p1[1] + (p2[1] - p1[1]) * t / steps_per_leg, 6)
+                    ])
+            pts.append(waypoints[-1])
+            return pts
+
+        _wp_18k = [
+            [-6.2185, 106.8025], [-6.2195, 106.8145], [-6.2225, 106.8130], [-6.2170, 106.8185],
+            [-6.2110, 106.8210], [-6.2025, 106.8228], [-6.1950, 106.8231], [-6.1878, 106.8236],
+            [-6.1812, 106.8239], [-6.1788, 106.8242], [-6.1755, 106.8220], [-6.1718, 106.8270],
+            [-6.1760, 106.8315], [-6.1800, 106.8280], [-6.1788, 106.8242], [-6.1878, 106.8236],
+            [-6.1950, 106.8231], [-6.2025, 106.8228], [-6.2110, 106.8210], [-6.2170, 106.8185],
+            [-6.2245, 106.8045], [-6.2230, 106.8020], [-6.2185, 106.8025]
+        ]
+        _wp_7k = [
+            [-6.2185, 106.8025], [-6.2240, 106.7990], [-6.2275, 106.7975], [-6.2280, 106.7940],
+            [-6.2240, 106.7920], [-6.2135, 106.7985], [-6.2110, 106.8010], [-6.2135, 106.8075],
+            [-6.2155, 106.8055], [-6.2185, 106.8025]
+        ]
+        _wp_2k = [
+            [-6.2183, 106.8018], [-6.2160, 106.8020], [-6.2165, 106.8040], [-6.2195, 106.8038],
+            [-6.2205, 106.8022], [-6.2195, 106.8015], [-6.2183, 106.8018]
+        ]
+        _wp_3k = [
+            [-6.2245, 106.8045], [-6.2268, 106.8075], [-6.2248, 106.8095], [-6.2270, 106.8120],
+            [-6.2310, 106.8115], [-6.2335, 106.8130], [-6.2320, 106.8080], [-6.2295, 106.8055],
+            [-6.2245, 106.8045]
+        ]
+
         store_owner["actual_workouts"] = [
             {
                         "id": "w-garmin-rizky-1",
@@ -698,7 +733,8 @@ def _ensure_seed_data():
                         "source": "garmin_connect",
                         "start_lat": -6.2185,
                         "start_lon": 106.8025,
-                        "location_name": "Gelora Bung Karno Senayan, Jakarta",
+                        "location_name": "Gelora Bung Karno Senayan - Monas Corridor, Jakarta",
+                        "gps_route": _build_polyline(_wp_18k, 6),
                         "activity_metrics": [
                                     {
                                                 "training_load": 1082,
@@ -719,6 +755,10 @@ def _ensure_seed_data():
                         "max_hr": 172,
                         "elevation_gain_m": 14.0,
                         "source": "garmin_connect",
+                        "start_lat": -6.2185,
+                        "start_lon": 106.8025,
+                        "location_name": "Gelora Bung Karno Perimeter Loop, Jakarta",
+                        "gps_route": _build_polyline(_wp_7k, 8),
                         "activity_metrics": [
                                     {
                                                 "training_load": 359,
@@ -739,6 +779,10 @@ def _ensure_seed_data():
                         "max_hr": 139,
                         "elevation_gain_m": 10.0,
                         "source": "garmin_connect",
+                        "start_lat": -6.2183,
+                        "start_lon": 106.8018,
+                        "location_name": "Stadion Utama GBK Ring 1 Track, Jakarta",
+                        "gps_route": _build_polyline(_wp_2k, 10),
                         "activity_metrics": [
                                     {
                                                 "training_load": 148,
@@ -759,6 +803,10 @@ def _ensure_seed_data():
                         "max_hr": 158,
                         "elevation_gain_m": 11.0,
                         "source": "garmin_connect",
+                        "start_lat": -6.2245,
+                        "start_lon": 106.8045,
+                        "location_name": "Sudirman - SCBD Pedestrian Corridor, Jakarta",
+                        "gps_route": _build_polyline(_wp_3k, 7),
                         "activity_metrics": [
                                     {
                                                 "training_load": 125,

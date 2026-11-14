@@ -207,6 +207,7 @@ class GarminDirectService:
         history = sandbox_store.get_garmin_health_metrics(user_id, 1)
         workouts = sandbox_store.get_recent_workouts(user_id, 20)
         garmin_workouts = [w for w in workouts if w.get("source") in ("garmin", "garmin_connect")]
+        gps_ready = sum(1 for w in garmin_workouts if w.get("gps_route") and len(w.get("gps_route", [])) > 1)
 
         return {
             "connected": True,
@@ -215,6 +216,8 @@ class GarminDirectService:
             "connected_at": session.get("connected_at"),
             "last_sync": session.get("session_data", {}).get("last_sync") or session.get("connected_at"),
             "activities_count": len(garmin_workouts),
+            "gps_ready_count": gps_ready,
+            "auto_sync_supported": True,
             "latest_health": history[0] if history else None,
             "latest_workout": garmin_workouts[0] if garmin_workouts else None
         }
@@ -225,6 +228,65 @@ class GarminDirectService:
         self._pending_mfa.pop(user_id, None)
         sandbox_store.save_garmin_session(user_id, "", {"logged_in": False})
         return True
+
+    def check_new_activities(self, user_id: str) -> Dict[str, Any]:
+        """
+        Pemeriksaan cepat aktivitas Garmin baru (Near-Real-Time check).
+        Membandingkan aktivitas di cloud Garmin dengan database lokal.
+        Jika ada aktivitas baru, otomatis disimpan dan di-prefetch GPS-nya.
+        """
+        client = self._clients.get(user_id)
+        if not client:
+            if self._try_restore_session(user_id):
+                client = self._clients.get(user_id)
+        if not client:
+            return {
+                "connected": False,
+                "has_new": False,
+                "message": "Sesi Garmin belum aktif."
+            }
+
+        try:
+            latest_garmin = client.get_activities(0, 5) or []
+            if not latest_garmin:
+                return {"connected": True, "has_new": False, "new_count": 0, "message": "Tidak ada aktivitas baru di Garmin Connect."}
+
+            existing_workouts = sandbox_store.get_recent_workouts(user_id, 30)
+            existing_ext_ids = {str(w.get("external_id")) for w in existing_workouts if w.get("external_id")}
+            existing_timestamps = {w.get("started_at") for w in existing_workouts if w.get("started_at")}
+
+            new_activities = []
+            for act in latest_garmin:
+                ext_id = str(act.get("activityId", ""))
+                st = act.get("startTimeLocal") or act.get("startTimeGMT")
+                if (ext_id and ext_id not in existing_ext_ids) and (st not in existing_timestamps):
+                    new_activities.append(act)
+
+            if new_activities:
+                imported = self._process_garmin_activities_batch(user_id, new_activities)
+                self._auto_preload_gps(user_id, imported)
+                return {
+                    "connected": True,
+                    "has_new": True,
+                    "new_count": len(imported),
+                    "activities": imported,
+                    "message": f"Ditemukan dan disinkronkan {len(imported)} aktivitas baru dari Garmin Connect."
+                }
+
+            return {
+                "connected": True,
+                "has_new": False,
+                "new_count": 0,
+                "message": "Semua aktivitas Garmin sudah tersinkronisasi terbaru."
+            }
+        except Exception as e:
+            logger.warning(f"Error checking new Garmin activities: {e}")
+            return {
+                "connected": True,
+                "has_new": False,
+                "error": str(e),
+                "message": f"Gagal mengecek aktivitas baru: {str(e)}"
+            }
 
 
     def sync_daily_health(self, user_id: str, target_date_str: Optional[str] = None) -> Dict[str, Any]:
@@ -426,13 +488,19 @@ class GarminDirectService:
             logger.error(f"Error syncing Garmin activities: {e}")
             raise ValueError(f"Gagal menyinkronkan aktivitas Garmin: {e}")
 
-    def _auto_preload_gps(self, user_id: str, synced_activities: List[Dict[str, Any]]) -> None:
+    def _auto_preload_gps(self, user_id: str, synced_activities: Optional[List[Dict[str, Any]]] = None) -> int:
         """
         F1: Otomatis prefetch koordinat GPS riil untuk hingga 5 aktivitas pertama
-        yang sudah punya titik koordinat awal tapi belum punya rute lengkap.
+        yang belum memiliki rute GPS lengkap.
         """
         prefetch_count = 0
-        for act in synced_activities[:10]:
+        candidates = list(synced_activities) if synced_activities else []
+        if not candidates:
+            # Fallback ke aktivitas terbaru yang belum punya gps_route
+            recent = sandbox_store.get_recent_workouts(user_id, 15)
+            candidates = [w for w in recent if not w.get("gps_route") or len(w.get("gps_route", [])) < 2]
+
+        for act in candidates[:10]:
             if prefetch_count >= 5:
                 break
             act_id = str(act.get("id") or act.get("external_id") or "")
@@ -442,9 +510,6 @@ class GarminDirectService:
             existing = sandbox_store.get_workout_by_id(user_id, act_id)
             if existing and existing.get("gps_route") and len(existing.get("gps_route", [])) > 1:
                 continue
-            # Hanya prefetch jika ada titik koordinat awal
-            if not (act.get("start_lat") or (existing and existing.get("start_lat"))):
-                continue
             try:
                 result = self.get_activity_gps(user_id, act_id)
                 if result.get("gps_route") and len(result["gps_route"]) > 1:
@@ -453,6 +518,18 @@ class GarminDirectService:
             except Exception as e:
                 logger.debug(f"[GarminService] GPS prefetch skip untuk {act_id}: {e}")
                 continue
+        return prefetch_count
+
+    def preload_unmapped_workouts_gps(self, user_id: str, limit: int = 10) -> Dict[str, Any]:
+        """
+        Menjalankan prefetch koordinat GPS untuk aktivitas yang belum memiliki rute peta.
+        """
+        count = self._auto_preload_gps(user_id, None)
+        return {
+            "status": "success",
+            "prefetched_count": count,
+            "message": f"Berhasil memuat koordinat GPS riil untuk {count} aktivitas."
+        }
 
     async def start_background_backfill(self, user_id: str, batch_size: int = 50, max_batches: int = 20, delay_sec: float = 1.2) -> Dict[str, Any]:
         """

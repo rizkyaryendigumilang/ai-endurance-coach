@@ -47,16 +47,57 @@ let activityMapInstance = null;
             { name: "Pantai Indah Kapuk (PIK 2) Coastal • Jakarta", lat: -6.1030, lon: 106.7400, tag: "PIK Coastal" }
         ];
 
+        // ══════════════════════════════════════════════════════
+        // GPS CLIENT-SIDE CACHE (OFFLINE-FIRST & INSTANT RELOAD)
+        // ══════════════════════════════════════════════════════
+        function _getCachedGpsRoute(id) {
+            try {
+                if (!id) return null;
+                const raw = localStorage.getItem(`goalie_gps_${id}`);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed && Array.isArray(parsed.coords) && parsed.coords.length > 1) {
+                    return parsed;
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function _setCachedGpsRoute(id, coords, locationName) {
+            try {
+                if (!id || !Array.isArray(coords) || coords.length < 2) return;
+                localStorage.setItem(`goalie_gps_${id}`, JSON.stringify({
+                    coords: coords,
+                    locationName: locationName || "Rute Garmin Riil",
+                    cachedAt: new Date().toISOString()
+                }));
+            } catch (e) {}
+        }
+
         function getWorkoutRouteCoordinates(workoutIdOrData, distKm = 10, workoutType = 'run') {
             const rawGps = (workoutIdOrData && typeof workoutIdOrData === 'object') ? (workoutIdOrData.gpsRoute || workoutIdOrData.gps_route) : null;
-            if (rawGps && Array.isArray(rawGps) && rawGps.length > 1) {
+            if (rawGps && Array.isArray(rawGps) && rawGps.length > 1 && !workoutIdOrData.isSynthetic) {
                 return {
                     coords: rawGps,
-                    locationName: workoutIdOrData.locationName || workoutIdOrData.location_name || workoutIdOrData.location || "Rute Garmin Riil"
+                    locationName: workoutIdOrData.locationName || workoutIdOrData.location_name || workoutIdOrData.location || "Rute Garmin Riil",
+                    isRealGps: true,
+                    isSynthetic: false
                 };
             }
 
             const idStr = typeof workoutIdOrData === 'string' ? workoutIdOrData : (workoutIdOrData && workoutIdOrData.id ? workoutIdOrData.id : 'w-1');
+            
+            // Periksa cache offline klien terlebih dahulu
+            const cachedGps = _getCachedGpsRoute(idStr);
+            if (cachedGps) {
+                return {
+                    coords: cachedGps.coords,
+                    locationName: cachedGps.locationName || "Rute Garmin Riil",
+                    isRealGps: true,
+                    isSynthetic: false
+                };
+            }
+
             let hash = 0;
             for (let i = 0; i < idStr.length; i++) {
                 hash = (hash << 5) - hash + idStr.charCodeAt(i);
@@ -97,7 +138,9 @@ let activityMapInstance = null;
 
             return {
                 coords: coords,
-                locationName: locName || landmark.name
+                locationName: locName || landmark.name,
+                isRealGps: false,
+                isSynthetic: true
             };
         }
 
@@ -107,7 +150,9 @@ let activityMapInstance = null;
             const distStr = distNum.toFixed(2);
             const paceStr = paceFormatted || '05:30 /km';
             const locationName = (routeInfo && routeInfo.locationName) ? routeInfo.locationName : 'Gelora Bung Karno (GBK) Senayan • Jakarta';
-            const sport = String(w.sport || 'run').toLowerCase();
+            const sport = String(w.sport || w.workout_type || 'run').toLowerCase();
+            const isReal = routeInfo && routeInfo.isRealGps;
+            const isIndoor = sport === 'strength' || sport.includes('treadmill') || sport.includes('indoor');
 
             // Schedule observer re-check after card DOM insertion
             setTimeout(() => {
@@ -119,10 +164,15 @@ let activityMapInstance = null;
                 <!-- Real Leaflet Street Map Container -->
                 <div id="feed-map-${escapeHTML(wId)}" class="garmin-feed-map-container w-full h-full z-0 pointer-events-none" data-workout-id="${escapeHTML(wId)}" data-dist="${distStr}" data-sport="${escapeHTML(sport)}"></div>
 
-                <!-- Top Left: Venue Location Badge -->
-                <div class="absolute top-2.5 left-2.5 z-[400] px-2.5 py-1 rounded-full bg-white/95 text-slate-900 shadow-sm border border-slate-300 font-mono text-[10px] flex items-center gap-1.5 font-bold max-w-[65%] truncate backdrop-blur-md">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                    <span class="truncate">${escapeHTML(locationName)}</span>
+                <!-- Top Left: Venue Location Badge & Real GPS Indicator -->
+                <div class="absolute top-2.5 left-2.5 z-[400] flex items-center gap-1.5 max-w-[70%]">
+                    <div class="px-2.5 py-1 rounded-full bg-white/95 text-slate-900 shadow-sm border border-slate-300 font-mono text-[10px] flex items-center gap-1.5 font-bold truncate backdrop-blur-md">
+                        <span class="w-1.5 h-1.5 rounded-full ${isReal ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'} shrink-0"></span>
+                        <span class="garmin-feed-venue-name truncate">${escapeHTML(locationName)}</span>
+                    </div>
+                    <span class="garmin-gps-status-badge px-2 py-0.5 rounded-full ${isReal ? 'bg-emerald-600 text-white' : (isIndoor ? 'bg-slate-700 text-white' : 'bg-amber-500 text-white')} font-mono text-[9px] font-bold shadow-xs shrink-0 flex items-center gap-1">
+                        ${isReal ? '<span class="w-1 h-1 rounded-full bg-white animate-pulse"></span>GPS Riil' : (isIndoor ? 'Indoor' : 'Estimasi')}
+                    </span>
                 </div>
 
                 <!-- Top Right: Weather Widget (27.2° ☀️) -->
@@ -295,7 +345,8 @@ let activityMapInstance = null;
             }
 
             // Ambil rute GPS Garmin asli di latar belakang jika belum tersedia
-            if ((!data.gpsRoute || data.gpsRoute.length < 2) && data.id && typeof API_BASE !== 'undefined' && !data._gpsFetching) {
+            const needsRealGps = !data.isRealGps || data.isSynthetic || !data.gpsRoute || data.gpsRoute.length < 2;
+            if (needsRealGps && data.id && typeof API_BASE !== 'undefined' && !data._gpsFetching) {
                 data._gpsFetching = true;
                 const reqUrl = `${API_BASE}/garmin/activity-gps/${encodeURIComponent(data.id)}`;
                 fetch(reqUrl)
@@ -304,8 +355,24 @@ let activityMapInstance = null;
                         data._gpsFetching = false;
                         if (json && json.status === 'success' && Array.isArray(json.gps_route) && json.gps_route.length > 1) {
                             data.gpsRoute = json.gps_route;
+                            data.isRealGps = true;
+                            data.isSynthetic = false;
                             if (json.location_name) data.locationName = json.location_name;
+                            
+                            // Simpan ke cache offline klien
+                            _setCachedGpsRoute(data.id, json.gps_route, json.location_name);
+                            
+                            if (typeof ACTIVITY_FIXTURES !== 'undefined' && ACTIVITY_FIXTURES[data.id]) {
+                                ACTIVITY_FIXTURES[data.id].gpsRoute = json.gps_route;
+                                ACTIVITY_FIXTURES[data.id].isRealGps = true;
+                                if (json.location_name) ACTIVITY_FIXTURES[data.id].locationName = json.location_name;
+                            }
+                            
+                            // Render ulang peta modal dengan rute jalanan riil
                             renderActivityDetailMap(data);
+                            
+                            // Perbarui juga kartu peta pada feed secara reaktif
+                            updateFeedCardMap(data.id, json.gps_route, json.location_name);
                         }
                     })
                     .catch(() => { data._gpsFetching = false; });
@@ -472,7 +539,68 @@ let activityMapInstance = null;
     // FEED CARDS REAL STREET MAP ENGINE (INTERSECTION OBSERVER)
     // ══════════════════════════════════════════════════════
     const feedMapInstances = new Map();
+    const feedMapByWorkoutId = new Map();
+    const _gpsPreloadQueue = new Set();
     let feedMapObserver = null;
+
+    function updateFeedCardMap(wId, coords, locationName) {
+        if (!wId || !coords || coords.length < 2) return;
+        const entry = feedMapByWorkoutId.get(String(wId));
+        if (!entry || !entry.map) return;
+        try {
+            const { map, track, bgTrack, startMarker, finishMarker, containerEl } = entry;
+            if (track) track.setLatLngs(coords);
+            if (bgTrack) bgTrack.setLatLngs(coords);
+            if (startMarker) startMarker.setLatLng(coords[0]);
+            if (finishMarker) finishMarker.setLatLng(coords[coords.length - 1]);
+            map.fitBounds(L.polyline(coords).getBounds(), { padding: [22, 22] });
+            
+            // Perbarui visual badge di kartu feed
+            if (containerEl && containerEl.parentElement) {
+                const badge = containerEl.parentElement.querySelector('.garmin-gps-status-badge');
+                if (badge) {
+                    badge.innerHTML = '<span class="w-1 h-1 rounded-full bg-white animate-pulse"></span>GPS Riil';
+                    badge.className = 'garmin-gps-status-badge px-2 py-0.5 rounded-full bg-emerald-600 text-white font-mono text-[9px] font-bold shadow-xs shrink-0 flex items-center gap-1';
+                }
+                const locEl = containerEl.parentElement.querySelector('.garmin-feed-venue-name');
+                if (locEl && locationName) {
+                    locEl.textContent = locationName;
+                }
+            }
+        } catch (e) {
+            console.debug('Error updating feed card map:', e);
+        }
+    }
+
+    function preloadActivityGps(wId) {
+        if (!wId || _gpsPreloadQueue.has(wId) || typeof API_BASE === 'undefined') return;
+        _gpsPreloadQueue.add(wId);
+        
+        const cached = _getCachedGpsRoute(wId);
+        if (cached) {
+            updateFeedCardMap(wId, cached.coords, cached.locationName);
+            _gpsPreloadQueue.delete(wId);
+            return;
+        }
+
+        fetch(`${API_BASE}/garmin/activity-gps/${encodeURIComponent(wId)}`)
+            .then(res => res.ok ? res.json() : null)
+            .then(json => {
+                if (json && json.status === 'success' && Array.isArray(json.gps_route) && json.gps_route.length > 1) {
+                    _setCachedGpsRoute(wId, json.gps_route, json.location_name);
+                    if (typeof ACTIVITY_FIXTURES !== 'undefined' && ACTIVITY_FIXTURES[wId]) {
+                        ACTIVITY_FIXTURES[wId].gpsRoute = json.gps_route;
+                        ACTIVITY_FIXTURES[wId].isRealGps = true;
+                        if (json.location_name) ACTIVITY_FIXTURES[wId].locationName = json.location_name;
+                    }
+                    updateFeedCardMap(wId, json.gps_route, json.location_name);
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                _gpsPreloadQueue.delete(wId);
+            });
+    }
 
     function mountFeedCardMap(containerEl) {
         if (!containerEl || containerEl._leaflet_id || typeof L === 'undefined') return;
@@ -504,7 +632,7 @@ let activityMapInstance = null;
             }).addTo(map);
 
             // 1. Navy underglow for high contrast
-            L.polyline(coords, {
+            const bgTrack = L.polyline(coords, {
                 color: '#002b49',
                 weight: 5.5,
                 opacity: 0.85,
@@ -528,7 +656,7 @@ let activityMapInstance = null;
                 iconSize: [16, 16],
                 iconAnchor: [8, 8]
             });
-            L.marker(coords[0], { icon: startIcon }).addTo(map);
+            const startMarker = L.marker(coords[0], { icon: startIcon }).addTo(map);
 
             // 4. Finish/Stop marker: red teardrop pin with white stop square (⏹)
             const finishIcon = L.divIcon({
@@ -537,7 +665,7 @@ let activityMapInstance = null;
                 iconSize: [18, 22],
                 iconAnchor: [9, 22]
             });
-            L.marker(coords[coords.length - 1], { icon: finishIcon }).addTo(map);
+            const finishMarker = L.marker(coords[coords.length - 1], { icon: finishIcon }).addTo(map);
 
             map.fitBounds(track.getBounds(), {
                 padding: [22, 22]
@@ -552,6 +680,13 @@ let activityMapInstance = null;
             }, 60);
 
             feedMapInstances.set(containerEl, map);
+            feedMapByWorkoutId.set(String(wId), { map, track, bgTrack, startMarker, finishMarker, containerEl });
+
+            // Otomatis preload GPS Garmin riil di latar belakang jika belum ada
+            if (!routeInfo.isRealGps && !containerEl._gpsPrefetched) {
+                containerEl._gpsPrefetched = true;
+                preloadActivityGps(wId);
+            }
         } catch (e) {
             console.warn('Feed map mount warning for ' + wId + ':', e);
         }
@@ -596,6 +731,8 @@ let activityMapInstance = null;
 
     window.MAP_TILE_PROVIDERS = MAP_TILE_PROVIDERS;
     window.mountFeedCardMap = mountFeedCardMap;
+    window.updateFeedCardMap = updateFeedCardMap;
+    window.preloadActivityGps = preloadActivityGps;
     window.initFeedMapObserver = initFeedMapObserver;
     window.getWorkoutRouteCoordinates = getWorkoutRouteCoordinates;
     window.renderGarminMapCardSvg = renderGarminMapCardSvg;
