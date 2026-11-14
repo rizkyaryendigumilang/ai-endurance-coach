@@ -183,7 +183,7 @@
         if (filenameEl) filenameEl.textContent = file.name;
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             try {
                 const data = JSON.parse(e.target.result);
                 if (!data || typeof data !== 'object') {
@@ -208,6 +208,32 @@
                     if (data.athlete.selected_coach_tier && typeof window.selectCoachTier === 'function') {
                         window.selectCoachTier(data.athlete.selected_coach_tier, false);
                     }
+                    if (data.athlete.biometrics) {
+                        const bio = data.athlete.biometrics;
+                        const rhrEl = document.getElementById('settings-resting-hr');
+                        const maxHrEl = document.getElementById('settings-max-hr');
+                        const weightEl = document.getElementById('settings-weight');
+                        const heightEl = document.getElementById('settings-height');
+                        if (rhrEl && bio.resting_hr) rhrEl.value = bio.resting_hr;
+                        if (maxHrEl && bio.max_hr) maxHrEl.value = bio.max_hr;
+                        if (weightEl && bio.weight_kg) weightEl.value = bio.weight_kg;
+                        if (heightEl && bio.height_cm) heightEl.value = bio.height_cm;
+                        if (typeof window.updateKarvonenCalculation === 'function') {
+                            window.updateKarvonenCalculation();
+                        }
+                    }
+                }
+
+                // Restore Workouts to IndexedDB if present
+                if (Array.isArray(data.workouts) && data.workouts.length > 0 && window.GoalieDB) {
+                    for (const w of data.workouts) {
+                        await window.GoalieDB.saveWorkout(w);
+                    }
+                }
+
+                // Restore Active Plan to IndexedDB if present
+                if (data.active_plan && window.GoalieDB) {
+                    await window.GoalieDB.savePlan(data.active_plan);
                 }
 
                 if (typeof window.updateCockpitVisuals === 'function') {

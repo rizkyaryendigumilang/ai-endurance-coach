@@ -16255,28 +16255,100 @@
             }
         }
 
-        function exportAthleteData() {
+        async function exportAthleteData() {
+            let workouts = [];
+            let latestPlan = null;
+            try {
+                if (window.GoalieDB && typeof window.GoalieDB.getAllWorkouts === 'function') {
+                    workouts = await window.GoalieDB.getAllWorkouts();
+                }
+                if (window.GoalieDB && typeof window.GoalieDB.getLatestPlan === 'function') {
+                    latestPlan = await window.GoalieDB.getLatestPlan();
+                }
+            } catch (err) {
+                console.warn('[Goalie] Export IndexedDB read:', err);
+            }
+
+            const restingHr = parseInt(document.getElementById('settings-resting-hr')?.value) || 48;
+            const maxHr = parseInt(document.getElementById('settings-max-hr')?.value) || 192;
+            const hrr = Math.max(0, maxHr - restingHr);
+
             const dataToExport = {
+                metadata: {
+                    schema_version: "2.4.0",
+                    exported_at: new Date().toISOString(),
+                    app_version: "2.4.0",
+                    platform: "Goalie AI Endurance Coach",
+                    engine: "Goalie Sports Science Deterministic Core v2.4 (VDOT, Banister, Karvonen, Gabbett ACWR, Magnus-Tetens)"
+                },
                 athlete: {
                     email: appState.userEmail || 'athlete@goalie.fit',
-                    is_pro: appState.isPro,
-                    selected_coach_tier: appState.selectedCoachTier,
-                    exported_at: new Date().toISOString()
+                    full_name: document.getElementById('settings-athlete-name')?.value || 'Rizky Aryendi Gumilang',
+                    is_pro: Boolean(appState.isPro),
+                    selected_coach_tier: appState.selectedCoachTier || 'pro',
+                    biometrics: {
+                        resting_hr: restingHr,
+                        max_hr: maxHr,
+                        hrr: hrr,
+                        vdot: 53.4,
+                        weight_kg: parseFloat(document.getElementById('settings-weight')?.value) || 68.0,
+                        height_cm: parseFloat(document.getElementById('settings-height')?.value) || 175.0,
+                        karvonen_zones: {
+                            z1_recovery: `< ${Math.round(restingHr + hrr * 0.60)} bpm`,
+                            z2_aerobic: `${Math.round(restingHr + hrr * 0.60)} - ${Math.round(restingHr + hrr * 0.70)} bpm`,
+                            z3_tempo: `${Math.round(restingHr + hrr * 0.70)} - ${Math.round(restingHr + hrr * 0.80)} bpm`,
+                            z4_threshold: `${Math.round(restingHr + hrr * 0.80)} - ${Math.round(restingHr + hrr * 0.90)} bpm`,
+                            z5_vo2max: `> ${Math.round(restingHr + hrr * 0.90)} bpm`
+                        }
+                    }
                 },
-                cockpit_telemetry: cockpitData,
-                engine: "Goalie Sports Science Deterministic Core v2.4"
+                target_race: {
+                    name: "Jakarta International Marathon (JAKIM 2026)",
+                    distance_km: 42.195,
+                    target_time: "03:29:00",
+                    race_date: "2026-06-28",
+                    periodization_week: 12,
+                    total_weeks: 31
+                },
+                cockpit_telemetry: {
+                    summary_goal_km: cockpitData.summaryGoal || 68.4,
+                    weekly_work_tss: cockpitData.weeklyWork || 4200,
+                    calorie_loss_kcal: cockpitData.calorieLoss || 4957.6,
+                    cardiac_drift_pct: cockpitData.cardiacDrift || 7.908,
+                    acwr_ratio: 1.08,
+                    total_workouts: cockpitData.totalWorkouts || 14
+                },
+                preferences: {
+                    theme: localStorage.getItem('theme') || 'system',
+                    distance_unit: "km",
+                    preload_gps: localStorage.getItem('goalie_auto_preload_gps') !== '0',
+                    weather_adjustment: localStorage.getItem('goalie_auto_weather_adjust') !== '0',
+                    notifications: {
+                        push_enabled: document.getElementById('settings-notif-push')?.checked ?? true,
+                        acwr_alert: document.getElementById('settings-notif-acwr')?.checked ?? true,
+                        email_digest: document.getElementById('settings-notif-email')?.checked ?? true,
+                        haptic_feedback: document.getElementById('settings-notif-haptic')?.checked ?? true,
+                        quiet_hours: {
+                            start: document.getElementById('settings-notif-quiet-start')?.value || '22:00',
+                            end: document.getElementById('settings-notif-quiet-end')?.value || '05:00'
+                        }
+                    }
+                },
+                workouts: workouts,
+                active_plan: latestPlan
             };
 
             const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `goalie_athlete_telemetry_${new Date().toISOString().split('T')[0]}.json`;
+            const prefix = appState.userEmail ? appState.userEmail.split('@')[0] : 'athlete';
+            a.download = `goalie_backup_${prefix}_${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             a.remove();
             URL.revokeObjectURL(url);
-            toast.success('Export Ready', 'Athlete telemetry and workout records downloaded as JSON.');
+            toast.success('Cadangan Berhasil Diunduh', 'File backup JSON lengkap telah tersimpan di perangkat.');
         }
 
         function resetSandboxData() {
