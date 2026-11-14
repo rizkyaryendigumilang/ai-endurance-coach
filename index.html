@@ -4535,21 +4535,21 @@
 
                         <!-- Quick Prompt Chips (Pill styled) -->
                         <div class="pt-3 border-t border-border flex flex-wrap gap-1.5 text-[11px]">
-                            <button onclick="sendQuickPrompt('Rekomendasikan menu latihan preskriptif untuk besok berdasarkan fatigue form TSB +8 dan target maraton.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1.5">
+                            <button onclick="sendQuickPrompt('Rekomendasikan menu latihan terbaik untuk besok berdasarkan kesiapan fisik dan target maraton saya.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                <span data-i18n="chip_prescribe">Preskripsi Latihan Besok</span>
+                                <span data-i18n="chip_prescribe">Rekomendasi Latihan Besok</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Evaluasi status ACWR saya di angka 1.16 dan form TSB -11.9. Apakah saya berada di Sweet Spot atau ada risiko cedera?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
-                                <span data-i18n="chip_acwr">Evaluasi ACWR &amp; TSB</span>
+                            <button onclick="sendQuickPrompt('Evaluasi beban latihan ACWR dan kesiapan fisik saya saat ini. Apakah beban latihan aman atau ada risiko kelelahan?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
+                                <span data-i18n="chip_acwr">Cek Beban &amp; Kesiapan Fisik</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Berdasarkan HRR 144 bpm (RHR 48, Max 192), bagaimana saya harus membagi waktu di Zona 2 Karvonen (135-149 bpm) untuk maraton?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-tertiary text-text-secondary hover:text-text-primary transition-colors">
-                                <span data-i18n="chip_karvonen">Matriks Karvonen 5-Zona</span>
+                            <button onclick="sendQuickPrompt('Berdasarkan detak jantung istirahat 48 bpm dan maksimal 192 bpm, bagaimana panduan lari Zona 2 saya untuk maraton?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-tertiary text-text-secondary hover:text-text-primary transition-colors">
+                                <span data-i18n="chip_karvonen">Panduan 5 Zona Detak Jantung</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Hitung Minetti Grade-Adjusted Pace jika saya lari di tanjakan elevasi 60 meter dengan pace 05:00 min/km.')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
-                                <span data-i18n="chip_gap">Kalkulator Minetti GAP</span>
+                            <button onclick="sendQuickPrompt('Berapa penyesuaian pace saya saat lari di tanjakan tanjak 60 meter jika pace datar 5:00/km?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
+                                <span data-i18n="chip_gap">Kalkulator Pace Tanjakan (GAP)</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Cardiac drift saya tercatat +1.7% (decoupling) dan efisiensi 1.36 m/beat. Apakah fondasi aerobik saya sudah cukup solid?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
-                                <span data-i18n="chip_drift">Decoupling Aerobik +1.7%</span>
+                            <button onclick="sendQuickPrompt('Detak jantung saya sangat stabil hanya naik +1.7 persen selama lari jauh. Bagaimana penilaian fondasi aerobik saya?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
+                                <span data-i18n="chip_drift">Efisiensi Detak Jantung Lari</span>
                             </button>
                         </div>
 
@@ -5478,7 +5478,7 @@
                         </span>
                         <button onclick="analyzeSelectedVideo()" id="btn-analyze-video" class="btn-flat-primary w-full sm:w-auto px-6 py-2.5 text-xs font-mono font-bold flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            <span data-i18n="run_analyzer_btn_run">EKSTRAKSI BIOMEKANIKA LARI</span>
+                            <span data-i18n="run_analyzer_btn_run">ANALISIS POSTUR SEKARANG</span>
                         </button>
                     </div>
 
@@ -5553,25 +5553,25 @@
                     <div>
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="w-2.5 h-2.5 bg-tertiary"></span>
-                            <h3 class="font-display font-extrabold text-lg text-text-primary" data-i18n="marathon_master_title">Sistem Master Maraton 31-Minggu</h3>
-                            <span class="flat-badge border-tertiary text-tertiary text-[10px]" data-i18n="marathon_master_stage">TAHAP 1–3</span>
+                            <h3 class="font-display font-extrabold text-lg text-text-primary" data-i18n="marathon_master_title">Program Master Maraton 31 Minggu</h3>
+                            <span class="flat-badge border-tertiary text-tertiary text-[10px]" data-i18n="marathon_master_stage">FASE 1-3</span>
                         </div>
-                        <p class="text-xs text-text-secondary font-mono" data-i18n="marathon_master_sub">Progresi Makrosiklus &bull; Matriks Kekuatan WFH &bull; Split &bull; Mesin Adaptif AI</p>
+                        <p class="text-xs text-text-secondary font-mono" data-i18n="marathon_master_sub">Program 31 Minggu &bull; Latihan Kekuatan di Rumah &bull; Target Pace &bull; Rekomendasi Adaptif AI</p>
                     </div>
 
                     <!-- Sub-Tab Segmented Controls (Cadra Pill Track) -->
                     <div class="p-1 bg-surface-subtle border border-border rounded-full inline-flex items-center gap-0.5 text-xs font-medium shrink-0 overflow-x-auto no-scrollbar shadow-xs" role="tablist" aria-label="Marathon Schedule Views">
                         <button type="button" onclick="switchScheduleSubtab('macro')" id="subtab-btn-macro" role="tab" aria-selected="true" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80">
                             <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            <span data-i18n="subtab_macro">Makro (31-Mgg)</span>
+                            <span data-i18n="subtab_macro">Program 31 Minggu</span>
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('weekly')" id="subtab-btn-weekly" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span data-i18n="subtab_weekly">Mingguan (7-Hari)</span>
+                            <span data-i18n="subtab_weekly">Mingguan (7 Hari)</span>
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('strength')" id="subtab-btn-strength" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            <span data-i18n="subtab_strength">Kekuatan &amp; WFH</span>
+                            <span data-i18n="subtab_strength">Kekuatan &amp; Core</span>
                             <span class="px-1.5 py-0.2 text-[9px] font-mono font-bold rounded-full bg-tertiary/15 text-tertiary" data-i18n="subtab_strength_count">58 Sesi</span>
                         </button>
                         <button type="button" onclick="switchScheduleSubtab('splits')" id="subtab-btn-splits" role="tab" aria-selected="false" class="schedule-subtab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium">
@@ -8867,16 +8867,16 @@
                 </div>
             </div>
 
-            <!-- AI Coach Post-Mortem Audit -->
+            <!-- AI Coach Post-Workout Debrief -->
             <div class="p-3 bg-surface-subtle border border-tertiary/40 rounded-xl space-y-1.5">
                 <div class="flex items-center gap-1.5 text-tertiary font-bold font-mono text-[11px]">
                     <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    <span data-i18n="detail_ai_postmortem_title">AI COACH POST-WORKOUT AUDIT</span>
+                    <span data-i18n="detail_ai_postmortem_title">ULASAN PASCA-LATIHAN PELATIH AI</span>
                     <span>&bull;</span>
-                    <span class="text-flat-green">PACING DISCIPLINE 94/100</span>
+                    <span class="text-flat-green">DISIPLIN TARGET 94/100</span>
                 </div>
                 <p id="detail-ai-audit-text" class="text-xs text-text-secondary leading-relaxed">
-                    Solid execution across intervals. Only +1.7% cardiovascular drift was observed between the first and last repeat, indicating stellar mitochondrial density. Recommend 65g fast-absorbing carbs and 25g protein within 45 minutes for optimal glycogen resynthesis.
+                    Eksekusi repetisi sangat rapi dan stabil. Detak jantung hanya naik +1.7% sepanjang latihan, menandakan fondasi daya tahan tubuh Anda sangat solid. Disarankan konsumsi 65g karbohidrat dan 25g protein dalam 45 menit untuk mempercepat pemulihan energi otot.
                 </p>
             </div>
 
@@ -8885,19 +8885,19 @@
                 <div class="flex flex-wrap items-center gap-2">
                     <button onclick="shareWorkoutSession()" class="btn-flat-secondary text-xs font-mono font-bold px-3 py-1.5 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-                        <span data-i18n="detail_btn_share">Share Session</span>
+                        <span data-i18n="detail_btn_share">Bagikan Sesi</span>
                     </button>
                     <button type="button" onclick="generateInstagramStoryCard()" class="btn-flat-secondary text-xs font-mono font-bold px-3 py-1.5 flex items-center gap-1.5 text-pink-500 border-pink-500/40 hover:bg-pink-500/10">
                         <svg class="w-3.5 h-3.5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span>Story IG (9:16)</span>
+                        <span>Unduh Story IG (9:16)</span>
                     </button>
                     <button type="button" onclick="pushActiveWorkoutToGarmin()" class="btn-flat-secondary text-xs font-mono font-bold px-3 py-1.5 flex items-center gap-1.5 text-blue-400 border-blue-400/40 hover:bg-blue-400/10">
                         <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                        <span>Kirim ke Garmin</span>
+                        <span>Kirim ke Jam Garmin</span>
                     </button>
                 </div>
                 <button onclick="closeActivityDetailModal()" class="btn-primary rounded-full text-xs font-mono font-bold px-6 py-2" data-i18n="detail_btn_close">
-                    Close
+                    Tutup
                 </button>
             </div>
         </div>
@@ -10830,10 +10830,30 @@
                 return;
             }
 
+        function getShoeStatusLabel(status) {
+            switch (status) {
+                case 'FRESH': return 'Kondisi Prima';
+                case 'ACTIVE': return 'Aktif Digunakan';
+                case 'AGING': return 'Mulai Menipis';
+                case 'REPLACE_RECOMMENDED': return 'Waktunya Diganti';
+                default: return (status || '').replace('_', ' ');
+            }
+        }
+
+        function renderShoesCockpit(shoes) {
+            const listEl = document.getElementById('cockpit-shoes-list');
+            if (!listEl) return;
+            const active = shoes.filter(s => !s.is_retired).slice(0, 3);
+            if (active.length === 0) {
+                listEl.innerHTML = '<span class="text-text-secondary text-[11px]">Belum ada sepatu aktif di inventaris.</span>';
+                return;
+            }
+
             listEl.innerHTML = active.map(s => {
                 const isAlert = s.status === 'REPLACE_RECOMMENDED';
                 const color = isAlert ? 'bg-red-500' : (s.status === 'AGING' ? 'bg-amber-500' : 'bg-flat-green');
                 const textColor = isAlert ? 'text-red-500' : (s.status === 'AGING' ? 'text-amber-500' : 'text-flat-green');
+                const statusLabel = getShoeStatusLabel(s.status);
                 return `
                     <div class="p-2 bg-surface-subtle border ${isAlert ? 'border-red-500/50' : 'border-border'} rounded-lg space-y-1">
                         <div class="flex justify-between items-center text-[11px]">
@@ -10845,7 +10865,7 @@
                         </div>
                         <div class="flex justify-between text-[10px] text-text-secondary">
                             <span>${s.current_km} / ${s.max_km} km</span>
-                            <span class="${textColor} font-bold">${s.status.replace('_', ' ')}</span>
+                            <span class="${textColor} font-bold">${statusLabel}</span>
                         </div>
                     </div>
                 `;
@@ -10875,13 +10895,15 @@
                 return;
             }
 
-            container.innerHTML = cachedShoes.map(s => `
+            container.innerHTML = cachedShoes.map(s => {
+                const statusLabel = getShoeStatusLabel(s.status);
+                return `
                 <div class="p-3 bg-surface-subtle border ${s.status === 'REPLACE_RECOMMENDED' ? 'border-red-500/40 bg-red-500/5' : 'border-border'} rounded-xl flex items-center justify-between gap-3">
                     <div class="min-w-0 flex-1 space-y-1">
                         <div class="flex items-center gap-2">
                             <strong class="text-xs text-text-primary">${s.brand} ${s.model}</strong>
-                            ${s.is_default ? '<span class="text-[9px] bg-tertiary/10 text-tertiary px-1.5 py-0.2 rounded font-bold">DEFAULT</span>' : ''}
-                            <span class="text-[10px] ${s.status === 'REPLACE_RECOMMENDED' ? 'text-red-500 font-bold' : 'text-text-secondary'}">(${s.status})</span>
+                            ${s.is_default ? '<span class="text-[9px] bg-tertiary/10 text-tertiary px-1.5 py-0.2 rounded font-bold">UTAMA</span>' : ''}
+                            <span class="text-[10px] ${s.status === 'REPLACE_RECOMMENDED' ? 'text-red-500 font-bold' : 'text-text-secondary'}">(${statusLabel})</span>
                         </div>
                         <div class="text-[11px] text-text-secondary">${s.nickname || 'Road Running'} &bull; ${s.current_km} / ${s.max_km} km (${s.wear_pct}%)</div>
                         <div class="w-full bg-border h-1.5 rounded-xs overflow-hidden">
@@ -10890,13 +10912,14 @@
                     </div>
                     <div>
                         ${!s.is_retired ? `
-                            <button type="button" onclick="retireShoe('${s.id}')" class="btn-flat-secondary text-[10px] py-1 px-2.5 text-text-secondary hover:text-red-500 hover:border-red-500">
-                                Pensiunkan
+                            <button type="button" onclick="retireShoe('${s.id}')" class="btn-flat-secondary text-[10px] py-1 px-2.5 text-text-secondary hover:text-red-500 hover:border-red-500 font-semibold">
+                                Pensiunkan Sepatu
                             </button>
-                        ` : '<span class="text-[10px] text-text-secondary">Pensiun</span>'}
+                        ` : '<span class="text-[10px] text-text-secondary font-mono">Sudah Dipensiunkan</span>'}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         async function handleSaveShoe(e) {
@@ -12441,76 +12464,76 @@
         const GOALIE_I18N = {
             id: {
                 nav_dashboard: "Beranda",
-                nav_training: "Rencana",
+                nav_training: "Rencana Latihan",
                 nav_coach: "Pelatih AI",
-                nav_telemetry: "Telemetri",
-                nav_integrations: "Integrasi",
+                nav_telemetry: "Data Latihan",
+                nav_integrations: "Integrasi Alat",
                 nav_record: "Catat Latihan",
                 nav_login: "Masuk",
                 nav_signup: "Daftar",
                 nav_search_label: "Cari...",
                 tab_cockpit: "Kokpit Performa",
                 tab_chat: "Chat Pelatih AI",
-                tab_telemetry: "Telemetri",
+                tab_telemetry: "Data & Statistik Lari",
                 tab_biomechanics: "Run Analyzer",
-                tab_schedule: "Jadwal & iCal",
-                tab_integrations: "Integrasi",
+                tab_schedule: "Jadwal Latihan",
+                tab_integrations: "Integrasi Perangkat",
                 tab_settings: "Pengaturan",
-                garmin_calib_uncalibrated: "Menghubungkan Telemetri Garmin untuk Menghitung VDOT & Status Kebugaran Atlet",
-                garmin_calib_uncalibrated_sub: "Menunggu sinkronisasi aktivitas Garmin Connect pertama untuk memvalidasi ambang laktat dan kapasitas aerobik riil.",
-                garmin_calib_calibrated: "✓ Telemetri Garmin Terkalibrasi (20 Sesi Lari Dianalisis)",
-                garmin_calib_calibrated_sub: "VDOT, Ambang Laktat (LT2), Zona HR Karvonen, dan Beban Latihan Kronis tersinkronisasi secara presisi.",
+                garmin_calib_uncalibrated: "Hubungkan Garmin untuk Cek Target Pace & Kebugaran",
+                garmin_calib_uncalibrated_sub: "Menunggu data lari pertama dari Garmin Connect untuk mengukur daya tahan dan detak jantung Anda.",
+                garmin_calib_calibrated: "✓ Data Garmin Terhubung (20 Sesi Lari Dianalisis)",
+                garmin_calib_calibrated_sub: "Target pace lari, zona detak jantung Karvonen, dan riwayat beban latihan sudah tersinkron rapi.",
                 garmin_calib_btn_sync: "Hubungkan Garmin",
                 garmin_calib_btn_synced: "Status Garmin",
                 feed_filter_all: "Semua Aktivitas",
                 feed_filter_runs: "Lari",
                 feed_filter_rides: "Sepeda",
-                feed_filter_prescription: "Preskripsi AI",
-                feed_form_label: "Status Form (TSB):",
-                presc_title: "PRESKRIPSI LATIHAN AI HARI INI",
+                feed_filter_prescription: "Rekomendasi AI",
+                feed_form_label: "Kondisi Tubuh (TSB):",
+                presc_title: "REKOMENDASI LATIHAN HARI INI",
                 presc_badge: "PELATIH PINTAR",
-                presc_subtitle: "Disesuaikan berdasarkan kelelahan & form Intervals.icu",
+                presc_subtitle: "Disesuaikan otomatis dengan tingkat kelelahan dan kesiapan fisik Anda",
                 presc_workout_title: "Latihan Progresif Threshold • 10.25 km",
                 presc_target_pace: "Target Pace: 4:20 - 4:35/km",
                 presc_target_hr: "Target Detak Jantung",
-                presc_suffer: "Estimasi Suffer Score",
-                presc_cadence: "Kadens Ideal",
+                presc_suffer: "Tingkat Beban Latihan",
+                presc_cadence: "Kadens Langkah (spm)",
                 presc_start_btn: "Mulai / Catat Sesi Ini",
-                presc_adapt_btn: "Minta AI Menyesuaikan",
+                presc_adapt_btn: "Minta Pelatih AI Sesuaikan",
                 card_run_time: "• Hari ini pukul 06:15 WIB",
                 card_sport_run: "Lari",
-                card_run_title: "Morning Progression Tempo Run",
-                card_run_desc: "Kaki terasa sangat bertenaga di repetisi blok 4:20/km. Hidrasi optimal dengan kadens stabil 178 spm.",
+                card_run_title: "Lari Tempo Progresif Pagi",
+                card_run_desc: "Kaki terasa bertenaga di repetisi target 4:20/km. Asupan cairan terjaga dan langkah stabil di 178 langkah per menit.",
                 card_distance: "Jarak",
                 card_pace: "Pace",
                 card_speed: "Kecepatan Rata-rata",
                 card_time: "Waktu",
-                card_elev: "Kenaikan Elevasi",
-                card_inspect_map: "Buka Rute & Split Km →",
-                card_ai_engine: "MESIN ANALISIS AI",
-                card_run_ai_notes: "Cardiac drift terpantau hanya +1.7% decoupling. Keseimbangan langkah sangat simetris di 49.8% Kiri / 50.2% Kanan dengan ground contact time 212ms.",
+                card_elev: "Total Tanjakan",
+                card_inspect_map: "Lihat Rute & Split Km →",
+                card_ai_engine: "ANALISIS PELATIH AI",
+                card_run_ai_notes: "Detak jantung sangat stabil (drift hanya +1.7%). Pijakan kaki seimbang di 49.8% Kiri / 50.2% Kanan dengan waktu kontak tanah 212 ms.",
                 card_kudos: "Kudos",
                 card_comments: "Komentar",
-                card_view_splits: "Lihat Split Km →",
+                card_view_splits: "Lihat Split per Kilometer →",
                 card_ride_time: "• Kemarin pukul 05:45 WIB",
                 card_sport_cycling: "Sepeda",
-                card_ride_title: "Sentul KM0 Hill Climb Endurance",
-                card_ride_desc: "Tanjakan KM0 stabil di 240W Normalised Power. Manuver turunan aman dengan kontrol kadens rapi.",
-                card_view_power: "Lihat Kurva Tenaga →",
-                detail_modal_badge: "TELEMETRI TERVERIFIKASI GOALIE",
+                card_ride_title: "Latihan Tanjakan KM0 Sentul",
+                card_ride_desc: "Gowes tanjakan stabil di daya 240 Watt. Melewati turunan dengan aman dan kayuhan teratur.",
+                card_view_power: "Lihat Grafik Tenaga →",
+                detail_modal_badge: "DATA TERVERIFIKASI GOALIE",
                 detail_avg_hr: "Detak Jantung Rata-rata",
                 detail_max_hr: "Detak Jantung Maksimal",
-                detail_splits_title: "Tabel Split Per Kilometer",
-                detail_splits_sub: "Distribusi Pace vs Target",
-                detail_hr_zones_title: "Distribusi Zona Denyut Jantung (5-Zone Karvonen)",
-                detail_ai_postmortem_title: "AUDIT PASCA-LATIHAN PELATIH AI",
+                detail_splits_title: "Tabel Split per Kilometer",
+                detail_splits_sub: "Perbandingan Pace Riil vs Target",
+                detail_hr_zones_title: "Distribusi Zona Detak Jantung (5 Zona Karvonen)",
+                detail_ai_postmortem_title: "ULASAN PASCA-LATIHAN PELATIH AI",
                 detail_btn_share: "Bagikan Sesi",
                 detail_btn_close: "Tutup",
-                log_modal_title: "Catat Latihan Selesai",
-                log_quick_presets: "Preset Cepat 1-Ketuk:",
-                log_preset_5k: "5K Pemulihan",
+                log_modal_title: "Catat Latihan Baru",
+                log_quick_presets: "Pilihan Cepat 1-Ketuk:",
+                log_preset_5k: "5K Recovery",
                 log_preset_10k: "10K Tempo",
-                log_preset_21k: "21K Half",
+                log_preset_21k: "21K Half Marathon",
                 log_preset_30k: "30K Sepeda",
                 log_preset_swim: "1.5K Renang",
                 log_title_label: "Judul Sesi",
@@ -12518,217 +12541,216 @@
                 log_distance_label: "Jarak (km)",
                 log_duration_label: "Durasi (menit)",
                 log_hr_label: "Detak Jantung Rata-rata (bpm)",
-                log_cal_label: "Kalori (kcal)",
-                log_rpe_label: "Skala Usaha / RPE (1-10)",
-                log_notes_label: "Catatan Pelatih",
-                log_submit_btn: "SIMPAN & HITUNG ULANG TELEMETRI",
-                settings_pref_title: "Preferensi Mesin Pelatih & Tampilan",
-                settings_coach_engine: "Mesin Pelatih AI Utama",
+                log_cal_label: "Kalori (kkal)",
+                log_rpe_label: "Tingkat Usaha / RPE (1-10)",
+                log_notes_label: "Catatan Latihan Anda",
+                log_submit_btn: "SIMPAN & PERBARUI DATA LATIHAN",
+                settings_pref_title: "Preferensi Pelatih AI & Tampilan",
+                settings_coach_engine: "Model AI Pelatih Utama",
                 settings_units_label: "Sistem Satuan",
-                settings_theme_label: "Tema Warna",
+                settings_theme_label: "Tema Tampilan",
                 settings_language_label: "Bahasa / Language",
-                settings_export_btn: "EKSPOR DATA (.JSON)",
-                settings_reset_btn: "RESET CACHE LOKAL",
+                settings_export_btn: "UNDUH DATA (.JSON)",
+                settings_reset_btn: "HAPUS CACHE LOKAL",
                 settings_back_btn: "KEMBALI KE KOKPIT",
                 settings_save_btn: "SIMPAN PENGATURAN ATLET >",
                 athlete_following: "Mengikuti",
                 athlete_followers: "Pengikut",
                 athlete_activities: "Aktivitas",
                 athlete_latest: "Latihan Terakhir",
-                athlete_weekly_goal: "Target Minggu Ini",
-                mobile_nav_feed: "Feed",
-                mobile_nav_training: "Latihan",
+                athlete_weekly_goal: "Target Jarak Minggu Ini",
+                mobile_nav_feed: "Aktivitas",
+                mobile_nav_training: "Rencana",
                 mobile_nav_coach: "Pelatih AI",
-                mobile_nav_telemetry: "Telemetri",
-                hero_badge: "Garmin FIT • Goalie Telemetri • Banister TRIMP",
-                hero_title: "Berlatih dengan metrik terverifikasi.",
-                hero_subtitle: "LT2 • ACWR • GAP • Periodisasi Maraton 31-Minggu",
-                hero_cta_terminal: "TERMINAL KOKPIT",
-                hero_cta_register: "AKUN ATLET",
-                chat_welcome_title: "PELATIH GOALIE // SISTEM SIAP",
-                chat_welcome_desc: "Telemetri Aktif: CTL/ATL/TSB • Target Pace • Cardiac Drift. Tanyakan strategi latihan atau pilih salah satu prompt di bawah.",
-                chip_prescribe: "Preskripsi Latihan Besok",
-                chip_acwr: "Evaluasi ACWR & TSB",
-                chip_karvonen: "Matriks Karvonen 5-Zona",
-                chip_gap: "Kalkulator Minetti GAP",
-                chip_drift: "Decoupling Aerobik +1.7%",
-                chat_input_ph: "Tanyakan target pace, protokol pemulihan, interval...",
+                mobile_nav_telemetry: "Statistik",
+                hero_badge: "Garmin Connect • Analisis Goalie • Beban TRIMP",
+                hero_title: "Berlatih lebih cerdas dengan panduan berbasis data.",
+                hero_subtitle: "Ambang Laktat • Beban Latihan Seimbang • Periodisasi Maraton 31 Minggu",
+                hero_cta_terminal: "BUKA KOKPIT",
+                hero_cta_register: "DAFTAR SEKARANG",
+                chat_welcome_title: "PELATIH GOALIE // SIAP MEMBANTU",
+                chat_welcome_desc: "Data latihan aktif: Kebugaran, Target Pace, dan Riwayat Beban. Tanyakan strategi latihan atau pilih salah satu topik di bawah.",
+                chip_prescribe: "Rekomendasi Latihan Besok",
+                chip_acwr: "Cek Beban & Kesiapan Fisik",
+                chip_karvonen: "Panduan 5 Zona Detak Jantung",
+                chip_gap: "Kalkulator Pace Tanjakan (GAP)",
+                chip_drift: "Efisiensi Detak Jantung Lari",
+                chat_input_ph: "Tanyakan target pace, jadwal pemulihan, menu interval...",
                 chat_send_btn: "KIRIM >",
                 sidebar_profile: "PROFIL ATLET",
                 status_synced: "TERSINKRON",
-                sidebar_mileage: "Volume Mingguan:",
-                sidebar_pb: "PB 10K Terakhir:",
+                sidebar_mileage: "Jarak Minggu Ini:",
+                sidebar_pb: "Catatan Waktu 10K Terbaik:",
                 sidebar_rhr: "Detak Jantung Istirahat:",
                 sidebar_race: "Target Lomba:",
                 sidebar_coach_pro: "PELATIH (PRO)",
-                sidebar_byok_desc: "Gemini 3.8 Flash Pro • Perencanaan Makrosiklus • Peringatan Drift",
+                sidebar_byok_desc: "Gemini Flash Pro • Rencana Jangka Panjang • Analisis Detak Jantung",
                 sidebar_byok_btn: "MASUKKAN GEMINI API KEY (BYOK)",
-                marathon_master_title: "Sistem Master Maraton 31-Minggu",
-                marathon_master_stage: "TAHAP 1–3",
-                marathon_master_sub: "Progresi Makrosiklus • Matriks Kekuatan WFH • Split • Mesin Adaptif AI",
-                subtab_macro: "Makro (31-Mgg)",
-                subtab_weekly: "Mingguan (7-Hari)",
-                subtab_strength: "Kekuatan & WFH",
+                marathon_master_title: "Program Master Maraton 31 Minggu",
+                marathon_master_stage: "FASE 1-3",
+                marathon_master_sub: "Program 31 Minggu • Latihan Kekuatan di Rumah • Target Pace • Rekomendasi Adaptif AI",
+                subtab_macro: "Program 31 Minggu",
+                subtab_weekly: "Mingguan (7 Hari)",
+                subtab_strength: "Kekuatan & Core",
                 subtab_strength_count: "58 Sesi",
                 subtab_splits: "Calculator Pace",
                 pacing_btn_calculator: "Buka Calculator Pace",
-                macro_stage_badge: "TAHAP 1: PERIODISASI MAKRO",
-                macro_title: "Roadmap 31-Minggu Maraton Penuh",
-                macro_desc: "Mulai: Sen, 9 Nov 2026 • Lomba: Min, 13 Jun 2027 • Target: 42.195 km • Finis 05:30:00 (7:49/km)",
-                btn_adapt_ai: "MINTA AI ADAPTASI RENCANA",
-                btn_sync_ical: "SINKRON 31-MGG ICAL (.ICS)",
-                kpi_total_volume: "Total Volume Terencana",
-                kpi_duration_streak: "Durasi & Rentang",
+                macro_stage_badge: "FASE 1: FONDASI & PERIODISASI",
+                macro_title: "Peta Latihan 31 Minggu Maraton Penuh",
+                macro_desc: "Mulai: Sen, 9 Nov 2026 • Lomba: Min, 13 Jun 2027 • Target: 42.195 km • Finis 05:30:00 (Pace 7:49/km)",
+                btn_adapt_ai: "MINTA AI SESUAIKAN JADWAL",
+                btn_sync_ical: "EKSPOR JADWAL KE KALENDER (.ICS)",
+                kpi_total_volume: "Total Target Jarak",
+                kpi_duration_streak: "Rentang Latihan",
                 kpi_target_finish: "Target Waktu Finis",
-                kpi_cutoff_buffer: "Batas Cutoff Resmi",
-                macro_chart_title: "Progresi Volume Mingguan & Long Run",
-                macro_chart_hint: "(Klik batang minggu untuk cek detail)",
-                telemetry_badge_core: "SAINS OLAHRAGA UTAMA",
-                telemetry_badge_access: "AKSES ATLET GRATIS",
-                telemetry_suite_title: "Rangkaian Telemetri Ketahanan Terpadu",
-                telemetry_suite_sub: "Beban ACWR • Karvonen HR Reserve • Minetti Grade Adjusted Pace",
+                kpi_cutoff_buffer: "Batas Waktu Cutoff",
+                macro_chart_title: "Perkembangan Jarak Mingguan & Long Run",
+                macro_chart_hint: "(Ketuk diagram minggu untuk melihat rincian)",
+                telemetry_badge_core: "PANDUAN SAINS OLAHRAGA",
+                telemetry_badge_access: "AKSES PENUH ATLET",
+                telemetry_suite_title: "Pusat Analisis Daya Tahan Terpadu",
+                telemetry_suite_sub: "Keseimbangan Beban Latihan • Zona Detak Jantung • Penyesuaian Pace Tanjakan",
                 telemetry_btn_recalc: "HITUNG ULANG",
-                telemetry_btn_ical: "SALIN FEED ICAL",
-                telemetry_tp_hub: "Hub Telemetri TrainingPeaks™",
-                telemetry_tp_sub: "Respons Impuls Banister & ACWR Gabbett",
-                dropdown_profile: "Profil Atlet",
-                dropdown_settings: "PENGATURAN",
-                dropdown_feed: "Feed Aktivitas & Kokpit",
+                telemetry_btn_ical: "SALIN FEED KALENDER",
+                telemetry_tp_hub: "Hub Pemantauan Beban Latihan & Pemulihan",
+                telemetry_tp_sub: "Pemodelan Kebugaran, Kelelahan, dan Kesiapan Fisik (CTL, ATL, TSB)",
+                dropdown_profile: "Profil Saya",
+                dropdown_settings: "Pengaturan Akun",
+                dropdown_feed: "Aktivitas & Kokpit",
                 dropdown_admin: "Pusat Kendali Admin",
-                dropdown_sub: "Paket Langganan",
-                dropdown_signout: "Keluar Akun",
+                dropdown_sub: "Status Langganan",
+                dropdown_signout: "Keluar",
                 system_bc_pill: "PENGUMUMAN",
                 system_bc_title: "Pemberitahuan Sistem",
-                hero_telemetry_live: "Aliran Telemetri Langsung",
+                hero_telemetry_live: "Data Latihan Terkini",
                 hero_target_block: "Target Maraton 5:30:00 (Pace 7:49/km) • 13 Jun 2027",
-                pricing_pill: "NILAI TRANSPARAN",
-                pricing_title: "Pilihan Paket Sederhana & Transparan.",
-                pricing_subtitle: "Mesin Deterministik Gratis Selamanya • BYOK Gemini Pro Gratis • Tanpa Biaya Tersembunyi",
+                pricing_pill: "HARGA TRANSPARAN",
+                pricing_title: "Pilihan Paket Sederhana & Ramah Pelari.",
+                pricing_subtitle: "Mesin Perhitungan Fisiologis Gratis Selamanya • Gunakan API Key Sendiri Gratis • Tanpa Biaya Tersembunyi",
                 pricing_period_forever: "/ selamanya",
                 pricing_tier1_name: "Pemula (Gratis)",
                 pricing_tier1_badge: "PEMULA // GRATIS",
-                pricing_tier1_desc: "Mesin sains olahraga deterministik, Jack Daniels VDOT, dan pemodelan impuls Banister.",
-                pricing_tier1_f1: "100% Mesin Sains Olahraga Deterministik",
-                pricing_tier1_f2: "Prediktor pace & lomba Jack Daniels VDOT",
-                pricing_tier1_f3: "Pencatat manual latihan, jarak & durasi",
-                pricing_tier1_f4: "Respon impuls Banister (CTL / ATL / TSB)",
-                pricing_tier1_f5: "Ekspor kalender latihan format .ICS",
-                pricing_tier1_btn: "MULAI PEMULA (GRATIS)",
+                pricing_tier1_desc: "Perhitungan fisiologis Jack Daniels VDOT dan pemodelan beban latihan harian.",
+                pricing_tier1_f1: "100% Perhitungan Olahraga Deterministik Terpercaya",
+                pricing_tier1_f2: "Prediksi pace & waktu lomba Jack Daniels VDOT",
+                pricing_tier1_f3: "Pencatatan manual latihan, jarak, dan durasi",
+                pricing_tier1_f4: "Pemantauan kebugaran dan kelelahan (CTL / ATL / TSB)",
+                pricing_tier1_f5: "Ekspor jadwal latihan ke kalender ponsel (.ICS)",
+                pricing_tier1_btn: "MULAI GRATIS",
                 pricing_tier2_name: "Coach (Gratis)",
                 pricing_tier2_badge: "COACH GRATIS",
-                pricing_tier2_desc: "Pelatih AI Gemini 3.8 Flash, panduan pace harian, dan evaluasi pemulihan.",
-                pricing_tier2_f1: "10 Konsultasi AI Harian via Gemini 3.8 Flash",
-                pricing_tier2_f2: "Analisis pemulihan pasca-latihan & evaluasi kelelahan",
-                pricing_tier2_f3: "Umpan balik dinamis & penyesuaian target latihan",
-                pricing_tier2_f4: "Aerobic Decoupling & Grade Adjusted Pace (GAP)",
-                pricing_tier2_f5: "Riwayat konsultasi dasar & pembagian telemetri",
-                pricing_tier2_btn: "KONSULTASI COACH (GRATIS)",
+                pricing_tier2_desc: "Konsultasi tanya jawab dengan pelatih AI, panduan pace harian, dan evaluasi pemulihan.",
+                pricing_tier2_f1: "10 Tanya Jawab AI Harian via Google Gemini Flash",
+                pricing_tier2_f2: "Ulasan pemulihan setelah latihan dan saran istirahat",
+                pricing_tier2_f3: "Penyesuaian target latihan secara dinamis",
+                pricing_tier2_f4: "Analisis efisiensi lari dan pace tanjakan (GAP)",
+                pricing_tier2_f5: "Riwayat konsultasi dan ringkasan performa",
+                pricing_tier2_btn: "MULAI KONSULTASI GRATIS",
                 pricing_tier3_name: "Coach (Pro)",
                 pricing_tier3_badge: "PRO COACH",
-                pricing_tier3_ribbon: "DIREKOMENDASIKAN // FULL COACH",
+                pricing_tier3_ribbon: "PILIHAN LENGKAP",
                 pricing_tier3_price: "GRATIS (BYOK)",
-                pricing_tier3_period: "atau $19/bln (Rp 89.000) Managed",
-                pricing_tier3_desc: "Penalaran Gemini 3.8 Flash Pro, peringatan cardiac drift otomatis, dan biomekanika video.",
-                pricing_tier3_f1: "Mendukung Bring-Your-Own-Key (BYOK): 100% Gratis",
-                pricing_tier3_f2: "Penalaran makrosiklus Gemini Pro tanpa batas",
-                pricing_tier3_f3: "Peringatan otomatis Cardiac Drift & Decoupling",
-                pricing_tier3_f4: "Sinkronisasi langsung otomatis Garmin Connect & Strava",
-                pricing_tier3_f5: "Pembuatan periodisasi makrosiklus & komputasi prioritas",
-                pricing_tier3_btn: "AKTIFKAN COACH (PRO) (GRATIS BYOK ATAU $19/BLN)",
+                pricing_tier3_period: "atau Rp 89.000 / bulan",
+                pricing_tier3_desc: "Analisis mendalam Google Gemini Pro, deteksi kelelahan detak jantung otomatis, dan analisis video postur lari.",
+                pricing_tier3_f1: "Bebas Biaya dengan API Key Sendiri (BYOK): 100% Gratis",
+                pricing_tier3_f2: "Konsultasi strategi periodisasi jangka panjang tanpa batas",
+                pricing_tier3_f3: "Peringatan dini kenaikan detak jantung berlebih saat lari",
+                pricing_tier3_f4: "Sinkronisasi otomatis Garmin Connect & Strava",
+                pricing_tier3_f5: "Penyesuaian otomatis program maraton berdasarkan kondisi fisik",
+                pricing_tier3_btn: "AKTIFKAN COACH (PRO)",
                 owner_banner_title: "AKUN FOUNDER AKTIF // RIZKY ARYENDI GUMILANG",
-                owner_banner_desc: "Status Coach (Pro) aktif selamanya. Sinkronisasi Garmin, penalaran Gemini Pro, dan kuota tanpa batas aktif permanen.",
-                pro_act_title: "AKTIVASI TIER PRO:",
-                pro_act_tab_byok: "OPSI 1: BYOK (100% GRATIS)",
-                pro_act_tab_managed: "OPSI 2: MANAGED PRO (RP 89.000)",
-                pro_byok_header: "GOOGLE GEMINI API KEY (100% GRATIS)",
-                pro_byok_safety: "Aman • Disimpan di Akun Anda",
-                pro_byok_desc: "Dapatkan Gemini API Key gratis tanpa kartu kredit di Google AI Studio, lalu masukkan di bawah. Anda langsung mendapatkan akses Coach (Pro) tanpa biaya berlangganan.",
+                owner_banner_desc: "Status Coach (Pro) aktif permanen. Sinkronisasi Garmin, konsultasi Gemini Pro, dan akses penuh tanpa batas.",
+                pro_act_title: "PILIHAN AKTIVASI PRO:",
+                pro_act_tab_byok: "OPSI 1: API KEY SENDIRI (100% GRATIS)",
+                pro_act_tab_managed: "OPSI 2: LANGGANAN LANGSUNG (RP 89.000/BLN)",
+                pro_byok_header: "GOOGLE GEMINI API KEY (GRATIS)",
+                pro_byok_safety: "Aman • Disimpan Langsung di Perangkat Anda",
+                pro_byok_desc: "Ambil API Key gratis tanpa kartu kredit di Google AI Studio, lalu tempelkan di bawah. Anda langsung menikmati semua fitur Coach (Pro) tanpa biaya sepeser pun.",
                 pro_byok_active_badge: "COACH (PRO) BYOK AKTIF",
                 pro_byok_continue_btn: "LANJUTKAN DENGAN PRO",
-                pro_byok_remove_btn: "HAPUS KEY",
-                pro_byok_placeholder: "Masukkan Gemini API Key (contoh: AIzaSy...)",
+                pro_byok_remove_btn: "HAPUS API KEY",
+                pro_byok_placeholder: "Tempel Gemini API Key di sini (contoh: AIzaSy...)",
                 pro_byok_save_btn: "AKTIFKAN PRO GRATIS",
-                pro_byok_get_free: "Ambil API Key gratis:",
-                pro_byok_instant_perk: "Akses Instan • Nol Biaya",
-                pro_managed_desc: "Pilihan praktis jika Anda tidak ingin mengelola API Key sendiri. Kami sediakan komputasi dedicated Google Gemini Pro berkecepatan tinggi:",
+                pro_byok_get_free: "Dapatkan API Key gratis:",
+                pro_byok_instant_perk: "Akses Langsung • Bebas Biaya",
+                pro_managed_desc: "Solusi praktis jika Anda ingin langsung pakai tanpa repot membuat API Key sendiri. Server kami menyediakan komputasi cepat Google Gemini Pro:",
                 pro_plan_monthly_label: "Bulanan",
                 pro_plan_annual_label: "Tahunan (Hemat 22%)",
                 pro_checkout_btn_text: "KONFIRMASI LANGGANAN PRO (RP 89.000 / BULAN)",
-                icu_hub_title: "Pusat Telemetri Intervals.icu",
-                icu_settings_link: "Ubah Detak Jantung Istirahat & Maks di Pengaturan >",
-                icu_matrix_title: "Matriks Dynamic Karvonen Heart Rate Reserve (HRR)",
-                icu_customizer_title: "KUSTOMISASI BIOMETRIK LANGSUNG",
-                strava_hub_title: "Pusat Telemetri Goalie Pro",
-                garmin_sync_btn: "SINKRONKAN TELEMETRI GARMIN",
-                gait_select_clip: "Pilih Rekaman Gerak",
-                gait_quality_sessions: "Sesi Berkualitas",
-                schedule_upcoming_title: "Sesi Terstruktur Mendatang",
-                schedule_export_ics: "EKSPOR KALENDER .ICS",
+                icu_hub_title: "Pusat Analisis Beban & Kelelahan",
+                icu_settings_link: "Sesuaikan Detak Jantung Istirahat & Maksimal di Pengaturan >",
+                icu_matrix_title: "Panduan 5 Zona Detak Jantung Karvonen (HRR)",
+                icu_customizer_title: "ATUR PARAMETER DETAK JANTUNG",
+                strava_hub_title: "Pusat Analisis Goalie Pro",
+                garmin_sync_btn: "SINKRONKAN DATA GARMIN",
+                gait_select_clip: "Pilih Klip Gerakan Lari",
+                gait_quality_sessions: "Sesi Pilihan",
+                schedule_upcoming_title: "Jadwal Latihan Terdekat",
+                schedule_export_ics: "EKSPOR JADWAL KE KALENDER (.ICS)",
                 legal_tab_terms: "Ketentuan Layanan",
                 legal_tab_privacy: "Kebijakan Privasi",
-                legal_tab_disclaimer: "Pemberitahuan Medis",
-                legal_medical_notice_title: "Pemberitahuan Medis:",
-                garmin_features_sub: "Langkah Harian • Detak Jantung Istirahat • Kualitas Tidur • Telemetri FIT",
-                strava_features_sub: "Sesi Latihan • Segmen • Minetti GAP • Suffer Score",
-                strava_connect_title: "Sinkronisasi & Telemetri Strava",
+                legal_tab_disclaimer: "Pemberitahuan Kesehatan",
+                legal_medical_notice_title: "Pemberitahuan Kesehatan:",
+                garmin_features_sub: "Langkah Harian • Detak Jantung Istirahat • Kualitas Tidur • Riwayat Latihan FIT",
+                strava_features_sub: "Sesi Latihan • Catatan Waktu Segmen • Penyesuaian Tanjakan • Tingkat Beban",
+                strava_connect_title: "Koneksi & Sinkronisasi Strava",
                 workout_start_log_btn: "Mulai Sesi / Catat Latihan",
-                workout_active_burn: "BAKARAN AKTIF",
-                settings_bio_title: "Biometrik Fisiologis",
-                settings_bio_subtitle: "(Parameter utama mesin Banister & Daniels VDOT)",
+                workout_active_burn: "PEMBAKARAN KALORI AKTIF",
+                settings_bio_title: "Profil Fisik & Detak Jantung",
+                settings_bio_subtitle: "(Data penting untuk menghitung zona latihan dan target pace yang presisi)",
                 settings_fullname_label: "Nama Lengkap",
                 settings_weight_label: "Berat Badan (kg)",
                 settings_height_label: "Tinggi Badan (cm)",
-                settings_gender_label: "Profil Biologis / Gender",
-                settings_gender_opt_male: "Pria",
-                settings_gender_opt_female: "Wanita",
+                settings_gender_label: "Jenis Kelamin",
+                settings_gender_opt_male: "Laki-laki",
+                settings_gender_opt_female: "Perempuan",
                 settings_gender_opt_other: "Pilih untuk tidak menyebutkan",
                 settings_resting_hr_label: "Detak Jantung Istirahat (bpm)",
                 settings_max_hr_label: "Detak Jantung Maksimal (bpm)",
-                settings_lt_hr_label: "Ambang Batas Laktat HR (bpm)",
-                settings_race_title: "Target Lomba & Periodisasi",
-                settings_race_subtitle: "(Menentukan progres makrosiklus & tapering TSB)",
+                settings_lt_hr_label: "Ambang Batas Laktat / Threshold (bpm)",
+                settings_race_title: "Target Lomba & Periode Latihan",
+                settings_race_subtitle: "(Menentukan strategi peningkatan volume mingguan dan tapering sebelum lomba)",
                 settings_racename_label: "Nama Lomba Target",
-                settings_racedate_label: "Tanggal Lomba Target",
-                settings_weekly_vol_label: "Target Volume Mingguan (km)",
+                settings_racedate_label: "Tanggal Lomba",
+                settings_weekly_vol_label: "Target Jarak Mingguan (km)",
                 settings_sport_focus_label: "Fokus Olahraga Utama",
-                settings_tier_level_label: "Tingkat Atletik Saat Ini",
-                footer_telemetry_modeling: "Pemodelan Telemetri",
-                footer_pro_sub: "Langganan Pro",
-                footer_api_health: "Status Server & API",
+                settings_tier_level_label: "Pengalaman Lari Saat Ini",
+                footer_telemetry_modeling: "Metode & Sains Olahraga",
+                footer_pro_sub: "Paket Langganan",
+                footer_api_health: "Status Server & Layanan",
                 theme_light: "Mode Terang",
                 theme_dark: "Mode Gelap",
-                units_metric: "Metrik (km, kg, pace min/km, °C)",
-                units_imperial: "Imperial (mil, lbs, pace min/mil, °F)",
-                coach_tier_pemula: "Pemula (Gratis) - Deterministik Offline",
-                coach_tier_free: "Coach (Gratis) - Google Gemini 3.8 Flash",
-                coach_tier_pro: "Coach (Pro) - Google Gemini 3.8 Flash Pro",
-                fitness_level_beginner: "Pemula / Fondasi Dasar (< 30 km/minggu)",
-                fitness_level_intermediate: "Menengah Kompetitif (30-70 km/minggu)",
-                fitness_level_advanced: "Mahir / Sub-Elite (70-120 km/minggu)",
-                fitness_level_elite: "Elite / Podium Utama (> 120 km/minggu)",
+                units_metric: "Metrik (km, kg, pace menit/km, °C)",
+                units_imperial: "Imperial (mil, lbs, pace menit/mil, °F)",
+                coach_tier_pemula: "Pemula (Gratis) - Panduan Standar",
+                coach_tier_free: "Coach (Gratis) - Google Gemini Flash",
+                coach_tier_pro: "Coach (Pro) - Google Gemini Flash Pro",
+                fitness_level_beginner: "Pemula / Membangun Kebiasaan (< 30 km/minggu)",
+                fitness_level_intermediate: "Menengah / Rutin Lari (30-70 km/minggu)",
+                fitness_level_advanced: "Mahir / Berpengalaman (70-120 km/minggu)",
+                fitness_level_elite: "Pelari Cepat / Kompetitif (> 120 km/minggu)",
                 pacing_model_title: "MODEL PERHITUNGAN TARGET & PACING MARATON",
-                pacing_model_subtitle: "Sains Olahraga Deterministik • Jack Daniels VDOT • Formula Riegel",
-                pacing_box1_label: "Basis Half Marathon (19 Sep 2026)",
-                pacing_box2_label: "Prediksi Formula Riegel (×1.06)",
+                pacing_model_subtitle: "Sains Olahraga Teruji • Jack Daniels VDOT • Proyeksi Waktu Riegel",
+                pacing_box1_label: "Acuan Half Marathon (19 Sep 2026)",
+                pacing_box2_label: "Proyeksi Maraton Formula Riegel",
                 pacing_box3_label: "Target Waktu Maraton Resmi",
-                pacing_box4_label: "Rekomendasi Long Run Easy Pace",
+                pacing_box4_label: "Rekomendasi Pace Lari Santai (Easy Run)",
                 pacing_strategy_title: "Panduan Strategi Lomba & Pembagian Energi",
-                pacing_btn_calculator: "Buka Kalkulator Splits & Nutrisi",
                 pacing_btn_plan: "Lihat Jadwal 31 Minggu →",
-                marathon_target_title: "Target Full Marathon",
-                run_analyzer_title: "Run Analyzer: Form & Biomechanical Vision",
-                run_analyzer_sub: "Analisis Rangka & Sudut Postur Lari • Mendukung Foto (JPG, PNG, WEBP) dan Klip Video (MP4, MOV, WEBM)",
-                run_analyzer_drop: "Drop foto atau video lari di sini, atau klik untuk memilih",
+                marathon_target_title: "Target Maraton Penuh",
+                run_analyzer_title: "Run Analyzer: Analisis Postur & Gerak Lari",
+                run_analyzer_sub: "Evaluasi Sudut Lutut dan Kemiringan Tubuh • Mendukung Foto (JPG, PNG, WEBP) dan Klip Video (MP4, MOV, WEBM)",
+                run_analyzer_drop: "Tarik foto atau video lari ke sini, atau klik untuk memilih",
                 run_analyzer_formats: "Foto (JPG, PNG, WEBP) atau Klip Video (MP4, MOV, WEBM) hingga 50MB",
-                run_analyzer_btn_select: "Pilih Berkas Foto / Video",
-                run_analyzer_hint: "Tips: Tampak samping (sagital) memberikan evaluasi sudut lutut & kemiringan badan paling akurat.",
-                run_analyzer_btn_run: "EKSTRAKSI BIOMEKANIKA LARI",
-                run_analyzer_res_title: "Hasil Analisis: Evaluasi Rangka & Sudut Fisiologis",
+                run_analyzer_btn_select: "Pilih Foto / Video",
+                run_analyzer_hint: "Tips: Sudut pengambilan gambar dari samping (posisi sejajar) menghasilkan pengukuran sudut lutut dan postur paling akurat.",
+                run_analyzer_btn_run: "ANALISIS POSTUR SEKARANG",
+                run_analyzer_res_title: "Hasil Analisis Postur & Sudut Gerak",
                 run_analyzer_m_knee: "Sudut Lutut:",
                 run_analyzer_m_lean: "Kemiringan Badan:",
-                run_analyzer_m_cadence: "Estimasi Kadens:",
-                run_analyzer_m_oscillation: "Osilasi Vertikal:",
-                run_analyzer_cue_title: "Catatan & Cue Form Pelatih:"
+                run_analyzer_m_cadence: "Estimasi Langkah (Kadens):",
+                run_analyzer_m_oscillation: "Ayunan Naik-Turun (Osilasi):",
+                run_analyzer_cue_title: "Saran Perbaikan Form dari Pelatih:"
             },
             en: {
                 nav_dashboard: "Dashboard",
@@ -13619,7 +13641,11 @@
 
                 closeLogWorkoutModal();
                 if (typeof HapticsService !== 'undefined') HapticsService.notification('SUCCESS');
-                toast.success('Workout Ingested', `Logged ${distanceKm}km (${durationMin} min). Telemetry recalculated.`);
+                if (currentLang === 'id') {
+                    toast.success('Latihan Berhasil Dicatat', `Tercatat ${distanceKm} km (${durationMin} mnt). Data kebugaran telah diperbarui.`);
+                } else {
+                    toast.success('Workout Ingested', `Logged ${distanceKm}km (${durationMin} min). Telemetry recalculated.`);
+                }
                 if (typeof openPostRunDebriefModal === 'function') {
                     openPostRunDebriefModal({
                         workout_title: title,
@@ -13646,10 +13672,14 @@
                 }
                 closeLogWorkoutModal();
                 if (typeof HapticsService !== 'undefined') HapticsService.notification('SUCCESS');
-                toast.success('Saved Offline (IndexedDB)', 'Workout persisted locally. Will sync when reconnected.');
+                if (currentLang === 'id') {
+                    toast.success('Tersimpan di Penyimpanan Lokal', 'Latihan disimpan di ponsel Anda dan akan disinkronkan otomatis saat ada koneksi.');
+                } else {
+                    toast.success('Saved Offline (IndexedDB)', 'Workout persisted locally. Will sync when reconnected.');
+                }
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'SAVE & RECALCULATE TELEMETRY';
+                btn.textContent = currentLang === 'id' ? 'SIMPAN & PERBARUI DATA LATIHAN' : 'SAVE & RECALCULATE TELEMETRY';
             }
         }
 
@@ -14110,7 +14140,7 @@
                 vidPreview.src = URL.createObjectURL(file);
                 vidPreview.classList.remove('hidden');
                 if (imgPreview) imgPreview.classList.add('hidden');
-                toast.info('Klip Video Dimuat', `Siap diekstraksi: ${file.name}`);
+                toast.info('Klip Video Dimuat', `Siap dianalisis: ${file.name}`);
             } else {
                 toast.info('Berkas Dimuat', `Siap dianalisis: ${file.name}`);
             }
@@ -14127,8 +14157,8 @@
             }
 
             btn.disabled = true;
-            btn.innerHTML = `<svg class="animate-spin w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> MEMPROSES BIOMEKANIKA...`;
-            const loadingToast = toast.loading('Analisis Form Lari', 'Mengekstraksi landmark rangka 33-titik, sudut lutut, dan kemiringan badan...');
+            btn.innerHTML = `<svg class="animate-spin w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> MENGANALISIS POSTUR...`;
+            const loadingToast = toast.loading('Analisis Form Lari', 'Menganalisis rangka tubuh, sudut lutut, dan kemiringan langkah...');
 
             try {
                 const formData = new FormData();
@@ -14198,7 +14228,7 @@
                 toast.success('Analisis Selesai', 'Parameter biomekanika diestimasi berdasarkan siluet tubuh.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'EKSTRAKSI BIOMEKANIKA LARI';
+                btn.textContent = currentLang === 'id' ? 'ANALISIS POSTUR SEKARANG' : 'RUN FORM ANALYSIS';
             }
         }
 
@@ -17158,7 +17188,7 @@
             <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 bg-flat-orange rounded-xs"></span>
-                    <h3 class="font-display font-extrabold text-base sm:text-lg text-text-primary">Post-Run Coach Debrief</h3>
+                    <h3 class="font-display font-extrabold text-base sm:text-lg text-text-primary">Ulasan Latihan Pelatih AI</h3>
                     <span id="debrief-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-flat-green/10 text-flat-green border border-flat-green/30">DISIPLIN TINGGI</span>
                 </div>
                 <button type="button" onclick="closePostRunDebriefModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
@@ -17170,7 +17200,7 @@
                 <div class="p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3">
                     <div class="flex items-baseline justify-between border-b border-border pb-2">
                         <div>
-                            <span class="text-[10px] text-text-secondary uppercase">Skor Kepatuhan Latihan (True Execution Score)</span>
+                            <span class="text-[10px] text-text-secondary uppercase">Tingkat Disiplin Latihan</span>
                             <div class="text-2xl sm:text-3xl font-extrabold text-text-primary mt-0.5">
                                 <span id="debrief-exec-score" class="text-flat-green">94</span> <span class="text-sm text-text-secondary">/ 100%</span>
                             </div>
@@ -17184,15 +17214,15 @@
                     <!-- 3-Pillar Breakdown Bars -->
                     <div class="grid grid-cols-3 gap-2 text-[10px]">
                         <div class="p-2 bg-surface border border-border rounded">
-                            <span class="text-text-secondary block">Pace Discipline (40%)</span>
+                            <span class="text-text-secondary block">Kesesuaian Pace (40%)</span>
                             <strong id="debrief-sub-pace" class="text-sm font-bold text-text-primary">96%</strong>
                         </div>
                         <div class="p-2 bg-surface border border-border rounded">
-                            <span class="text-text-secondary block">HR Ceiling (30%)</span>
+                            <span class="text-text-secondary block">Batas Detak Jantung (30%)</span>
                             <strong id="debrief-sub-hr" class="text-sm font-bold text-flat-green">92%</strong>
                         </div>
                         <div class="p-2 bg-surface border border-border rounded">
-                            <span class="text-text-secondary block">Volume (30%)</span>
+                            <span class="text-text-secondary block">Target Jarak (30%)</span>
                             <strong id="debrief-sub-vol" class="text-sm font-bold text-text-primary">95%</strong>
                         </div>
                     </div>
@@ -17203,13 +17233,13 @@
                     <div class="flex items-center justify-between border-b border-border pb-2">
                         <span class="font-bold text-text-primary flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-                            Normalisasi Beban Cuaca Tropis (Suhu &amp; Titik Embun)
+                            Penyesuaian Cuaca Panas &amp; Lembap
                         </span>
                         <span id="debrief-dewpoint-tag" class="text-[10px] text-cyan-400 font-bold">Dew Point: 24.3 &deg;C</span>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
                         <div class="p-2 bg-surface border border-border rounded">
-                            <span class="text-[10px] text-text-secondary block">Pace Aktual (Panas)</span>
+                            <span class="text-[10px] text-text-secondary block">Pace di Cuaca Panas</span>
                             <strong id="debrief-obs-pace" class="text-sm font-bold text-text-primary">05:22 /km</strong>
                         </div>
                         <div class="p-2 bg-surface border border-border rounded">
@@ -17217,28 +17247,28 @@
                             <strong id="debrief-norm-pace" class="text-sm font-bold text-flat-green">04:58 /km</strong>
                         </div>
                         <div class="p-2 bg-surface border border-border rounded col-span-2 sm:col-span-1">
-                            <span class="text-[10px] text-text-secondary block">Proteksi VDOT Aerobik</span>
+                            <span class="text-[10px] text-text-secondary block">Stamina Aerobik Terjaga</span>
                             <strong id="debrief-vdot-saved" class="text-sm font-bold text-tertiary">+1.8 Poin Aman</strong>
                         </div>
                     </div>
                     <p class="text-[11px] text-text-secondary leading-relaxed pt-1">
-                        VDOT dan VO2max Anda tidak diturunkan secara keliru. Beban kardiovaskular pada 28&deg;C membuktikan stamina aerobik Anda berada di level puncak.
+                        Hasil lari tetap dihitung adil meski berlari di udara panas 28&deg;C dan lembap. Daya tahan tubuh Anda terbukti tangguh.
                     </p>
                 </div>
 
                 <!-- 3. Aerobic Decoupling & Late-Stage Fade -->
                 <div class="p-4 bg-surface-subtle border border-border rounded-xl space-y-2">
                     <div class="flex items-center justify-between border-b border-border pb-2">
-                        <span class="font-bold text-text-primary">Aerobic Decoupling (Cardiac Drift Pw:HR)</span>
+                        <span class="font-bold text-text-primary">Kestabilan Detak Jantung Lari (Cardiac Drift)</span>
                         <span id="debrief-decoupling-tag" class="text-[10px] text-flat-green font-bold">DRIFT: +1.8% (STABIL)</span>
                     </div>
                     <div class="flex items-center justify-between text-[11px]">
-                        <span class="text-text-secondary">Status Ketahanan:</span>
+                        <span class="text-text-secondary">Status Daya Tahan:</span>
                         <strong id="debrief-decoupling-status" class="text-text-primary">Fondasi Aerobik Sangat Kuat</strong>
                     </div>
                     <div class="flex items-center justify-between text-[11px]">
-                        <span class="text-text-secondary">Late-Stage Fatigue Fade (KM 30+):</span>
-                        <strong id="debrief-fade-status" class="text-flat-green">&check; Tidak Terdeteksi (Pace Konstan)</strong>
+                        <span class="text-text-secondary">Penurunan Tenaga di KM 30+:</span>
+                        <strong id="debrief-fade-status" class="text-flat-green">&check; Tidak Terdeteksi (Pace Sangat Stabil)</strong>
                     </div>
                 </div>
 
@@ -17259,7 +17289,7 @@
                 <div class="p-4 bg-tertiary/10 border border-tertiary/30 rounded-xl space-y-2">
                     <span class="font-bold text-tertiary uppercase flex items-center gap-1.5">
                         <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                        Evaluasi Personal AI Coach
+                        Catatan Pelatih AI
                     </span>
                     <p id="debrief-coach-summary" class="text-text-secondary leading-relaxed text-[11px]">
                         Eksekusi lari sangat rapi. Cadence rata-rata 178 spm menjaga mekanika langkah tetap efisien. Minum 750ml cairan ber-elektrolit dan istirahatkan kaki 24 jam sebelum sesi berikutnya.
@@ -17276,15 +17306,15 @@
                     </button>
                     <button type="button" onclick="generateInstagramStoryCard()" class="btn-flat-secondary px-3 py-1.5 text-xs font-bold inline-flex items-center gap-1.5 text-pink-500 border-pink-500/40 hover:bg-pink-500/10 transition-colors">
                         <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span>Cerita IG (9:16)</span>
+                        <span>Unduh Story IG (9:16)</span>
                     </button>
                     <button type="button" onclick="pushCurrentDebriefToGarmin()" class="btn-flat-secondary px-3 py-1.5 text-xs font-bold inline-flex items-center gap-1.5 text-blue-400 border-blue-400/40 hover:bg-blue-400/10 transition-colors">
                         <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                        <span>Kirim ke Garmin</span>
+                        <span>Kirim ke Jam Garmin</span>
                     </button>
                 </div>
                 <button type="button" onclick="closePostRunDebriefModal()" class="btn-flat-primary px-5 py-2 text-xs font-bold">
-                    TUTUP &amp; SIMPAN DEBRIEF
+                    TUTUP &amp; SIMPAN ULASAN
                 </button>
             </div>
         </div>
@@ -17301,9 +17331,9 @@
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 bg-flat-orange rounded-xs"></span>
                     <div>
-                        <h3 class="font-display font-extrabold text-base sm:text-lg text-text-primary">Race Day Fueling &amp; Hydration Calculator</h3>
+                        <h3 class="font-display font-extrabold text-base sm:text-lg text-text-primary">Kalkulator Nutrisi &amp; Hidrasi Lomba</h3>
                         <p class="text-[11px] text-text-secondary mt-0.5">
-                            Protokol Jeukendrup &amp; ACSM: Kebutuhan Karbohidrat (g/jam), Checkpoint Gel per KM, dan Carb-Loading H-3
+                            Panduan Asupan Energi: Kebutuhan Karbohidrat (g/jam), Jadwal Gel per KM, dan Pengisian Energi H-3 Sebelum Lomba
                         </p>
                     </div>
                 </div>
@@ -17316,7 +17346,7 @@
                 <div class="p-4 bg-surface-subtle border border-border rounded-xl space-y-3">
                     <span class="font-bold text-text-primary uppercase flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-flat-orange"></span>
-                        Parameter Target Lomba Atlet
+                        Target Lomba Anda
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                         <div>
@@ -17329,11 +17359,11 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] text-text-secondary uppercase mb-1">Target Finis (Jam)</label>
+                            <label class="block text-[10px] text-text-secondary uppercase mb-1">Target Waktu (Jam)</label>
                             <input type="number" id="fueling-calc-hours" value="3" min="1" max="8" class="flat-input text-xs w-full font-mono" onchange="calculateRaceFuelingStrategy()">
                         </div>
                         <div>
-                            <label class="block text-[10px] text-text-secondary uppercase mb-1">Target Finis (Menit)</label>
+                            <label class="block text-[10px] text-text-secondary uppercase mb-1">Target Waktu (Menit)</label>
                             <input type="number" id="fueling-calc-mins" value="45" min="0" max="59" step="5" class="flat-input text-xs w-full font-mono" onchange="calculateRaceFuelingStrategy()">
                         </div>
                         <div>
@@ -17351,19 +17381,19 @@
                         <span class="text-[9px] text-text-secondary block">Rasio 2:1 Glukosa:Fruktosa</span>
                     </div>
                     <div class="p-3 bg-surface border border-border rounded-xl space-y-1">
-                        <span class="text-[10px] text-text-secondary block">Total Gel Energi</span>
+                        <span class="text-[10px] text-text-secondary block">Kebutuhan Gel Energi</span>
                         <strong id="fueling-result-gels" class="text-base font-extrabold text-flat-green">~6 Gel</strong>
                         <span class="text-[9px] text-text-secondary block">Interval ~30-35 Menit</span>
                     </div>
                     <div class="p-3 bg-surface border border-border rounded-xl space-y-1">
-                        <span class="text-[10px] text-text-secondary block">Kebutuhan Hidrasi</span>
+                        <span class="text-[10px] text-text-secondary block">Kebutuhan Air &amp; Cairan</span>
                         <strong id="fueling-result-fluids" class="text-base font-extrabold text-blue-400">550 ml/jam</strong>
                         <span class="text-[9px] text-text-secondary block">Air + Elektrolit Isotonik</span>
                     </div>
                     <div class="p-3 bg-surface border border-border rounded-xl space-y-1">
-                        <span class="text-[10px] text-text-secondary block">Sodium / Garam</span>
+                        <span class="text-[10px] text-text-secondary block">Kebutuhan Garam / Elektrolit</span>
                         <strong id="fueling-result-sodium" class="text-base font-extrabold text-tertiary">450 mg/jam</strong>
-                        <span class="text-[9px] text-text-secondary block">Cegah Hiponatremia &amp; Kram</span>
+                        <span class="text-[9px] text-text-secondary block">Cegah Kram Otot &amp; Dehidrasi</span>
                     </div>
                 </div>
 
@@ -17372,9 +17402,9 @@
                     <div class="flex items-center justify-between border-b border-border pb-2">
                         <span class="font-bold text-text-primary uppercase flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            Jadwal Konsumsi Gel per Kilometer (Race Execution)
+                            Jadwal Konsumsi Gel per Kilometer Saat Lomba
                         </span>
-                        <span class="text-[10px] text-flat-green font-bold">Protokol Maraton</span>
+                        <span class="text-[10px] text-flat-green font-bold">Strategi Lomba Maraton</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
@@ -17398,9 +17428,9 @@
                     <div class="flex items-center justify-between border-b border-border pb-2">
                         <span class="font-bold text-text-primary uppercase flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                            Protokol Carb-Loading H-3 Menjelang Lomba (8-10 g / kg BB)
+                            Jadwal Pengisian Energi (Carb-Loading) H-3 Sebelum Lomba
                         </span>
-                        <span class="text-[10px] text-tertiary font-bold">Saturasi Glikogen Otot</span>
+                        <span class="text-[10px] text-tertiary font-bold">Cadangan Energi Otot Optimal</span>
                     </div>
                     <div id="fueling-h3-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <!-- Populated dynamically -->
@@ -17426,7 +17456,7 @@
             <div class="p-4 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 bg-flat-orange rounded-xs"></span>
-                    <h3 class="font-display font-bold text-base text-text-primary">Inventaris Sepatu Lari &amp; Pelacak Usia</h3>
+                    <h3 class="font-display font-bold text-base text-text-primary">Daftar Sepatu Lari &amp; Pemantau Sol</h3>
                 </div>
                 <button type="button" onclick="closeShoeManagerModal()" class="text-text-secondary hover:text-text-primary text-base font-bold p-1">✕</button>
             </div>
@@ -17439,11 +17469,11 @@
 
                 <!-- Form Add New Shoe (Collapsible or in-place) -->
                 <div class="p-4 bg-surface-subtle border-2 border-border rounded-xl space-y-3">
-                    <span class="font-bold text-text-primary uppercase block">Tambah Sepatu Lari Baru</span>
+                    <span class="font-bold text-text-primary uppercase block">Tambah Sepatu Baru</span>
                     <form onsubmit="handleSaveShoe(event)" class="space-y-2.5">
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Brand</label>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Merek</label>
                                 <input type="text" id="new-shoe-brand" required placeholder="Nike / Asics / Hoka" class="flat-input text-xs w-full">
                             </div>
                             <div>
@@ -17453,16 +17483,16 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Nama Panggilan</label>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Nama Sepatu (Label)</label>
                                 <input type="text" id="new-shoe-nickname" placeholder="Daily Trainer" class="flat-input text-xs w-full">
                             </div>
                             <div>
-                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Batas Rekomendasi (km)</label>
+                                <label class="block text-[10px] text-text-secondary uppercase mb-1">Batas Jarak Maksimal (km)</label>
                                 <input type="number" id="new-shoe-maxkm" value="750" min="200" max="1500" step="50" class="flat-input text-xs w-full">
                             </div>
                         </div>
                         <button type="submit" class="btn-flat-primary w-full py-2 text-xs font-bold uppercase mt-1">
-                            SIMPAN SEPATU KE INVENTARIS
+                            SIMPAN SEPATU
                         </button>
                     </form>
                 </div>
