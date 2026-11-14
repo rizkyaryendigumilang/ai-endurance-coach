@@ -73,6 +73,26 @@
       width: 100%;
       height: 100%;
     }
+
+    /* iOS Safari Auto-Zoom Prevention: Ensure 16px font size on touch devices */
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Hardware Optimization: Mobile-native touch ergonomics & tap highlight kill */
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  button, a, [role="button"], input, select, textarea {
+    touch-action: manipulation;
   }
 
   /* Respect user preference for reduced motion */
@@ -96,16 +116,33 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
+
+  /* Hardware Optimization: Offscreen DOM Layout & Paint Virtualization */
+  .content-visibility-auto,
+  .feed-card-contain {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 420px;
+  }
+
+  /* GPU Compositing Layer without layout recalculations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
   
-  /* Bento Grid Card Micro-Interactions */
+  /* Bento Grid Card Micro-Interactions: Gated to fine pointers to prevent sticky hover on touch */
   .bento-card,
   .flat-card {
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
   }
-  .bento-card:hover,
-  .feed-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
+
+  @media (hover: hover) and (pointer: fine) {
+    .bento-card:hover,
+    .feed-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
+    }
   }
 
   /* Subtle shimmer for asynchronous sync and telemetry loading states */

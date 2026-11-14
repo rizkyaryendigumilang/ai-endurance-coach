@@ -1,12 +1,16 @@
 {
-  "name": "Goalie",
+  "id": "./",
+  "name": "Goalie - AI Endurance Coach",
   "short_name": "Goalie",
-  "description": "Precision performance platform & sports science training engine for endurance athletes.",
+  "description": "Platform sains olahraga deterministik dan pelatih ketahanan maraton.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
   "background_color": "#0B0E17",
-  "theme_color": "#0B0E17",
+  "theme_color": "#FC4C02",
   "orientation": "portrait",
+  "categories": ["sports", "health", "fitness"],
   "icons": [
     {
       "src": "public/icons/pwa/icon-192x192.png",
@@ -25,6 +29,29 @@
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Catat Latihan",
+      "short_name": "Catat",
+      "description": "Catat aktivitas lari baru",
+      "url": "./#record",
+      "icons": [{ "src": "public/icons/pwa/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Calculator Pace",
+      "short_name": "Pace",
+      "description": "Buka kalkulator splits dan pace",
+      "url": "./#calculator",
+      "icons": [{ "src": "public/icons/pwa/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Jadwal Latihan",
+      "short_name": "Jadwal",
+      "description": "Buka jadwal latihan maraton",
+      "url": "./#schedule",
+      "icons": [{ "src": "public/icons/pwa/icon-192x192.png", "sizes": "192x192" }]
     }
   ]
 }

@@ -1,5 +1,5 @@
-// Goalie - Production PWA Service Worker (v3.3.0)
-const CACHE_NAME = 'goalie-cache-v3.3.0';
+// Goalie - Production PWA Service Worker (v3.4.0)
+const CACHE_NAME = 'goalie-cache-v3.4.0';
 const STATIC_ASSETS = [
     './',
     'index.html',
@@ -13,16 +13,21 @@ const STATIC_ASSETS = [
     'public/icons/goalie-logo.svg',
     'public/icons/pwa/icon-192x192.png',
     'public/icons/pwa/icon-512x512.png',
+    'public/icons/pwa/apple-touch-icon.png',
     'public/css/tailwind.min.css',
     'public/js/db.js',
+    'public/js/garmin_workouts_data.js',
     'public/js/garmin_map_viewer.js',
     'public/js/modules/sports-math.js',
     'public/js/modules/settings-controller.js',
     'public/js/modules/map-elevation-scrubber.js',
     'public/js/modules/mobile-native.js',
     'public/js/modules/enterprise-hub.js',
+    'public/js/modules/garmin-sync-manager.js',
+    'public/js/modules/calendar-widget.js',
     'public/vendor/leaflet/leaflet.js',
-    'public/vendor/leaflet/leaflet.css'
+    'public/vendor/leaflet/leaflet.css',
+    'public/vendor/chartjs/chart.umd.min.js'
 ];
 
 // Install: Cache shell assets
