@@ -221,6 +221,43 @@
             overscroll-behavior-y: none;
         }
 
+        /* ══════════════════════════════════════════════════════════
+           GLOBAL VIEWPORT & MOBILE NATIVE ERGONOMICS (mobile-native)
+           ══════════════════════════════════════════════════════════ */
+        :root {
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+            --sal: env(safe-area-inset-left, 0px);
+            --sar: env(safe-area-inset-right, 0px);
+        }
+
+        /* Prevent auto-zoom on iOS Safari when tapping inputs (keep 16px base font on mobile) */
+        @media screen and (max-width: 768px) {
+            input[type="text"],
+            input[type="number"],
+            input[type="email"],
+            input[type="password"],
+            input[type="search"],
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Tactile click micro-interactions for buttons */
+        button:active, .btn-primary:active, .btn-flat-primary:active, .btn-flat-secondary:active {
+            transform: scale(0.975);
+            transition: transform 70ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Isolate desktop mouse hover from mobile touch screens (prevent sticky hover bug) */
+        @media (hover: hover) and (pointer: fine) {
+            .flat-card:hover {
+                border-color: var(--border-strong);
+                box-shadow: var(--shadow-pop);
+            }
+        }
+
         /* Hide scrollbars for clean horizontal carousels (iOS/Android mobile-native) */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -936,7 +973,7 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- NAVIGATION BAR: Apple Translucent Frosted Glass Chrome     -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <nav class="sticky top-0 z-[100] h-14 apple-glass-nav flex items-center transition-colors duration-200">
+    <nav class="sticky top-0 z-[100] min-h-[3.5rem] apple-glass-nav flex items-center transition-colors duration-200" style="padding-top: env(safe-area-inset-top, 0px);">
         <div class="max-w-[1440px] w-full mx-auto px-3 sm:px-6 flex justify-between items-center gap-2 sm:gap-4">
             
             <!-- Logo & Brand Badge (Goalie) -->
@@ -1727,7 +1764,7 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- INTERACTIVE ATHLETIC WORKSTATION (Live Functional App)     -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <main id="main-content" tabindex="-1" class="py-8 sm:py-10 border-b-2 border-border bg-surface outline-none">
+    <main id="main-content" tabindex="-1" class="pt-4 pb-28 sm:py-10 border-b-2 border-border bg-surface outline-none">
         <div id="workstation" class="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
             
             <!-- Workstation Tab Switcher -->
@@ -9661,9 +9698,9 @@
             if (!rawHash) return;
 
             if (rawHash === 'calculator' || rawHash === 'calculator-pace' || rawHash === 'splits') {
-                switchWorkstationTab('cockpit');
-                if (typeof switchCockpitSubTab === 'function') {
-                    switchCockpitSubTab('splits');
+                switchWorkstationTab('schedule');
+                if (typeof switchScheduleSubtab === 'function') {
+                    switchScheduleSubtab('splits');
                 }
             } else if (['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'].includes(rawHash)) {
                 switchWorkstationTab(rawHash);
