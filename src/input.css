@@ -10,6 +10,30 @@
     --garmin-dark: #060C18;
   }
 
+  /* Modern Web Typography: Tabular numerals for athletic telemetry */
+  .font-mono,
+  [data-tabular="true"],
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'cv01' 1;
+  }
+
+  /* Sleek Minimalist Scrollbars (Linear / Vercel style) */
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(140, 140, 140, 0.22);
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(140, 140, 140, 0.42);
+  }
+
   /* WCAG 2.1 AA: Accessible Keyboard Navigation Focus Indicator (focus-visible:ring-2) */
   button:focus-visible,
   [role="button"]:focus-visible,
@@ -50,6 +74,18 @@
       height: 100%;
     }
   }
+
+  /* Respect user preference for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer utilities {
@@ -59,5 +95,27 @@
   .vibrancy-glass {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+  }
+  
+  /* Bento Grid Card Micro-Interactions */
+  .bento-card,
+  .flat-card {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  }
+  .bento-card:hover,
+  .feed-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Subtle shimmer for asynchronous sync and telemetry loading states */
+  @keyframes shimmer-sweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .skeleton-shimmer {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.09) 50%, rgba(255, 255, 255, 0.03) 75%);
+    background-size: 200% 100%;
+    animation: shimmer-sweep 2s infinite linear;
   }
 }

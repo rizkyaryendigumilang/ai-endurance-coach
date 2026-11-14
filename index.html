@@ -1283,7 +1283,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     
                     <!-- 1. SUMMARY WIDGET -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface flex flex-col justify-between space-y-4">
                         <div class="flex items-center justify-between border-b border-border pb-3">
                             <h3 class="font-display font-bold text-base text-text-primary">Summary</h3>
                             <div class="flex items-center gap-1">
@@ -1374,7 +1374,7 @@
                     </div>
 
                     <!-- 2. TODAY'S ACTIVITY WIDGET -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface flex flex-col justify-between space-y-4">
                         <div class="flex items-center justify-between border-b border-border pb-3">
                             <h3 class="font-display font-bold text-base text-text-primary">Today's activity</h3>
                             <select id="today-activity-filter" onchange="filterTodayActivities(this.value)" class="text-xs bg-surface-subtle border border-border px-2 py-1 rounded-md font-mono text-text-secondary cursor-pointer focus:outline-none focus:border-tertiary">
@@ -1438,7 +1438,7 @@
                         </div>
 
                         <!-- Card 1: Calorie Loss Sparkline -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-2">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 bg-flat-amber text-black flex items-center justify-center font-bold text-xs shrink-0">
@@ -1462,7 +1462,7 @@
                         </div>
 
                         <!-- Card 2: Weight Loss / Cardiac Drift Sparkline -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-2">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 bg-flat-green text-black flex items-center justify-center font-bold text-xs shrink-0">
@@ -1898,7 +1898,7 @@
                     <div class="lg:col-span-3 space-y-4">
                         
                         <!-- 1. Athlete Profile Card -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3">
                             <div class="flex items-center gap-3">
                                 <div class="relative">
                                     <div class="w-12 h-12 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-sm border-2 border-surface shadow-xs">
@@ -1930,7 +1930,7 @@
                         </div>
 
                         <!-- 3. Shoe Mileage & Wear Alert Widget -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3 font-mono text-xs">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3 font-mono text-xs">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <div class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-flat-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
@@ -1959,7 +1959,7 @@
                         </div>
 
                         <!-- 2. Target Marathon Progress & Detailed Event Countdown -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <div class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -2031,7 +2031,7 @@
                         </div>
 
                         <!-- 3. Connected Integrations Status -->
-                        <div class="flat-card border-2 border-border p-3.5 bg-surface space-y-2">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-3.5 bg-surface space-y-2">
                             <span class="text-[10px] font-mono text-text-secondary uppercase font-bold tracking-wider block">Connected Devices</span>
                             <div class="space-y-1.5 text-xs">
                                 <div class="flex items-center justify-between p-1.5 bg-surface-subtle rounded-md">
@@ -2143,7 +2143,7 @@
                         </div>
 
                         <!-- 0.5 INTERACTIVE GPS MAP (OpenStreetMap / CartoDB / Leaflet) -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3 rounded-xl shadow-xs">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3 rounded-xl shadow-xs">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-2.5">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -2321,7 +2321,7 @@
                         </div>
 
                         <!-- Telemetry Live Sync & GPS Status Header -->
-                        <div class="flat-card border-2 border-border p-3 sm:p-4 bg-surface flex flex-wrap items-center justify-between gap-3 shadow-xs rounded-xl">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-3 sm:p-4 bg-surface flex flex-wrap items-center justify-between gap-3 shadow-xs rounded-xl">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-[#007cc3]/10 border border-[#007cc3]/20 flex items-center justify-center shrink-0">
                                     <svg class="w-4 h-4 text-[#007cc3]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 5l5.5 11h-11L12 7z"/></svg>
@@ -2368,7 +2368,7 @@
                         <!-- DYNAMIC ACTIVITIES FEED CONTAINER (Live Garmin Connect Sessions) -->
                         <div id="activities-feed-container" class="space-y-4">
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2462,7 +2462,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2556,7 +2556,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2650,7 +2650,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2744,7 +2744,7 @@
         </div>
     </div>
 
-    <div data-feed-type="strength" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="strength" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2807,7 +2807,7 @@
         </div>
     </div>
 
-    <div data-feed-type="strength" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="strength" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2870,7 +2870,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -2964,7 +2964,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3058,7 +3058,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3152,7 +3152,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3246,7 +3246,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3340,7 +3340,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3434,7 +3434,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3528,7 +3528,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3622,7 +3622,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3716,7 +3716,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3810,7 +3810,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3904,7 +3904,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -3998,7 +3998,7 @@
         </div>
     </div>
 
-    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="run" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -4092,7 +4092,7 @@
         </div>
     </div>
 
-    <div data-feed-type="strength" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+    <div data-feed-type="strength" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
         <div class="flex items-start justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
@@ -4161,7 +4161,7 @@
                     <div class="lg:col-span-3 space-y-4">
                         
                         <!-- 1. AI Endurance Assistant Quick Chatbox -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <div class="flex items-center gap-1.5">
                                     <span class="w-2 h-2 rounded-full bg-flat-green"></span>
@@ -4199,7 +4199,7 @@
                         </div>
 
                         <!-- 2. Fitness & Freshness Gauge (Intervals.icu / Strava) -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Fitness &amp; Freshness</h4>
                                 <span class="text-[10px] font-mono text-flat-green font-bold">INTERVALS.ICU</span>
@@ -4227,7 +4227,7 @@
                         </div>
 
                         <!-- 3. Strava Monthly Challenges -->
-                        <div class="flat-card border-2 border-border p-4 bg-surface space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <h4 class="font-display font-bold text-xs text-text-primary uppercase tracking-wider">Active Challenges</h4>
                                 <span class="text-[10px] font-mono text-text-secondary">October</span>
@@ -4263,7 +4263,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                     
                     <!-- 4. RECOMMENDED ACTIVITY FEED (5 cols) -->
-                    <div class="lg:col-span-5 flat-card border-2 border-border p-5 bg-surface flex flex-col justify-between space-y-4">
+                    <div class="lg:col-span-5 flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface flex flex-col justify-between space-y-4">
                         <div class="flex items-center justify-between border-b border-border pb-3">
                             <div>
                                 <h3 class="font-display font-bold text-base text-text-primary">Recommended activity</h3>
@@ -4533,7 +4533,7 @@
 
                     <!-- Right: Athlete Telemetry Sidebar (4 cols) -->
                     <div class="lg:col-span-4 space-y-4">
-                        <div class="flat-card border-2 border-border p-4 bg-surface-subtle space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface-subtle space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <span class="font-mono text-xs font-bold text-text-primary" data-i18n="sidebar_profile">PROFIL ATLET</span>
                                 <span class="flat-badge border-flat-green text-flat-green" data-i18n="status_synced">TERSINKRON</span>
@@ -4622,7 +4622,7 @@
 
                     <!-- 4 PMC Metric Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="flat-card border-2 border-border p-4 bg-surface">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface">
                             <div class="flex justify-between items-start">
                                 <div class="text-[10px] font-mono text-text-secondary uppercase">Fitness (CTL)</div>
                                 <span class="flat-badge border-flat-green text-flat-green text-[9px]">42-DAY</span>
@@ -4633,7 +4633,7 @@
                             <div class="text-[10px] text-flat-green font-mono mt-1">Chronic Training Load</div>
                         </div>
 
-                        <div class="flat-card border-2 border-border p-4 bg-surface">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface">
                             <div class="flex justify-between items-start">
                                 <div class="text-[10px] font-mono text-text-secondary uppercase">Fatigue (ATL)</div>
                                 <span class="flat-badge border-flat-orange text-flat-orange text-[9px]">7-DAY</span>
@@ -4644,7 +4644,7 @@
                             <div class="text-[10px] text-flat-orange font-mono mt-1">Acute Workload Fatigue</div>
                         </div>
 
-                        <div class="flat-card border-2 border-border p-4 bg-surface">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface">
                             <div class="flex justify-between items-start">
                                 <div class="text-[10px] font-mono text-text-secondary uppercase">Form / Balance (TSB)</div>
                                 <span class="flat-badge border-tertiary text-tertiary text-[9px]">CTL - ATL</span>
@@ -4655,7 +4655,7 @@
                             <div class="text-[10px] text-text-secondary font-mono mt-1">Optimal Building Range (-10 to -30)</div>
                         </div>
 
-                        <div class="flat-card border-2 border-border p-4 bg-surface">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface">
                             <div class="flex justify-between items-start">
                                 <div class="text-[10px] font-mono text-text-secondary uppercase">Weekly Ramp Rate</div>
                                 <span class="flat-badge border-border text-text-secondary text-[9px]">TSS / WK</span>
@@ -4833,7 +4833,7 @@
 
                     <!-- Aerobic Decoupling & iCal Calendar Sync Split -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flat-card border-2 border-border p-5 bg-surface space-y-3">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-3">
                             <div class="flex items-center justify-between border-b border-border pb-2">
                                 <span class="font-mono text-xs font-bold text-text-primary">AEROBIC DECOUPLING (PW:HR)</span>
                                 <span class="flat-badge border-flat-green text-flat-green">STABLE DRIFT</span>
@@ -4877,7 +4877,7 @@
                             </div>
                         </div>
 
-                        <div class="flat-card border-2 border-border p-5 bg-surface space-y-3 flex flex-col justify-between">
+                        <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-3 flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between border-b border-border pb-2">
                                     <span class="font-mono text-xs font-bold text-text-primary">INTERVALS.ICU CALENDAR FEED</span>
@@ -4954,7 +4954,7 @@
                         <!-- Right (5 cols): Suffer Score & Mileage Tracker -->
                         <div class="lg:col-span-5 space-y-4">
                             <!-- Relative Effort / Suffer Score -->
-                            <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
+                            <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-[10px] font-mono text-text-secondary uppercase">Goalie Relative Effort</span>
                                     <span class="flat-badge border-flat-orange text-flat-orange text-[9px]">SUFFER SCORE</span>
@@ -4969,7 +4969,7 @@
                             </div>
 
                             <!-- Weekly Volume Target Progress -->
-                            <div class="flat-card border-2 border-border p-4 bg-surface space-y-2">
+                            <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 bg-surface space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-[10px] font-mono text-text-secondary uppercase">Weekly Volume Target</span>
                                     <span class="text-xs font-mono font-bold text-text-primary" id="strava-mileage-val">48.5 / 50.0 km</span>
@@ -5159,7 +5159,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 font-mono text-xs">
                         <!-- Left 6 cols: Karvonen 5-Zone Distribution & 80/20 Polarized Discipline -->
-                        <div class="lg:col-span-6 flat-card border-2 border-border p-5 bg-surface space-y-4 flex flex-col justify-between">
+                        <div class="lg:col-span-6 flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between border-b border-border pb-2.5">
                                     <div>
@@ -5212,7 +5212,7 @@
                         </div>
 
                         <!-- Right 6 cols: Matched Runs Historical Comparison & GAP Breakdown -->
-                        <div class="lg:col-span-6 flat-card border-2 border-border p-5 bg-surface space-y-4 flex flex-col justify-between">
+                        <div class="lg:col-span-6 flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between border-b border-border pb-2.5">
                                     <div>
@@ -5559,7 +5559,7 @@
                     <!-- ══════════════════════════════════════════════════════ -->
                     <!-- TARGET RACE & COURSE GPX TERRAIN INTELLIGENCE STUDIO   -->
                     <!-- ══════════════════════════════════════════════════════ -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface space-y-5 shadow-xs">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-5 shadow-xs">
                         <!-- Top Header with Badge & AI Tag -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
                             <div class="space-y-1">
@@ -5713,7 +5713,7 @@
 
                     </div>
                     <!-- Macro Overview Header Card -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
                             <div>
                                 <span class="flat-badge border-tertiary text-tertiary mb-1" data-i18n="macro_stage_badge">TAHAP 1: PERIODISASI MAKRO</span>
@@ -5858,7 +5858,7 @@
                 <!-- ════════════════════════════════════════════════════════════ -->
                 <div id="subtab-view-weekly" class="hidden space-y-6">
                     <div id="schedule-calendar-widget" class="goalie-calendar-widget-mount"></div>
-                    <div class="hidden flat-card border-2 border-border p-5 bg-surface space-y-4">
+                    <div class="hidden flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4">
                         <!-- Header Controls -->
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
                             <div>
@@ -6002,7 +6002,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
                     <!-- Form: Generate Custom Race Macrocycle -->
-                    <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4">
                         <div class="flex items-center gap-2 border-b border-border pb-3">
                             <span class="w-2.5 h-2.5 bg-tertiary"></span>
                             <h4 class="font-display font-bold text-sm text-text-primary">Macrocycle Generator</h4>
@@ -6163,7 +6163,7 @@
                 <!-- SUB-TAB 3: RUNNER STRENGTH & WFH MATRIX (STAGE 2)           -->
                 <!-- ════════════════════════════════════════════════════════════ -->
                 <div id="subtab-view-strength" class="hidden space-y-6">
-                    <div class="flat-card border-2 border-border p-5 bg-surface space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
                             <div>
                                 <span class="flat-badge border-tertiary text-tertiary mb-1">STAGE 2: RUNNER CONDITIONING</span>
@@ -6314,7 +6314,7 @@
                 <!-- SUB-TAB 4: INTERACTIVE CALCULATOR PACE & SPLITS SUITE        -->
                 <!-- ════════════════════════════════════════════════════════════ -->
                 <div id="subtab-view-splits" class="hidden space-y-6">
-                    <div class="flat-card border-2 border-border p-4 sm:p-6 bg-surface space-y-6">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 sm:p-6 bg-surface space-y-6">
                         
                         <!-- Header & Actions -->
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border pb-4">
@@ -6616,7 +6616,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <!-- Garmin Direct -->
-                    <div class="flat-card border-2 border-border p-6 bg-surface space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-6 bg-surface space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 bg-[#007cc3] rounded-full inline-block"></span>
@@ -6724,7 +6724,7 @@
                     </div>
 
                     <!-- Strava OAuth & Direct Token -->
-                    <div class="flat-card border-2 border-border p-6 bg-surface space-y-4">
+                    <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-6 bg-surface space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 bg-[#FC4C02] rounded-[1px] inline-block"></span>
@@ -7773,7 +7773,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
                 
                 <!-- Tier 1: Pemula (Free) -->
-                <div class="flat-card border-2 border-border p-6 sm:p-8 bg-surface-subtle flex flex-col justify-between space-y-6">
+                <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-6 sm:p-8 bg-surface-subtle flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
                             <span data-i18n="pricing_tier1_name" class="font-bold text-sm text-text-primary">Pemula (Gratis)</span>
@@ -7810,7 +7810,7 @@
                 </div>
 
                 <!-- Tier 2: Coach (Free) -->
-                <div class="flat-card border-2 border-border p-6 sm:p-8 bg-surface flex flex-col justify-between space-y-6">
+                <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-6 sm:p-8 bg-surface flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
                             <span data-i18n="pricing_tier2_name" class="font-bold text-sm text-text-primary">Coach (Gratis)</span>
@@ -8332,7 +8332,7 @@
             <div id="pro-modal-cards-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-stretch">
                 
                 <!-- CARD 1: Pemula (Free) -->
-                <div class="flat-card border-2 border-border p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl hover:border-tertiary/50 transition-colors">
+                <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl hover:border-tertiary/50 transition-colors">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <h3 data-i18n="pricing_tier1_name" class="font-display font-bold text-sm text-text-primary">Pemula (Gratis)</h3>
@@ -8378,7 +8378,7 @@
                 </div>
 
                 <!-- CARD 2: Coach (Free) -->
-                <div class="flat-card border-2 border-border p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl hover:border-tertiary transition-colors">
+                <div class="flat-card border border-border/80 rounded-2xl shadow-xs p-4 sm:p-5 bg-surface flex flex-col justify-between relative rounded-2xl hover:border-tertiary transition-colors">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <h3 data-i18n="pricing_tier2_name" class="font-display font-bold text-sm text-text-primary">Coach (Gratis)</h3>
@@ -8543,14 +8543,14 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 font-mono text-xs">
-                        <label class="flat-card border-2 border-border p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary rounded-xl">
+                        <label class="flat-card border border-border/80 rounded-2xl shadow-xs p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary rounded-xl">
                             <div class="flex items-center gap-1.5">
                                 <input type="radio" name="plan" value="monthly" checked onchange="updatePlanPrice('monthly')">
                                 <span data-i18n="pro_plan_monthly_label" class="font-bold text-text-primary">Bulanan</span>
                             </div>
                             <div class="mt-2 text-sm font-bold text-tertiary">Rp 89.000 / bln</div>
                         </label>
-                        <label class="flat-card border-2 border-border p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary rounded-xl">
+                        <label class="flat-card border border-border/80 rounded-2xl shadow-xs p-3 cursor-pointer bg-surface flex flex-col justify-between hover:border-tertiary rounded-xl">
                             <div class="flex items-center gap-1.5">
                                 <input type="radio" name="plan" value="annual" onchange="updatePlanPrice('annual')">
                                 <span data-i18n="pro_plan_annual_label" class="font-bold text-text-primary">Tahunan (Hemat 22%)</span>
@@ -11360,7 +11360,7 @@
                 const sportName = sport === 'cycling' ? 'Ride' : (sport === 'strength' ? 'Strength' : 'Run');
 
                 return `
-                    <div data-feed-type="${feedType}" class="feed-card feed-card-contain flat-card border-2 border-border p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
+                    <div data-feed-type="${feedType}" class="feed-card feed-card-contain flat-card border border-border/80 rounded-2xl shadow-xs p-5 bg-surface space-y-4 transition-all duration-200 hover:border-tertiary/60 shadow-xs">
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary to-flat-orange text-white flex items-center justify-center font-bold text-xs shadow-xs">
