@@ -471,17 +471,19 @@ class WeeklyCalendarService:
         target_day = days[day_index]
         target_day["completed"] = not target_day.get("completed", False)
 
-        # If completed and has distance, add to actual workouts store
-        if target_day["completed"] and target_day.get("distance_km", 0) > 0:
+        # If completed and has distance, add to actual workouts store safely
+        if target_day.get("completed") and float(target_day.get("distance_km") or 0) > 0:
+            dur_min = float(target_day.get("duration_min") or 45)
+            dist_km = float(target_day.get("distance_km") or 0)
             actual_entry = {
-                "title": target_day["title"],
-                "sport_type": target_day["sport"],
-                "distance_km": target_day["distance_km"],
-                "duration_seconds": target_day["duration_min"] * 60,
-                "avg_heart_rate": 146,
-                "calories": int(target_day["distance_km"] * 65),
-                "scheduled_date": target_day["date"],
-                "notes": f"Completed via AI Weekly Calendar: {target_day['title']}"
+                "title": target_day.get("title", "Run Session"),
+                "sport_type": target_day.get("sport", "running"),
+                "distance_km": dist_km,
+                "duration_seconds": int(dur_min * 60),
+                "avg_heart_rate": int(target_day.get("target_hr") or 146),
+                "calories": int(dist_km * 65),
+                "scheduled_date": target_day.get("date", str(date.today())),
+                "notes": f"Completed via AI Weekly Calendar: {target_day.get('title', 'Run Session')}"
             }
             metrics_entry = {
                 "trimp_score": 120,

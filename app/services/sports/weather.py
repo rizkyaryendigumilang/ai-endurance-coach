@@ -8,8 +8,14 @@ from typing import Dict, Any
 def calculate_dew_point(temp_c: float, rh_percent: float) -> float:
     """Menghitung Titik Embun (Dew Point °C) menggunakan rumus Magnus-Tetens."""
     a, b = 17.625, 243.04
-    rh = max(1.0, min(100.0, float(rh_percent)))
-    alpha = ((a * temp_c) / (b + temp_c)) + math.log(rh / 100.0)
+    t = float(temp_c or 0.0)
+    rh = max(1.0, min(100.0, float(rh_percent if rh_percent is not None else 50.0)))
+    denom = b + t
+    if denom == 0:
+        denom = 0.0001
+    alpha = ((a * t) / denom) + math.log(rh / 100.0)
+    if a - alpha == 0:
+        return round(t, 1)
     td = (b * alpha) / (a - alpha)
     return round(td, 1)
 

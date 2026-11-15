@@ -200,11 +200,16 @@ def toggle_calendar_day(
     Toggles completion status for a specific day in the weekly calendar.
     """
     effective_user_id = user_id or "athlete_demo_runner"
-    return WeeklyCalendarService.toggle_day_completion(
-        user_id=effective_user_id,
-        week_key=payload.week_key,
-        day_index=payload.day_index
-    )
+    try:
+        return WeeklyCalendarService.toggle_day_completion(
+            user_id=effective_user_id,
+            week_key=payload.week_key,
+            day_index=payload.day_index
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except IndexError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/api/v1/training/weekly-calendar/ical")

@@ -162,7 +162,13 @@ class SportsEngine:
             "z2_aerobic": {"min": round(resting_hr + 0.60 * hrr), "max": round(resting_hr + 0.70 * hrr), "name": "Zone 2: Aerobic Base (Fat Max)"},
             "z3_tempo": {"min": round(resting_hr + 0.70 * hrr), "max": round(resting_hr + 0.80 * hrr), "name": "Zone 3: Aerobic Tempo"},
             "z4_threshold": {"min": round(resting_hr + 0.80 * hrr), "max": round(resting_hr + 0.90 * hrr), "name": "Zone 4: Lactate Threshold"},
-            "z5_vo2max": {"min": round(resting_hr + 0.90 * hrr), "max": max_hr, "name": "Zone 5: VO2 Max / Anaerobic"}
+            "z5_vo2max": {"min": round(resting_hr + 0.90 * hrr), "max": max_hr, "name": "Zone 5: VO2 Max / Anaerobic"},
+            # Aliases for compatibility
+            "zone1": {"min": round(resting_hr + 0.50 * hrr), "max": round(resting_hr + 0.60 * hrr), "min_hr": round(resting_hr + 0.50 * hrr), "max_hr": round(resting_hr + 0.60 * hrr)},
+            "zone2": {"min": round(resting_hr + 0.60 * hrr), "max": round(resting_hr + 0.70 * hrr), "min_hr": round(resting_hr + 0.60 * hrr), "max_hr": round(resting_hr + 0.70 * hrr)},
+            "zone3": {"min": round(resting_hr + 0.70 * hrr), "max": round(resting_hr + 0.80 * hrr), "min_hr": round(resting_hr + 0.70 * hrr), "max_hr": round(resting_hr + 0.80 * hrr)},
+            "zone4": {"min": round(resting_hr + 0.80 * hrr), "max": round(resting_hr + 0.90 * hrr), "min_hr": round(resting_hr + 0.80 * hrr), "max_hr": round(resting_hr + 0.90 * hrr)},
+            "zone5": {"min": round(resting_hr + 0.90 * hrr), "max": max_hr, "min_hr": round(resting_hr + 0.90 * hrr), "max_hr": max_hr}
         }
 
     @staticmethod
@@ -602,8 +608,14 @@ class SportsEngine:
     def calculate_dew_point(temp_c: float, rh_percent: float) -> float:
         """Menghitung Titik Embun (Dew Point °C) menggunakan rumus Magnus-Tetens."""
         a, b = 17.625, 243.04
-        rh_clamped = max(1.0, min(100.0, float(rh_percent)))
-        gamma = math.log(rh_clamped / 100.0) + (a * temp_c) / (b + temp_c)
+        t = float(temp_c or 0.0)
+        rh_clamped = max(1.0, min(100.0, float(rh_percent if rh_percent is not None else 50.0)))
+        denom = b + t
+        if denom == 0:
+            denom = 0.0001
+        gamma = math.log(rh_clamped / 100.0) + (a * t) / denom
+        if a - gamma == 0:
+            return round(t, 2)
         return round((b * gamma) / (a - gamma), 2)
 
     @staticmethod
@@ -657,7 +669,9 @@ class SportsEngine:
         """
         Menghitung distribusi waktu dalam 5 Zona HR Karvonen dan rasio polarisasi (80/20).
         """
-        if not hr_stream:
+        # Filter valid HR readings (> 35 bpm)
+        valid_hr_stream = [int(hr) for hr in hr_stream if hr is not None and int(hr) > 35] if hr_stream else []
+        if not valid_hr_stream:
             # Fallback realistic distribution
             return {
                 "z1_pct": 14, "z2_pct": 68, "z3_pct": 10, "z4_pct": 6, "z5_pct": 2,
@@ -665,21 +679,26 @@ class SportsEngine:
                 "discipline_status": "POLARIZED_OPTIMAL"
             }
 
-        zones = SportsEngine.calculate_karvonen_zones(resting_hr, max_hr)
-        z1_max = zones["zone1"]["max_hr"]
-        z2_max = zones["zone2"]["max_hr"]
-        z3_max = zones["zone3"]["max_hr"]
-        z4_max = zones["zone4"]["max_hr"]
+        # Physiological clamping
+        r_hr = max(35, min(100, int(resting_hr or 48)))
+        m_hr = max(r_hr + 30, min(225, int(max_hr or 192)))
+
+        zones = SportsEngine.calculate_karvonen_zones(r_hr, m_hr)
+        hrr = m_hr - r_hr
+        z1_max = (zones.get("z1_recovery") or zones.get("zone1") or {}).get("max") or round(r_hr + 0.60 * hrr)
+        z2_max = (zones.get("z2_aerobic") or zones.get("zone2") or {}).get("max") or round(r_hr + 0.70 * hrr)
+        z3_max = (zones.get("z3_tempo") or zones.get("zone3") or {}).get("max") or round(r_hr + 0.80 * hrr)
+        z4_max = (zones.get("z4_threshold") or zones.get("zone4") or {}).get("max") or round(r_hr + 0.90 * hrr)
 
         counts = [0, 0, 0, 0, 0]
-        for hr in hr_stream:
+        for hr in valid_hr_stream:
             if hr <= z1_max: counts[0] += 1
             elif hr <= z2_max: counts[1] += 1
             elif hr <= z3_max: counts[2] += 1
             elif hr <= z4_max: counts[3] += 1
             else: counts[4] += 1
 
-        total = max(1, len(hr_stream))
+        total = max(1, len(valid_hr_stream))
         pcts = [round((c / total) * 100) for c in counts]
         low_pct = pcts[0] + pcts[1]
         high_pct = pcts[3] + pcts[4]
@@ -1060,25 +1079,27 @@ class SportsEngine:
         Menghitung kapasitas VDOT harian menggunakan rasio biaya oksigen Jack Daniels
         terhadap persentase cadangan detak jantung (%HRR Karvonen).
         """
-        v_norm = max(0.1, float(v_norm_mps))
+        v_norm = max(0.1, float(v_norm_mps or 0.1))
         v_m_min = v_norm * 60.0  # speed in meters per minute
 
         # Jack Daniels Oxygen Cost formula
         vo2_cost = -4.60 + 0.182258 * v_m_min + 0.000104 * (v_m_min ** 2)
+        vo2_cost = max(10.0, vo2_cost)
 
-        # Karvonen %HRR with zero-division safeguard
-        r_hr = float(resting_hr or 50.0)
-        m_hr = float(max_hr or 190.0)
-        s_hr = float(steady_hr or 150.0)
+        # Karvonen %HRR with physiological clamping safeguards
+        r_hr = max(35.0, min(100.0, float(resting_hr or 50.0)))
+        m_hr = max(r_hr + 30.0, min(225.0, float(max_hr or 190.0)))
+        s_hr = max(r_hr + 5.0, min(m_hr, float(steady_hr or 150.0)))
 
         hr_range = max(30.0, m_hr - r_hr)
         hrr_ratio = (s_hr - r_hr) / hr_range
-        hrr_ratio_clamped = max(0.05, min(1.0, hrr_ratio))
+        hrr_ratio_clamped = max(0.15, min(1.0, hrr_ratio))
 
         vdot = vo2_cost / hrr_ratio_clamped
+        vdot_clamped = max(15.0, min(88.0, vdot))
 
         return {
-            "vdot": round(vdot, 1),
+            "vdot": round(vdot_clamped, 1),
             "vo2_cost": round(vo2_cost, 2),
             "hrr_pct": round(hrr_ratio_clamped * 100.0, 1),
             "steady_hr": int(s_hr),
@@ -1182,6 +1203,14 @@ class SportsEngine:
                 "status": "INSUFFICIENT_SPLITS"
             }
 
+        def _safe_float(val, default):
+            try:
+                if val is None:
+                    return default
+                return float(val)
+            except (ValueError, TypeError):
+                return default
+
         mid = len(splits) // 2
         h1 = splits[:mid]
         h2 = splits[mid:]
@@ -1190,8 +1219,11 @@ class SportsEngine:
         def calc_ef(half_splits):
             efs = []
             for s in half_splits:
-                hr = float(s.get("heart_rate") or s.get("hr") or 140.0)
-                spd = float(s.get("speed_mps") or (1000.0 / max(60.0, float(s.get("pace_sec_km") or s.get("pace_sec") or 300.0))))
+                hr = _safe_float(s.get("heart_rate") or s.get("hr"), 140.0)
+                spd = _safe_float(s.get("speed_mps"), None)
+                if spd is None:
+                    pace = _safe_float(s.get("pace_sec_km") or s.get("pace_sec"), 300.0)
+                    spd = 1000.0 / max(60.0, pace)
                 if hr > 30.0:
                     efs.append(spd / hr)
             return sum(efs) / len(efs) if efs else 0.02
@@ -1203,8 +1235,8 @@ class SportsEngine:
 
         # Cadence fade: first 80% vs final 20%
         split_80 = max(1, int(len(splits) * 0.8))
-        cad_early = [float(s.get("cadence_spm") or s.get("cadence") or 175.0) for s in splits[:split_80]]
-        cad_late = [float(s.get("cadence_spm") or s.get("cadence") or 175.0) for s in splits[split_80:]]
+        cad_early = [_safe_float(s.get("cadence_spm") or s.get("cadence"), 175.0) for s in splits[:split_80]]
+        cad_late = [_safe_float(s.get("cadence_spm") or s.get("cadence"), 175.0) for s in splits[split_80:]]
 
         avg_cad_early = sum(cad_early) / len(cad_early) if cad_early else 175.0
         avg_cad_late = sum(cad_late) / len(cad_late) if cad_late else 175.0
