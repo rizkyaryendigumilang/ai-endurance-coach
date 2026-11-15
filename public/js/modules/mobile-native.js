@@ -85,6 +85,71 @@
                     }
                 }
             }, { passive: true });
+        },
+
+        /**
+         * Initialize swipe down to dismiss on mobile bottom sheets
+         */
+        initBottomSheetGestures: function () {
+            const modals = [
+                { id: 'activity-detail-modal', closeFn: () => { if (typeof window.closeActivityDetailModal === 'function') window.closeActivityDetailModal(); } },
+                { id: 'log-workout-modal', closeFn: () => { if (typeof window.closeLogWorkoutModal === 'function') window.closeLogWorkoutModal(); } },
+                { id: 'post-run-debrief-modal', closeFn: () => { if (typeof window.closePostRunDebriefModal === 'function') window.closePostRunDebriefModal(); } },
+                { id: 'user-management-modal', closeFn: () => { if (window.GoalieEnterprise) window.GoalieEnterprise.closeUserManagementModal(); } },
+                { id: 'analytics-reports-modal', closeFn: () => { if (window.GoalieEnterprise) window.GoalieEnterprise.closeAnalyticsReportsModal(); } },
+                { id: 'billing-hub-modal', closeFn: () => { if (window.GoalieEnterprise) window.GoalieEnterprise.closeBillingHubModal(); } },
+                { id: 'support-center-modal', closeFn: () => { if (window.GoalieEnterprise) window.GoalieEnterprise.closeSupportCenterModal(); } }
+            ];
+
+            modals.forEach(({ id, closeFn }) => {
+                const modal = document.getElementById(id);
+                if (!modal) return;
+                const sheet = modal.querySelector('.flat-card') || modal.querySelector('.relative');
+                if (!sheet) return;
+
+                let startY = 0;
+                let currentY = 0;
+                let isDragging = false;
+
+                sheet.addEventListener('touchstart', function (e) {
+                    if (window.innerWidth >= 768) return;
+                    if (sheet.scrollTop <= 5) {
+                        startY = e.touches[0].clientY;
+                        currentY = startY;
+                        isDragging = true;
+                    }
+                }, { passive: true });
+
+                sheet.addEventListener('touchmove', function (e) {
+                    if (!isDragging || window.innerWidth >= 768) return;
+                    currentY = e.touches[0].clientY;
+                    const diffY = currentY - startY;
+                    if (diffY > 0) {
+                        sheet.style.transform = `translateY(${diffY * 0.75}px)`;
+                    }
+                }, { passive: true });
+
+                sheet.addEventListener('touchend', function () {
+                    if (!isDragging || window.innerWidth >= 768) return;
+                    isDragging = false;
+                    const diffY = currentY - startY;
+                    sheet.style.transition = 'transform 200ms cubic-bezier(0.16, 1, 0.3, 1)';
+                    if (diffY > 90) {
+                        sheet.style.transform = 'translateY(100%)';
+                        GoalieMobile.triggerHaptic('light');
+                        setTimeout(() => {
+                            sheet.style.transform = '';
+                            sheet.style.transition = '';
+                            closeFn();
+                        }, 180);
+                    } else {
+                        sheet.style.transform = '';
+                        setTimeout(() => {
+                            sheet.style.transition = '';
+                        }, 200);
+                    }
+                }, { passive: true });
+            });
         }
     };
 
@@ -92,6 +157,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         GoalieMobile.initNetworkMonitor();
+        GoalieMobile.initBottomSheetGestures();
     });
 
 })(typeof window !== 'undefined' ? window : this);

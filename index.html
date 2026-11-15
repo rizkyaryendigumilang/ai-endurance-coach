@@ -1079,13 +1079,13 @@
                 </button>
 
                 <!-- Language Switcher Button (ID / EN) -->
-                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center gap-1 transition-colors whitespace-nowrap shrink-0 touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
+                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary hidden md:flex items-center gap-1 transition-colors whitespace-nowrap shrink-0 touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     <span id="nav-lang-label" class="whitespace-nowrap text-xs">ID</span>
                 </button>
 
                 <!-- Theme Toggle Button -->
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary flex items-center justify-center transition-colors shrink-0 touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
+                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary hidden sm:flex items-center justify-center transition-colors shrink-0 touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
@@ -1231,7 +1231,22 @@
                                 <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-tertiary/15 text-tertiary">ADMIN</span>
                             </a>
 
-                            <div class="border-t border-border pt-1 mt-1">
+                            <div class="border-t border-border pt-1 mt-1 space-y-1">
+                                <!-- Mobile Quick Controls: Language & Theme -->
+                                <button type="button" onclick="toggleAppLanguage();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors md:hidden">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                        <span>Bahasa Tampilan</span>
+                                    </span>
+                                    <span id="dropdown-lang-label" class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-surface border border-border">ID</span>
+                                </button>
+                                <button type="button" onclick="toggleTheme();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors sm:hidden">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                                        <span>Mode Gelap / Terang</span>
+                                    </span>
+                                    <span class="text-[9px] font-mono text-text-secondary">Tema</span>
+                                </button>
                                 <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-rose-500 hover:bg-rose-500/10 rounded-lg flex items-center gap-2 font-semibold transition-colors">
                                     <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                     <span>Keluar Akun (Log Out)</span>
@@ -1260,7 +1275,7 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- HERO SECTION: Compact Telemetry HUD & Live Console         -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <header class="border-b border-border bg-surface py-6">
+    <header id="global-telemetry-hero" class="border-b border-border bg-surface py-6 transition-all duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
             
             <!-- ══════════════════════════════════════════════════════ -->
@@ -8700,8 +8715,10 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- ACTIVITY DETAIL MODAL / DRAWER (Feature 2)                 -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="activity-detail-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="detail-activity-title">
-        <div class="flat-card border border-border/80 rounded-2xl shadow-xs max-w-2xl w-full p-4 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 max-h-[88dvh] overflow-y-auto space-y-4 shadow-xl">
+    <div id="activity-detail-modal" class="hidden fixed inset-0 z-[300] flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-xs p-0 sm:p-5 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="detail-activity-title">
+        <div class="flat-card border-t sm:border border-border/80 rounded-t-3xl sm:rounded-2xl shadow-xs max-w-2xl w-full p-4 sm:p-6 bg-surface relative my-0 sm:my-auto animate-in slide-in-from-bottom sm:slide-in-from-none sm:fade-in duration-200 max-h-[92dvh] sm:max-h-[88dvh] overflow-y-auto space-y-4 shadow-2xl pb-8 sm:pb-6">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto -mt-1 mb-2 sm:hidden" aria-hidden="true"></div>
             <!-- Header -->
             <div class="flex justify-between items-start pb-3 border-b-2 border-border gap-3">
                 <div class="space-y-1">
@@ -8933,8 +8950,10 @@
     <!-- ══════════════════════════════════════════════════════════ -->
     <!-- LOG WORKOUT & TELEMETRY MODAL (Feature 3 Enhanced)         -->
     <!-- ══════════════════════════════════════════════════════════ -->
-    <div id="log-workout-modal" class="hidden fixed inset-0 z-[300] flex items-start sm:items-center justify-center bg-black/60 p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="log-modal-title">
-        <div class="flat-card border border-border/80 rounded-2xl shadow-xs max-w-lg w-full p-4 sm:p-6 bg-surface relative my-auto animate-in fade-in duration-150 space-y-4">
+    <div id="log-workout-modal" class="hidden fixed inset-0 z-[300] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="log-modal-title">
+        <div class="flat-card border-t sm:border border-border/80 rounded-t-3xl sm:rounded-2xl shadow-xs max-w-lg w-full p-4 sm:p-6 bg-surface relative my-0 sm:my-auto animate-in slide-in-from-bottom sm:slide-in-from-none sm:fade-in duration-200 max-h-[92dvh] overflow-y-auto space-y-4 pb-8 sm:pb-6 shadow-2xl">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto -mt-1 mb-2 sm:hidden" aria-hidden="true"></div>
             <div class="flex justify-between items-center pb-3 border-b-2 border-border">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 bg-flat-green"></span>
@@ -9676,6 +9695,16 @@
             // Physical tactile click feedback for mobile
             if (typeof HapticsService !== 'undefined') {
                 HapticsService.impact('LIGHT');
+            }
+
+            // Decluttering: Show global telemetry hero only on Cockpit (Beranda) and Telemetri
+            const heroHeader = document.getElementById('global-telemetry-hero');
+            if (heroHeader) {
+                if (tabName === 'cockpit' || tabName === 'telemetry') {
+                    heroHeader.classList.remove('hidden');
+                } else {
+                    heroHeader.classList.add('hidden');
+                }
             }
 
             if (tabName === 'cockpit') {
@@ -13214,6 +13243,8 @@
 
             const navLabel = document.getElementById('nav-lang-label');
             if (navLabel) navLabel.textContent = lang.toUpperCase();
+            const dropLangLabel = document.getElementById('dropdown-lang-label');
+            if (dropLangLabel) dropLangLabel.textContent = lang.toUpperCase();
 
             applyTranslations(lang);
 
@@ -17389,8 +17420,10 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- MODAL 1: POST-RUN COACH DEBRIEF & TRUE EXECUTION SCORING           -->
     <!-- ══════════════════════════════════════════════════════════════════ -->
-    <div id="post-run-debrief-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-        <div class="relative w-full max-w-2xl bg-surface border border-border/80 rounded-2xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[90vh] flex flex-col font-mono text-xs">
+    <div id="post-run-debrief-modal" class="fixed inset-0 z-[100] hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-2xl bg-surface border-t sm:border border-border/80 rounded-t-3xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] sm:max-h-[90vh] flex flex-col font-mono text-xs pb-6 sm:pb-0">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto my-2 sm:hidden" aria-hidden="true"></div>
             <!-- Modal Header -->
             <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-2">
@@ -17800,8 +17833,10 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- ENTERPRISE 7: USER MANAGEMENT & SQUAD ROSTER MODAL                 -->
     <!-- ══════════════════════════════════════════════════════════════════ -->
-    <div id="user-management-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-        <div class="relative w-full max-w-3xl bg-surface border border-border/80 rounded-2xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+    <div id="user-management-modal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-t sm:border border-border/80 rounded-t-3xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs pb-6 sm:pb-0">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto my-2 sm:hidden shrink-0" aria-hidden="true"></div>
             <!-- Modal Header -->
             <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-3">
@@ -17912,8 +17947,10 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- ENTERPRISE 9: ANALYTICS & REPORTS MODAL                            -->
     <!-- ══════════════════════════════════════════════════════════════════ -->
-    <div id="analytics-reports-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-        <div class="relative w-full max-w-3xl bg-surface border border-border/80 rounded-2xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+    <div id="analytics-reports-modal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-t sm:border border-border/80 rounded-t-3xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs pb-6 sm:pb-0">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto my-2 sm:hidden shrink-0" aria-hidden="true"></div>
             <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
@@ -17999,8 +18036,10 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- ENTERPRISE 10: BILLING & INVOICES MODAL                            -->
     <!-- ══════════════════════════════════════════════════════════════════ -->
-    <div id="billing-hub-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-        <div class="relative w-full max-w-3xl bg-surface border border-border/80 rounded-2xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+    <div id="billing-hub-modal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-t sm:border border-border/80 rounded-t-3xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs pb-6 sm:pb-0">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto my-2 sm:hidden shrink-0" aria-hidden="true"></div>
             <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
@@ -18066,8 +18105,10 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- ENTERPRISE 11: HELP & SUPPORT CENTER MODAL                         -->
     <!-- ══════════════════════════════════════════════════════════════════ -->
-    <div id="support-center-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-        <div class="relative w-full max-w-3xl bg-surface border border-border/80 rounded-2xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs">
+    <div id="support-center-modal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="relative w-full max-w-3xl bg-surface border-t sm:border border-border/80 rounded-t-3xl sm:rounded-3xl shadow-2xl bg-surface/95 backdrop-blur-xl overflow-hidden max-h-[92vh] flex flex-col font-sans text-xs pb-6 sm:pb-0">
+            <!-- Mobile Bottom-Sheet Drag Handle -->
+            <div class="w-12 h-1.5 bg-border rounded-full mx-auto my-2 sm:hidden shrink-0" aria-hidden="true"></div>
             <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-surface-subtle">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
