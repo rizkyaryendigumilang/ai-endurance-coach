@@ -15,6 +15,16 @@
             invoices: []
         },
 
+        escapeHTML: function (str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        },
+
         // ══════════════════════════════════════════════════════════
         // 6. NOTIFICATION CENTER & ALERTS
         // ══════════════════════════════════════════════════════════
@@ -90,6 +100,8 @@
                 const borderClass = n.priority === 'high' ? 'border-l-4 border-l-red-500' : (n.priority === 'medium' ? 'border-l-4 border-l-amber-500' : 'border-l-4 border-l-emerald-500');
                 const badgeColor = n.type === 'alert' ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400';
                 const typeLabel = n.type === 'alert' ? 'PERINGATAN' : 'PENGINGAT';
+                const safeTitle = GoalieEnterprise.escapeHTML(n.title);
+                const safeMessage = GoalieEnterprise.escapeHTML(n.message);
 
                 return `
                     <div class="p-3 bg-surface-subtle border border-border rounded-lg ${borderClass} transition-colors">
@@ -97,8 +109,8 @@
                             <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${badgeColor}">${typeLabel}</span>
                             <span class="text-[9px] font-mono text-text-secondary">${new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
-                        <h4 class="text-xs font-bold text-text-primary mb-0.5">${n.title}</h4>
-                        <p class="text-[11px] text-text-secondary leading-snug">${n.message}</p>
+                        <h4 class="text-xs font-bold text-text-primary mb-0.5">${safeTitle}</h4>
+                        <p class="text-[11px] text-text-secondary leading-snug">${safeMessage}</p>
                     </div>
                 `;
             }).join('');
@@ -236,35 +248,41 @@
             container.innerHTML = `
                 ${filterPillsHtml}
                 <div class="space-y-2.5">
-                    ${list.map(item => `
+                    ${list.map(item => {
+                        const safeName = GoalieEnterprise.escapeHTML(item.name);
+                        const safeDivBadge = item.division_badge ? GoalieEnterprise.escapeHTML(item.division_badge) : '';
+                        const safeRoleBadge = item.role_badge ? GoalieEnterprise.escapeHTML(item.role_badge) : '';
+                        const safePace = GoalieEnterprise.escapeHTML(item.avg_pace);
+                        return `
                         <div class="p-3 bg-surface border ${item.rank <= 3 ? badgeClasses[item.rank] : 'border-border'} rounded-xl flex items-center justify-between gap-3 shadow-xs hover:border-border-strong transition-all">
                             <div class="flex items-center gap-3 min-w-0">
                                 <span class="text-xl font-bold font-mono w-7 text-center shrink-0">${medals[item.rank] || '#' + item.rank}</span>
                                 <div class="min-w-0">
                                     <div class="font-bold text-xs text-text-primary flex flex-wrap items-center gap-1.5">
-                                        <span class="truncate">${item.name}</span>
-                                        ${item.division_badge ? `
+                                        <span class="truncate">${safeName}</span>
+                                        ${safeDivBadge ? `
                                             <span class="text-[9px] px-1.5 py-0.2 rounded font-mono font-bold border ${item.division_color || 'bg-surface border-border text-text-secondary'}">
-                                                ${item.division_badge}
+                                                ${safeDivBadge}
                                             </span>
                                         ` : ''}
-                                        ${item.role_badge && item.role !== 'athlete' ? `
+                                        ${safeRoleBadge && item.role !== 'athlete' ? `
                                             <span class="text-[9px] px-1.5 py-0.2 rounded font-mono font-bold bg-tertiary/10 text-tertiary border border-tertiary/20">
-                                                ${item.role_badge}
+                                                ${safeRoleBadge}
                                             </span>
                                         ` : ''}
                                     </div>
                                     <div class="text-[10px] font-mono text-text-secondary truncate mt-0.5">
-                                        ${item.runs_count} sesi &bull; Long run: ${item.longest_run_km} km &bull; Pace: ${item.avg_pace}
+                                        ${Number(item.runs_count) || 0} sesi &bull; Long run: ${Number(item.longest_run_km) || 0} km &bull; Pace: ${safePace}
                                     </div>
                                 </div>
                             </div>
                             <div class="text-right shrink-0">
-                                <div class="font-extrabold text-sm font-mono text-text-primary">${item.total_km} km</div>
-                                <div class="text-[10px] font-mono text-flat-green font-bold">Skor: ${item.true_execution_score}%</div>
+                                <div class="font-extrabold text-sm font-mono text-text-primary">${Number(item.total_km) || 0} km</div>
+                                <div class="text-[10px] font-mono text-flat-green font-bold">Skor: ${Number(item.true_execution_score) || 0}%</div>
                             </div>
                         </div>
-                    `).join('')}
+                    `;
+                    }).join('')}
                 </div>
             `;
         },
@@ -305,34 +323,43 @@
                 { id: 'athlete', title: 'Athlete' }
             ];
 
-            container.innerHTML = members.map(m => `
+            container.innerHTML = members.map(m => {
+                const safeName = GoalieEnterprise.escapeHTML(m.name);
+                const safeEmail = GoalieEnterprise.escapeHTML(m.email);
+                const safeId = GoalieEnterprise.escapeHTML(m.id);
+                const perms = (m.permissions || []).map(p => GoalieEnterprise.escapeHTML(p));
+                const permsTitle = perms.join(', ');
+                const permsSnippet = perms.slice(0, 3).join(', ') + (perms.length > 3 ? '...' : '');
+
+                return `
                 <tr class="border-b border-border/60 text-xs hover:bg-surface-subtle/50 transition-colors">
                     <td class="py-2.5 px-3">
-                        <div class="font-bold text-text-primary">${m.name}</div>
-                        <div class="text-[10px] font-mono text-text-secondary">${m.email}</div>
+                        <div class="font-bold text-text-primary">${safeName}</div>
+                        <div class="text-[10px] font-mono text-text-secondary">${safeEmail}</div>
                     </td>
                     <td class="py-2.5 px-3">
-                        <select onchange="GoalieEnterprise.updateMemberDivision('${m.id}', this.value)" class="flat-input text-[11px] py-1 px-2 rounded-lg font-mono bg-surface border border-border cursor-pointer">
+                        <select onchange="GoalieEnterprise.updateMemberDivision('${safeId}', this.value)" class="flat-input text-[11px] py-1 px-2 rounded-lg font-mono bg-surface border border-border cursor-pointer">
                             ${divList.map(d => `
-                                <option value="${d.id}" ${m.division_id === d.id ? 'selected' : ''}>${d.name}</option>
+                                <option value="${GoalieEnterprise.escapeHTML(d.id)}" ${m.division_id === d.id ? 'selected' : ''}>${GoalieEnterprise.escapeHTML(d.name)}</option>
                             `).join('')}
                         </select>
                     </td>
                     <td class="py-2.5 px-3">
-                        <select onchange="GoalieEnterprise.updateMemberRole('${m.id}', this.value)" class="flat-input text-[11px] py-1 px-2 rounded-lg font-mono bg-surface border border-border cursor-pointer">
+                        <select onchange="GoalieEnterprise.updateMemberRole('${safeId}', this.value)" class="flat-input text-[11px] py-1 px-2 rounded-lg font-mono bg-surface border border-border cursor-pointer">
                             ${roleList.map(r => `
-                                <option value="${r.id}" ${m.role === r.id ? 'selected' : ''}>${r.title}</option>
+                                <option value="${GoalieEnterprise.escapeHTML(r.id)}" ${m.role === r.id ? 'selected' : ''}>${GoalieEnterprise.escapeHTML(r.title)}</option>
                             `).join('')}
                         </select>
                     </td>
-                    <td class="py-2.5 px-3 font-mono text-[10px] text-text-secondary hidden sm:table-cell max-w-[180px] truncate" title="${(m.permissions || []).join(', ')}">
-                        ${(m.permissions || []).slice(0, 3).join(', ')}${(m.permissions || []).length > 3 ? '...' : ''}
+                    <td class="py-2.5 px-3 font-mono text-[10px] text-text-secondary hidden sm:table-cell max-w-[180px] truncate" title="${permsTitle}">
+                        ${permsSnippet}
                     </td>
                     <td class="py-2.5 px-3 text-right">
                         <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">Aktif</span>
                     </td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         },
 
         updateMemberDivision: async function (memberId, divisionId) {
@@ -519,17 +546,23 @@
         renderInvoicesTable: function (invoices) {
             const tbody = document.getElementById('billing-invoices-tbody');
             if (!tbody) return;
-            tbody.innerHTML = invoices.map(inv => `
+            tbody.innerHTML = invoices.map(inv => {
+                const safeId = GoalieEnterprise.escapeHTML(inv.id);
+                const safeDate = GoalieEnterprise.escapeHTML(inv.date);
+                const safeDesc = GoalieEnterprise.escapeHTML(inv.description);
+                const safeAmount = GoalieEnterprise.escapeHTML(inv.amount_formatted);
+                return `
                 <tr class="border-b border-border/60 text-xs">
-                    <td class="py-2.5 px-3 font-mono font-bold text-text-primary">${inv.id}</td>
-                    <td class="py-2.5 px-3 font-mono text-text-secondary">${inv.date}</td>
-                    <td class="py-2.5 px-3">${inv.description}</td>
-                    <td class="py-2.5 px-3 font-mono font-bold text-text-primary">${inv.amount_formatted}</td>
+                    <td class="py-2.5 px-3 font-mono font-bold text-text-primary">${safeId}</td>
+                    <td class="py-2.5 px-3 font-mono text-text-secondary">${safeDate}</td>
+                    <td class="py-2.5 px-3">${safeDesc}</td>
+                    <td class="py-2.5 px-3 font-mono font-bold text-text-primary">${safeAmount}</td>
                     <td class="py-2.5 px-3 text-right">
                         <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold">LUNAS</span>
                     </td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         },
 
         // ══════════════════════════════════════════════════════════

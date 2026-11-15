@@ -1,5 +1,6 @@
 import os
 import uuid
+import hmac
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from app.core.config import supabase
@@ -75,8 +76,17 @@ def login(user: UserLoginInput):
 
     # 0. Admin Login Gateway Shortcut
     if email in ("admin", "admin@goalie.run", "admin@admin.com", "admin_kiky"):
-        valid_admin_pwds = {admin_secret, admin_passcode, "Apaya1234", "admin", "admin123"}
-        if pwd_clean in valid_admin_pwds or pwd_clean.lower() in {"admin", "admin123", "apaya1234"}:
+        env = os.getenv("ENVIRONMENT", os.getenv("APP_ENV", "development")).lower()
+        is_admin_valid = False
+        if pwd_clean:
+            if admin_passcode and hmac.compare_digest(pwd_clean, admin_passcode):
+                is_admin_valid = True
+            elif admin_secret and hmac.compare_digest(pwd_clean, admin_secret):
+                is_admin_valid = True
+            elif env != "production" and (pwd_clean == "admin" or pwd_clean == "admin123"):
+                is_admin_valid = True
+
+        if is_admin_valid:
             token = create_admin_token(username="admin")
             sandbox_store.add_audit_log(
                 "ADMIN_LOGIN",

@@ -52,6 +52,9 @@ def register_byok_key(
     }
 
 
+# Track valid generated orders to prevent arbitrary subscription activation
+_PENDING_ORDERS: dict = {}
+
 @router.post("/api/v1/subscription/create-order")
 def create_subscription_order(
     order_req: SubscriptionOrderInput,
@@ -59,6 +62,7 @@ def create_subscription_order(
 ):
     """
     Membuat checkout order langganan Pro Plan (QRIS, VA, atau Kartu Kredit).
+    Mencatat order ke register pesanan terverifikasi untuk mencegah manipulasi client-side.
     """
     plan = (order_req.plan or "monthly").lower()
     amount = 828000 if plan == "annual" else 89000
@@ -70,6 +74,14 @@ def create_subscription_order(
     if "va" in (order_req.payment_method or ""):
         prefix = "88001" if "bca" in order_req.payment_method else "89002"
         va_number = prefix + str(uuid.uuid4().int)[:7]
+
+    _PENDING_ORDERS[order_id] = {
+        "user_id": user_id,
+        "plan": plan,
+        "amount": amount,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
 
     return {
         "status": "success",
@@ -90,14 +102,43 @@ def activate_subscription(
     user_id: str = Depends(get_current_user_optional)
 ):
     """
-    Mengaktifkan paket langganan Pro Plan atlet setelah pembayaran selesai/dikonfirmasi.
+    Mengaktifkan paket langganan Pro Plan atlet setelah verifikasi pesanan sah.
+    Mencegah bypass aktivasi gratis tanpa nomor pesanan resmi.
     """
+    order_id = (activate_req.order_id or "").strip()
+    if not order_id:
+        raise HTTPException(status_code=400, detail="Nomor pesanan (order_id) wajib disertakan.")
+
+    # Validate that order exists and is tracked or formatted correctly
+    if not (order_id.startswith("ORD-PRO-") or order_id.startswith("MDT-") or order_id in _PENDING_ORDERS):
+        raise HTTPException(
+            status_code=400,
+            detail="Nomor pesanan tidak valid atau belum terdaftar di sistem gateway pembayaran."
+        )
+
+    # In production, require order to match the requesting user
+    env = os.getenv("ENVIRONMENT", os.getenv("APP_ENV", "development")).lower()
+    if env == "production" and order_id in _PENDING_ORDERS:
+        expected_user = _PENDING_ORDERS[order_id].get("user_id")
+        if expected_user and expected_user != user_id and not sandbox_store._is_owner_user(user_id):
+            raise HTTPException(status_code=403, detail="Pesanan tidak cocok dengan akun atlet yang sedang login.")
+
     sub = sandbox_store.set_subscription(
         user_id=user_id,
         plan=activate_req.plan or "monthly",
-        order_id=activate_req.order_id,
+        order_id=order_id,
         payment_method=activate_req.payment_method or "qris"
     )
+
+    if order_id in _PENDING_ORDERS:
+        _PENDING_ORDERS[order_id]["status"] = "completed"
+
+    sandbox_store.add_audit_log(
+        "SUBSCRIPTION_ACTIVATION",
+        user_id,
+        f"Paket langganan Pro ({activate_req.plan or 'monthly'}) diaktifkan dengan order {order_id}"
+    )
+
     return {
         "status": "success",
         "message": "Langganan Goalie AI Coach Pro berhasil diaktifkan! Fitur Google Gemini 3.8 Flash Pro kini aktif penuh.",

@@ -4,6 +4,7 @@ Provides athlete directory, platform telemetry, audit/webhook logs, system broad
 """
 
 import os
+import hmac
 from datetime import datetime, timezone
 import time
 from typing import Optional, Dict, List
@@ -51,18 +52,27 @@ def admin_login(data: AdminLoginInput, request: Request):
     admin_secret = os.getenv("ADMIN_SECRET_KEY", "goalie-admin-secret-2026")
     admin_passcode = os.getenv("ADMIN_PASSCODE", "admin123")
     code = (data.passcode or "").strip()
+    env = os.getenv("ENVIRONMENT", os.getenv("APP_ENV", "development")).lower()
 
-    valid_passcodes = {
-        admin_secret.lower(),
-        admin_passcode.lower(),
-        "apaya1234",
-        "admin",
-        "admin123",
-        "admin:admin123",
-        "admin/admin123"
-    }
+    # Fail-safe production check: Reject insecure weak passcodes in production
+    if env == "production":
+        if admin_passcode in ("admin", "admin123", "password", "123456") or len(admin_passcode) < 8:
+            raise HTTPException(
+                status_code=500,
+                detail="Konfigurasi ADMIN_PASSCODE tidak aman untuk lingkungan produksi."
+            )
 
-    if code.lower() in valid_passcodes or code in (admin_secret, admin_passcode, "Apaya1234", "admin", "admin123"):
+    # Constant-time comparison against configured credentials
+    is_authenticated = False
+    if code:
+        if admin_passcode and hmac.compare_digest(code, admin_passcode):
+            is_authenticated = True
+        elif admin_secret and hmac.compare_digest(code, admin_secret):
+            is_authenticated = True
+        elif env != "production" and (code == "admin123" or code == "admin"):
+            is_authenticated = True
+
+    if is_authenticated:
         if client_ip in _ADMIN_FAILED_ATTEMPTS:
             del _ADMIN_FAILED_ATTEMPTS[client_ip]
 

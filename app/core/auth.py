@@ -54,14 +54,11 @@ def verify_admin_token(token: str) -> dict:
     h_b64, p_b64, sig_b64 = parts
     signing_input = f"{h_b64}.{p_b64}".encode('utf-8')
 
-    # Verify against ADMIN_SECRET_KEY
+    # Verify strictly against ADMIN_SECRET_KEY (no fallback to demo secret)
     expected_sig = hmac.new(ADMIN_SECRET_KEY.encode('utf-8'), signing_input, hashlib.sha256).digest()
     given_sig = b64url_decode(sig_b64)
     if not hmac.compare_digest(expected_sig, given_sig):
-        # Fallback check against DEMO_SECRET for demo admin sessions
-        demo_expected = hmac.new(DEMO_SECRET.encode('utf-8'), signing_input, hashlib.sha256).digest()
-        if not hmac.compare_digest(demo_expected, given_sig):
-            raise ValueError("Admin signature mismatch")
+        raise ValueError("Admin signature mismatch")
 
     payload_json = b64url_decode(p_b64).decode('utf-8')
     payload = json.loads(payload_json)
