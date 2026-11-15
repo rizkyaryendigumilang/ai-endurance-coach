@@ -124,6 +124,11 @@
     contain-intrinsic-size: 0 420px;
   }
 
+  /* Hardware Optimization: Modal Isolation Containment (Prevents main page reflows) */
+  .fixed.inset-0 {
+    contain: layout paint;
+  }
+
   /* GPU Compositing Layer without layout recalculations */
   .gpu-accelerated {
     transform: translateZ(0);

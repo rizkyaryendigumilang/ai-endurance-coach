@@ -338,7 +338,7 @@
             backdrop-filter: blur(16px) saturate(140%);
             -webkit-backdrop-filter: blur(16px) saturate(140%);
             border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease;
         }
 
         html.dark .apple-glass-track {
@@ -356,7 +356,7 @@
         .collapse-btn {
             position: relative;
             cursor: pointer;
-            transition: all 0.25s var(--ease-fluid);
+            transition: transform 0.2s var(--ease-fluid), background-color 0.2s ease, border-color 0.2s ease;
         }
 
         .collapse-btn svg {
@@ -372,7 +372,7 @@
         /* Sorvo Anti-Wrapping Text Fade */
         .tab-btn {
             position: relative;
-            transition: padding 0.35s var(--ease-fluid), background-color 0.2s ease, transform 0.15s ease;
+            transition: background-color 0.2s ease, transform 0.15s ease;
         }
 
         .tab-btn .tab-label {
@@ -397,7 +397,7 @@
 
         /* Sorvo Badge Counter Morphing */
         .tab-badge {
-            transition: all 0.35s var(--ease-fluid);
+            transition: transform 0.25s var(--ease-fluid), opacity 0.2s ease, background-color 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -846,7 +846,7 @@
         .garmin-runner-marker {
             background: transparent !important;
             border: none !important;
-            transition: all 50ms linear;
+            transition: transform 50ms linear;
         }
         .garmin-map-pin {
             display: flex;
@@ -9679,7 +9679,8 @@
                 checkStravaStatus();
             }
 
-            if (window.GoalieCalendarWidget && typeof window.GoalieCalendarWidget.render === 'function') {
+            // Only render calendar DOM when schedule tab is active
+            if (tabName === 'schedule' && window.GoalieCalendarWidget && typeof window.GoalieCalendarWidget.render === 'function') {
                 window.GoalieCalendarWidget.render();
             }
 
@@ -9841,6 +9842,7 @@
         }
 
         function updateTargetRaceUI() {
+            if (document.hidden) return;
             const cfg = getTargetRaceConfig();
             const targetDt = new Date(cfg.event_datetime);
             const now = new Date();
@@ -10036,6 +10038,14 @@
             if (!mapContainer || typeof L === 'undefined') return;
 
             const routeCoords = (coords && coords.length > 1) ? coords : DEFAULT_JAKIM_MARATHON_COORDS;
+
+            // Hardware Optimization: If map and polyline already initialized with same coordinates, avoid rebuilding
+            if (raceCourseMapInstance && raceCourseMapPolyline && currentRaceCourseCoords === routeCoords && (!metrics || Object.keys(metrics).length === 0)) {
+                setTimeout(() => {
+                    try { raceCourseMapInstance.invalidateSize(); } catch(e) {}
+                }, 100);
+                return;
+            }
             currentRaceCourseCoords = routeCoords;
 
             const distHud = document.getElementById('race-course-map-hud-dist');
@@ -11272,10 +11282,15 @@
         function renderHeatmapLayers(heatmaps) {
             if (!telemetryHeatmapInstance || !heatmaps) return;
 
-            // Clear previous layer groups
+            // Clear previous layer groups and release child geometry from memory
             Object.values(telemetryLayers).forEach(layer => {
-                if (layer && telemetryHeatmapInstance.hasLayer(layer)) {
-                    telemetryHeatmapInstance.removeLayer(layer);
+                if (layer) {
+                    if (telemetryHeatmapInstance.hasLayer(layer)) {
+                        telemetryHeatmapInstance.removeLayer(layer);
+                    }
+                    if (typeof layer.clearLayers === 'function') {
+                        layer.clearLayers();
+                    }
                 }
             });
 
@@ -13162,10 +13177,11 @@
             const hasAcwr = acwrData.some(v => v !== null);
             const hasPace = paceData.some(v => v !== null);
 
+            const isReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const chartDefaults = {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: { duration: 600, easing: 'easeInOutQuart' },
+                animation: isReducedMotion ? false : { duration: 350, easing: 'easeOutQuart' },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -13286,6 +13302,14 @@
         function initCockpitRouteMap() {
             const container = document.getElementById('cockpit-leaflet-map');
             if (!container || typeof L === 'undefined') return;
+
+            // Hardware Optimization: If map and polyline already initialized, avoid recreating DOM & markers
+            if (cockpitMapInstance && cockpitMapPolyline) {
+                setTimeout(() => {
+                    try { cockpitMapInstance.invalidateSize(); } catch(e) {}
+                }, 100);
+                return;
+            }
 
             if (!cockpitMapInstance) {
                 cockpitMapInstance = L.map('cockpit-leaflet-map', {
@@ -15397,7 +15421,17 @@
                     toast.info('Sinkronisasi Latar Belakang Dimulai', 'Goalie sedang menarik riwayat aktivitas Garmin Anda secara bertahap.');
                     
                     if (garminBackfillPollInterval) clearInterval(garminBackfillPollInterval);
+                    let pollCount = 0;
+                    const MAX_POLLS = 100; // Defensive battery & CPU limit: 5 minutes max (100 * 3000ms)
                     garminBackfillPollInterval = setInterval(async () => {
+                        if (document.hidden) return; // Battery saving when tab is backgrounded
+                        pollCount++;
+                        if (pollCount > MAX_POLLS) {
+                            clearInterval(garminBackfillPollInterval);
+                            garminBackfillPollInterval = null;
+                            if (btn) btn.disabled = false;
+                            return;
+                        }
                         try {
                             const statRes = await fetch(`${API_BASE}/garmin/sync-status`, { headers: getAuthHeaders() });
                             if (statRes.ok) {
