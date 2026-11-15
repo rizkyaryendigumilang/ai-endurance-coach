@@ -1964,8 +1964,14 @@
                                     <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-flat-green border-2 border-surface" title="Live & Connected"></span>
                                 </div>
                                 <div class="min-w-0">
-                                    <h3 class="font-display font-bold text-sm text-text-primary truncate">Rizky Aryendi Gumilang</h3>
-                                    <div class="flex items-center gap-1.5 text-[11px] text-flat-green font-mono">
+                                    <div class="flex items-center gap-1.5">
+                                        <h3 class="font-display font-bold text-sm text-text-primary truncate">Rizky Aryendi Gumilang</h3>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
+                                        <span class="text-[9px] font-mono px-1.5 py-0.2 rounded font-bold bg-tertiary/10 text-tertiary border border-tertiary/20" title="Peran Akses RBAC">HEAD COACH</span>
+                                        <span class="text-[9px] font-mono px-1.5 py-0.2 rounded font-bold bg-orange-500/10 text-tertiary border border-orange-500/20" title="Divisi Skuad Lari">FM SUB-4</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-[10px] text-flat-green font-mono mt-1">
                                         <span class="w-1.5 h-1.5 rounded-full bg-flat-green animate-pulse"></span>
                                         <span>Garmin Direct Connected</span>
                                     </div>
@@ -17784,16 +17790,25 @@
                 <!-- VIEW 2: ROSTER & INVITE -->
                 <div id="team-view-roster" class="hidden space-y-4">
                     <!-- Invite Box -->
-                    <form onsubmit="GoalieEnterprise.submitTeamInvite(event)" class="p-3.5 bg-surface-subtle border border-border rounded-xl flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+                    <form onsubmit="GoalieEnterprise.submitTeamInvite(event)" class="p-3.5 bg-surface-subtle border border-border rounded-xl flex flex-col md:flex-row items-stretch md:items-end gap-3">
                         <div class="flex-1">
                             <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Undang Anggota / Atlet Baru</label>
                             <input type="email" id="team-invite-email" required placeholder="nama@klublari.com" class="flat-input text-xs w-full">
                         </div>
-                        <div class="w-full sm:w-44">
-                            <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Peran Akses</label>
-                            <select id="team-invite-role" class="flat-input text-xs w-full">
-                                <option value="athlete" selected>Atlet Reguler</option>
-                                <option value="assistant_coach">Assistant Coach</option>
+                        <div class="w-full md:w-44">
+                            <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Divisi Skuad</label>
+                            <select id="team-invite-division" class="flat-input text-xs w-full cursor-pointer">
+                                <option value="marathon_sub4" selected>Full Marathon (Sub-4)</option>
+                                <option value="half_marathon">Half Marathon (21K)</option>
+                                <option value="beginner_10k">10K Aerobik Base</option>
+                                <option value="pacer_crew">Official Pacer Crew</option>
+                            </select>
+                        </div>
+                        <div class="w-full md:w-40">
+                            <label class="block text-[11px] font-mono text-text-secondary uppercase mb-1">Peran Akses (RBAC)</label>
+                            <select id="team-invite-role" class="flat-input text-xs w-full cursor-pointer">
+                                <option value="athlete" selected>Athlete (Member)</option>
+                                <option value="pacer_captain">Pacer Captain</option>
                                 <option value="head_coach">Head Coach</option>
                             </select>
                         </div>
@@ -17806,17 +17821,18 @@
                     <!-- Roster Table -->
                     <div class="border border-border rounded-xl overflow-hidden bg-surface">
                         <div class="p-3 bg-surface-subtle border-b border-border flex items-center justify-between">
-                            <span class="font-mono text-xs font-bold text-text-primary">Roster Skuad Aktif (Jakarta Racing Squad)</span>
-                            <span class="text-[10px] font-mono text-text-secondary">4 Anggota Terdaftar</span>
+                            <span class="font-mono text-xs font-bold text-text-primary">Roster Skuad &amp; Otorisasi Peran (Jakarta Racing Squad)</span>
+                            <span class="text-[10px] font-mono text-text-secondary">Kelola Divisi &amp; Peran Langsung</span>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead class="bg-surface-subtle/50 text-[10px] font-mono text-text-secondary uppercase border-b border-border">
                                     <tr>
-                                        <th class="py-2 px-3">Nama Atlet</th>
-                                        <th class="py-2 px-3">Peran / Role</th>
-                                        <th class="py-2 px-3 hidden sm:table-cell">Izin Akses</th>
-                                        <th class="py-2 px-3 text-right">Status</th>
+                                        <th class="py-2.5 px-3">Nama Atlet</th>
+                                        <th class="py-2.5 px-3">Divisi Skuad</th>
+                                        <th class="py-2.5 px-3">Peran Akses</th>
+                                        <th class="py-2.5 px-3 hidden sm:table-cell">Izin Otorisasi</th>
+                                        <th class="py-2.5 px-3 text-right">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="team-members-table-body" class="divide-y divide-border/50">

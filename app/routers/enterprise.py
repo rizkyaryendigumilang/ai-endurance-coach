@@ -15,8 +15,15 @@ class NotificationReadInput(BaseModel):
 
 class TeamInviteInput(BaseModel):
     email: str
-    role: str = "athlete"  # 'head_coach' | 'assistant_coach' | 'athlete'
+    role: str = "athlete"  # 'head_coach' | 'pacer_captain' | 'athlete'
+    division_id: Optional[str] = "marathon_sub4"
     team_name: Optional[str] = "Goalie Jakarta Racing Squad"
+
+class MemberDivisionUpdateInput(BaseModel):
+    division_id: str
+
+class MemberRoleUpdateInput(BaseModel):
+    role: str
 
 class SupportFeedbackInput(BaseModel):
     category: str  # 'feature_request' | 'bug_report' | 'coaching_feedback' | 'other'
@@ -24,10 +31,100 @@ class SupportFeedbackInput(BaseModel):
     message: str
     rating: Optional[int] = 5
 
-# In-memory notification state tracker
+# Canonical Running Squad Divisions
+RUNNING_DIVISIONS = [
+    {
+        "id": "marathon_sub4",
+        "name": "Full Marathon Squad (Sub-3 / Sub-4)",
+        "badge": "FM SUB-4",
+        "icon": "🏃",
+        "target_distance": "42.195 km",
+        "target_race": "BTN Jakarta International Marathon (JAKIM) 2026",
+        "criteria": "VDOT 48+, Long Run mingguan 24-32 km",
+        "color_class": "bg-orange-500/10 text-tertiary border-tertiary/30"
+    },
+    {
+        "id": "half_marathon",
+        "name": "Half Marathon Division (21.1K)",
+        "badge": "HM 21K",
+        "icon": "⚡",
+        "target_distance": "21.097 km",
+        "target_race": "Jakarta Half Marathon 2026",
+        "criteria": "VDOT 38-48, Long Run mingguan 16-20 km",
+        "color_class": "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30"
+    },
+    {
+        "id": "beginner_10k",
+        "name": "10K & Base Aerobic Division",
+        "badge": "10K BASE",
+        "icon": "🌿",
+        "target_distance": "10.0 km",
+        "target_race": "Milo 10K / Borobudur 10K",
+        "criteria": "VDOT 30-38, Fokus Zone 2 Aerobic Foundation",
+        "color_class": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+    },
+    {
+        "id": "pacer_crew",
+        "name": "Official Pacer Crew",
+        "badge": "PACER",
+        "icon": "⏱️",
+        "target_distance": "Pace Keeper 10K - 42K",
+        "target_race": "Official Squad Pace Keepers",
+        "criteria": "Pace presisi ±3s/km, kepemimpinan grup & rute lari",
+        "color_class": "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30"
+    }
+]
+
+# Canonical RBAC Roles and Permissions
+RBAC_ROLES = [
+    {
+        "id": "head_coach",
+        "title": "Head Coach",
+        "badge": "HEAD COACH",
+        "description": "Akses penuh manajemen tim, kalibrasi fisiologis (VDOT/Karvonen), resep jadwal makrosiklus, dan konfigurasi divisi.",
+        "permissions": ["telemetry:view_all", "schedule:prescribe", "squad:manage", "members:manage", "events:create", "system:admin"]
+    },
+    {
+        "id": "pacer_captain",
+        "title": "Pacer Captain",
+        "badge": "PACER CAPTAIN",
+        "description": "Memimpin jadwal latihan bersama (group run), memindai absensi QR, mengunggah rute GPX, dan memantau ritme lari tim.",
+        "permissions": ["telemetry:view_all", "events:create", "attendance:scan", "announcements:post", "schedule:view"]
+    },
+    {
+        "id": "athlete",
+        "title": "Athlete",
+        "badge": "ATHLETE",
+        "description": "Akses telemetri personal Garmin, resep latihan AI harian, kartu anggota digital, dan partisipasi papan peringkat.",
+        "permissions": ["telemetry:view_own", "schedule:view_own", "workouts:log", "leaderboard:view", "membership:view"]
+    },
+    {
+        "id": "public_guest",
+        "title": "Public Guest",
+        "badge": "GUEST",
+        "description": "Akses informasi publik skuad lari, ringkasan target maraton, Calculator Pace terbuka, dan formulir registrasi anggota.",
+        "permissions": ["showcase:view", "calculator:use", "membership:apply"]
+    }
+]
+
+# In-memory notification, division, and role trackers
 _READ_NOTIFICATIONS = set()
 _PENDING_INVITES: List[Dict[str, Any]] = []
 _FEEDBACK_ENTRIES: List[Dict[str, Any]] = []
+_MEMBER_DIVISIONS: Dict[str, str] = {
+    sandbox_store.OWNER_USER_ID: "marathon_sub4",
+    "squad-athlete-02": "marathon_sub4",
+    "squad-coach-03": "pacer_crew",
+    "squad-athlete-04": "half_marathon",
+    "squad-athlete-05": "beginner_10k"
+}
+_MEMBER_ROLES: Dict[str, str] = {
+    sandbox_store.OWNER_USER_ID: "head_coach",
+    "squad-athlete-02": "athlete",
+    "squad-coach-03": "pacer_captain",
+    "squad-athlete-04": "athlete",
+    "squad-athlete-05": "athlete"
+}
 
 @router.get("/api/v1/notifications", tags=["Notifications"])
 def get_notifications(user_id: str = Depends(get_current_user_optional)):
@@ -106,70 +203,168 @@ def mark_notifications_read(data: NotificationReadInput):
         "message": "Notifikasi berhasil ditandai telah dibaca."
     }
 
+@router.get("/api/v1/team/divisions", tags=["User Management"])
+def get_team_divisions():
+    """
+    Manajemen Divisi Skuad: Menampilkan daftar divisi lari (Marathon, Half Marathon, 10K, Pacer Crew).
+    """
+    # Count members in each division
+    counts = {}
+    for div_id in _MEMBER_DIVISIONS.values():
+        counts[div_id] = counts.get(div_id, 0) + 1
+
+    divisions_with_stats = []
+    for d in RUNNING_DIVISIONS:
+        item = dict(d)
+        item["active_members_count"] = counts.get(d["id"], 0)
+        divisions_with_stats.append(item)
+
+    return {
+        "status": "success",
+        "club_name": "Goalie Jakarta Racing Squad",
+        "divisions": divisions_with_stats
+    }
+
+@router.get("/api/v1/team/roles", tags=["User Management"])
+def get_team_roles():
+    """
+    Role-Based Access Control (RBAC): Menampilkan daftar peran dan matriks izin akses organisasi.
+    """
+    return {
+        "status": "success",
+        "roles": RBAC_ROLES
+    }
+
+@router.post("/api/v1/team/members/{member_id}/division", tags=["User Management"])
+def update_member_division(member_id: str, data: MemberDivisionUpdateInput):
+    """
+    Menugaskan atau memperbarui divisi skuad lari atlet.
+    """
+    valid_div_ids = {d["id"] for d in RUNNING_DIVISIONS}
+    if data.division_id not in valid_div_ids:
+        raise HTTPException(status_code=400, detail="Divisi lari yang dipilih tidak valid.")
+
+    _MEMBER_DIVISIONS[member_id] = data.division_id
+    div_obj = next((d for d in RUNNING_DIVISIONS if d["id"] == data.division_id), None)
+    div_name = div_obj["name"] if div_obj else data.division_id
+
+    return {
+        "status": "success",
+        "message": f"Divisi atlet berhasil diperbarui ke {div_name}.",
+        "member_id": member_id,
+        "division": div_obj
+    }
+
+@router.post("/api/v1/team/members/{member_id}/role", tags=["User Management"])
+def update_member_role(member_id: str, data: MemberRoleUpdateInput):
+    """
+    Memperbarui peran akses (RBAC) anggota skuad (Head Coach, Pacer Captain, Athlete).
+    """
+    valid_role_ids = {r["id"] for r in RBAC_ROLES}
+    if data.role not in valid_role_ids:
+        raise HTTPException(status_code=400, detail="Peran akses yang dipilih tidak valid.")
+
+    _MEMBER_ROLES[member_id] = data.role
+    role_obj = next((r for r in RBAC_ROLES if r["id"] == data.role), None)
+    role_title = role_obj["title"] if role_obj else data.role
+
+    return {
+        "status": "success",
+        "message": f"Peran akses atlet berhasil diperbarui ke {role_title}.",
+        "member_id": member_id,
+        "role": role_obj
+    }
+
 @router.get("/api/v1/team/squad", tags=["User Management"])
 def get_team_squad(user_id: str = Depends(get_current_user_optional)):
     """
-    Manajemen Tim & Pengguna: Menampilkan profil anggota tim, peran, izin, dan undangan.
+    Manajemen Tim & Pengguna: Menampilkan profil anggota tim, peran RBAC, divisi lari, dan undangan.
     """
     uid = user_id or sandbox_store.OWNER_USER_ID
     profile = sandbox_store.get_profile(uid) or {}
 
-    roles = [
-        {
-            "id": "head_coach",
-            "title": "Head Coach",
-            "description": "Akses penuh manajemen jadwal latihan atlet, kalibrasi VDOT, dan administrasi tim."
-        },
-        {
-            "id": "assistant_coach",
-            "title": "Assistant Coach",
-            "description": "Dapat melihat telemetri atlet, mencatat evaluasi latihan, dan memantau status pemulihan."
-        },
-        {
-            "id": "athlete",
-            "title": "Athlete",
-            "description": "Mengakses kalender latihan personal, mencatat sesi lari, dan mengunggah berkas GPX/FIT."
-        }
-    ]
-
-    members = [
+    raw_members = [
         {
             "id": uid,
             "name": profile.get("full_name") or "Rizky Aryendi Gumilang",
             "email": profile.get("email") or "rizkyaryendigumilang@gmail.com",
-            "role": "head_coach",
-            "role_title": "Head Coach",
+            "default_role": "head_coach",
+            "default_div": "marathon_sub4",
             "status": "active",
-            "permissions": ["view_telemetry", "edit_schedule", "manage_members", "billing_access"],
             "joined_at": "2026-01-15T08:00:00Z"
         },
         {
             "id": "squad-athlete-02",
             "name": "Budi Santoso",
             "email": "budi.marathon@goalie.fit",
-            "role": "athlete",
-            "role_title": "Athlete",
+            "default_role": "athlete",
+            "default_div": "marathon_sub4",
             "status": "active",
-            "permissions": ["view_telemetry", "log_workouts"],
             "joined_at": "2026-02-10T10:30:00Z"
         },
         {
             "id": "squad-coach-03",
             "name": "Sarah Coach",
             "email": "sarah.coach@goalie.fit",
-            "role": "assistant_coach",
-            "role_title": "Assistant Coach",
+            "default_role": "pacer_captain",
+            "default_div": "pacer_crew",
             "status": "active",
-            "permissions": ["view_telemetry", "edit_schedule"],
             "joined_at": "2026-03-01T09:15:00Z"
+        },
+        {
+            "id": "squad-athlete-04",
+            "name": "Dimas Pratama",
+            "email": "dimas.run@goalie.fit",
+            "default_role": "athlete",
+            "default_div": "half_marathon",
+            "status": "active",
+            "joined_at": "2026-03-12T14:20:00Z"
+        },
+        {
+            "id": "squad-athlete-05",
+            "name": "Siti Rahma",
+            "email": "siti.aerobic@goalie.fit",
+            "default_role": "athlete",
+            "default_div": "beginner_10k",
+            "status": "active",
+            "joined_at": "2026-04-01T11:00:00Z"
         }
     ]
+
+    div_map = {d["id"]: d for d in RUNNING_DIVISIONS}
+    role_map = {r["id"]: r for r in RBAC_ROLES}
+
+    enriched_members = []
+    for m in raw_members:
+        mid = m["id"]
+        role_id = _MEMBER_ROLES.get(mid, m["default_role"])
+        div_id = _MEMBER_DIVISIONS.get(mid, m["default_div"])
+
+        role_obj = role_map.get(role_id, role_map["athlete"])
+        div_obj = div_map.get(div_id, div_map["marathon_sub4"])
+
+        enriched_members.append({
+            "id": mid,
+            "name": m["name"],
+            "email": m["email"],
+            "role": role_id,
+            "role_title": role_obj["title"],
+            "role_badge": role_obj["badge"],
+            "permissions": role_obj["permissions"],
+            "division_id": div_id,
+            "division_name": div_obj["name"],
+            "division_badge": div_obj["badge"],
+            "division_color": div_obj["color_class"],
+            "status": m["status"],
+            "joined_at": m["joined_at"]
+        })
 
     return {
         "status": "success",
         "team_name": "Goalie Jakarta Racing Squad",
-        "roles": roles,
-        "members": members,
+        "roles": RBAC_ROLES,
+        "divisions": RUNNING_DIVISIONS,
+        "members": enriched_members,
         "pending_invitations": _PENDING_INVITES
     }
 
@@ -299,18 +494,19 @@ def get_system_status():
 
 
 @router.get("/api/v1/team/leaderboard", tags=["User Management"])
-def get_team_leaderboard(user_id: str = Depends(get_current_user_optional)):
+def get_team_leaderboard(division: Optional[str] = None, user_id: str = Depends(get_current_user_optional)):
     """
-    Mengambil leaderboard mingguan Running Squad (volume total km, longest run, skor eksekusi, podium ranking).
+    Mengambil leaderboard mingguan Running Squad dengan filter divisi lari (Marathon, Half Marathon, 10K, Pacer).
     """
     uid = user_id or sandbox_store.OWNER_USER_ID
     prof = sandbox_store.get_profile(uid) or {}
     owner_name = prof.get("full_name", "Rizky Aryendi Gumilang")
 
-    leaderboard = [
+    div_map = {d["id"]: d for d in RUNNING_DIVISIONS}
+    role_map = {r["id"]: r for r in RBAC_ROLES}
+
+    all_runners = [
         {
-            "rank": 1,
-            "badge": "EMAS",
             "athlete_id": uid,
             "name": owner_name,
             "total_km": 68.4,
@@ -318,11 +514,11 @@ def get_team_leaderboard(user_id: str = Depends(get_current_user_optional)):
             "longest_run_km": 24.2,
             "avg_pace": "05:18 min/km",
             "true_execution_score": 96,
-            "streak_weeks": 8
+            "streak_weeks": 8,
+            "default_div": "marathon_sub4",
+            "default_role": "head_coach"
         },
         {
-            "rank": 2,
-            "badge": "PERAK",
             "athlete_id": "squad-athlete-02",
             "name": "Budi Santoso",
             "total_km": 54.2,
@@ -330,11 +526,11 @@ def get_team_leaderboard(user_id: str = Depends(get_current_user_optional)):
             "longest_run_km": 18.0,
             "avg_pace": "05:42 min/km",
             "true_execution_score": 91,
-            "streak_weeks": 5
+            "streak_weeks": 5,
+            "default_div": "marathon_sub4",
+            "default_role": "athlete"
         },
         {
-            "rank": 3,
-            "badge": "PERUNGGU",
             "athlete_id": "squad-coach-03",
             "name": "Sarah Coach",
             "total_km": 42.0,
@@ -342,11 +538,11 @@ def get_team_leaderboard(user_id: str = Depends(get_current_user_optional)):
             "longest_run_km": 14.5,
             "avg_pace": "05:25 min/km",
             "true_execution_score": 94,
-            "streak_weeks": 12
+            "streak_weeks": 12,
+            "default_div": "pacer_crew",
+            "default_role": "pacer_captain"
         },
         {
-            "rank": 4,
-            "badge": "RUNNER",
             "athlete_id": "squad-athlete-04",
             "name": "Dimas Pratama",
             "total_km": 36.8,
@@ -354,15 +550,76 @@ def get_team_leaderboard(user_id: str = Depends(get_current_user_optional)):
             "longest_run_km": 12.0,
             "avg_pace": "06:10 min/km",
             "true_execution_score": 87,
-            "streak_weeks": 3
+            "streak_weeks": 3,
+            "default_div": "half_marathon",
+            "default_role": "athlete"
+        },
+        {
+            "athlete_id": "squad-athlete-05",
+            "name": "Siti Rahma",
+            "total_km": 28.5,
+            "runs_count": 3,
+            "longest_run_km": 10.0,
+            "avg_pace": "06:45 min/km",
+            "true_execution_score": 89,
+            "streak_weeks": 4,
+            "default_div": "beginner_10k",
+            "default_role": "athlete"
         }
     ]
+
+    # Enrich with dynamic division and role
+    enriched = []
+    for r in all_runners:
+        aid = r["athlete_id"]
+        div_id = _MEMBER_DIVISIONS.get(aid, r["default_div"])
+        role_id = _MEMBER_ROLES.get(aid, r["default_role"])
+
+        div_obj = div_map.get(div_id, div_map["marathon_sub4"])
+        role_obj = role_map.get(role_id, role_map["athlete"])
+
+        runner_dict = {
+            "athlete_id": aid,
+            "name": r["name"],
+            "total_km": r["total_km"],
+            "runs_count": r["runs_count"],
+            "longest_run_km": r["longest_run_km"],
+            "avg_pace": r["avg_pace"],
+            "true_execution_score": r["true_execution_score"],
+            "streak_weeks": r["streak_weeks"],
+            "division_id": div_id,
+            "division_name": div_obj["name"],
+            "division_badge": div_obj["badge"],
+            "division_color": div_obj["color_class"],
+            "role": role_id,
+            "role_title": role_obj["title"],
+            "role_badge": role_obj["badge"]
+        }
+        enriched.append(runner_dict)
+
+    # Filter by division if requested
+    if division and division != "all":
+        enriched = [r for r in enriched if r["division_id"] == division]
+
+    # Sort descending by total_km
+    enriched.sort(key=lambda x: x["total_km"], reverse=True)
+
+    # Assign rank and badge
+    medals = {1: "EMAS", 2: "PERAK", 3: "PERUNGGU"}
+    for idx, r in enumerate(enriched):
+        r["rank"] = idx + 1
+        r["badge"] = medals.get(idx + 1, "RUNNER")
+
+    active_division = div_map.get(division) if division and division != "all" else None
 
     return {
         "status": "success",
         "club_name": "Goalie Jakarta Racing Squad",
         "period": "Minggu Ini (Senin - Minggu)",
-        "total_active_runners": len(leaderboard),
-        "team_volume_km": round(sum(m["total_km"] for m in leaderboard), 1),
-        "leaderboard": leaderboard
+        "active_filter": division or "all",
+        "active_division_name": active_division["name"] if active_division else "Semua Divisi Skuad",
+        "total_active_runners": len(enriched),
+        "team_volume_km": round(sum(m["total_km"] for m in enriched), 1),
+        "available_divisions": RUNNING_DIVISIONS,
+        "leaderboard": enriched
     }

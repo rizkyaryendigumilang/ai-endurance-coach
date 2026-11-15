@@ -170,29 +170,62 @@
             }
         },
 
-        loadSquadLeaderboard: async function () {
+        loadSquadLeaderboard: async function (division) {
             const container = document.getElementById('squad-leaderboard-container');
             if (!container) return;
+            const targetDiv = division || (GoalieEnterprise.state && GoalieEnterprise.state.activeDivision) || 'all';
+            if (GoalieEnterprise.state) GoalieEnterprise.state.activeDivision = targetDiv;
             try {
                 const apiBase = window.API_BASE || '/golie/api/v1';
                 const headers = (typeof window.getAuthHeaders === 'function') ? window.getAuthHeaders() : {};
-                const res = await fetch(`${apiBase}/team/leaderboard`, { headers });
+                const url = targetDiv && targetDiv !== 'all'
+                    ? `${apiBase}/team/leaderboard?division=${encodeURIComponent(targetDiv)}`
+                    : `${apiBase}/team/leaderboard`;
+                const res = await fetch(url, { headers });
                 if (res.ok) {
                     const data = await res.json();
-                    GoalieEnterprise.renderSquadLeaderboard(data.leaderboard || []);
+                    GoalieEnterprise.renderSquadLeaderboard(data.leaderboard || [], data.available_divisions || [], targetDiv);
                 }
             } catch (e) {
                 console.warn('[Goalie] Leaderboard fetch error:', e);
             }
         },
 
-        renderSquadLeaderboard: function (list) {
+        renderSquadLeaderboard: function (list, availableDivisions, activeDivision) {
             const container = document.getElementById('squad-leaderboard-container');
             if (!container) return;
+
+            const currentDiv = activeDivision || 'all';
+            const divisions = availableDivisions && availableDivisions.length > 0 ? availableDivisions : [
+                { id: 'marathon_sub4', name: 'Full Marathon (Sub-4)' },
+                { id: 'half_marathon', name: 'Half Marathon (21K)' },
+                { id: 'beginner_10k', name: '10K Aerobik' },
+                { id: 'pacer_crew', name: 'Pacer Crew' }
+            ];
+
+            const filterPillsHtml = `
+                <div class="flex flex-wrap items-center gap-1.5 pb-2 border-b border-border/60 mb-3" role="toolbar" aria-label="Filter Divisi Skuad">
+                    <button type="button" onclick="GoalieEnterprise.loadSquadLeaderboard('all')" class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition-all ${currentDiv === 'all' ? 'bg-tertiary text-white shadow-xs' : 'bg-surface border border-border text-text-secondary hover:text-text-primary'}">
+                        Semua Divisi
+                    </button>
+                    ${divisions.map(d => `
+                        <button type="button" onclick="GoalieEnterprise.loadSquadLeaderboard('${d.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold transition-all ${currentDiv === d.id ? 'bg-tertiary text-white shadow-xs' : 'bg-surface border border-border text-text-secondary hover:text-text-primary'}">
+                            ${d.name}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
             if (!list || list.length === 0) {
-                container.innerHTML = '<div class="p-4 text-center text-text-secondary text-xs">Belum ada aktivitas mingguan tercatat.</div>';
+                container.innerHTML = `
+                    ${filterPillsHtml}
+                    <div class="p-6 text-center text-text-secondary text-xs bg-surface-subtle border border-border rounded-xl">
+                        Belum ada atlet yang tercatat di divisi ini minggu ini.
+                    </div>
+                `;
                 return;
             }
+
             const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
             const badgeClasses = {
                 1: 'border-amber-500/50 bg-amber-500/5 text-amber-500',
@@ -201,22 +234,32 @@
             };
 
             container.innerHTML = `
+                ${filterPillsHtml}
                 <div class="space-y-2.5">
                     ${list.map(item => `
-                        <div class="p-3 bg-surface border ${item.rank <= 3 ? badgeClasses[item.rank] : 'border-border'} rounded-xl flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl font-bold font-mono w-7 text-center">${medals[item.rank] || '#' + item.rank}</span>
-                                <div>
-                                    <div class="font-bold text-xs text-text-primary flex items-center gap-1.5">
-                                        <span>${item.name}</span>
-                                        ${item.rank === 1 ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 font-mono font-bold">LEADER</span>' : ''}
+                        <div class="p-3 bg-surface border ${item.rank <= 3 ? badgeClasses[item.rank] : 'border-border'} rounded-xl flex items-center justify-between gap-3 shadow-xs hover:border-border-strong transition-all">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="text-xl font-bold font-mono w-7 text-center shrink-0">${medals[item.rank] || '#' + item.rank}</span>
+                                <div class="min-w-0">
+                                    <div class="font-bold text-xs text-text-primary flex flex-wrap items-center gap-1.5">
+                                        <span class="truncate">${item.name}</span>
+                                        ${item.division_badge ? `
+                                            <span class="text-[9px] px-1.5 py-0.2 rounded font-mono font-bold border ${item.division_color || 'bg-surface border-border text-text-secondary'}">
+                                                ${item.division_badge}
+                                            </span>
+                                        ` : ''}
+                                        ${item.role_badge && item.role !== 'athlete' ? `
+                                            <span class="text-[9px] px-1.5 py-0.2 rounded font-mono font-bold bg-tertiary/10 text-tertiary border border-tertiary/20">
+                                                ${item.role_badge}
+                                            </span>
+                                        ` : ''}
                                     </div>
-                                    <div class="text-[10px] font-mono text-text-secondary">
-                                        ${item.runs_count} sesi • Long run: ${item.longest_run_km} km • Pace: ${item.avg_pace}
+                                    <div class="text-[10px] font-mono text-text-secondary truncate mt-0.5">
+                                        ${item.runs_count} sesi &bull; Long run: ${item.longest_run_km} km &bull; Pace: ${item.avg_pace}
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-right">
+                            <div class="text-right shrink-0">
                                 <div class="font-extrabold text-sm font-mono text-text-primary">${item.total_km} km</div>
                                 <div class="text-[10px] font-mono text-flat-green font-bold">Skor: ${item.true_execution_score}%</div>
                             </div>
@@ -233,7 +276,7 @@
                 const res = await fetch(`${apiBase}/team/squad`, { headers });
                 if (res.ok) {
                     const data = await res.json();
-                    GoalieEnterprise.renderTeamSquad(data.members || []);
+                    GoalieEnterprise.renderTeamSquad(data.members || [], data.roles || [], data.divisions || []);
                 }
             } catch (e) {
                 console.warn('[Goalie] Team squad fetch warning:', e);
@@ -245,51 +288,131 @@
             if (modal) modal.classList.add('hidden');
         },
 
-        renderTeamSquad: function (members) {
+        renderTeamSquad: function (members, roles, divisions) {
             const container = document.getElementById('team-members-table-body');
             if (!container) return;
+
+            const divList = divisions && divisions.length > 0 ? divisions : [
+                { id: 'marathon_sub4', name: 'Full Marathon (Sub-4)' },
+                { id: 'half_marathon', name: 'Half Marathon (21K)' },
+                { id: 'beginner_10k', name: '10K Aerobik' },
+                { id: 'pacer_crew', name: 'Pacer Crew' }
+            ];
+
+            const roleList = roles && roles.length > 0 ? roles : [
+                { id: 'head_coach', title: 'Head Coach' },
+                { id: 'pacer_captain', title: 'Pacer Captain' },
+                { id: 'athlete', title: 'Athlete' }
+            ];
+
             container.innerHTML = members.map(m => `
-                <tr class="border-b border-border/60 text-xs">
+                <tr class="border-b border-border/60 text-xs hover:bg-surface-subtle/50 transition-colors">
                     <td class="py-2.5 px-3">
                         <div class="font-bold text-text-primary">${m.name}</div>
                         <div class="text-[10px] font-mono text-text-secondary">${m.email}</div>
                     </td>
                     <td class="py-2.5 px-3">
-                        <span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold ${m.role === 'head_coach' ? 'bg-tertiary/10 text-tertiary border border-tertiary/30' : 'bg-surface text-text-secondary border border-border'}">
-                            ${m.role_title}
-                        </span>
+                        <select onchange="GoalieEnterprise.updateMemberDivision('${m.id}', this.value)" class="flat-input text-[11px] py-1 px-2 rounded-lg font-mono bg-surface border border-border cursor-pointer">
+                            ${divList.map(d => `
+                                <option value="${d.id}" ${m.division_id === d.id ? 'selected' : ''}>${d.name}</option>
+                            `).join('')}
+                        </select>
                     </td>
-                    <td class="py-2.5 px-3 font-mono text-[10px] text-text-secondary hidden sm:table-cell">
-                        ${m.permissions.join(', ')}
+                    <td class="py-2.5 px-3">
+                        <select onchange="GoalieEnterprise.updateMemberRole('${m.id}', this.value)" class="flat-input text-[11px] py-1 px-2 rounded-lg font-mono bg-surface border border-border cursor-pointer">
+                            ${roleList.map(r => `
+                                <option value="${r.id}" ${m.role === r.id ? 'selected' : ''}>${r.title}</option>
+                            `).join('')}
+                        </select>
+                    </td>
+                    <td class="py-2.5 px-3 font-mono text-[10px] text-text-secondary hidden sm:table-cell max-w-[180px] truncate" title="${(m.permissions || []).join(', ')}">
+                        ${(m.permissions || []).slice(0, 3).join(', ')}${(m.permissions || []).length > 3 ? '...' : ''}
                     </td>
                     <td class="py-2.5 px-3 text-right">
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Aktif</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">Aktif</span>
                     </td>
                 </tr>
             `).join('');
+        },
+
+        updateMemberDivision: async function (memberId, divisionId) {
+            try {
+                const apiBase = window.API_BASE || '/golie/api/v1';
+                const headers = { 'Content-Type': 'application/json' };
+                const token = localStorage.getItem('goalie_token') || localStorage.getItem('access_token');
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(`${apiBase}/team/members/${encodeURIComponent(memberId)}/division`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ division_id: divisionId })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (window.toast && typeof window.toast.success === 'function') {
+                        window.toast.success('Divisi Diperbarui', data.message || 'Divisi lari atlet berhasil disinkronkan.');
+                    }
+                    GoalieEnterprise.loadSquadLeaderboard();
+                }
+            } catch (err) {
+                console.warn('[Goalie] Error updating member division:', err);
+            }
+        },
+
+        updateMemberRole: async function (memberId, role) {
+            try {
+                const apiBase = window.API_BASE || '/golie/api/v1';
+                const headers = { 'Content-Type': 'application/json' };
+                const token = localStorage.getItem('goalie_token') || localStorage.getItem('access_token');
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(`${apiBase}/team/members/${encodeURIComponent(memberId)}/role`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ role: role })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (window.toast && typeof window.toast.success === 'function') {
+                        window.toast.success('Peran Akses Diperbarui', data.message || 'Peran akses RBAC atlet berhasil diperbarui.');
+                    }
+                    GoalieEnterprise.loadTeamSquad();
+                }
+            } catch (err) {
+                console.warn('[Goalie] Error updating member role:', err);
+            }
         },
 
         submitTeamInvite: async function (e) {
             if (e) e.preventDefault();
             const emailInput = document.getElementById('team-invite-email');
             const roleInput = document.getElementById('team-invite-role');
+            const divInput = document.getElementById('team-invite-division');
             if (!emailInput || !emailInput.value) return;
 
             const email = emailInput.value.trim();
             const role = roleInput ? roleInput.value : 'athlete';
+            const division_id = divInput ? divInput.value : 'marathon_sub4';
 
             try {
                 const apiBase = window.API_BASE || '/golie/api/v1';
                 const res = await fetch(`${apiBase}/team/invite`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, role, team_name: 'Goalie Jakarta Racing Squad' })
+                    body: JSON.stringify({ email, role, division_id, team_name: 'Goalie Jakarta Racing Squad' })
                 });
                 const data = await res.json();
-                if (window.toast) window.toast.success('Undangan Terkirim', `Kode undangan ${data.invite_code} dibuat untuk ${email}.`);
+                if (window.toast && typeof window.toast.success === 'function') {
+                    window.toast.success('Undangan Terkirim', `Kode undangan ${data.invite_code} dibuat untuk ${email}.`);
+                }
                 emailInput.value = '';
+                GoalieEnterprise.loadTeamSquad();
             } catch (err) {
-                if (window.toast) window.toast.error('Gagal Mengirim', 'Terjadi kesalahan pengiriman undangan.');
+                if (window.toast && typeof window.toast.error === 'function') {
+                    window.toast.error('Gagal Mengirim', 'Terjadi kesalahan pengiriman undangan.');
+                }
             }
         },
 
