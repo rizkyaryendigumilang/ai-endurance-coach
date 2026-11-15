@@ -117,6 +117,99 @@
     -webkit-backdrop-filter: blur(16px);
   }
 
+  /* ══════════════════════════════════════════════════════════
+     IGNARA MOTION SYSTEM (Code and Chill inspired high-craft)
+     Smooth ease-out transitions, spring physics, and neatness
+     ══════════════════════════════════════════════════════════ */
+  .ease-ignara {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Ignara Tab Entrance Animation */
+  @keyframes ignara-tab-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .ignara-fade-enter {
+    animation: ignara-tab-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: transform, opacity;
+  }
+
+  /* Ignara Modal Spring Pop Animation */
+  @keyframes ignara-modal-spring {
+    0% {
+      opacity: 0;
+      transform: scale(0.97) translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .ignara-modal-enter {
+    animation: ignara-modal-spring 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: transform, opacity;
+  }
+
+  /* Ignara Smooth Card Lift & Depth */
+  .ignara-card,
+  .flat-card {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 150ms ease,
+                background-color 150ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .ignara-card:hover,
+    .flat-card:hover,
+    .bento-card:hover,
+    .feed-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      border-color: var(--border-strong);
+    }
+    html.dark .ignara-card:hover,
+    html.dark .flat-card:hover,
+    html.dark .bento-card:hover,
+    html.dark .feed-card:hover {
+      box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      border-color: var(--border-strong);
+    }
+  }
+
+  /* Ignara Staggered List Entrance */
+  .stagger-group > *:nth-child(1) { animation-delay: 25ms; }
+  .stagger-group > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger-group > *:nth-child(3) { animation-delay: 75ms; }
+  .stagger-group > *:nth-child(4) { animation-delay: 100ms; }
+  .stagger-group > *:nth-child(5) { animation-delay: 125ms; }
+
+  /* Ignara Snappy Tactile Press */
+  .ignara-press {
+    transition: transform 75ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ignara-press:active {
+    transform: scale(0.98) !important;
+  }
+
+  /* Subtle Breathing Indicator for Realtime Garmin & Telemetry */
+  @keyframes ignara-pulse-subtle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.95); }
+  }
+  .ignara-pulse {
+    animation: ignara-pulse-subtle 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+
   /* Hardware Optimization: Offscreen DOM Layout & Paint Virtualization */
   .content-visibility-auto,
   .feed-card-contain {
@@ -134,20 +227,6 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
-  }
-  
-  /* Bento Grid Card Micro-Interactions: Gated to fine pointers to prevent sticky hover on touch */
-  .bento-card,
-  .flat-card {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .bento-card:hover,
-    .feed-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
-    }
   }
 
   /* Subtle shimmer for asynchronous sync and telemetry loading states */

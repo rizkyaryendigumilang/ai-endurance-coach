@@ -244,17 +244,29 @@
             }
         }
 
-        /* Tactile click micro-interactions for buttons */
-        button:active, .btn-primary:active, .btn-flat-primary:active, .btn-flat-secondary:active {
-            transform: scale(0.975);
-            transition: transform 70ms cubic-bezier(0.16, 1, 0.3, 1);
+        /* Tactile click micro-interactions for buttons (Ignara & Apple Fluid Interfaces) */
+        button:not(:disabled):active,
+        [role="button"]:not([aria-disabled="true"]):active,
+        .btn-primary:active,
+        .btn-secondary:active,
+        .btn-flat-primary:active,
+        .btn-flat-secondary:active,
+        .ignara-press:active {
+            transform: scale(0.978) !important;
+            transition: transform 75ms cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
         /* Isolate desktop mouse hover from mobile touch screens (prevent sticky hover bug) */
         @media (hover: hover) and (pointer: fine) {
-            .flat-card:hover {
+            .flat-card:hover,
+            .ignara-card:hover {
+                transform: translateY(-2px);
                 border-color: var(--border-strong);
-                box-shadow: var(--shadow-pop);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            }
+            html.dark .flat-card:hover,
+            html.dark .ignara-card:hover {
+                box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             }
         }
 
@@ -306,18 +318,19 @@
             letter-spacing: -0.01em;
         }
 
-        /* Modern Clean Squircles (Cadra & Apple Depth) */
-        .flat-card {
+        /* Modern Clean Squircles & Ignara Smooth Cards */
+        .flat-card, .ignara-card {
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: var(--r-card, 22px);
             box-shadow: var(--shadow-card);
-            transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease, transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+            transition: border-color 150ms ease, box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms ease, transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, box-shadow;
         }
 
-        .flat-card:active {
-            transform: scale(0.995);
-            transition: transform 80ms cubic-bezier(0.16, 1, 0.3, 1);
+        .flat-card:active, .ignara-card:active {
+            transform: scale(0.992);
+            transition: transform 75ms cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* Apple Translucent Chrome Materials (WWDC Materials & Depth) */
@@ -641,10 +654,15 @@
         /* Prevents sticky hover syndrome on touchscreen devices     */
         /* ══════════════════════════════════════════════════════════ */
         @media (hover: hover) and (pointer: fine) {
-            .flat-card:hover {
+            .flat-card:hover,
+            .ignara-card:hover {
                 border-color: var(--border-strong);
-                box-shadow: var(--shadow-pop);
-                transform: translateY(-1px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+                transform: translateY(-2px);
+            }
+            html.dark .flat-card:hover,
+            html.dark .ignara-card:hover {
+                box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             }
             .btn-primary:hover, .btn-flat-primary:hover, .btn-action:hover {
                 background-color: #E34402;
@@ -906,11 +924,11 @@
             background: var(--surface-color) !important;
         }
 
-        /* Apple Spring Motion for Modals & Overlays (Designing Fluid Interfaces WWDC 2018) */
+        /* Ignara & Apple Spring Motion for Modals & Overlays */
         @keyframes modal-spring-in {
             from {
                 opacity: 0;
-                transform: scale(0.95) translateY(12px);
+                transform: scale(0.97) translateY(8px);
             }
             to {
                 opacity: 1;
@@ -919,8 +937,41 @@
         }
 
         .animate-in {
-            animation: modal-spring-in 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: modal-spring-in 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
             will-change: transform, opacity;
+        }
+
+        /* Ignara Tab & View Entrance Animation */
+        @keyframes ignara-tab-enter {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ignara-fade-enter {
+            animation: ignara-tab-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            will-change: transform, opacity;
+        }
+
+        /* Ignara Staggered List Entrance */
+        .stagger-group > *:nth-child(1) { animation-delay: 25ms; }
+        .stagger-group > *:nth-child(2) { animation-delay: 50ms; }
+        .stagger-group > *:nth-child(3) { animation-delay: 75ms; }
+        .stagger-group > *:nth-child(4) { animation-delay: 100ms; }
+        .stagger-group > *:nth-child(5) { animation-delay: 125ms; }
+
+        /* Subtle Breathing Indicator for Realtime Garmin & Telemetry */
+        @keyframes ignara-pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.55; transform: scale(0.95); }
+        }
+        .ignara-pulse {
+            animation: ignara-pulse-subtle 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1854,10 +1905,10 @@
                     </div>
                 </div>
 
-                <!-- EXECUTIVE ATHLETE PERFORMANCE SUMMARY BAR (Quanta Modern KPI Grid) -->
-                <div id="cockpit-executive-kpi-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- EXECUTIVE ATHLETE PERFORMANCE SUMMARY BAR (Quanta Modern KPI Grid + Ignara Smooth Lift) -->
+                <div id="cockpit-executive-kpi-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-group">
                     <!-- KPI 1: Target Marathon (BTN JAKIM 2026) -->
-                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-tertiary/50 transition-all">
+                    <div class="flat-card ignara-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-tertiary/50">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-tertiary flex items-center justify-center shrink-0 font-bold text-xs">
@@ -1878,7 +1929,7 @@
                     </div>
 
                     <!-- KPI 2: Weekly Mileage & Completion -->
-                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-emerald-500/50 transition-all">
+                    <div class="flat-card ignara-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-emerald-500/50">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold text-xs">
@@ -1904,7 +1955,7 @@
                     </div>
 
                     <!-- KPI 3: Training Load & ACWR (Injury Prevention) -->
-                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-sky-500/50 transition-all">
+                    <div class="flat-card ignara-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-sky-500/50">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 font-bold text-xs">
@@ -1925,7 +1976,7 @@
                     </div>
 
                     <!-- KPI 4: Readiness & Form (TSB / HRV) -->
-                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-emerald-500/50 transition-all">
+                    <div class="flat-card ignara-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-emerald-500/50">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold text-xs">
@@ -9491,17 +9542,15 @@
                 const btnEl = document.getElementById(`subtab-btn-${st}`);
 
                 if (viewEl) {
-
                     if (st === subtabName) {
-
                         viewEl.classList.remove('hidden');
-
+                        viewEl.classList.remove('ignara-fade-enter');
+                        void viewEl.offsetWidth;
+                        viewEl.classList.add('ignara-fade-enter');
                     } else {
-
                         viewEl.classList.add('hidden');
-
+                        viewEl.classList.remove('ignara-fade-enter');
                     }
-
                 }
 
                 if (btnEl) {
@@ -9554,7 +9603,10 @@
             tabs.forEach(t => {
                 const content = document.getElementById(`tab-content-${t}`);
                 const btn = document.getElementById(`tab-btn-${t}`);
-                if (content) content.classList.add('hidden');
+                if (content) {
+                    content.classList.add('hidden');
+                    content.classList.remove('ignara-fade-enter');
+                }
                 if (btn) {
                     btn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97';
                     btn.setAttribute('aria-selected', 'false');
@@ -9583,7 +9635,12 @@
 
             const activeContent = document.getElementById(`tab-content-${tabName}`);
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            if (activeContent) activeContent.classList.remove('hidden');
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+                activeContent.classList.remove('ignara-fade-enter');
+                void activeContent.offsetWidth;
+                activeContent.classList.add('ignara-fade-enter');
+            }
             if (activeBtn) {
                 activeBtn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97';
                 activeBtn.setAttribute('aria-selected', 'true');
