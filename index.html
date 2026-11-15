@@ -97,44 +97,44 @@
         })();
     </script>
 
-    <!-- Design System CSS Tokens (Cadra Scandinavian Athletic Modernism) -->
+    <!-- Design System CSS Tokens (Quanta Clean SaaS & Athletic Modernism) -->
     <style>
         :root {
-            --bg-color: #efefec;
-            --surface-color: #fbfbf9;
-            --surface-subtle: #f5f5f1;
-            --raised: #ffffff;
-            --text-primary: #111111;
-            --text-secondary: #5c5c5a;
-            --faint: #73736f;
-            --border-color: rgba(17, 17, 17, 0.08);
-            --border-strong: rgba(17, 17, 17, 0.16);
+            --bg-color: #F4F5F7;
+            --surface-color: #FFFFFF;
+            --surface-subtle: #F9FAFB;
+            --raised: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --faint: #9CA3AF;
+            --border-color: #E5E7EB;
+            --border-strong: #D1D5DB;
             --tertiary: #FC4C02;
             --tertiary-text: #D03B00; /* WCAG AA 4.54:1 contrast on white */
             --tertiary-hover: #E34402;
             --tertiary-active: #C93B00;
-            --tertiary-subtle: rgba(252, 76, 2, 0.08);
+            --tertiary-subtle: #FFF4ED;
             --action-color: #FC4C02;
             --action-hover: #E34402;
-            --flat-green: #237a48;
-            --flat-orange: #c9542b;
-            --flat-amber: #a87406;
-            --sky: #2d6cb0;
-            --r-card: 22px;
-            --r-tile: 16px;
+            --flat-green: #10B981;
+            --flat-orange: #FC4C02;
+            --flat-amber: #F59E0B;
+            --sky: #0EA5E9;
+            --r-card: 20px;
+            --r-tile: 12px;
             --r-ctl: 9999px;
-            --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 16px 36px -20px rgba(0, 0, 0, 0.06);
-            --shadow-pop: 0 20px 48px -16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+            --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+            --shadow-pop: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
         }
 
         html.dark {
-            --bg-color: #0b0b0b;
-            --surface-color: #151515;
-            --surface-subtle: #1c1c1c;
-            --raised: #222222;
-            --text-primary: #f2f2f0;
-            --text-secondary: #a8a8a5;
-            --faint: #8a8a86;
+            --bg-color: #0E121B;
+            --surface-color: #161B26;
+            --surface-subtle: #1F2637;
+            --raised: #252D3F;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --faint: #6B7280;
             --border-color: rgba(255, 255, 255, 0.08);
             --border-strong: rgba(255, 255, 255, 0.16);
             --tertiary: #FC5200;
@@ -144,11 +144,11 @@
             --tertiary-subtle: rgba(252, 76, 2, 0.15);
             --action-color: #FC5200;
             --action-hover: #FF6A1A;
-            --flat-green: #5cc58b;
-            --flat-orange: #f08a5d;
-            --flat-amber: #e2ad45;
-            --sky: #6aa6e8;
-            --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 20px 40px -22px rgba(0, 0, 0, 0.8);
+            --flat-green: #34D399;
+            --flat-orange: #FB923C;
+            --flat-amber: #FBBF24;
+            --sky: #38BDF8;
+            --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 10px 25px -10px rgba(0, 0, 0, 0.6);
             --shadow-pop: 0 24px 60px -18px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
@@ -1854,68 +1854,94 @@
                     </div>
                 </div>
 
-                <!-- EXECUTIVE ATHLETE PERFORMANCE SUMMARY BAR (Sports Engine & Physiology) -->
-                <div id="cockpit-executive-kpi-bar" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <!-- KPI 1: Readiness & Form (TSB / HRV) -->
-                    <div class="flat-card border border-border/80 p-4 bg-surface rounded-2xl space-y-2 shadow-2xs hover:border-tertiary/50 transition-colors">
+                <!-- EXECUTIVE ATHLETE PERFORMANCE SUMMARY BAR (Quanta Modern KPI Grid) -->
+                <div id="cockpit-executive-kpi-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- KPI 1: Target Marathon (BTN JAKIM 2026) -->
+                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-tertiary/50 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-mono uppercase tracking-wider text-text-secondary font-bold">Kesiapan Tubuh (TSB)</span>
-                            <span class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">OPTIMAL &bull; SEGAR</span>
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-tertiary flex items-center justify-center shrink-0 font-bold text-xs">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                                </div>
+                                <span class="text-xs font-semibold text-text-secondary">Target Maraton 2026</span>
+                            </div>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">210 HARI</span>
                         </div>
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-display font-extrabold text-2xl text-emerald-500">+8.4</span>
-                            <span class="text-xs font-mono text-text-secondary">TSB Form</span>
-                        </div>
-                        <div class="text-[11px] font-mono text-text-secondary flex items-center justify-between pt-1.5 border-t border-border/60">
-                            <span>CTL 62.4 &bull; ATL 54.0</span>
-                            <span class="text-text-primary font-bold">RHR 61 bpm</span>
+                        <div>
+                            <h3 class="text-2xl font-display font-extrabold text-text-primary tracking-tight">05:30:00</h3>
+                            <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-secondary mt-1">
+                                <span class="text-tertiary font-bold">Pace 07:49 /km</span>
+                                <span>&bull;</span>
+                                <span>VDOT 54.2</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- KPI 2: Training Load & ACWR (Injury Prevention) -->
-                    <div class="flat-card border border-border/80 p-4 bg-surface rounded-2xl space-y-2 shadow-2xs hover:border-tertiary/50 transition-colors">
+                    <!-- KPI 2: Weekly Mileage & Completion -->
+                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-emerald-500/50 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-mono uppercase tracking-wider text-text-secondary font-bold">Beban Latihan (ACWR)</span>
-                            <span class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 font-bold border border-sky-500/20">SWEET SPOT</span>
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                </div>
+                                <span class="text-xs font-semibold text-text-secondary">Volume Minggu Ini</span>
+                            </div>
+                            <!-- Quanta micro sparkline -->
+                            <div class="flex items-end gap-0.5 h-4 text-emerald-500" title="Progres Volume">
+                                <span class="w-1 bg-emerald-500/30 rounded-full h-1.5"></span>
+                                <span class="w-1 bg-emerald-500/50 rounded-full h-2.5"></span>
+                                <span class="w-1 bg-emerald-500/80 rounded-full h-3.5"></span>
+                                <span class="w-1 bg-emerald-500 rounded-full h-4"></span>
+                            </div>
                         </div>
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-display font-extrabold text-2xl text-sky-500">1.08</span>
-                            <span class="text-xs font-mono text-text-secondary">Rasio Akut:Kronis</span>
-                        </div>
-                        <div class="text-[11px] font-mono text-text-secondary flex items-center justify-between pt-1.5 border-t border-border/60">
-                            <span>TRIMP: <strong class="text-text-primary">1,589</strong></span>
-                            <span class="text-emerald-500 font-bold">Risiko Cedera Rendah</span>
+                        <div>
+                            <h3 class="text-2xl font-display font-extrabold text-text-primary tracking-tight">27.4 <span class="text-xs font-mono font-normal text-text-secondary">/ 42.1 km</span></h3>
+                            <div class="flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold mt-1">
+                                <span>↗ 65% Tercapai</span>
+                                <span class="text-text-secondary font-normal">&bull; Sisa 14.7 km</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- KPI 3: Weekly Mileage & Completion -->
-                    <div class="flat-card border border-border/80 p-4 bg-surface rounded-2xl space-y-2 shadow-2xs hover:border-tertiary/50 transition-colors">
+                    <!-- KPI 3: Training Load & ACWR (Injury Prevention) -->
+                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-sky-500/50 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-mono uppercase tracking-wider text-text-secondary font-bold">Volume Minggu Ini</span>
-                            <span class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-tertiary/10 text-tertiary font-bold border border-tertiary/20">65% TERCAPAI</span>
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                </div>
+                                <span class="text-xs font-semibold text-text-secondary">Beban Latihan (ACWR)</span>
+                            </div>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 font-bold border border-sky-500/20">SWEET SPOT</span>
                         </div>
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-display font-extrabold text-2xl text-text-primary">27.4</span>
-                            <span class="text-xs font-mono text-text-secondary">/ 42.1 km</span>
-                        </div>
-                        <div class="w-full bg-surface-subtle h-1.5 rounded-full overflow-hidden border border-border/50">
-                            <div class="bg-tertiary h-full rounded-full transition-all duration-500" style="width: 65%;"></div>
+                        <div>
+                            <h3 class="text-2xl font-display font-extrabold text-sky-500 tracking-tight">1.08</h3>
+                            <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-secondary mt-1">
+                                <span class="text-emerald-600 dark:text-emerald-400 font-bold">Zona Aman</span>
+                                <span>&bull;</span>
+                                <span>TRIMP 1,589</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- KPI 4: VDOT & Target Race Countdown -->
-                    <div class="flat-card border border-border/80 p-4 bg-surface rounded-2xl space-y-2 shadow-2xs hover:border-tertiary/50 transition-colors">
+                    <!-- KPI 4: Readiness & Form (TSB / HRV) -->
+                    <div class="flat-card border border-border rounded-2xl p-4 sm:p-5 bg-surface space-y-3 shadow-xs hover:border-emerald-500/50 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-mono uppercase tracking-wider text-text-secondary font-bold">Target Maraton 2026</span>
-                            <span class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">210 HARI</span>
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                </div>
+                                <span class="text-xs font-semibold text-text-secondary">Kesiapan Tubuh (TSB)</span>
+                            </div>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">OPTIMAL</span>
                         </div>
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-display font-extrabold text-2xl text-amber-500">54.2</span>
-                            <span class="text-xs font-mono text-text-secondary">VDOT Jack Daniels</span>
-                        </div>
-                        <div class="text-[11px] font-mono text-text-secondary flex items-center justify-between pt-1.5 border-t border-border/60">
-                            <span>Target: <strong class="text-text-primary">05:30:00</strong></span>
-                            <span class="text-tertiary font-bold">07:49 /km</span>
+                        <div>
+                            <h3 class="text-2xl font-display font-extrabold text-emerald-500 tracking-tight">+8.4</h3>
+                            <div class="flex items-center gap-1.5 text-[11px] font-mono text-text-secondary mt-1">
+                                <span class="text-emerald-600 dark:text-emerald-400 font-bold">↗ Segar &amp; Bugar</span>
+                                <span>&bull;</span>
+                                <span>RHR 61 bpm</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -13233,47 +13259,58 @@
             const chartDefaults = {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: isReducedMotion ? false : { duration: 350, easing: 'easeOutQuart' },
+                animation: isReducedMotion ? false : { duration: 400, easing: 'easeOutQuart' },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#1a1a1a',
-                        titleColor: '#e5e7eb',
-                        bodyColor: '#9ca3af',
-                        borderColor: '#374151',
+                        backgroundColor: '#111827',
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#E5E7EB',
+                        borderColor: 'rgba(255, 255, 255, 0.12)',
                         borderWidth: 1,
-                        cornerRadius: 6,
-                        padding: 8
+                        cornerRadius: 10,
+                        padding: 10,
+                        boxPadding: 4,
+                        usePointStyle: true
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#6b7280', font: { size: 9, family: 'monospace' }, maxRotation: 0 },
-                        grid: { color: 'rgba(255,255,255,0.04)' }
+                        ticks: { color: '#9CA3AF', font: { size: 9, family: 'monospace' }, maxRotation: 0 },
+                        grid: { color: 'rgba(107, 114, 128, 0.08)' }
                     },
                     y: {
-                        ticks: { color: '#6b7280', font: { size: 9, family: 'monospace' } },
-                        grid: { color: 'rgba(255,255,255,0.06)' }
+                        ticks: { color: '#9CA3AF', font: { size: 9, family: 'monospace' } },
+                        grid: { color: 'rgba(107, 114, 128, 0.08)' }
                     }
                 }
             };
 
-            // --- VDOT Chart ---
+            // --- VDOT Chart (Quanta Smooth Spline) ---
             const ctxVdot = document.getElementById('chart-vdot-trend');
             if (ctxVdot) {
+                const vdotCanvas = ctxVdot.getContext('2d');
+                const vdotGrad = vdotCanvas ? vdotCanvas.createLinearGradient(0, 0, 0, 130) : null;
+                if (vdotGrad) {
+                    vdotGrad.addColorStop(0, 'rgba(16, 185, 129, 0.28)');
+                    vdotGrad.addColorStop(1, 'rgba(16, 185, 129, 0.00)');
+                }
                 _cockpitChartInstances.vdot = new Chart(ctxVdot, {
                     type: 'line',
                     data: {
                         labels: hasVdot ? labels12 : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
                         datasets: [{
                             data: hasVdot ? vdotData : [42.1, 42.5, 43.0, 42.8, 43.4, 43.9],
-                            borderColor: '#4ade80',
-                            backgroundColor: 'rgba(74,222,128,0.10)',
-                            borderWidth: 2,
-                            pointRadius: 3,
-                            pointBackgroundColor: '#4ade80',
+                            borderColor: '#10B981',
+                            backgroundColor: vdotGrad || 'rgba(16, 185, 129, 0.12)',
+                            borderWidth: 2.5,
+                            pointRadius: 3.5,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#FFFFFF',
+                            pointBorderColor: '#10B981',
+                            pointBorderWidth: 2,
                             fill: true,
-                            tension: 0.35,
+                            tension: 0.42,
                             spanGaps: true
                         }]
                     },
@@ -13281,9 +13318,15 @@
                 });
             }
 
-            // --- ACWR Chart ---
+            // --- ACWR Chart (Quanta Warm Gradient Spline) ---
             const ctxAcwr = document.getElementById('chart-acwr-trend');
             if (ctxAcwr) {
+                const acwrCanvas = ctxAcwr.getContext('2d');
+                const acwrGrad = acwrCanvas ? acwrCanvas.createLinearGradient(0, 0, 0, 130) : null;
+                if (acwrGrad) {
+                    acwrGrad.addColorStop(0, 'rgba(252, 76, 2, 0.28)');
+                    acwrGrad.addColorStop(1, 'rgba(252, 76, 2, 0.00)');
+                }
                 _cockpitChartInstances.acwr = new Chart(ctxAcwr, {
                     type: 'line',
                     data: {
@@ -13291,13 +13334,16 @@
                         datasets: [
                             {
                                 data: hasAcwr ? acwrData : [0.9, 1.05, 1.12, 1.08, 1.0, 0.95],
-                                borderColor: '#f97316',
-                                backgroundColor: 'rgba(249,115,22,0.10)',
-                                borderWidth: 2,
-                                pointRadius: 3,
-                                pointBackgroundColor: '#f97316',
+                                borderColor: '#FC4C02',
+                                backgroundColor: acwrGrad || 'rgba(252, 76, 2, 0.12)',
+                                borderWidth: 2.5,
+                                pointRadius: 3.5,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#FFFFFF',
+                                pointBorderColor: '#FC4C02',
+                                pointBorderWidth: 2,
                                 fill: true,
-                                tension: 0.35,
+                                tension: 0.42,
                                 spanGaps: true
                             }
                         ]
@@ -13310,7 +13356,7 @@
                                 ...chartDefaults.scales.y,
                                 suggestedMin: 0.5,
                                 suggestedMax: 1.6,
-                                ticks: { color: '#6b7280', font: { size: 9, family: 'monospace' }, callback: v => v.toFixed(2) }
+                                ticks: { color: '#9CA3AF', font: { size: 9, family: 'monospace' }, callback: v => v.toFixed(2) }
                             }
                         },
                         plugins: {
@@ -13321,19 +13367,25 @@
                 });
             }
 
-            // --- Pace Chart ---
+            // --- Pace Chart (Quanta Sleek Bar) ---
             const ctxPace = document.getElementById('chart-pace-trend');
             if (ctxPace) {
+                const paceCanvas = ctxPace.getContext('2d');
+                const paceGrad = paceCanvas ? paceCanvas.createLinearGradient(0, 0, 0, 130) : null;
+                if (paceGrad) {
+                    paceGrad.addColorStop(0, 'rgba(14, 165, 233, 0.50)');
+                    paceGrad.addColorStop(1, 'rgba(14, 165, 233, 0.15)');
+                }
                 _cockpitChartInstances.pace = new Chart(ctxPace, {
                     type: 'bar',
                     data: {
                         labels: hasPace ? paceLabels : ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'],
                         datasets: [{
                             data: hasPace ? paceData : [5.2, 5.5, 4.8, 5.1, 5.3, 4.9],
-                            backgroundColor: 'rgba(96,165,250,0.5)',
-                            borderColor: '#60a5fa',
+                            backgroundColor: paceGrad || 'rgba(14, 165, 233, 0.35)',
+                            borderColor: '#0EA5E9',
                             borderWidth: 1.5,
-                            borderRadius: 3
+                            borderRadius: 6
                         }]
                     },
                     options: {
@@ -13343,7 +13395,7 @@
                             y: {
                                 ...chartDefaults.scales.y,
                                 reverse: true,
-                                ticks: { color: '#6b7280', font: { size: 9, family: 'monospace' }, callback: v => `${v.toFixed(1)}'` }
+                                ticks: { color: '#9CA3AF', font: { size: 9, family: 'monospace' }, callback: v => `${v.toFixed(1)}'` }
                             }
                         }
                     }
