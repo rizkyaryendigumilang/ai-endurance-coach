@@ -2094,6 +2094,76 @@
                     <!-- CENTER COLUMN: AI Daily Prescription & Telemetry Activity Feed (6 cols) -->
                     <div class="lg:col-span-6 space-y-5">
 
+                        <!-- WIDGET: TODAY'S WORKOUT PRESCRIPTION & TARGET -->
+                        <div id="cockpit-today-workout-widget" class="flat-card border-2 border-tertiary/70 p-5 bg-surface space-y-4 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-tertiary via-flat-orange to-emerald-500"></div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-full bg-tertiary text-white flex items-center justify-center font-bold text-xs shadow-xs" aria-hidden="true">
+                                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
+                                        </span>
+                                        <h3 class="font-display font-extrabold text-sm text-text-primary tracking-tight">TARGET LARI HARI INI</h3>
+                                    </div>
+                                    <p class="text-[11px] text-text-secondary mt-0.5 font-mono" id="today-workout-date">
+                                        Memuat jadwal hari ini...
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span id="today-workout-badge" class="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-tertiary/10 text-tertiary border border-tertiary/30">
+                                        ZONA 2 AEROBIK
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Big Title & Tactical Guidance -->
+                            <div class="space-y-1">
+                                <h4 class="font-display font-bold text-base text-text-primary" id="today-workout-title">Sunday Long Run Aerobik</h4>
+                                <p class="text-xs text-text-secondary font-mono" id="today-workout-guidance">
+                                    Fokus pada adaptasi tendon dan efisiensi pembakaran lemak. Pertahankan irama santai tanpa lonjakan detak jantung.
+                                </p>
+                            </div>
+
+                            <!-- 4 Key Execution Metrics -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-xl space-y-0.5">
+                                    <span class="text-[10px] text-text-secondary uppercase block font-semibold">Target Jarak</span>
+                                    <strong class="text-base font-extrabold text-tertiary" id="today-workout-dist">8.0 km</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-xl space-y-0.5">
+                                    <span class="text-[10px] text-text-secondary uppercase block font-semibold">Target Pace</span>
+                                    <strong class="text-base font-extrabold text-text-primary" id="today-workout-pace">07:45 - 08:15 /km</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-xl space-y-0.5">
+                                    <span class="text-[10px] text-text-secondary uppercase block font-semibold">Batas Detak Jantung</span>
+                                    <strong class="text-base font-extrabold text-emerald-500" id="today-workout-hr">&lt;142 bpm (Z2)</strong>
+                                </div>
+                                <div class="p-2.5 bg-surface-subtle border border-border rounded-xl space-y-0.5">
+                                    <span class="text-[10px] text-text-secondary uppercase block font-semibold">Estimasi Waktu</span>
+                                    <strong class="text-base font-extrabold text-text-primary" id="today-workout-dur">~64 mnt</strong>
+                                </div>
+                            </div>
+
+                            <!-- Quick Action Buttons -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border">
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="pushTodayWorkoutToGarmin()" class="btn-flat-secondary text-xs font-mono font-bold py-1.5 px-3 flex items-center gap-1.5 text-sky-500 border-sky-500/40 hover:bg-sky-500/10" title="Kirim sesi lari hari ini langsung ke jam tangan Garmin">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 5l5.5 11h-11L12 7z"/></svg>
+                                        <span>Kirim ke Jam Garmin</span>
+                                    </button>
+                                    <button type="button" onclick="switchScheduleSubtab('splits'); switchWorkstationTab('schedule');" class="btn-flat-secondary text-xs font-mono py-1.5 px-3 flex items-center gap-1.5 hover:border-emerald-500">
+                                        <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                        <span>Buka Calculator Pace</span>
+                                    </button>
+                                </div>
+                                <button type="button" onclick="openLogWorkoutModal()" class="btn-flat-primary text-xs font-mono font-bold py-1.5 px-3 flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>Catat Lari Selesai</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- 0. TARGET MARATHON & DETERMINISTIC PACING MODEL (From Gemini Sports Science Plan) -->
                         <div class="flat-card border-2 border-emerald-500/50 p-5 bg-surface space-y-4 shadow-sm relative overflow-hidden">
                             <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-tertiary"></div>
@@ -9206,6 +9276,7 @@
             
             // Parallel Initial Data Hydration (High-Performance Non-blocking Promise.allSettled)
             updateProUIState();
+            if (typeof updateTodayWorkoutWidget === 'function') updateTodayWorkoutWidget();
             setTimeout(() => {
                 if (typeof initCockpitRouteMap === 'function') initCockpitRouteMap();
                 if (typeof refreshCockpitWeather === 'function') refreshCockpitWeather(false);
@@ -10722,6 +10793,110 @@
 
         function pushCurrentWeekToGarmin() {
             pushWorkoutToGarmin('Jakim W28 Peak Long Run 32K', 32.0, '05:15 min/km');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // TODAY'S WORKOUT PRESCRIPTION WIDGET CONTROLLER
+        // ══════════════════════════════════════════════════════════════════
+        let currentTodayWorkoutData = null;
+
+        function updateTodayWorkoutWidget() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0: Sun, 1: Mon, ...
+            const dayNamesId = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const monthNamesId = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+            const dateFormatted = `${dayNamesId[dayOfWeek]}, ${today.getDate()} ${monthNamesId[today.getMonth()]} ${today.getFullYear()}`;
+            const dateEl = document.getElementById('today-workout-date');
+            if (dateEl) dateEl.textContent = dateFormatted;
+
+            let todayData = null;
+            const isoDateStr = today.toISOString().split('T')[0];
+            if (window.currentWeeklyCalendarData && Array.isArray(window.currentWeeklyCalendarData.days)) {
+                todayData = window.currentWeeklyCalendarData.days.find(d => d.date_str === isoDateStr);
+            }
+
+            if (!todayData) {
+                if (dayOfWeek === 0) { // Sunday Long Run
+                    todayData = {
+                        title: 'Sunday Long Run Aerobik',
+                        workout_type: 'long_run',
+                        target_distance_km: 8.0,
+                        target_duration_minutes: 64,
+                        target_pace_range: '07:45 - 08:15 /km',
+                        target_hr_zone: 'Zona 2 (<142 bpm)',
+                        guidance: 'Fokus pada adaptasi tendon dan efisiensi pembakaran lemak. Pertahankan irama santai tanpa lonjakan detak jantung.'
+                    };
+                } else if (dayOfWeek === 3) { // Wednesday Easy
+                    todayData = {
+                        title: 'Midweek Easy Aerobic Run',
+                        workout_type: 'easy',
+                        target_distance_km: 4.0,
+                        target_duration_minutes: 32,
+                        target_pace_range: '07:45 - 08:15 /km',
+                        target_hr_zone: 'Zona 2 (<142 bpm)',
+                        guidance: 'Lari santai untuk menjaga kontinuitas kapiler otot dan sirkulasi pemulihan.'
+                    };
+                } else if (dayOfWeek === 5) { // Friday Foundation & Strides
+                    todayData = {
+                        title: 'Foundation Easy & Strides',
+                        workout_type: 'easy',
+                        target_distance_km: 4.0,
+                        target_duration_minutes: 32,
+                        target_pace_range: '07:45 - 08:15 /km',
+                        target_hr_zone: 'Zona 2 (<142 bpm)',
+                        guidance: 'Tutup sesi dengan 4x100m strides santai untuk aktivasi neuromuskular kaki.'
+                    };
+                } else { // Rest Day
+                    todayData = {
+                        title: 'Hari Pemulihan & Mobilitas Otot',
+                        workout_type: 'rest',
+                        target_distance_km: 0.0,
+                        target_duration_minutes: 20,
+                        target_pace_range: 'Rest / Foam Roll',
+                        target_hr_zone: 'Zona 1 (<115 bpm)',
+                        guidance: 'Otot dan ligamen beradaptasi saat istirahat. Lakukan peregangan dinamis dan hidrasi optimal.'
+                    };
+                }
+            }
+
+            const titleEl = document.getElementById('today-workout-title');
+            const badgeEl = document.getElementById('today-workout-badge');
+            const distEl = document.getElementById('today-workout-dist');
+            const paceEl = document.getElementById('today-workout-pace');
+            const hrEl = document.getElementById('today-workout-hr');
+            const durEl = document.getElementById('today-workout-dur');
+            const guideEl = document.getElementById('today-workout-guidance');
+
+            if (titleEl) titleEl.textContent = todayData.title || 'Sesi Lari Hari Ini';
+            if (badgeEl) {
+                if (todayData.workout_type === 'rest') {
+                    badgeEl.className = 'text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-500/10 text-slate-500 border border-slate-500/20';
+                    badgeEl.textContent = 'REST DAY';
+                } else if (todayData.workout_type === 'long_run') {
+                    badgeEl.className = 'text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-tertiary/10 text-tertiary border border-tertiary/30';
+                    badgeEl.textContent = 'LONG RUN';
+                } else {
+                    badgeEl.className = 'text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
+                    badgeEl.textContent = 'ZONA 2 AEROBIK';
+                }
+            }
+            if (distEl) distEl.textContent = todayData.target_distance_km > 0 ? `${todayData.target_distance_km} km` : 'Rest Day';
+            if (paceEl) paceEl.textContent = todayData.target_pace_range || '07:45 - 08:15 /km';
+            if (hrEl) hrEl.textContent = todayData.target_hr_zone || 'Zona 2 (<142 bpm)';
+            if (durEl) durEl.textContent = `~${todayData.target_duration_minutes || 45} mnt`;
+            if (guideEl) guideEl.textContent = todayData.guidance || 'Pertahankan postur tegak dan kadensi stabil.';
+
+            currentTodayWorkoutData = todayData;
+            window.currentTodayWorkoutData = todayData;
+        }
+
+        function pushTodayWorkoutToGarmin() {
+            const d = currentTodayWorkoutData || {};
+            const title = d.title || 'Goalie Daily Session';
+            const dist = d.target_distance_km || 5.0;
+            const pace = d.target_pace_range || '07:45 min/km';
+            pushWorkoutToGarmin(title, dist, pace, 'running');
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -14425,6 +14600,7 @@
                 if (!res.ok) throw new Error('Failed to fetch weekly calendar');
                 const data = await res.json();
                 currentWeeklyCalendarData = data;
+                if (offset === 0 && typeof updateTodayWorkoutWidget === 'function') updateTodayWorkoutWidget();
 
                 if (rangeEl && data.start_date && data.end_date) {
                     const startD = new Date(data.start_date);
@@ -14642,6 +14818,7 @@
                 if (!res.ok) throw new Error('Gagal meregenerasi jadwal mingguan');
                 const data = await res.json();
                 currentWeeklyCalendarData = data;
+                if (offset === 0 && typeof updateTodayWorkoutWidget === 'function') updateTodayWorkoutWidget();
                 toast.success('Kalender AI Terkalibrasi', 'Rekomendasi 7 hari berhasil disesuaikan secara ilmiah.');
                 loadWeeklyCalendar(currentCalendarWeekOffset, false);
             } catch (err) {
