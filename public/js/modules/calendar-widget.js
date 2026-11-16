@@ -122,19 +122,19 @@
         const directive = data.ai_directive || 'Fokus pada adaptasi aerobik dasar dan pemeliharaan ritme kardiovaskular.';
 
         const zonePills = {
-            'Z1': 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/30',
-            'Z2': 'bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/30',
-            'Z3': 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
-            'Z4': 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30',
-            'Z5': 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'
+            'Z1': 'ignara-pill ignara-pill-neutral text-[9px] px-2 py-0.5',
+            'Z2': 'ignara-pill ignara-pill-info text-[9px] px-2 py-0.5',
+            'Z3': 'ignara-pill ignara-pill-success text-[9px] px-2 py-0.5',
+            'Z4': 'ignara-pill ignara-pill-warning text-[9px] px-2 py-0.5',
+            'Z5': 'ignara-pill ignara-pill-danger text-[9px] px-2 py-0.5'
         };
 
         const selectedDay = (_selectedDayIndex !== null && days[_selectedDayIndex]) ? days[_selectedDayIndex] : days[0];
 
         let html = `
-        <div class="flat-card border border-border/80 p-4 sm:p-5 bg-surface rounded-2xl space-y-4 shadow-xs transition-all duration-200">
+        <div class="flat-card ignara-card border border-border/80 dark:border-white/[0.08] p-4 sm:p-5 bg-surface rounded-2xl space-y-4 shadow-xs transition-all duration-200">
             <!-- Header Bar -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 pb-3.5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 dark:border-white/[0.06] pb-3.5">
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
                         <span class="w-7 h-7 rounded-lg bg-tertiary/10 border border-tertiary/30 text-tertiary flex items-center justify-center font-bold text-xs shrink-0">
@@ -143,7 +143,7 @@
                         <h3 class="font-display font-bold text-sm sm:text-base text-text-primary">
                             Kalender Latihan Mingguan AI
                         </h3>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+                        <span class="ignara-pill ignara-pill-success text-[10px]">
                             SPORTS ENGINE TERISI
                         </span>
                     </div>
@@ -160,20 +160,20 @@
 
                 <!-- Navigation Controls -->
                 <div class="flex items-center gap-1.5 self-start sm:self-center font-mono text-xs">
-                    <button type="button" onclick="GoalieCalendarWidget.changeWeek(-1)" class="w-8 h-8 rounded-lg bg-surface-subtle hover:bg-surface border border-border text-text-primary flex items-center justify-center transition-colors" title="Minggu Sebelumnya">
+                    <button type="button" onclick="GoalieCalendarWidget.changeWeek(-1)" class="ignara-press w-8 h-8 rounded-lg bg-surface-subtle hover:bg-surface border border-border text-text-primary flex items-center justify-center transition-colors" title="Minggu Sebelumnya">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
                     </button>
-                    <button type="button" onclick="GoalieCalendarWidget.resetWeek()" class="px-2.5 h-8 rounded-lg ${(_currentWeekOffset === 0) ? 'bg-tertiary text-white font-bold' : 'bg-surface-subtle hover:bg-surface text-text-secondary'} border border-border text-[11px] font-bold transition-colors">
+                    <button type="button" onclick="GoalieCalendarWidget.resetWeek()" class="ignara-press px-2.5 h-8 rounded-lg ${(_currentWeekOffset === 0) ? 'bg-tertiary text-white font-bold' : 'bg-surface-subtle hover:bg-surface text-text-secondary'} border border-border text-[11px] font-bold transition-colors">
                         Minggu Ini
                     </button>
-                    <button type="button" onclick="GoalieCalendarWidget.changeWeek(1)" class="w-8 h-8 rounded-lg bg-surface-subtle hover:bg-surface border border-border text-text-primary flex items-center justify-center transition-colors" title="Minggu Berikutnya">
+                    <button type="button" onclick="GoalieCalendarWidget.changeWeek(1)" class="ignara-press w-8 h-8 rounded-lg bg-surface-subtle hover:bg-surface border border-border text-text-primary flex items-center justify-center transition-colors" title="Minggu Berikutnya">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
                     </button>
-                    <button type="button" onclick="GoalieCalendarWidget.regenerate()" class="h-8 px-2.5 rounded-lg bg-surface-subtle hover:bg-surface border border-border text-text-primary hover:text-tertiary text-[11px] flex items-center gap-1 transition-colors ml-1" title="Kalibrasi ulang dengan AI Coach">
+                    <button type="button" onclick="GoalieCalendarWidget.regenerate()" class="ignara-press h-8 px-2.5 rounded-lg bg-surface-subtle hover:bg-surface border border-border text-text-primary hover:text-tertiary text-[11px] flex items-center gap-1 transition-colors ml-1" title="Kalibrasi ulang dengan AI Coach">
                         <svg class="w-3 h-3 text-tertiary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         <span class="hidden md:inline">Regenerasi AI</span>
                     </button>
-                    <button type="button" onclick="GoalieCalendarWidget.downloadICS()" class="h-8 px-2.5 rounded-lg bg-tertiary/10 hover:bg-tertiary/20 text-tertiary border border-tertiary/30 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Ekspor Kalender .ICS (Apple &amp; Google Calendar)">
+                    <button type="button" onclick="GoalieCalendarWidget.downloadICS()" class="ignara-press h-8 px-2.5 rounded-lg bg-tertiary/10 hover:bg-tertiary/20 text-tertiary border border-tertiary/30 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Ekspor Kalender .ICS (Apple &amp; Google Calendar)">
                         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         <span class="hidden sm:inline">.ICS</span>
                     </button>
@@ -181,8 +181,8 @@
             </div>
 
             <!-- AI Coach Directive Micro-Alert -->
-            <div class="p-2.5 sm:p-3 rounded-xl bg-surface-subtle border border-border/80 flex items-start gap-2.5 text-xs text-text-secondary leading-relaxed">
-                <span class="w-5 h-5 rounded-md bg-tertiary/15 text-tertiary flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
+            <div class="p-2.5 sm:p-3 rounded-xl bg-surface-subtle border border-border/80 dark:border-white/[0.06] flex items-start gap-2.5 text-xs text-text-secondary leading-relaxed">
+                <span class="w-5 h-5 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
                     💡
                 </span>
                 <div>
@@ -223,7 +223,7 @@
 
             // Zone tag style
             const zKey = (day.intensity_zone || 'Z2').split(' ')[0].split('-')[0];
-            const zoneCls = zonePills[zKey] || 'bg-surface-subtle text-text-secondary border-border';
+            const zoneCls = zonePills[zKey] || 'ignara-pill ignara-pill-neutral text-[9px] px-2 py-0.5';
 
             let cardStateClasses = 'border-border/70 hover:border-text-primary/60 bg-surface';
             if (isSelected) {
@@ -233,7 +233,7 @@
             }
 
             html += `
-                <div onclick="GoalieCalendarWidget.selectDay(${idx})" class="p-3 rounded-xl border ${cardStateClasses} cursor-pointer transition-all duration-150 flex flex-col justify-between min-h-[145px] group select-none">
+                <div onclick="GoalieCalendarWidget.selectDay(${idx})" class="p-3.5 rounded-xl border ${cardStateClasses} ignara-card cursor-pointer transition-all duration-200 ease-ignara flex flex-col justify-between min-h-[148px] group select-none active:scale-[0.985]">
                     <!-- Day Name & Today Indicator -->
                     <div>
                         <div class="flex items-center justify-between border-b border-border/50 pb-1.5 mb-2">
@@ -256,13 +256,13 @@
 
                     <!-- Bottom Status Tag & Zone -->
                     <div class="pt-2 border-t border-border/50 flex items-center justify-between mt-auto text-[10px] font-mono">
-                        <span class="px-1.5 py-0.2 rounded border font-semibold ${zoneCls}">
+                        <span class="${zoneCls}">
                             ${escapeHTML((day.intensity_zone || 'Z2').split(' ')[0])}
                         </span>
                         ${isDone 
                             ? '<span class="text-emerald-500 font-bold flex items-center gap-0.5">✓ Beres</span>'
                             : (isToday 
-                                ? '<span class="px-1.5 py-0.2 rounded-full bg-tertiary text-white font-bold text-[9px] animate-pulse">HARI INI</span>' 
+                                ? '<span class="ignara-pill ignara-pill-primary text-[9px] px-1.5 py-0.2 animate-pulse">HARI INI</span>' 
                                 : '<span class="text-text-secondary">Plan</span>'
                             )
                         }
@@ -348,11 +348,11 @@
                 <!-- Action Bar -->
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="GoalieCalendarWidget.toggleCompletion(${idx})" class="px-3.5 py-1.5 rounded-lg ${isDone ? 'bg-surface hover:bg-surface-subtle text-text-secondary border border-border' : 'bg-emerald-600 text-white font-bold shadow-xs hover:bg-emerald-700'} text-xs font-mono transition-colors flex items-center gap-1.5">
+                        <button type="button" onclick="GoalieCalendarWidget.toggleCompletion(${idx})" class="ignara-press px-3.5 py-1.5 rounded-lg ${isDone ? 'bg-surface hover:bg-surface-subtle text-text-secondary border border-border' : 'bg-emerald-600 text-white font-bold shadow-xs hover:bg-emerald-700'} text-xs font-mono transition-colors flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                             <span>${isDone ? 'Kembalikan ke Terencana' : 'Tandai Selesai'}</span>
                         </button>
-                        <button type="button" onclick="GoalieCalendarWidget.askCoachAboutDay(${idx})" class="px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-subtle border border-border text-text-primary text-xs font-mono flex items-center gap-1.5 transition-colors">
+                        <button type="button" onclick="GoalieCalendarWidget.askCoachAboutDay(${idx})" class="ignara-press px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-subtle border border-border text-text-primary text-xs font-mono flex items-center gap-1.5 transition-colors">
                             <svg class="w-3.5 h-3.5 text-tertiary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             <span>Tanya Coach AI</span>
                         </button>
