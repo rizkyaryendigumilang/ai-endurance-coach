@@ -1067,26 +1067,26 @@
             <!-- Action Controls -->
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <!-- Global Quick Action (⌘K) -->
-                <button onclick="focusGlobalSearch()" class="hidden sm:inline-flex items-center gap-1.5 h-8 px-2 text-xs text-text-secondary bg-surface-subtle border border-border rounded-lg hover:border-text-primary transition-colors whitespace-nowrap shrink-0 touch-target-expand" aria-label="Search athletes and workouts (Cmd+K)">
+                <button type="button" onclick="focusGlobalSearch()" class="hidden sm:inline-flex items-center gap-1.5 h-8 px-2 text-xs text-text-secondary bg-surface-subtle border border-border rounded-lg hover:border-text-primary transition-colors whitespace-nowrap shrink-0 touch-target-expand" aria-label="Search athletes and workouts (Cmd+K)">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <span class="hidden 2xl:inline whitespace-nowrap text-xs" data-i18n="nav_search_label">Cari...</span>
                     <kbd class="text-[10px] font-mono bg-surface px-1.5 py-0.5 border border-border rounded-md shrink-0">⌘K</kbd>
                 </button>
 
                 <!-- Quick Record / Upload Workout Button (Strava Orange) -->
-                <button onclick="openLogWorkoutModal()" class="btn-primary h-8 px-2.5 sm:px-3 text-xs font-semibold rounded-lg inline-flex items-center gap-1.5 shadow-xs whitespace-nowrap shrink-0 active:scale-97 transition-transform touch-target-expand" title="Record or Log Activity" aria-label="Record or Log Activity">
+                <button type="button" onclick="openLogWorkoutModal()" class="btn-primary h-8 px-2.5 sm:px-3 text-xs font-semibold rounded-lg inline-flex items-center gap-1.5 shadow-xs whitespace-nowrap shrink-0 active:scale-97 transition-transform touch-target-expand" title="Record or Log Activity" aria-label="Record or Log Activity">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                     <span class="whitespace-nowrap font-bold" data-i18n="nav_record">Catat Latihan</span>
                 </button>
 
                 <!-- Language Switcher Button (ID / EN) -->
-                <button onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary hidden md:flex items-center gap-1 transition-colors whitespace-nowrap shrink-0 touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
+                <button type="button" onclick="toggleAppLanguage()" id="nav-lang-btn" class="h-8 px-2 sm:px-2.5 text-xs font-mono font-bold rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary hidden md:flex items-center gap-1 transition-colors whitespace-nowrap shrink-0 touch-target-expand" title="Ubah Bahasa / Switch Language" aria-label="Ubah Bahasa / Switch Language">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     <span id="nav-lang-label" class="whitespace-nowrap text-xs">ID</span>
                 </button>
 
                 <!-- Theme Toggle Button -->
-                <button onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary hidden sm:flex items-center justify-center transition-colors shrink-0 touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
+                <button type="button" onclick="toggleTheme()" id="theme-toggle-btn" class="h-8 w-8 rounded-lg border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-text-primary hidden sm:flex items-center justify-center transition-colors shrink-0 touch-target-expand" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
                     <svg id="theme-sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg id="theme-moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
@@ -1103,7 +1103,7 @@
 
                 <!-- Authenticated State -->
                 <div id="nav-auth-actions" class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <button onclick="openProPaymentModal()" id="nav-pro-btn" class="hidden" title="Summit Pro Status">
+                    <button type="button" onclick="openProPaymentModal()" id="nav-pro-btn" class="hidden" title="Summit Pro Status">
                         <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                         <span class="whitespace-nowrap font-bold">SUMMIT PRO</span>
                     </button>
@@ -1171,7 +1171,7 @@
 
                             <!-- Menu Items: Enterprise Suite (6 - 12) -->
                             <!-- 7. User Management: Tim & Squad -->
-                            <button onclick="GoalieEnterprise.openUserManagementModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <button type="button" onclick="GoalieEnterprise.openUserManagementModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                     <span>Manajemen Tim &amp; Roster</span>
@@ -1180,7 +1180,7 @@
                             </button>
 
                             <!-- 8. Settings: Profil, Preferensi & Tampilan -->
-                            <button onclick="switchWorkstationTab('settings'); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <button type="button" onclick="switchWorkstationTab('settings'); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     <span>Pengaturan &amp; Preferensi</span>
@@ -1189,7 +1189,7 @@
                             </button>
 
                             <!-- 9. Analytics & Reports: Laporan Performa & Export -->
-                            <button onclick="GoalieEnterprise.openAnalyticsReportsModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <button type="button" onclick="GoalieEnterprise.openAnalyticsReportsModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                                     <span>Analitik &amp; Laporan Atlet</span>
@@ -1198,7 +1198,7 @@
                             </button>
 
                             <!-- 10. Billing: Langganan & Tagihan -->
-                            <button onclick="GoalieEnterprise.openBillingHubModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <button type="button" onclick="GoalieEnterprise.openBillingHubModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-primary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                     <span>Langganan &amp; Tagihan</span>
@@ -1207,7 +1207,7 @@
                             </button>
 
                             <!-- 11. Help & Support: Pusat Bantuan & FAQ -->
-                            <button onclick="GoalieEnterprise.openSupportCenterModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-amber-500 hover:bg-amber-500/10 rounded-lg flex items-center justify-between transition-colors font-bold">
+                            <button type="button" onclick="GoalieEnterprise.openSupportCenterModal(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-amber-500 hover:bg-amber-500/10 rounded-lg flex items-center justify-between transition-colors font-bold">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                                     <span>Pusat Bantuan &amp; Dukungan</span>
@@ -1216,7 +1216,7 @@
                             </button>
 
                             <!-- 12. System Pages: Preview Status Sistem -->
-                            <button onclick="GoalieEnterprise.showSystemPage('404'); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-secondary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
+                            <button type="button" onclick="GoalieEnterprise.showSystemPage('404'); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-text-secondary hover:bg-surface-subtle rounded-lg flex items-center justify-between transition-colors">
                                 <span class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                     <span>Status Sistem &amp; Error Pages</span>
@@ -1248,7 +1248,7 @@
                                     </span>
                                     <span class="text-[9px] font-mono text-text-secondary">Tema</span>
                                 </button>
-                                <button onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-rose-500 hover:bg-rose-500/10 rounded-lg flex items-center gap-2 font-semibold transition-colors">
+                                <button type="button" onclick="logout(); toggleUserDropdown();" class="w-full text-left px-2.5 py-1.5 text-xs text-rose-500 hover:bg-rose-500/10 rounded-lg flex items-center gap-2 font-semibold transition-colors">
                                     <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                     <span>Keluar Akun (Log Out)</span>
                                 </button>
@@ -1269,7 +1269,7 @@
                 <strong id="system-bc-title" data-i18n="system_bc_title" class="font-bold text-text-primary">Pemberitahuan Sistem</strong>
                 <span id="system-bc-msg" class="text-text-secondary hidden sm:inline">-</span>
             </div>
-            <button onclick="dismissSystemBroadcast()" class="text-text-secondary hover:text-text-primary p-1 text-xs font-bold" title="Tutup Notifikasi">✕</button>
+            <button type="button" onclick="dismissSystemBroadcast()" class="text-text-secondary hover:text-text-primary p-1 text-xs font-bold" title="Tutup Notifikasi">✕</button>
         </div>
     </div>
 
@@ -1293,7 +1293,7 @@
                                 Live Sync
                             </span>
                         </div>
-                        <button onclick="switchWorkstationTab('telemetry')" class="text-xs text-tertiary hover:underline flex items-center gap-1 font-medium">
+                        <button type="button" onclick="switchWorkstationTab('telemetry')" class="text-xs text-tertiary hover:underline flex items-center gap-1 font-medium">
                             <span>Open Detailed Workstation</span>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </button>
@@ -1521,7 +1521,7 @@
 
                         <!-- Action Button -->
                         <div class="pt-2">
-                            <button onclick="openLogWorkoutModal()" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+                            <button type="button" onclick="openLogWorkoutModal()" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span data-i18n="workout_start_log_btn">Mulai Sesi / Catat Latihan</span>
                             </button>
@@ -1805,19 +1805,19 @@
                 <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-border text-xs">
                     <span class="text-text-secondary font-mono text-[11px]">Explore interactive simulation tools:</span>
                     <div class="flex flex-wrap items-center gap-2">
-                        <button onclick="switchWorkstationTab('telemetry')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
+                        <button type="button" onclick="switchWorkstationTab('telemetry')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-flat-green"></span>
                             <span>ACWR Simulator</span>
                         </button>
-                        <button onclick="switchWorkstationTab('telemetry')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
+                        <button type="button" onclick="switchWorkstationTab('telemetry')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
                             <span>Karvonen Zones</span>
                         </button>
-                        <button onclick="switchWorkstationTab('biomechanics')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
+                        <button type="button" onclick="switchWorkstationTab('biomechanics')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-text-primary font-mono text-[11px] transition-colors flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-flat-orange"></span>
                             <span data-i18n="tab_biomechanics">Run Analyzer</span>
                         </button>
-                        <button onclick="switchWorkstationTab('chat')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-tertiary font-mono font-bold text-[11px] transition-colors flex items-center gap-1.5">
+                        <button type="button" onclick="switchWorkstationTab('chat')" class="px-3 py-1.5 rounded-full border border-border bg-surface hover:border-text-primary text-tertiary font-mono font-bold text-[11px] transition-colors flex items-center gap-1.5">
                             <span>Gemini AI Coach &rarr;</span>
                         </button>
                     </div>
@@ -1839,33 +1839,33 @@
 
                 <!-- Tabs (Apple Floating Glass Capsule Track) -->
                 <div class="p-1.5 apple-glass-track rounded-full inline-flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full shadow-xs" role="tablist" aria-label="Workstation View Navigation">
-                    <button onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('cockpit')" id="tab-btn-cockpit" role="tab" aria-selected="true" aria-controls="tab-content-cockpit" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97">
                         <svg class="w-3.5 h-3.5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         <span class="tab-label" data-i18n="tab_cockpit">Kokpit Performa</span>
                     </button>
-                    <button onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('chat')" id="tab-btn-chat" role="tab" aria-selected="false" aria-controls="tab-content-chat" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                         <span class="tab-label" data-i18n="tab_chat">Chat Pelatih AI</span>
                         <span class="tab-badge px-1.5 py-0.2 text-[9px] font-mono font-bold bg-tertiary text-white rounded-full">PRO</span>
                     </button>
-                    <button onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('telemetry')" id="tab-btn-telemetry" role="tab" aria-selected="false" aria-controls="tab-content-telemetry" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         <span class="tab-label" data-i18n="tab_telemetry">Telemetri</span>
                         <span class="tab-badge w-1.5 h-1.5 bg-flat-green rounded-full shrink-0"></span>
                     </button>
-                    <button onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('biomechanics')" id="tab-btn-biomechanics" role="tab" aria-selected="false" aria-controls="tab-content-biomechanics" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span class="tab-label" data-i18n="tab_biomechanics">Run Analyzer</span>
                     </button>
-                    <button onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('schedule')" id="tab-btn-schedule" role="tab" aria-selected="false" aria-controls="tab-content-schedule" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         <span class="tab-label" data-i18n="tab_schedule">Jadwal & iCal</span>
                     </button>
-                    <button onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('integrations')" id="tab-btn-integrations" role="tab" aria-selected="false" aria-controls="tab-content-integrations" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         <span class="tab-label" data-i18n="tab_integrations">Integrasi</span>
                     </button>
-                    <button onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
+                    <button type="button" onclick="switchWorkstationTab('settings')" id="tab-btn-settings" role="tab" aria-selected="false" aria-controls="tab-content-settings" class="tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97">
                         <svg class="w-3.5 h-3.5 text-text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         <span class="tab-label" data-i18n="tab_settings">Pengaturan</span>
                     </button>
@@ -2204,13 +2204,13 @@
 
                             <!-- Quick Suggestion Prompt Chips -->
                             <div class="space-y-1.5">
-                                <button onclick="quickAskAi('Apakah saya sebaiknya lari tempo atau easy run besok?')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
+                                <button type="button" onclick="quickAskAi('Apakah saya sebaiknya lari tempo atau easy run besok?')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
                                     &bull; Rekomendasi besok: tempo atau easy run?
                                 </button>
-                                <button onclick="quickAskAi('Hitung kebutuhan karbohidrat dan gel per jam untuk maraton')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
+                                <button type="button" onclick="quickAskAi('Hitung kebutuhan karbohidrat dan gel per jam untuk maraton')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
                                     &bull; Hitung kebutuhan karbohidrat per jam
                                 </button>
-                                <button onclick="quickAskAi('Analisis pemulihan detak jantung dan cardiac drift saya')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
+                                <button type="button" onclick="quickAskAi('Analisis pemulihan detak jantung dan cardiac drift saya')" class="w-full text-left p-2 rounded-lg bg-surface-subtle hover:bg-tertiary/10 hover:border-tertiary border border-border text-[11px] text-text-primary transition-all">
                                     &bull; Analisis cardiac drift &amp; detak jantung
                                 </button>
                             </div>
@@ -2219,7 +2219,7 @@
                             <div class="pt-1">
                                 <div class="flex items-center gap-1.5">
                                     <input type="text" id="quick-ai-input" placeholder="Tanya pelatih apa saja..." class="flat-input text-xs py-2 px-3 rounded-full flex-1" onkeydown="if(event.key==='Enter') quickSubmitAi()">
-                                    <button onclick="quickSubmitAi()" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center shrink-0 p-0" title="Kirim">
+                                    <button type="button" onclick="quickSubmitAi()" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center shrink-0 p-0" title="Kirim">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                     </button>
                                 </div>
@@ -2370,11 +2370,11 @@
 
                             <!-- Direct Action Buttons -->
                             <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border">
-                                <button onclick="switchScheduleSubtab('splits'); switchWorkstationTab('schedule');" class="btn-flat-secondary text-xs font-mono py-1.5 px-3 flex items-center gap-1.5 hover:border-emerald-500">
+                                <button type="button" onclick="switchScheduleSubtab('splits'); switchWorkstationTab('schedule');" class="btn-flat-secondary text-xs font-mono py-1.5 px-3 flex items-center gap-1.5 hover:border-emerald-500">
                                     <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                     <span data-i18n="pacing_btn_calculator">Buka Calculator Pace</span>
                                 </button>
-                                <button onclick="switchWorkstationTab('schedule');" class="text-xs text-tertiary hover:underline font-mono flex items-center gap-1">
+                                <button type="button" onclick="switchWorkstationTab('schedule');" class="text-xs text-tertiary hover:underline font-mono flex items-center gap-1">
                                     <span data-i18n="pacing_btn_plan">Lihat Jadwal 31 Minggu &rarr;</span>
                                 </button>
                             </div>
@@ -2426,18 +2426,18 @@
                         <!-- FEED FILTER PILL BAR & ATHLETE FORM STATUS (Strava Signature) -->
                         <div class="flex flex-wrap items-center justify-between gap-2.5 pb-1">
                             <div class="flex flex-wrap items-center gap-1.5" id="feed-filter-container" role="toolbar" aria-label="Feed filter options">
-                                <button onclick="filterFeed('all')" id="feed-filter-all" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-tertiary text-white shadow-xs transition-all active:scale-95">
+                                <button type="button" onclick="filterFeed('all')" id="feed-filter-all" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-tertiary text-white shadow-xs transition-all active:scale-95">
                                     <span data-i18n="feed_filter_all">All Feed</span>
                                 </button>
-                                <button onclick="filterFeed('run')" id="feed-filter-run" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
+                                <button type="button" onclick="filterFeed('run')" id="feed-filter-run" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="4" r="2"/><path d="M15 8l-3 4-3-1-3 4"/><path d="M12 12l2 4 4-1"/><path d="M9 19l3 2 4-4"/></svg>
                                     <span data-i18n="feed_filter_runs">Runs</span>
                                 </button>
-                                <button onclick="filterFeed('cycling')" id="feed-filter-cycling" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
+                                <button type="button" onclick="filterFeed('cycling')" id="feed-filter-cycling" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5l3.5-7 3.5 1.5"/><path d="M5.5 17.5l4-7h5"/></svg>
                                     <span data-i18n="feed_filter_rides">Rides</span>
                                 </button>
-                                <button onclick="filterFeed('prescription')" id="feed-filter-prescription" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
+                                <button type="button" onclick="filterFeed('prescription')" id="feed-filter-prescription" class="feed-filter-btn px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-tertiary transition-all active:scale-95 inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 text-tertiary shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                     <span data-i18n="feed_filter_prescription">AI Plan</span>
                                 </button>
@@ -2524,7 +2524,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-1')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-1')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -2618,7 +2618,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-2')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-2')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -2712,7 +2712,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-3')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-3')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -2806,7 +2806,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-4')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-4')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -2900,7 +2900,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-5')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-5')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -2963,7 +2963,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-6')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-6')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3026,7 +3026,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-7')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-7')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3120,7 +3120,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-8')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-8')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3214,7 +3214,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-9')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-9')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3308,7 +3308,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-10')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-10')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3402,7 +3402,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-11')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-11')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3496,7 +3496,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-12')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-12')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3590,7 +3590,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-13')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-13')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3684,7 +3684,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-14')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-14')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3778,7 +3778,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-15')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-15')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3872,7 +3872,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-16')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-16')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -3966,7 +3966,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-17')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-17')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -4060,7 +4060,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-18')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-18')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -4154,7 +4154,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-19')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-19')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -4248,7 +4248,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="openActivityDetailModal('w-garmin-rizky-20')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+            <button type="button" onclick="openActivityDetailModal('w-garmin-rizky-20')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                 Detail &rarr;
             </button>
         </div>
@@ -4324,7 +4324,7 @@
                                     </div>
                                 </div>
                                 <div class="text-right shrink-0">
-                                    <button onclick="triggerWorkoutPreview('Muscle build up (12km Tempo)', '04:15 min/km')" class="p-2 border border-border bg-surface hover:bg-tertiary hover:text-white transition-colors" title="Load Session">
+                                    <button type="button" onclick="triggerWorkoutPreview('Muscle build up (12km Tempo)', '04:15 min/km')" class="p-2 border border-border bg-surface hover:bg-tertiary hover:text-white transition-colors" title="Load Session">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                                     </button>
                                     <div class="text-[10px] font-mono text-tertiary font-bold mt-1">45 min</div>
@@ -4347,7 +4347,7 @@
                                     </div>
                                 </div>
                                 <div class="text-right shrink-0">
-                                    <button onclick="triggerWorkoutPreview('Threshold Interval Surge (8x800m)', '03:40 min/km')" class="p-2 border border-border bg-surface hover:bg-tertiary hover:text-white transition-colors" title="Load Session">
+                                    <button type="button" onclick="triggerWorkoutPreview('Threshold Interval Surge (8x800m)', '03:40 min/km')" class="p-2 border border-border bg-surface hover:bg-tertiary hover:text-white transition-colors" title="Load Session">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                                     </button>
                                     <div class="text-[10px] font-mono text-tertiary font-bold mt-1">50 min</div>
@@ -4370,7 +4370,7 @@
                                     </div>
                                 </div>
                                 <div class="text-right shrink-0">
-                                    <button onclick="triggerWorkoutPreview('Progressive Long Overload (28km)', '04:50 min/km')" class="p-2 border border-border bg-surface hover:bg-tertiary hover:text-white transition-colors" title="Load Session">
+                                    <button type="button" onclick="triggerWorkoutPreview('Progressive Long Overload (28km)', '04:50 min/km')" class="p-2 border border-border bg-surface hover:bg-tertiary hover:text-white transition-colors" title="Load Session">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                                     </button>
                                     <div class="text-[10px] font-mono text-tertiary font-bold mt-1">2h 15m</div>
@@ -4534,20 +4534,20 @@
 
                         <!-- Quick Prompt Chips (Pill styled) -->
                         <div class="pt-3 border-t border-border flex flex-wrap gap-1.5 text-[11px]">
-                            <button onclick="sendQuickPrompt('Rekomendasikan menu latihan terbaik untuk besok berdasarkan kesiapan fisik dan target maraton saya.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1.5">
+                            <button type="button" onclick="sendQuickPrompt('Rekomendasikan menu latihan terbaik untuk besok berdasarkan kesiapan fisik dan target maraton saya.')" class="px-2.5 py-1 bg-surface-subtle border border-tertiary text-tertiary font-bold rounded-full hover:bg-tertiary hover:text-white transition-colors flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 <span data-i18n="chip_prescribe">Rekomendasi Latihan Besok</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Evaluasi beban latihan ACWR dan kesiapan fisik saya saat ini. Apakah beban latihan aman atau ada risiko kelelahan?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
+                            <button type="button" onclick="sendQuickPrompt('Evaluasi beban latihan ACWR dan kesiapan fisik saya saat ini. Apakah beban latihan aman atau ada risiko kelelahan?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
                                 <span data-i18n="chip_acwr">Cek Beban &amp; Kesiapan Fisik</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Berdasarkan detak jantung istirahat 48 bpm dan maksimal 192 bpm, bagaimana panduan lari Zona 2 saya untuk maraton?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-tertiary text-text-secondary hover:text-text-primary transition-colors">
+                            <button type="button" onclick="sendQuickPrompt('Berdasarkan detak jantung istirahat 48 bpm dan maksimal 192 bpm, bagaimana panduan lari Zona 2 saya untuk maraton?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-tertiary text-text-secondary hover:text-text-primary transition-colors">
                                 <span data-i18n="chip_karvonen">Panduan 5 Zona Detak Jantung</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Berapa penyesuaian pace saya saat lari di tanjakan tanjak 60 meter jika pace datar 5:00/km?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
+                            <button type="button" onclick="sendQuickPrompt('Berapa penyesuaian pace saya saat lari di tanjakan tanjak 60 meter jika pace datar 5:00/km?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-orange text-text-secondary hover:text-text-primary transition-colors">
                                 <span data-i18n="chip_gap">Kalkulator Pace Tanjakan (GAP)</span>
                             </button>
-                            <button onclick="sendQuickPrompt('Detak jantung saya sangat stabil hanya naik +1.7 persen selama lari jauh. Bagaimana penilaian fondasi aerobik saya?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
+                            <button type="button" onclick="sendQuickPrompt('Detak jantung saya sangat stabil hanya naik +1.7 persen selama lari jauh. Bagaimana penilaian fondasi aerobik saya?')" class="px-2.5 py-1 bg-surface-subtle border border-border rounded-full hover:border-flat-green text-text-secondary hover:text-text-primary transition-colors">
                                 <span data-i18n="chip_drift">Efisiensi Detak Jantung Lari</span>
                             </button>
                         </div>
@@ -4601,7 +4601,7 @@
                                 Gemini 3.8 Flash Pro &bull; Perencanaan Makrosiklus &bull; Peringatan Drift
                             </p>
                             <div class="pt-1">
-                                <button onclick="openProPaymentModal()" id="sidebar-byok-btn" class="btn-flat-primary w-full py-2 text-xs font-bold font-mono" data-i18n="sidebar_byok_btn">
+                                <button type="button" onclick="openProPaymentModal()" id="sidebar-byok-btn" class="btn-flat-primary w-full py-2 text-xs font-bold font-mono" data-i18n="sidebar_byok_btn">
                                     MASUKKAN GEMINI API KEY (BYOK)
                                 </button>
                             </div>
@@ -4627,11 +4627,11 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="syncTelemetrySuite(); toast.info('Telemetri Disinkronkan', 'Metrik diperbarui dari mesin sains backend.');" class="btn-flat-secondary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
+                        <button type="button" onclick="syncTelemetrySuite(); toast.info('Telemetri Disinkronkan', 'Metrik diperbarui dari mesin sains backend.');" class="btn-flat-secondary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             <span data-i18n="telemetry_btn_recalc">HITUNG ULANG</span>
                         </button>
-                        <button onclick="copyIcalUrl()" class="btn-flat-primary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
+                        <button type="button" onclick="copyIcalUrl()" class="btn-flat-primary text-xs font-mono flex items-center gap-1.5 py-1.5 px-3">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             <span data-i18n="telemetry_btn_ical">SALIN FEED ICAL</span>
                         </button>
@@ -4817,7 +4817,7 @@
                             <h3 data-i18n="icu_hub_title" class="font-display font-bold text-base text-text-primary">Pusat Telemetri Intervals.icu</h3>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="openSettingsModal()" class="text-[11px] font-mono text-tertiary hover:underline">
+                            <button type="button" onclick="openSettingsModal()" class="text-[11px] font-mono text-tertiary hover:underline">
                                 <span data-i18n="icu_settings_link">Ubah Detak Jantung Istirahat &amp; Maks di Pengaturan &gt;</span>
                             </button>
                         </div>
@@ -4945,7 +4945,7 @@
                                         <input type="number" id="drift-h2-hr" value="149" inputmode="numeric" class="flat-input text-center py-1 text-xs w-full">
                                     </div>
                                 </div>
-                                <button onclick="calculateDecouplingLive()" class="btn-flat-secondary w-full py-1.5 text-[10px] font-mono font-bold">
+                                <button type="button" onclick="calculateDecouplingLive()" class="btn-flat-secondary w-full py-1.5 text-[10px] font-mono font-bold">
                                     CALCULATE CARDIAC DRIFT %
                                 </button>
                             </div>
@@ -4962,7 +4962,7 @@
                                 </p>
                                 <div class="flex gap-2">
                                     <input type="text" id="icu-ical-input" value="/api/v1/workouts/ical" readonly class="flat-input flex-1 text-xs font-mono bg-surface-subtle">
-                                    <button onclick="copyIcalUrl()" class="btn-flat-secondary text-xs font-mono px-3">
+                                    <button type="button" onclick="copyIcalUrl()" class="btn-flat-secondary text-xs font-mono px-3">
                                         COPY
                                     </button>
                                 </div>
@@ -5519,7 +5519,7 @@
                         <span class="text-[11px] font-mono text-text-secondary" id="analysis-ready-status" data-i18n="run_analyzer_hint">
                             Tips: Tampak samping (sagital) memberikan evaluasi sudut lutut &amp; kemiringan badan paling akurat.
                         </span>
-                        <button onclick="analyzeSelectedVideo()" id="btn-analyze-video" class="btn-flat-primary w-full sm:w-auto px-6 py-2.5 text-xs font-mono font-bold flex items-center justify-center gap-2">
+                        <button type="button" onclick="analyzeSelectedVideo()" id="btn-analyze-video" class="btn-flat-primary w-full sm:w-auto px-6 py-2.5 text-xs font-mono font-bold flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                             <span data-i18n="run_analyzer_btn_run">ANALISIS POSTUR SEKARANG</span>
                         </button>
@@ -6136,7 +6136,7 @@
                                 <h3 id="schedule-plan-title" data-i18n="schedule_upcoming_title" class="font-display font-bold text-sm text-text-primary">Sesi Terstruktur Mendatang</h3>
                                 <p id="schedule-plan-meta" class="text-xs text-text-secondary">Calculated periodization block leading toward target race date.</p>
                             </div>
-                            <button onclick="downloadICS()" class="btn-flat-primary text-xs font-mono shrink-0 inline-flex items-center gap-1.5">
+                            <button type="button" onclick="downloadICS()" class="btn-flat-primary text-xs font-mono shrink-0 inline-flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                 <span><span data-i18n="schedule_export_ics">EKSPOR KALENDER .ICS</span></span>
                             </button>
@@ -6737,21 +6737,21 @@
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-2 pt-1">
-                                <button onclick="syncGarminTelemetry()" id="btn-garmin-resync" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
+                                <button type="button" onclick="syncGarminTelemetry()" id="btn-garmin-resync" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                     <span>TARIK SESI TERBARU</span>
                                 </button>
-                                <button onclick="disconnectGarmin()" class="btn-flat-secondary py-2 px-3 text-xs font-mono text-red-500 hover:text-red-600">
+                                <button type="button" onclick="disconnectGarmin()" class="btn-flat-secondary py-2 px-3 text-xs font-mono text-red-500 hover:text-red-600">
                                     PUTUSKAN
                                 </button>
                             </div>
                             <!-- Historical Sync Actions (Opsi A + Opsi C) -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                                <button onclick="syncGarminHistoricalBatch()" id="btn-garmin-batch-sync" class="btn-flat-secondary py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5" title="Tarik 50 sesi aktivitas sebelumnya dari Garmin Connect">
+                                <button type="button" onclick="syncGarminHistoricalBatch()" id="btn-garmin-batch-sync" class="btn-flat-secondary py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5" title="Tarik 50 sesi aktivitas sebelumnya dari Garmin Connect">
                                     <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                     <span>+50 SESI HISTORIS</span>
                                 </button>
-                                <button onclick="startGarminBackgroundBackfill()" id="btn-garmin-backfill" class="btn-flat-secondary py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5" title="Mulai sinkronisasi seluruh riwayat akun Garmin di latar belakang">
+                                <button type="button" onclick="startGarminBackgroundBackfill()" id="btn-garmin-backfill" class="btn-flat-secondary py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5" title="Mulai sinkronisasi seluruh riwayat akun Garmin di latar belakang">
                                     <svg class="w-3.5 h-3.5 text-flat-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                     <span>SINKRON LENGKAP (BG)</span>
                                 </button>
@@ -6831,11 +6831,11 @@
                                 </span>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-2 pt-1">
-                                <button onclick="syncStravaTelemetry()" id="btn-strava-resync" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
+                                <button type="button" onclick="syncStravaTelemetry()" id="btn-strava-resync" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                     <span>TARIK 20 AKTIVITAS STRAVA</span>
                                 </button>
-                                <button onclick="disconnectStrava()" class="btn-flat-secondary py-2 px-3 text-xs font-mono text-red-500 hover:text-red-600">
+                                <button type="button" onclick="disconnectStrava()" class="btn-flat-secondary py-2 px-3 text-xs font-mono text-red-500 hover:text-red-600">
                                     PUTUSKAN
                                 </button>
                             </div>
@@ -6855,7 +6855,7 @@
                                 <div class="space-y-2">
                                     <input type="text" id="strava-token-input" class="flat-input text-xs font-mono" placeholder="Tempel Access Token Strava Anda di sini...">
                                     <div class="flex flex-col sm:flex-row gap-2">
-                                        <button onclick="handleStravaTokenConnect()" id="btn-strava-token-connect" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold">
+                                        <button type="button" onclick="handleStravaTokenConnect()" id="btn-strava-token-connect" class="btn-flat-primary flex-1 py-2 text-xs font-mono font-bold">
                                             HUBUNGKAN TOKEN SEKARANG
                                         </button>
                                         <a href="https://www.strava.com/settings/api" target="_blank" rel="noopener noreferrer" class="btn-flat-secondary py-2 px-3 text-xs font-mono flex items-center justify-center gap-1 text-tertiary hover:underline">
@@ -6869,7 +6869,7 @@
                             <!-- Standard OAuth Button -->
                             <div class="space-y-2">
                                 <span class="text-[10px] font-mono text-text-secondary uppercase block text-center">Atau Hubungkan via OAuth Gateway</span>
-                                <button onclick="handleStravaAuth()" class="btn-flat-secondary w-full py-2.5 text-xs font-mono flex items-center justify-center gap-2">
+                                <button type="button" onclick="handleStravaAuth()" class="btn-flat-secondary w-full py-2.5 text-xs font-mono flex items-center justify-center gap-2">
                                     <span class="w-3 h-3 bg-[#FC4C02] rounded-[1px]"></span>
                                     <span>CONNECT WITH STRAVA (OAUTH)</span>
                                 </button>
@@ -7902,7 +7902,7 @@
                             </li>
                         </ul>
                     </div>
-                    <button onclick="switchWorkstationTab('chat'); selectCoachTier('pemula');" data-i18n="pricing_tier1_btn" class="btn-flat-secondary w-full py-2.5 text-xs font-mono">
+                    <button type="button" onclick="switchWorkstationTab('chat'); selectCoachTier('pemula');" data-i18n="pricing_tier1_btn" class="btn-flat-secondary w-full py-2.5 text-xs font-mono">
                         MULAI PEMULA (GRATIS)
                     </button>
                 </div>
@@ -7939,7 +7939,7 @@
                             </li>
                         </ul>
                     </div>
-                    <button onclick="switchWorkstationTab('chat'); selectCoachTier('free');" data-i18n="pricing_tier2_btn" class="btn-flat-secondary w-full py-2.5 text-xs font-mono hover:border-tertiary hover:text-tertiary">
+                    <button type="button" onclick="switchWorkstationTab('chat'); selectCoachTier('free');" data-i18n="pricing_tier2_btn" class="btn-flat-secondary w-full py-2.5 text-xs font-mono hover:border-tertiary hover:text-tertiary">
                         KONSULTASI COACH (GRATIS)
                     </button>
                 </div>
@@ -7982,7 +7982,7 @@
                             </li>
                         </ul>
                     </div>
-                    <button onclick="openProPaymentModal()" data-i18n="pricing_tier3_btn" class="btn-flat-primary w-full py-3 text-xs font-mono font-bold">
+                    <button type="button" onclick="openProPaymentModal()" data-i18n="pricing_tier3_btn" class="btn-flat-primary w-full py-3 text-xs font-mono font-bold">
                         AKTIFKAN COACH (PRO) (GRATIS BYOK ATAU $19/BLN)
                     </button>
                 </div>
@@ -8314,7 +8314,7 @@
                     </div>
                     <h3 id="auth-modal-title" class="font-display font-bold text-base text-text-primary">Sign In to Goalie</h3>
                 </div>
-                <button onclick="closeAuthModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close authentication dialog">
+                <button type="button" onclick="closeAuthModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close authentication dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -8392,7 +8392,7 @@
         <div class="flat-card border border-border/80 rounded-2xl shadow-xs max-w-4xl w-full p-4 sm:p-7 bg-surface relative my-auto animate-in fade-in duration-150 max-h-[92vh] overflow-y-auto">
             
             <!-- Close Button -->
-            <button onclick="closeProPaymentModal()" class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-1 rounded-full border border-border bg-surface-subtle" aria-label="Close dialog">
+            <button type="button" onclick="closeProPaymentModal()" class="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-1 rounded-full border border-border bg-surface-subtle" aria-label="Close dialog">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
@@ -8469,7 +8469,7 @@
                         </ul>
                     </div>
                     <div class="pt-5">
-                        <button onclick="selectCoachTier('pemula'); closeProPaymentModal();" data-i18n="pricing_tier1_btn" class="btn-flat-secondary w-full py-2 text-xs font-mono font-bold rounded-xl border border-border hover:bg-surface-subtle">
+                        <button type="button" onclick="selectCoachTier('pemula'); closeProPaymentModal();" data-i18n="pricing_tier1_btn" class="btn-flat-secondary w-full py-2 text-xs font-mono font-bold rounded-xl border border-border hover:bg-surface-subtle">
                             MULAI PEMULA (GRATIS)
                         </button>
                     </div>
@@ -8515,7 +8515,7 @@
                         </ul>
                     </div>
                     <div class="pt-5">
-                        <button onclick="selectCoachTier('free'); switchWorkstationTab('chat'); closeProPaymentModal();" data-i18n="pricing_tier2_btn" class="btn-flat-secondary w-full py-2 text-xs font-mono font-bold rounded-xl border border-primary text-primary hover:bg-primary/10">
+                        <button type="button" onclick="selectCoachTier('free'); switchWorkstationTab('chat'); closeProPaymentModal();" data-i18n="pricing_tier2_btn" class="btn-flat-secondary w-full py-2 text-xs font-mono font-bold rounded-xl border border-primary text-primary hover:bg-primary/10">
                             KONSULTASI COACH (GRATIS)
                         </button>
                     </div>
@@ -8568,7 +8568,7 @@
                         </ul>
                     </div>
                     <div class="pt-5">
-                        <button onclick="scrollToActivationSection()" data-i18n="pricing_tier3_btn" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold rounded-xl bg-flat-orange text-white hover:brightness-110 shadow-md">
+                        <button type="button" onclick="scrollToActivationSection()" data-i18n="pricing_tier3_btn" class="btn-flat-primary w-full py-2.5 text-xs font-mono font-bold rounded-xl bg-flat-orange text-white hover:brightness-110 shadow-md">
                             AKTIFKAN COACH (PRO) (GRATIS BYOK ATAU $19/BLN)
                         </button>
                     </div>
@@ -8610,10 +8610,10 @@
                             <span id="byok-masked-key" class="text-xs font-mono font-bold text-text-primary">AIzaSy...</span>
                         </div>
                         <div class="flex gap-2 pt-1">
-                            <button onclick="closeProPaymentModal(); selectCoachTier('pro');" data-i18n="pro_byok_continue_btn" class="btn-flat-primary flex-1 py-1.5 text-xs font-mono font-bold rounded-lg">
+                            <button type="button" onclick="closeProPaymentModal(); selectCoachTier('pro');" data-i18n="pro_byok_continue_btn" class="btn-flat-primary flex-1 py-1.5 text-xs font-mono font-bold rounded-lg">
                                 LANJUTKAN DENGAN PRO
                             </button>
-                            <button onclick="removeByokApiKey()" data-i18n="pro_byok_remove_btn" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono text-flat-orange rounded-lg">
+                            <button type="button" onclick="removeByokApiKey()" data-i18n="pro_byok_remove_btn" class="btn-flat-secondary py-1.5 px-3 text-xs font-mono text-flat-orange rounded-lg">
                                 HAPUS KEY
                             </button>
                         </div>
@@ -8623,7 +8623,7 @@
                     <div id="byok-input-box" class="space-y-2">
                         <div class="flex gap-2">
                             <input type="password" id="byok-api-key-input" data-i18n-ph="pro_byok_placeholder" placeholder="Masukkan Gemini API Key (contoh: AIzaSy...)" class="flat-input flex-1 text-xs font-mono rounded-lg" autocomplete="off">
-                            <button onclick="saveByokApiKey()" id="byok-save-btn" class="btn-flat-primary px-4 py-2 text-xs font-mono font-bold whitespace-nowrap bg-flat-green text-black rounded-lg">
+                            <button type="button" onclick="saveByokApiKey()" id="byok-save-btn" class="btn-flat-primary px-4 py-2 text-xs font-mono font-bold whitespace-nowrap bg-flat-green text-black rounded-lg">
                                 <span data-i18n="pro_byok_save_btn">AKTIFKAN PRO GRATIS</span>
                             </button>
                         </div>
@@ -8657,7 +8657,7 @@
                         </label>
                     </div>
 
-                    <button onclick="confirmProSubscription()" id="pro-checkout-btn" data-i18n="pro_checkout_btn_text" class="btn-flat-secondary w-full py-2.5 text-xs font-mono font-bold rounded-xl border-2 border-tertiary text-tertiary hover:bg-tertiary hover:text-white transition-colors">
+                    <button type="button" onclick="confirmProSubscription()" id="pro-checkout-btn" data-i18n="pro_checkout_btn_text" class="btn-flat-secondary w-full py-2.5 text-xs font-mono font-bold rounded-xl border-2 border-tertiary text-tertiary hover:bg-tertiary hover:text-white transition-colors">
                         KONFIRMASI LANGGANAN PRO (RP 89.000 / BULAN)
                     </button>
                 </div>
@@ -8673,15 +8673,15 @@
         <div class="flat-card border border-border/80 rounded-2xl shadow-xs max-w-xl w-full p-6 bg-surface relative my-auto animate-in fade-in duration-150">
             <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-border">
                 <h3 id="legal-modal-title" class="font-display font-bold text-base text-text-primary">Terms of Service</h3>
-                <button onclick="closeLegalModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close legal compliance dialog">
+                <button type="button" onclick="closeLegalModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close legal compliance dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <div class="p-1 bg-surface-subtle border border-border rounded-xl flex items-center gap-1 mb-3 text-xs font-medium" role="tablist" aria-label="Legal Documents">
-                <button onclick="switchLegalTab('terms')" id="tab-legal-terms" role="tab" aria-selected="true" class="flex-1 py-1.5 rounded-lg text-center font-semibold bg-surface text-text-primary shadow-xs border border-border/80 transition-all duration-150">Terms</button>
-                <button onclick="switchLegalTab('privacy')" id="tab-legal-privacy" role="tab" aria-selected="false" class="flex-1 py-1.5 rounded-lg text-center font-medium text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent transition-all duration-150">Privacy</button>
-                <button onclick="switchLegalTab('disclaimer')" id="tab-legal-disclaimer" role="tab" aria-selected="false" class="flex-1 py-1.5 rounded-lg text-center font-medium text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent transition-all duration-150"><span data-i18n="legal_tab_disclaimer">Pemberitahuan Medis</span></button>
+                <button type="button" onclick="switchLegalTab('terms')" id="tab-legal-terms" role="tab" aria-selected="true" class="flex-1 py-1.5 rounded-lg text-center font-semibold bg-surface text-text-primary shadow-xs border border-border/80 transition-all duration-150">Terms</button>
+                <button type="button" onclick="switchLegalTab('privacy')" id="tab-legal-privacy" role="tab" aria-selected="false" class="flex-1 py-1.5 rounded-lg text-center font-medium text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent transition-all duration-150">Privacy</button>
+                <button type="button" onclick="switchLegalTab('disclaimer')" id="tab-legal-disclaimer" role="tab" aria-selected="false" class="flex-1 py-1.5 rounded-lg text-center font-medium text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent transition-all duration-150"><span data-i18n="legal_tab_disclaimer">Pemberitahuan Medis</span></button>
             </div>
 
             <div id="legal-modal-body" class="max-h-72 overflow-y-auto text-xs text-text-secondary space-y-3 leading-relaxed pr-2">
@@ -8706,7 +8706,7 @@
             </div>
 
             <div class="mt-4 pt-3 border-t border-border flex justify-end">
-                <button onclick="closeLegalModal()" class="btn-flat-secondary text-xs px-4 py-1.5">
+                <button type="button" onclick="closeLegalModal()" class="btn-flat-secondary text-xs px-4 py-1.5">
                     Close
                 </button>
             </div>
@@ -8730,7 +8730,7 @@
                     <h3 id="detail-activity-title" class="font-display font-extrabold text-lg sm:text-xl text-text-primary">Morning Progression Tempo Run</h3>
                     <div id="detail-activity-date" class="text-xs text-text-secondary font-mono">Today at 06:15 AM &bull; Jakarta, Indonesia</div>
                 </div>
-                <button onclick="closeActivityDetailModal()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-full hover:bg-surface-subtle transition-colors touch-target-expand flex items-center justify-center" title="Close Modal" aria-label="Close activity detail dialog">
+                <button type="button" onclick="closeActivityDetailModal()" class="text-text-secondary hover:text-text-primary p-1.5 rounded-full hover:bg-surface-subtle transition-colors touch-target-expand flex items-center justify-center" title="Close Modal" aria-label="Close activity detail dialog">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -8928,7 +8928,7 @@
             <!-- Footer Modal Actions -->
             <div class="flex flex-wrap items-center justify-between pt-2 border-t border-border gap-2">
                 <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="shareWorkoutSession()" class="btn-flat-secondary text-xs font-mono font-bold px-3 py-1.5 flex items-center gap-1.5">
+                    <button type="button" onclick="shareWorkoutSession()" class="btn-flat-secondary text-xs font-mono font-bold px-3 py-1.5 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
                         <span data-i18n="detail_btn_share">Bagikan Sesi</span>
                     </button>
@@ -8941,7 +8941,7 @@
                         <span>Kirim ke Jam Garmin</span>
                     </button>
                 </div>
-                <button onclick="closeActivityDetailModal()" class="btn-primary rounded-full text-xs font-mono font-bold px-6 py-2" data-i18n="detail_btn_close">
+                <button type="button" onclick="closeActivityDetailModal()" class="btn-primary rounded-full text-xs font-mono font-bold px-6 py-2" data-i18n="detail_btn_close">
                     Tutup
                 </button>
             </div>
@@ -8960,7 +8960,7 @@
                     <span class="w-3 h-3 bg-flat-green"></span>
                     <h3 id="log-modal-title" class="font-display font-bold text-base text-text-primary" data-i18n="log_modal_title">Log Completed Workout</h3>
                 </div>
-                <button onclick="closeLogWorkoutModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close workout logger dialog">
+                <button type="button" onclick="closeLogWorkoutModal()" class="text-text-secondary hover:text-text-primary text-xs p-1 touch-target-expand rounded-full flex items-center justify-center" aria-label="Close workout logger dialog">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -11916,7 +11916,7 @@
                         </div>
                         <h4 class="font-bold text-sm text-text-primary">Belum Ada Sesi Tersinkronisasi</h4>
                         <p class="text-xs text-text-secondary max-w-sm mx-auto">Sinkronkan akun Garmin Connect Anda pada tab Integrasi untuk menampilkan feed aktivitas.</p>
-                        <button onclick="switchWorkstationTab('integrations')" class="btn-primary rounded-full px-4 py-2 text-xs font-bold">Buka Tab Integrasi</button>
+                        <button type="button" onclick="switchWorkstationTab('integrations')" class="btn-primary rounded-full px-4 py-2 text-xs font-bold">Buka Tab Integrasi</button>
                     </div>
                 `;
                 return;
@@ -12102,7 +12102,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button onclick="openActivityDetailModal('${w.id}')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
+                            <button type="button" onclick="openActivityDetailModal('${w.id}')" class="text-xs font-mono font-bold text-tertiary hover:underline px-2.5 py-1 rounded-md bg-tertiary/10 border border-tertiary/20 shrink-0">
                                 Detail &rarr;
                             </button>
                         </div>
@@ -12166,19 +12166,19 @@
 
                         <div class="flex items-center justify-between pt-2 border-t border-border">
                             <div class="flex items-center gap-4">
-                                <button onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
+                                <button type="button" onclick="toggleKudos(this)" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-tertiary transition-colors group">
                                     <svg class="w-4 h-4 text-tertiary group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                     <span class="kudos-count font-mono font-bold text-text-primary">${12 + (w.id.length % 20)}</span>
                                     <span>Kudos</span>
                                 </button>
-                                <button onclick="shareWorkoutSession()" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
+                                <button type="button" onclick="shareWorkoutSession()" class="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
                                     <span>Bagikan</span>
                                 </button>
                             </div>
-                            <button onclick="openActivityDetailModal('${w.id}')" class="text-xs font-mono font-bold text-tertiary hover:underline">
+                            <button type="button" onclick="openActivityDetailModal('${w.id}')" class="text-xs font-mono font-bold text-tertiary hover:underline">
                                 Analisis Sesi &amp; Splits &rarr;
                             </button>
                         </div>
@@ -12634,11 +12634,11 @@
                     <p class="text-xs text-text-secondary mt-1">${prescription.notes}</p>
                 </div>
                 <div class="flex flex-wrap gap-2 pt-1 font-mono text-xs">
-                    <button onclick="applyPrescriptionToCalendar('${escapeHTML(prescription.title)}', ${prescription.distance}, ${prescription.duration}, '${escapeHTML(prescription.pace)}')" class="btn-primary rounded-full px-4 py-1.5 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
+                    <button type="button" onclick="applyPrescriptionToCalendar('${escapeHTML(prescription.title)}', ${prescription.distance}, ${prescription.duration}, '${escapeHTML(prescription.pace)}')" class="btn-primary rounded-full px-4 py-1.5 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         <span>${currentLang === 'id' ? '+ Tambah ke Kalender' : '+ Add to Calendar'}</span>
                     </button>
-                    <button onclick="quickLogPrescription('${escapeHTML(prescription.title)}', ${prescription.distance}, ${prescription.duration}, ${prescription.hr}, ${prescription.calories})" class="btn-outline rounded-full px-4 py-1.5 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
+                    <button type="button" onclick="quickLogPrescription('${escapeHTML(prescription.title)}', ${prescription.distance}, ${prescription.duration}, ${prescription.hr}, ${prescription.calories})" class="btn-outline rounded-full px-4 py-1.5 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-transform">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>${currentLang === 'id' ? 'Catat Sesi Ini' : 'Record This Session'}</span>
                     </button>
