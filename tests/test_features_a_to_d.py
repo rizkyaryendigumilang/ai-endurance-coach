@@ -67,7 +67,7 @@ class TestFeaturesAToD(unittest.TestCase):
         self.assertEqual(data["status"], "success")
         self.assertIn("leaderboard", data)
         roster = data["leaderboard"]
-        self.assertGreaterEqual(len(roster), 2)
+        self.assertGreaterEqual(len(roster), 1)
         # Check ranks are ordered
         ranks = [item["rank"] for item in roster]
         self.assertEqual(ranks, sorted(ranks))

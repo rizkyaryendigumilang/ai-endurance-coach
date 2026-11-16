@@ -134,8 +134,8 @@ class AdminSimulateWebhookInput(BaseModel):
     source: str = "Strava"  # 'Strava' | 'Garmin' | 'Intervals.icu'
     event_type: str = "activity.create"
     status: Optional[str] = "200 OK"
-    athlete_id: Optional[str] = "demo-user-12345"
-    athlete_name: Optional[str] = "Alex Rivers"
+    athlete_id: Optional[str] = "c698122d-1fe3-5620-820c-23682e4f844a"
+    athlete_name: Optional[str] = "Rizky Aryendi Gumilang"
     detail: Optional[str] = "Simulated webhook push event"
 
 # ── Pro Subscription & Payments ───────────────────────────────────────────────

@@ -1300,15 +1300,13 @@
         }
 
         function renderMockAdminData() {
-            document.getElementById('kpi-total-athletes').textContent = '3';
-            document.getElementById('kpi-total-workouts').textContent = '42';
-            document.getElementById('kpi-total-distance').innerHTML = `412.5 <span class="text-xs font-normal text-text-secondary">km</span>`;
-            document.getElementById('kpi-total-load').innerHTML = `3,840 <span class="text-xs font-normal text-text-secondary">pts</span>`;
+            document.getElementById('kpi-total-athletes').textContent = '1';
+            document.getElementById('kpi-total-workouts').textContent = '20';
+            document.getElementById('kpi-total-distance').innerHTML = `58.1 <span class="text-xs font-normal text-text-secondary">km</span>`;
+            document.getElementById('kpi-total-load').innerHTML = `2,670 <span class="text-xs font-normal text-text-secondary">pts</span>`;
 
             allAthletes = [
-                { user_id: 'demo-user-12345', full_name: 'Alex Rivers', email: 'alex.rivers@berlin.org', sport_focus: 'Marathon', fitness_level: 'Elite', total_workouts: 24, total_distance_km: 268.4, garmin_connected: true, is_pro: true, status: 'active' },
-                { user_id: 'demo-athlete-sarah', full_name: 'Sarah Jenkins', email: 'sarah.jenkins@triathlon.io', sport_focus: 'Triathlon', fitness_level: 'Advanced', total_workouts: 14, total_distance_km: 114.2, garmin_connected: true, is_pro: true, status: 'active' },
-                { user_id: 'demo-athlete-rendi', full_name: 'Rendi Kurniawan', email: 'rendi.k@telegram.athlete', sport_focus: 'Running', fitness_level: 'Intermediate', total_workouts: 4, total_distance_km: 29.9, garmin_connected: false, is_pro: false, status: 'active' }
+                { user_id: 'c698122d-1fe3-5620-820c-23682e4f844a', full_name: 'Rizky Aryendi Gumilang', email: 'rizkyaryendigumilang@gmail.com', sport_focus: 'Marathon', fitness_level: 'Advanced', total_workouts: 20, total_distance_km: 58.1, garmin_connected: true, is_pro: true, status: 'active' }
             ];
             applyAthleteFilter();
             renderServicesStatus({
@@ -1714,7 +1712,7 @@
                 const res = await adminFetch(`${API_BASE}/admin/logs/simulate-webhook`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ source, event_type, status, detail, athlete_id: 'demo-user-12345', athlete_name: 'Alex Rivers' })
+                    body: JSON.stringify({ source, event_type, status, detail, athlete_id: 'c698122d-1fe3-5620-820c-23682e4f844a', athlete_name: 'Rizky Aryendi Gumilang' })
                 });
                 const data = await res.json();
                 showToast('Webhook Terkirim', data.message || 'Webhook berhasil disimulasikan.', 'success');

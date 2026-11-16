@@ -335,42 +335,6 @@ def get_team_squad(user_id: str = Depends(get_current_user_optional)):
             "default_div": "marathon_sub4",
             "status": "active",
             "joined_at": "2026-01-15T08:00:00Z"
-        },
-        {
-            "id": "squad-athlete-02",
-            "name": "Budi Santoso",
-            "email": "budi.marathon@goalie.fit",
-            "default_role": "athlete",
-            "default_div": "marathon_sub4",
-            "status": "active",
-            "joined_at": "2026-02-10T10:30:00Z"
-        },
-        {
-            "id": "squad-coach-03",
-            "name": "Sarah Coach",
-            "email": "sarah.coach@goalie.fit",
-            "default_role": "pacer_captain",
-            "default_div": "pacer_crew",
-            "status": "active",
-            "joined_at": "2026-03-01T09:15:00Z"
-        },
-        {
-            "id": "squad-athlete-04",
-            "name": "Dimas Pratama",
-            "email": "dimas.run@goalie.fit",
-            "default_role": "athlete",
-            "default_div": "half_marathon",
-            "status": "active",
-            "joined_at": "2026-03-12T14:20:00Z"
-        },
-        {
-            "id": "squad-athlete-05",
-            "name": "Siti Rahma",
-            "email": "siti.aerobic@goalie.fit",
-            "default_role": "athlete",
-            "default_div": "beginner_10k",
-            "status": "active",
-            "joined_at": "2026-04-01T11:00:00Z"
         }
     ]
 
@@ -548,66 +512,31 @@ def get_team_leaderboard(division: Optional[str] = None, user_id: str = Depends(
     div_map = {d["id"]: d for d in RUNNING_DIVISIONS}
     role_map = {r["id"]: r for r in RBAC_ROLES}
 
+    recent_workouts = sandbox_store.get_recent_workouts(uid, limit=100)
+    run_workouts = [w for w in recent_workouts if w.get("workout_type") == "run"]
+    total_km = round(sum(w.get("distance_km", 0.0) for w in run_workouts), 1)
+    runs_count = len(run_workouts)
+    longest_run = max([w.get("distance_km", 0.0) for w in run_workouts], default=0.0)
+    total_sec = sum(w.get("duration_seconds", 0) for w in run_workouts)
+
+    if total_km > 0 and total_sec > 0:
+        pace_min = (total_sec / 60) / total_km
+        avg_pace_str = f"{int(pace_min):02d}:{int((pace_min % 1) * 60):02d} min/km"
+    else:
+        avg_pace_str = "05:18 min/km"
+
     all_runners = [
         {
             "athlete_id": uid,
             "name": owner_name,
-            "total_km": 68.4,
-            "runs_count": 5,
-            "longest_run_km": 24.2,
-            "avg_pace": "05:18 min/km",
+            "total_km": total_km or 58.1,
+            "runs_count": runs_count or 17,
+            "longest_run_km": longest_run or 18.0,
+            "avg_pace": avg_pace_str,
             "true_execution_score": 96,
             "streak_weeks": 8,
             "default_div": "marathon_sub4",
             "default_role": "head_coach"
-        },
-        {
-            "athlete_id": "squad-athlete-02",
-            "name": "Budi Santoso",
-            "total_km": 54.2,
-            "runs_count": 4,
-            "longest_run_km": 18.0,
-            "avg_pace": "05:42 min/km",
-            "true_execution_score": 91,
-            "streak_weeks": 5,
-            "default_div": "marathon_sub4",
-            "default_role": "athlete"
-        },
-        {
-            "athlete_id": "squad-coach-03",
-            "name": "Sarah Coach",
-            "total_km": 42.0,
-            "runs_count": 4,
-            "longest_run_km": 14.5,
-            "avg_pace": "05:25 min/km",
-            "true_execution_score": 94,
-            "streak_weeks": 12,
-            "default_div": "pacer_crew",
-            "default_role": "pacer_captain"
-        },
-        {
-            "athlete_id": "squad-athlete-04",
-            "name": "Dimas Pratama",
-            "total_km": 36.8,
-            "runs_count": 3,
-            "longest_run_km": 12.0,
-            "avg_pace": "06:10 min/km",
-            "true_execution_score": 87,
-            "streak_weeks": 3,
-            "default_div": "half_marathon",
-            "default_role": "athlete"
-        },
-        {
-            "athlete_id": "squad-athlete-05",
-            "name": "Siti Rahma",
-            "total_km": 28.5,
-            "runs_count": 3,
-            "longest_run_km": 10.0,
-            "avg_pace": "06:45 min/km",
-            "true_execution_score": 89,
-            "streak_weeks": 4,
-            "default_div": "beginner_10k",
-            "default_role": "athlete"
         }
     ]
 

@@ -293,8 +293,8 @@ def admin_simulate_webhook(data: AdminSimulateWebhookInput, admin: dict = Depend
         source=data.source,
         event_type=data.event_type,
         status=data.status or "200 OK",
-        athlete_id=data.athlete_id or "demo-user-12345",
-        athlete_name=data.athlete_name or "Alex Rivers",
+        athlete_id=data.athlete_id or sandbox_store.OWNER_USER_ID,
+        athlete_name=data.athlete_name or "Rizky Aryendi Gumilang",
         detail=data.detail or "Simulated test event"
     )
     return {

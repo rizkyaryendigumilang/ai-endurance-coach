@@ -207,19 +207,19 @@ class SQLiteStore:
             return 0
 
         migrated_users = 0
-        users_map = data.get("users", {})
+        users_map = data.get("users") if isinstance(data.get("users"), dict) else data
         conn = self._get_connection()
 
         with conn:
             for uid, udata in users_map.items():
-                if not isinstance(udata, dict):
+                if not isinstance(udata, dict) or uid == "users":
                     continue
-                email = udata.get("email") or f"{uid}@goalie.fit"
-                pwd_hash = udata.get("password_hash")
+                profile = udata.get("profile") or {}
+                email = profile.get("email") or udata.get("email") or f"{uid}@goalie.fit"
+                pwd_hash = udata.get("password_hash") or udata.get("credential", {}).get("password_hash")
                 if pwd_hash:
                     self.save_user_credential(uid, email, pwd_hash)
 
-                profile = udata.get("profile")
                 if profile and isinstance(profile, dict):
                     self.save_profile(uid, profile)
 
