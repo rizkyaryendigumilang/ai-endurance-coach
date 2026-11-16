@@ -142,8 +142,9 @@ def verify_demo_token(token: str) -> dict:
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))) -> str:
     """
     FastAPI Dependency:
-    1. Checks if token is a demo/sandbox token first.
-    2. Falls back to validating live Supabase JWT if not demo token.
+    1. Checks for recognized sandbox guest session tokens.
+    2. Checks if token is a demo/sandbox signed JWT.
+    3. Falls back to validating live Supabase JWT if not demo token.
     Raises 401 if missing or invalid.
     """
     if not credentials or not credentials.credentials:
@@ -151,14 +152,18 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(H
     
     token = credentials.credentials
 
-    # Check Demo JWT
+    # 1. Recognized sandbox guest tokens
+    if token in ("athlete-session-token-active", "sandbox_athlete_guest", "guest-token"):
+        return "sandbox_athlete_guest"
+
+    # 2. Check Demo JWT
     try:
         demo_payload = verify_demo_token(token)
         return str(demo_payload["sub"])
     except Exception:
         pass
 
-    # Fallback to Supabase Auth
+    # 3. Fallback to Supabase Auth
     if supabase is not None:
         try:
             res = supabase.auth.get_user(token)
@@ -182,6 +187,10 @@ async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = 
         return "sandbox_athlete_guest"
 
     token = credentials.credentials
+
+    # Recognized sandbox guest tokens
+    if token in ("athlete-session-token-active", "sandbox_athlete_guest", "guest-token"):
+        return "sandbox_athlete_guest"
 
     # Check Demo JWT
     try:

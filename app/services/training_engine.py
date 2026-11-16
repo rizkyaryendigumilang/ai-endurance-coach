@@ -48,7 +48,7 @@ class TrainingEngine:
         
         target_pace = (
             SportsEngine.calculate_pace(distance_km, target_time_seconds)
-            if target_time_seconds else 6.0
+            if target_time_seconds and target_time_seconds > 0 else 6.0
         )
 
         plan_workouts = []
@@ -153,7 +153,7 @@ class TrainingEngine:
         weeks_available = max(4, (race_date - today).days // 7)
         total_weeks = min(weeks_available, 20)
         plan_workouts = []
-        target_speed_kmh = round(distance_km / (target_time_seconds / 3600), 1) if target_time_seconds else 28.0
+        target_speed_kmh = round(distance_km / (target_time_seconds / 3600), 1) if (target_time_seconds and target_time_seconds > 0) else 28.0
 
         for week in range(total_weeks):
             week_start = today + timedelta(weeks=week)
@@ -294,7 +294,7 @@ class TrainingEngine:
         total_weeks = min(weeks_available, 20)
         plan_workouts = []
         is_ultra = distance_km > 45.0
-        target_pace = SportsEngine.calculate_pace(distance_km, target_time_seconds) if target_time_seconds else 6.75
+        target_pace = SportsEngine.calculate_pace(distance_km, target_time_seconds) if (target_time_seconds and target_time_seconds > 0) else 6.75
 
         for week in range(total_weeks):
             week_start = today + timedelta(weeks=week)

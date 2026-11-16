@@ -29,7 +29,7 @@ class RaceInput(BaseModel):
     sport_type: Optional[str] = Field("run")
     race_date: date
     location: Optional[str] = Field(None, max_length=100)
-    target_time_seconds: Optional[int] = Field(None, gt=0)
+    target_time_seconds: Optional[int] = Field(None, ge=0)
 
 
 class WeeklyCalendarGenerateInput(BaseModel):
@@ -64,11 +64,12 @@ class TrainingSuggestionInput(BaseModel):
 # ── Endpoints ────────────────────────────────────────────────────────
 
 @router.post("/api/v1/races/generate-plan")
-def generate_plan(race: RaceInput, user_id: str = Depends(get_current_user)):
+def generate_plan(race: RaceInput, user_id: str = Depends(get_current_user_optional)):
     """Creates a race/event entry and generates a periodized training plan across sports."""
     sport_type = getattr(race, "sport_type", "run") or "run"
+    target_seconds = race.target_time_seconds if race.target_time_seconds and race.target_time_seconds > 0 else None
     gen = TrainingEngine.generate_race_driven_plan(
-        race.name, race.distance_km, race.race_date, race.target_time_seconds, sport_type=sport_type
+        race.name, race.distance_km, race.race_date, target_seconds, sport_type=sport_type
     )
 
     race_record = {
@@ -77,7 +78,7 @@ def generate_plan(race: RaceInput, user_id: str = Depends(get_current_user)):
         "sport_type": sport_type,
         "race_date": str(race.race_date),
         "location": race.location,
-        "target_time_seconds": race.target_time_seconds,
+        "target_time_seconds": target_seconds,
     }
 
     plan_record = {
@@ -125,7 +126,7 @@ def generate_plan(race: RaceInput, user_id: str = Depends(get_current_user)):
 
 
 @router.get("/api/v1/training-plan")
-def get_training_plan(user_id: str = Depends(get_current_user)):
+def get_training_plan(user_id: str = Depends(get_current_user_optional)):
     """Returns the latest training plan with all scheduled workouts."""
     if supabase is not None:
         try:
@@ -328,7 +329,7 @@ def export_marathon_plan_ical(user_id: str = Depends(get_current_user_optional))
 # ── AI Coach Recommendations & Daily Suggestions ──────────────────────
 
 @router.get("/api/v1/coach/recommendations", tags=["AI Coach"])
-async def get_coach_recommendations(user_id: str = Depends(get_current_user)):
+async def get_coach_recommendations(user_id: str = Depends(get_current_user_optional)):
     """
     Adaptive recommendations from AI Coach based on:
     1. Current TSB / fatigue
@@ -366,7 +367,7 @@ async def get_coach_recommendations(user_id: str = Depends(get_current_user)):
 
 @router.post("/api/v1/training/suggest", tags=["AI Coach"])
 @router.post("/api/v1/training/suggestions", tags=["AI Coach"])
-async def suggest_training(payload: TrainingSuggestionInput, user_id: str = Depends(get_current_user)):
+async def suggest_training(payload: TrainingSuggestionInput, user_id: str = Depends(get_current_user_optional)):
     """
     Generates daily AI training suggestions across Run, Bike, Swim, or Triathlon.
     """

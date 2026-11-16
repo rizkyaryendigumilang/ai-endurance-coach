@@ -121,6 +121,20 @@ class TestGoalieAPI(unittest.TestCase):
             self.assertIn("plan_name", data)
             self.assertGreater(data.get("total_workouts", 0), 0)
 
+        # Verify guest token and unauthenticated access for plan generation
+        guest_payload = {
+            "name": "Guest Marathon 2027",
+            "distance_km": 42.2,
+            "sport_type": "run",
+            "race_date": "2027-10-10",
+            "target_time_seconds": 12600
+        }
+        res_guest = self.client.post("/api/v1/races/generate-plan", json=guest_payload, headers={"Authorization": "Bearer athlete-session-token-active"})
+        self.assertEqual(res_guest.status_code, 200)
+
+        res_anon = self.client.post("/api/v1/races/generate-plan", json=guest_payload)
+        self.assertEqual(res_anon.status_code, 200)
+
     def test_08_admin_security_unauthorized_rejection(self):
         """Verify administrative endpoints strictly reject unauthenticated requests."""
         # 1. Telemetry access without token

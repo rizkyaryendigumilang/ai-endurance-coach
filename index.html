@@ -9418,6 +9418,23 @@
                 dateInput.value = d.toISOString().split('T')[0];
             }
 
+            // Restore active periodized training plan from local storage if present
+            try {
+                const savedPlanRaw = localStorage.getItem('goalie_active_plan');
+                if (savedPlanRaw) {
+                    const savedPlan = JSON.parse(savedPlanRaw);
+                    const titleEl = document.getElementById('schedule-plan-title');
+                    const metaEl = document.getElementById('schedule-plan-meta');
+                    if (titleEl && savedPlan.plan_name) titleEl.textContent = savedPlan.plan_name;
+                    if (metaEl && savedPlan.total_weeks) {
+                        metaEl.textContent = `${savedPlan.total_weeks} Weeks Periodization | ${savedPlan.total_workouts || (savedPlan.workouts ? savedPlan.workouts.length : 0)} Structured Workouts`;
+                    }
+                    if (savedPlan.workouts && savedPlan.workouts.length > 0 && typeof renderScheduleWorkouts === 'function') {
+                        renderScheduleWorkouts(savedPlan.workouts);
+                    }
+                }
+            } catch (err) {}
+
             // ══════════════════════════════════════════════════════════
             // PRODUCTION PWA ARCHITECTURE & NETWORK RESILIENCE ENGINE (v4.0.0)
             // ══════════════════════════════════════════════════════════
@@ -14710,14 +14727,133 @@
             toast.info('Preset Selected', `${name} (${dist} km) loaded.`);
         }
 
+        // Local Deterministic SportsEngine Periodization Generator (Offline / Fallback)
+        function generateLocalPeriodizedPlan(raceName, distanceKm, raceDateStr, targetSeconds, sportType) {
+            const today = new Date();
+            const raceDate = new Date(raceDateStr);
+            const diffDays = Math.max(7, Math.round((raceDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+            const weeksAvailable = Math.max(4, Math.floor(diffDays / 7));
+            const totalWeeks = Math.min(weeksAvailable, 20);
+
+            const sport = (sportType || 'run').toLowerCase();
+            let targetPace = 6.0;
+            if (targetSeconds && targetSeconds > 0 && distanceKm > 0) {
+                targetPace = (targetSeconds / 60) / distanceKm;
+            }
+
+            const workouts = [];
+
+            for (let week = 0; week < totalWeeks; week++) {
+                const weekStart = new Date(today.getTime() + (week * 7 * 24 * 60 * 60 * 1000));
+                const progress = week / totalWeeks;
+
+                let phase = "Base";
+                let phaseDesc = "Aerobic base building";
+                if (progress < 0.4) {
+                    phase = "Base";
+                    phaseDesc = "Aerobic base building";
+                } else if (progress < 0.75) {
+                    phase = "Build";
+                    phaseDesc = "Intensity and volume expansion";
+                } else if (progress < 0.9) {
+                    phase = "Peak";
+                    phaseDesc = "Race-specific quality workload";
+                } else {
+                    phase = "Taper";
+                    phaseDesc = "Recovery and taper sharpening";
+                }
+
+                let volumeFactor = 1.0;
+                if (phase === "Base") volumeFactor = 0.7 + (progress / 0.4) * 0.2;
+                else if (phase === "Build") volumeFactor = 0.9 + ((progress - 0.4) / 0.35) * 0.2;
+                else if (phase === "Peak") volumeFactor = 1.1;
+                else volumeFactor = 0.6;
+
+                // Day 1: Easy Run
+                const d1 = new Date(weekStart.getTime());
+                workouts.push({
+                    title: `[W${week + 1} ${phase}] Easy Run`,
+                    description: `${phaseDesc}. Zone 2 conversational pace. Keep heart rate strictly below aerobic threshold.`,
+                    workout_type: "run",
+                    sport_type: sport,
+                    scheduled_date: d1.toISOString().split('T')[0],
+                    target_distance_km: Math.round(5 * volumeFactor * 10) / 10,
+                    target_pace_min_per_km: Math.round((targetPace + 1.0) * 100) / 100
+                });
+
+                // Day 3: Quality Session
+                const d2 = new Date(weekStart.getTime() + (2 * 24 * 60 * 60 * 1000));
+                if (phase === "Base") {
+                    workouts.push({
+                        title: `[W${week + 1} ${phase}] Strides x 8`,
+                        description: "8x20s post-run strides. Focus on high cadence, tall posture, and relaxed shoulders.",
+                        workout_type: "run",
+                        sport_type: sport,
+                        scheduled_date: d2.toISOString().split('T')[0],
+                        target_distance_km: Math.round(6 * volumeFactor * 10) / 10,
+                        target_pace_min_per_km: Math.round((targetPace + 0.5) * 100) / 100
+                    });
+                } else if (phase === "Build" || phase === "Peak") {
+                    const reps = phase === "Build" ? 6 : 8;
+                    workouts.push({
+                        title: `[W${week + 1} ${phase}] Tempo Intervals ${reps}x800m`,
+                        description: `2km warmup, ${reps}x800m at target race pace, 400m recovery jog, 2km cooldown.`,
+                        workout_type: "run",
+                        sport_type: sport,
+                        scheduled_date: d2.toISOString().split('T')[0],
+                        target_distance_km: Math.round(10 * volumeFactor * 10) / 10,
+                        target_pace_min_per_km: Math.max(3.0, Math.round((targetPace - 0.3) * 100) / 100)
+                    });
+                } else {
+                    workouts.push({
+                        title: `[W${week + 1} ${phase}] Race Pace Run`,
+                        description: "Short tuneup run at race pace to preserve neuromuscular sharpness without fatigue.",
+                        workout_type: "run",
+                        sport_type: sport,
+                        scheduled_date: d2.toISOString().split('T')[0],
+                        target_distance_km: 4.0,
+                        target_pace_min_per_km: Math.round(targetPace * 100) / 100
+                    });
+                }
+
+                // Day 6: Long Run
+                const d3 = new Date(weekStart.getTime() + (5 * 24 * 60 * 60 * 1000));
+                let maxLongKm = 32.0;
+                if (distanceKm <= 5.5) maxLongKm = 8.0;
+                else if (distanceKm <= 11) maxLongKm = 14.0;
+                else if (distanceKm <= 22) maxLongKm = 22.0;
+
+                let longKm = Math.min(maxLongKm, Math.round((distanceKm * 0.5 + (week * 1.5) * volumeFactor) * 10) / 10);
+                if (phase === "Taper") longKm = Math.round(longKm * 0.5 * 10) / 10;
+
+                workouts.push({
+                    title: `[W${week + 1} ${phase}] Long Run`,
+                    description: `${phaseDesc}. Controlled aerobic pace. Prioritize time on feet and hydration protocol.`,
+                    workout_type: "run",
+                    sport_type: sport,
+                    scheduled_date: d3.toISOString().split('T')[0],
+                    target_distance_km: Math.max(4.0, longKm),
+                    target_pace_min_per_km: Math.round((targetPace + 0.75) * 100) / 100
+                });
+            }
+
+            return {
+                plan_name: `Goalie Periodized Macrocycle: ${raceName} (${totalWeeks} Weeks)`,
+                sport_type: sport,
+                total_weeks: totalWeeks,
+                total_workouts: workouts.length,
+                workouts: workouts
+            };
+        }
+
         async function handleGeneratePlan(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-generate-plan');
-            const raceName = document.getElementById('plan-race-name').value.trim();
-            const sportType = document.getElementById('plan-sport').value;
-            const distanceKm = parseFloat(document.getElementById('plan-distance').value) || 42.2;
-            const raceDate = document.getElementById('plan-race-date').value;
-            const targetTimeStr = document.getElementById('plan-target-time').value.trim();
+            const raceName = (document.getElementById('plan-race-name')?.value || 'Target Race / Event').trim();
+            const sportType = document.getElementById('plan-sport')?.value || 'run';
+            const distanceKm = parseFloat(document.getElementById('plan-distance')?.value) || 42.2;
+            const raceDate = document.getElementById('plan-race-date')?.value;
+            const targetTimeStr = (document.getElementById('plan-target-time')?.value || '').trim();
 
             if (!raceDate) {
                 toast.warning('Date Required', 'Please select a target race date.');
@@ -14729,6 +14865,9 @@
                 const parts = targetTimeStr.split(':').map(Number);
                 if (parts.length === 3) targetSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
                 else if (parts.length === 2) targetSeconds = parts[0] * 60 + parts[1];
+            }
+            if (targetSeconds !== null && targetSeconds <= 0) {
+                targetSeconds = null;
             }
 
             btn.disabled = true;
@@ -14777,10 +14916,24 @@
 
                 // Render dynamic workout list
                 renderScheduleWorkouts(data.workouts || []);
+                try {
+                    localStorage.setItem('goalie_active_plan', JSON.stringify(data));
+                } catch (e) {}
                 toast.success('Macrocycle Created', data.message || 'Periodized training plan generated successfully.');
             } catch (err) {
                 loadToast.dismiss();
-                toast.error('Plan Error', 'Could not generate plan from server. Using local sports science model.');
+                // Graceful Offline / Local SportsEngine Fallback
+                const localPlan = generateLocalPeriodizedPlan(raceName, distanceKm, raceDate, targetSeconds, sportType);
+                const titleEl = document.getElementById('schedule-plan-title');
+                const metaEl = document.getElementById('schedule-plan-meta');
+                if (titleEl) titleEl.textContent = localPlan.plan_name;
+                if (metaEl) metaEl.textContent = `${localPlan.total_weeks} Weeks Periodization | ${localPlan.total_workouts} Structured Workouts`;
+
+                renderScheduleWorkouts(localPlan.workouts);
+                try {
+                    localStorage.setItem('goalie_active_plan', JSON.stringify(localPlan));
+                } catch (e) {}
+                toast.info('Model Sains Lokal Aktif', 'Rencana periodisasi berhasil dihitung langsung di perangkat menggunakan model SportsEngine.');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'GENERATE PERIODIZED MACROCYCLE';
