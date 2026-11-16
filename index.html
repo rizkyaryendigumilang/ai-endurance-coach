@@ -1017,9 +1017,71 @@
     <div id="sonner-toaster" aria-live="polite"></div>
 
     <!-- Offline Network Resilience Status Pill -->
-    <div id="network-offline-pill" class="hidden fixed top-3 left-1/2 -translate-x-1/2 z-[110] px-3.5 py-1.5 rounded-full bg-amber-500 text-white font-mono text-[11px] font-bold shadow-lg flex items-center gap-2 backdrop-blur-md transition-all">
+    <div id="network-offline-pill" class="hidden fixed top-3 left-1/2 -translate-x-1/2 z-[250] px-3.5 py-1.5 rounded-full bg-amber-500 text-white font-mono text-[11px] font-bold shadow-lg flex items-center gap-2 backdrop-blur-md transition-all duration-300">
         <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-        <span>Mode Offline Aktif (Cache Tersimpan)</span>
+        <span id="network-offline-text">Mode Offline (Menggunakan Cache Lokal)</span>
+    </div>
+
+    <!-- Floating Mobile PWA Install Banner -->
+    <div id="pwa-mobile-install-banner" class="hidden fixed bottom-18 inset-x-3 z-[115] md:hidden p-3 bg-surface/95 backdrop-blur-md border border-border/80 dark:border-white/[0.08] rounded-2xl shadow-xl flex items-center justify-between gap-3 ignara-card transition-all">
+        <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#fc4c02] to-[#e03d00] flex items-center justify-center text-white shrink-0 shadow-xs">
+                <svg viewBox="0 0 192 192" class="w-4 h-4" fill="none"><path d="M 96 30 L 154 119 L 129 119 L 96 55 L 63 119 L 37 119 Z" fill="#ffffff" /><path d="M 96 100 L 124 156 L 103 156 L 96 142 L 89 156 L 68 156 Z" fill="#ffffff" opacity="0.95" /></svg>
+            </div>
+            <div class="truncate">
+                <div class="text-xs font-bold text-text-primary truncate">Pasang Aplikasi Goalie</div>
+                <div class="text-[10px] text-text-secondary truncate">Akses cepat offline &amp; telemetri layar penuh</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="triggerPWAInstall()" class="ignara-press px-3 py-1.5 rounded-full bg-tertiary text-white font-mono font-bold text-xs shadow-xs active:scale-95">
+                Pasang
+            </button>
+            <button type="button" onclick="dismissPWABanner()" class="w-7 h-7 rounded-full text-text-secondary hover:text-text-primary flex items-center justify-center text-xs" aria-label="Tutup banner">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <!-- iOS Safari PWA Install Modal -->
+    <div id="ios-pwa-install-modal" class="hidden fixed inset-0 z-[320] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 sm:p-4">
+        <div class="w-full max-w-md bg-surface border border-border/80 dark:border-white/[0.08] rounded-2xl p-5 space-y-4 shadow-2xl ignara-modal-enter">
+            <div class="flex items-center justify-between border-b border-border/70 dark:border-white/[0.06] pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+                    <h3 class="font-display font-extrabold text-base text-text-primary">Pasang Goalie di iPhone</h3>
+                </div>
+                <button type="button" onclick="closeIOSPWAModal()" class="text-text-secondary hover:text-text-primary w-8 h-8 rounded-full flex items-center justify-center" aria-label="Tutup">
+                    ✕
+                </button>
+            </div>
+            <div class="space-y-3 text-xs leading-relaxed">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface-subtle border border-border/60 dark:border-white/[0.04]">
+                    <span class="w-6 h-6 rounded-full bg-tertiary/10 text-tertiary font-bold flex items-center justify-center shrink-0 text-xs">1</span>
+                    <div>
+                        <strong class="text-text-primary block mb-0.5">Ketuk Ikon Bagikan (Share)</strong>
+                        <p class="text-text-secondary">Di bilah bawah peramban Safari, ketuk tombol bagikan bertanda kotak dengan panah ke atas.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface-subtle border border-border/60 dark:border-white/[0.04]">
+                    <span class="w-6 h-6 rounded-full bg-tertiary/10 text-tertiary font-bold flex items-center justify-center shrink-0 text-xs">2</span>
+                    <div>
+                        <strong class="text-text-primary block mb-0.5">Pilih 'Tambahkan ke Layar Utama'</strong>
+                        <p class="text-text-secondary">Gulir menu ke bawah lalu ketuk opsi <strong>Tambah ke Layar Utama</strong> (Add to Home Screen).</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface-subtle border border-border/60 dark:border-white/[0.04]">
+                    <span class="w-6 h-6 rounded-full bg-tertiary/10 text-tertiary font-bold flex items-center justify-center shrink-0 text-xs">3</span>
+                    <div>
+                        <strong class="text-text-primary block mb-0.5">Selesai &amp; Nikmati Fitur Penuh</strong>
+                        <p class="text-text-secondary">Aplikasi Goalie siap diluncurkan dari layar utama ponsel Anda dengan performa offline optimal.</p>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="closeIOSPWAModal()" class="w-full py-2.5 rounded-full bg-tertiary text-white font-mono font-bold text-xs shadow-xs ignara-press">
+                Mengerti
+            </button>
+        </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════ -->
@@ -1071,6 +1133,12 @@
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <span class="hidden 2xl:inline whitespace-nowrap text-xs" data-i18n="nav_search_label">Cari...</span>
                     <kbd class="text-[10px] font-mono bg-surface px-1.5 py-0.5 border border-border rounded-md shrink-0">⌘K</kbd>
+                </button>
+
+                <!-- PWA Install Button (Dynamic) -->
+                <button type="button" onclick="triggerPWAInstall()" id="pwa-install-nav-btn" class="hidden h-8 px-2.5 sm:px-3 text-xs font-mono font-bold rounded-lg border border-tertiary/40 bg-tertiary/10 text-tertiary hover:bg-tertiary hover:text-white transition-all inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 ignara-press touch-target-expand" title="Pasang Aplikasi PWA di Perangkat" aria-label="Pasang Aplikasi PWA">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span class="hidden md:inline">Pasang App</span>
                 </button>
 
                 <!-- Quick Record / Upload Workout Button (Strava Orange) -->
@@ -9350,39 +9418,14 @@
                 dateInput.value = d.toISOString().split('T')[0];
             }
 
-            // Service worker with automatic controller change refresh and active cache purging
-            if ('serviceWorker' in navigator) {
-                let refreshing = false;
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    if (!refreshing) {
-                        refreshing = true;
-                        window.location.reload();
-                    }
-                });
-
-                const swPath = (window.location.pathname.startsWith('/golie') ? '/golie' : '') + '/sw.js?v=3.2.0';
-                navigator.serviceWorker.register(swPath)
-                    .then(r => {
-                        console.log('[PWA] Service Worker active:', r.scope);
-                        if (r.waiting) {
-                            r.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        }
-                        if (r.update) r.update();
-                    })
-                    .catch(err => console.warn('[PWA] SW register:', err));
-            }
-
-            // Proactively evict any legacy CacheStorage buckets
-            if ('caches' in window) {
-                caches.keys().then((keys) => {
-                    keys.forEach((key) => {
-                        if (key !== 'goalie-cache-v3.2.0') {
-                            console.log('[Goalie PWA] Evicting outdated cache bucket:', key);
-                            caches.delete(key);
-                        }
-                    });
-                });
-            }
+            // ══════════════════════════════════════════════════════════
+            // PRODUCTION PWA ARCHITECTURE & NETWORK RESILIENCE ENGINE (v4.0.0)
+            // ══════════════════════════════════════════════════════════
+            initServiceWorker();
+            initNetworkResilience();
+            initPWAInstallation();
+            handlePWAHashNavigation();
+            window.addEventListener('hashchange', handlePWAHashNavigation);
 
             // Self-healing: replace any legacy broken logo image tags with inline vector SVG
             const healLegacyLogos = () => {
@@ -9403,16 +9446,208 @@
             setTimeout(healLegacyLogos, 500);
         });
 
-        // PWA Install prompt listener
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            appState.deferredPrompt = e;
-        });
+        const CURRENT_CACHE_VERSION = 'goalie-cache-v4.0.0';
 
-        function checkAppInstalledStatus() {
-            window.addEventListener('appinstalled', () => {
-                toast.success('App Installed', 'Goalie is now pinned to your device homescreen.');
+        // 1. Service Worker Lifecycle & Auto-Reload
+        function initServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
             });
+
+            const swPath = (window.location.pathname.startsWith('/golie') ? '/golie' : '') + '/sw.js?v=4.0.0';
+            navigator.serviceWorker.register(swPath)
+                .then(reg => {
+                    console.log('[PWA] Service Worker aktif dengan scope:', reg.scope);
+                    if (reg.waiting) {
+                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                if (typeof toast !== 'undefined') {
+                                    toast.info('Pembaruan Tersedia', 'Versi baru Goalie telah terpasang. Memuat ulang...');
+                                }
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                        });
+                    });
+                    if (reg.update) reg.update();
+                })
+                .catch(err => console.warn('[PWA] Registrasi Service Worker:', err));
+
+            // Clean up outdated CacheStorage buckets
+            if ('caches' in window) {
+                caches.keys().then((keys) => {
+                    keys.forEach((key) => {
+                        if (key !== CURRENT_CACHE_VERSION) {
+                            console.log('[PWA] Evicting legacy cache bucket:', key);
+                            caches.delete(key);
+                        }
+                    });
+                });
+            }
+        }
+
+        // 2. Network Resilience & Offline Awareness
+        function initNetworkResilience() {
+            const pill = document.getElementById('network-offline-pill');
+            const pillText = document.getElementById('network-offline-text');
+            if (!pill) return;
+
+            const updateNetworkStatus = (isOnline) => {
+                if (!isOnline) {
+                    pill.classList.remove('hidden', 'bg-emerald-600');
+                    pill.classList.add('bg-amber-500');
+                    if (pillText) pillText.textContent = 'Mode Offline (Menggunakan Cache Lokal)';
+                } else {
+                    pill.classList.remove('bg-amber-500');
+                    pill.classList.add('bg-emerald-600');
+                    if (pillText) pillText.textContent = 'Kembali Online (Data Tersinkron)';
+                    setTimeout(() => {
+                        pill.classList.add('hidden');
+                    }, 3500);
+
+                    // Auto-sync fresh data
+                    if (typeof GoalieSyncManager !== 'undefined' && typeof GoalieSyncManager.triggerAutoPoll === 'function') {
+                        GoalieSyncManager.triggerAutoPoll(true);
+                    }
+                    if (typeof GoalieCalendarWidget !== 'undefined' && typeof GoalieCalendarWidget.fetch === 'function') {
+                        GoalieCalendarWidget.fetch(0);
+                    }
+                }
+            };
+
+            window.addEventListener('online', () => updateNetworkStatus(true));
+            window.addEventListener('offline', () => updateNetworkStatus(false));
+
+            if (!navigator.onLine) {
+                updateNetworkStatus(false);
+            }
+        }
+
+        // 3. PWA Installation Triggers (Desktop & Mobile)
+        function initPWAInstallation() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (isStandalone) {
+                document.body.dataset.standalone = 'true';
+                console.log('[PWA] Berjalan dalam mode native standalone.');
+                return;
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                appState.deferredPrompt = e;
+
+                // Show install triggers
+                const navBtn = document.getElementById('pwa-install-nav-btn');
+                if (navBtn) navBtn.classList.remove('hidden');
+
+                const dismissedTime = localStorage.getItem('dismissed_pwa_banner_time');
+                const now = Date.now();
+                // Show floating mobile banner if not dismissed in the last 24 hours
+                if (!dismissedTime || (now - parseInt(dismissedTime, 10)) > 86400000) {
+                    const mobileBanner = document.getElementById('pwa-mobile-install-banner');
+                    if (mobileBanner && window.innerWidth < 768) {
+                        mobileBanner.classList.remove('hidden');
+                    }
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                appState.deferredPrompt = null;
+                const navBtn = document.getElementById('pwa-install-nav-btn');
+                if (navBtn) navBtn.classList.add('hidden');
+                const mobileBanner = document.getElementById('pwa-mobile-install-banner');
+                if (mobileBanner) mobileBanner.classList.add('hidden');
+                if (typeof toast !== 'undefined') {
+                    toast.success('Aplikasi Terpasang', 'Goalie telah ditambahkan ke layar utama perangkat Anda.');
+                }
+            });
+        }
+
+        function triggerPWAInstall() {
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+            if (appState.deferredPrompt) {
+                appState.deferredPrompt.prompt();
+                appState.deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('[PWA] Pengguna menyetujui instalasi PWA.');
+                    }
+                    appState.deferredPrompt = null;
+                    const navBtn = document.getElementById('pwa-install-nav-btn');
+                    if (navBtn) navBtn.classList.add('hidden');
+                    const mobileBanner = document.getElementById('pwa-mobile-install-banner');
+                    if (mobileBanner) mobileBanner.classList.add('hidden');
+                });
+            } else if (isIOS) {
+                openIOSPWAModal();
+            } else {
+                if (typeof toast !== 'undefined') {
+                    toast.info('Pasang Aplikasi', 'Gunakan menu browser Anda di kanan atas dan pilih "Install Aplikasi" atau "Tambahkan ke Layar Utama".');
+                }
+            }
+        }
+
+        function dismissPWABanner() {
+            const mobileBanner = document.getElementById('pwa-mobile-install-banner');
+            if (mobileBanner) {
+                mobileBanner.classList.add('hidden');
+                localStorage.setItem('dismissed_pwa_banner_time', Date.now().toString());
+            }
+        }
+
+        function openIOSPWAModal() {
+            const modal = document.getElementById('ios-pwa-install-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+        }
+
+        function closeIOSPWAModal() {
+            const modal = document.getElementById('ios-pwa-install-modal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof updateModalBodyLock === 'function') updateModalBodyLock();
+        }
+
+        // 4. PWA Deep-Link Hash Navigation Handler
+        function handlePWAHashNavigation() {
+            const hash = window.location.hash;
+            if (!hash) return;
+
+            if (hash === '#record') {
+                if (typeof openLogWorkoutModal === 'function') {
+                    setTimeout(openLogWorkoutModal, 300);
+                }
+            } else if (hash === '#calculator') {
+                if (typeof switchWorkstationTab === 'function') {
+                    switchWorkstationTab('schedule');
+                    if (typeof switchScheduleSubtab === 'function') {
+                        switchScheduleSubtab('splits');
+                    }
+                }
+            } else if (hash === '#schedule') {
+                if (typeof switchWorkstationTab === 'function') {
+                    switchWorkstationTab('schedule');
+                    if (typeof switchScheduleSubtab === 'function') {
+                        switchScheduleSubtab('weekly');
+                    }
+                }
+            } else if (hash === '#coach') {
+                if (typeof switchWorkstationTab === 'function') {
+                    switchWorkstationTab('chat');
+                }
+            } else if (hash === '#telemetry') {
+                if (typeof switchWorkstationTab === 'function') {
+                    switchWorkstationTab('telemetry');
+                }
+            }
         }
 
         async function checkSystemBroadcast() {

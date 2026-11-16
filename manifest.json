@@ -1,28 +1,43 @@
 {
-  "id": "./",
+  "id": "goalie-endurance-pwa",
   "name": "Goalie - AI Endurance Coach",
   "short_name": "Goalie",
   "description": "Platform sains olahraga deterministik dan pelatih ketahanan maraton.",
+  "lang": "id-ID",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
   "background_color": "#0B0E17",
   "theme_color": "#FC4C02",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "categories": ["sports", "health", "fitness"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "public/icons/pwa/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "public/icons/pwa/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "public/icons/pwa/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "public/icons/pwa/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "public/icons/pwa/apple-touch-icon.png",
@@ -47,10 +62,17 @@
       "icons": [{ "src": "public/icons/pwa/icon-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Jadwal Latihan",
+      "name": "Kalender Latihan",
       "short_name": "Jadwal",
-      "description": "Buka jadwal latihan maraton",
+      "description": "Buka kalender latihan mingguan",
       "url": "./#schedule",
+      "icons": [{ "src": "public/icons/pwa/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Pelatih AI",
+      "short_name": "Coach",
+      "description": "Konsultasi strategi dan fisiologi",
+      "url": "./#coach",
       "icons": [{ "src": "public/icons/pwa/icon-192x192.png", "sizes": "192x192" }]
     }
   ]
