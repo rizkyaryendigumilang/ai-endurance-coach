@@ -1,6 +1,6 @@
 {
   "name": "ai-endurance-coach",
-  "version": "1.0.0",
+  "version": "4.1.0",
   "description": "Goalie - AI Endurance Coach mobile application",
   "scripts": {
     "build:css": "tailwindcss -i src/input.css -o public/css/tailwind.min.css --minify",
