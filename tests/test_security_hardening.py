@@ -20,6 +20,8 @@ class SecurityHardeningTests(unittest.TestCase):
         self.assertEqual(res.headers.get("X-XSS-Protection"), "1; mode=block")
         self.assertEqual(res.headers.get("Referrer-Policy"), "strict-origin-when-cross-origin")
         self.assertIn("camera=()", res.headers.get("Permissions-Policy", ""))
+        self.assertEqual(res.headers.get("Cross-Origin-Opener-Policy"), "same-origin")
+        self.assertEqual(res.headers.get("Cross-Origin-Resource-Policy"), "same-origin")
 
     def test_sec06_admin_token_rejects_insecure_demo_secret(self):
         """SEC-06: verify_admin_token strictly rejects tokens signed by demo secret."""

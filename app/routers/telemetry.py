@@ -322,6 +322,8 @@ async def upload_activity_file(file: UploadFile = File(...), user_id: str = Depe
         raise HTTPException(status_code=400, detail=f"Format .{ext} tidak didukung. Harap upload .FIT, .GPX, atau .TCX.")
 
     file_bytes = await file.read()
+    if len(file_bytes) < 10:
+        raise HTTPException(status_code=400, detail="File kosong atau korup (kurang dari 10 byte).")
     if len(file_bytes) > 25 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="Ukuran file maksimal 25MB.")
 

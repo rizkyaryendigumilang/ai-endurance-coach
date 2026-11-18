@@ -299,6 +299,24 @@ class TestGoalieAPI(unittest.TestCase):
         self.assertNotIn("..", clean_filename)
         self.assertEqual(clean_filename, "passwd.gpx")
 
+    def test_13b_upload_activity_file_guards(self):
+        """Verify upload activity file guards against unsupported formats and empty/corrupted payloads."""
+        import io
+        token = getattr(self.__class__, "token", None)
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+        # 1. Unsupported extension
+        unsupported = {"file": ("activity.txt", io.BytesIO(b"dummy plain text contents"), "text/plain")}
+        res_unsup = self.client.post("/api/v1/workouts/upload-file", files=unsupported, headers=headers)
+        self.assertEqual(res_unsup.status_code, 400)
+        self.assertIn("tidak didukung", res_unsup.json().get("detail", ""))
+
+        # 2. Empty payload (< 10 bytes)
+        empty_gpx = {"file": ("empty.gpx", io.BytesIO(b"<gpx/>"), "application/gpx+xml")}
+        res_empty = self.client.post("/api/v1/workouts/upload-file", files=empty_gpx, headers=headers)
+        self.assertEqual(res_empty.status_code, 400)
+        self.assertIn("kosong atau korup", res_empty.json().get("detail", ""))
+
     def test_14_social_oauth_login_providers(self):
         """Verify social login gateway supports Google, GitHub, and Telegram."""
         for provider in ["google", "github", "telegram"]:

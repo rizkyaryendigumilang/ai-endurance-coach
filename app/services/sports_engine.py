@@ -1042,7 +1042,10 @@ class SportsEngine:
         gap_factor = max(-0.35, min(1.20, cost_ratio - 1.0))
 
         # Magnus-Tetens Dew Point heat penalty factor (baseline ideal <= 15C)
-        t_d = float(dew_point_c)
+        try:
+            t_d = float(dew_point_c if dew_point_c is not None else 14.0)
+        except (ValueError, TypeError):
+            t_d = 14.0
         if t_d > 15.0:
             heat_penalty_pct = (t_d - 15.0) * 0.40
             if acclimatized:

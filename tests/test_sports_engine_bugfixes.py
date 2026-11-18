@@ -108,6 +108,34 @@ class TestSportsEngineBugfixes(unittest.TestCase):
                 day_index=0
             )
 
+    def test_calculate_normalized_velocity_dew_point_resilience(self):
+        """BUG-05: calculate_normalized_velocity handles None or invalid dew point without crashing."""
+        # 1. None dew point should fall back safely to 14.0 C
+        res_none = SportsEngine.calculate_normalized_velocity(
+            actual_speed_mps=3.5,
+            gradient_pct=1.0,
+            dew_point_c=None
+        )
+        self.assertIn("normalized_speed_mps", res_none)
+        self.assertEqual(res_none["heat_penalty_pct"], 0.0)
+
+        # 2. String or invalid dew point should fall back cleanly
+        res_invalid = SportsEngine.calculate_normalized_velocity(
+            actual_speed_mps=3.5,
+            gradient_pct=0.0,
+            dew_point_c="corrupt_value"
+        )
+        self.assertIn("normalized_speed_mps", res_invalid)
+        self.assertEqual(res_invalid["heat_penalty_pct"], 0.0)
+
+        # 3. Valid high dew point should compute heat penalty correctly
+        res_hot = SportsEngine.calculate_normalized_velocity(
+            actual_speed_mps=3.5,
+            gradient_pct=0.0,
+            dew_point_c=25.0
+        )
+        self.assertGreater(res_hot["heat_penalty_pct"], 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
