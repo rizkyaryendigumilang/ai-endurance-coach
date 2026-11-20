@@ -37,6 +37,8 @@
             try {
                 var s = localStorage.getItem('theme');
                 var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var meta = document.querySelector('meta[name="color-scheme"]');
+                if (meta) meta.content = s || 'light dark';
                 if (s === 'dark' || (!s && d)) {
                     document.documentElement.classList.add('dark');
                     document.documentElement.classList.remove('light');
@@ -1119,6 +1121,8 @@
             const html = document.documentElement;
             const sunIcon = document.getElementById('theme-sun-icon');
             const moonIcon = document.getElementById('theme-moon-icon');
+            const meta = document.querySelector('meta[name="color-scheme"]');
+            if (meta) meta.content = theme;
             if (theme === 'dark') {
                 html.classList.add('dark');
                 if (sunIcon) sunIcon.classList.remove('hidden');

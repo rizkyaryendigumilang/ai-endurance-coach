@@ -9879,93 +9879,98 @@
             if (window.GoalieMobile && typeof window.GoalieMobile.triggerHaptic === 'function') {
                 window.GoalieMobile.triggerHaptic('selection');
             }
-            const tabs = ['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'];
-            tabs.forEach(t => {
-                const content = document.getElementById(`tab-content-${t}`);
-                const btn = document.getElementById(`tab-btn-${t}`);
-                if (content) {
-                    content.classList.add('hidden');
-                    content.classList.remove('ignara-fade-enter');
+
+            const updateTabDOM = () => {
+                const tabs = ['cockpit', 'chat', 'telemetry', 'biomechanics', 'schedule', 'integrations', 'settings'];
+                tabs.forEach(t => {
+                    const content = document.getElementById(`tab-content-${t}`);
+                    const btn = document.getElementById(`tab-btn-${t}`);
+                    if (content) {
+                        content.classList.add('hidden');
+                        content.classList.remove('ignara-fade-enter');
+                    }
+                    if (btn) {
+                        btn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97';
+                        btn.setAttribute('aria-selected', 'false');
+                        const icon = btn.querySelector('svg');
+                        if (icon) {
+                            icon.classList.remove('text-tertiary');
+                            icon.classList.add('text-text-secondary');
+                        }
+                    }
+                });
+
+                // Sync Desktop Top Navigation Tabs
+                const navTabs = ['cockpit', 'schedule', 'chat', 'telemetry', 'integrations'];
+                navTabs.forEach(t => {
+                    const nTab = document.getElementById(`nav-tab-${t}`);
+                    if (nTab) {
+                        if (t === tabName) {
+                            nTab.className = 'nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
+                            nTab.setAttribute('aria-selected', 'true');
+                        } else {
+                            nTab.className = 'nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
+                            nTab.setAttribute('aria-selected', 'false');
+                        }
+                    }
+                });
+
+                const activeContent = document.getElementById(`tab-content-${tabName}`);
+                const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+                if (activeContent) {
+                    activeContent.classList.remove('hidden');
+                    activeContent.classList.remove('ignara-fade-enter');
+                    void activeContent.offsetWidth;
+                    activeContent.classList.add('ignara-fade-enter');
                 }
-                if (btn) {
-                    btn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-150 flex items-center gap-2 whitespace-nowrap text-text-secondary hover:text-text-primary hover:bg-surface/60 border border-transparent active:scale-97';
-                    btn.setAttribute('aria-selected', 'false');
-                    const icon = btn.querySelector('svg');
+                if (activeBtn) {
+                    activeBtn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97';
+                    activeBtn.setAttribute('aria-selected', 'true');
+                    const icon = activeBtn.querySelector('svg');
                     if (icon) {
-                        icon.classList.remove('text-tertiary');
-                        icon.classList.add('text-text-secondary');
+                        icon.classList.remove('text-text-secondary');
+                        icon.classList.add('text-tertiary');
+                    }
+                    try {
+                        activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    } catch (e) {
+                        activeBtn.scrollIntoView(false);
                     }
                 }
-            });
 
-            // Sync Desktop Top Navigation Tabs
-            const navTabs = ['cockpit', 'schedule', 'chat', 'telemetry', 'integrations'];
-            navTabs.forEach(t => {
-                const nTab = document.getElementById(`nav-tab-${t}`);
-                if (nTab) {
-                    if (t === tabName) {
-                        nTab.className = 'nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 bg-surface text-text-primary font-semibold shadow-xs border border-border/80';
-                        nTab.setAttribute('aria-selected', 'true');
+                // Sync Mobile Native Bottom Navigation Bar state
+                const mobileTabs = ['cockpit', 'schedule', 'chat', 'telemetry'];
+                mobileTabs.forEach(t => {
+                    const mBtn = document.getElementById(`mobile-nav-${t}`);
+                    if (mBtn) {
+                        if (t === tabName) {
+                            mBtn.classList.remove('text-text-secondary');
+                            mBtn.classList.add('text-tertiary', 'font-bold');
+                            mBtn.setAttribute('aria-current', 'page');
+                        } else {
+                            mBtn.classList.remove('text-tertiary', 'font-bold');
+                            mBtn.classList.add('text-text-secondary');
+                            mBtn.removeAttribute('aria-current');
+                        }
+                    }
+                });
+
+                // Decluttering: Show global telemetry hero only on Cockpit (Beranda) and Telemetri
+                const heroHeader = document.getElementById('global-telemetry-hero');
+                if (heroHeader) {
+                    if (tabName === 'cockpit' || tabName === 'telemetry') {
+                        heroHeader.classList.remove('hidden');
                     } else {
-                        nTab.className = 'nav-tab px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 text-text-secondary hover:text-text-primary hover:bg-surface/50 border border-transparent font-medium';
-                        nTab.setAttribute('aria-selected', 'false');
+                        heroHeader.classList.add('hidden');
                     }
                 }
-            });
+            };
 
-            const activeContent = document.getElementById(`tab-content-${tabName}`);
-            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            if (activeContent) {
-                activeContent.classList.remove('hidden');
-                activeContent.classList.remove('ignara-fade-enter');
-                void activeContent.offsetWidth;
-                activeContent.classList.add('ignara-fade-enter');
-            }
-            if (activeBtn) {
-                activeBtn.className = 'tab-btn shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-150 flex items-center gap-2 whitespace-nowrap bg-surface text-text-primary border border-border/80 shadow-xs active:scale-97';
-                activeBtn.setAttribute('aria-selected', 'true');
-                const icon = activeBtn.querySelector('svg');
-                if (icon) {
-                    icon.classList.remove('text-text-secondary');
-                    icon.classList.add('text-tertiary');
-                }
-                try {
-                    activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                } catch (e) {
-                    activeBtn.scrollIntoView(false);
-                }
-            }
-
-            // Sync Mobile Native Bottom Navigation Bar state
-            const mobileTabs = ['cockpit', 'schedule', 'chat', 'telemetry'];
-            mobileTabs.forEach(t => {
-                const mBtn = document.getElementById(`mobile-nav-${t}`);
-                if (mBtn) {
-                    if (t === tabName) {
-                        mBtn.classList.remove('text-text-secondary');
-                        mBtn.classList.add('text-tertiary', 'font-bold');
-                        mBtn.setAttribute('aria-current', 'page');
-                    } else {
-                        mBtn.classList.remove('text-tertiary', 'font-bold');
-                        mBtn.classList.add('text-text-secondary');
-                        mBtn.removeAttribute('aria-current');
-                    }
-                }
-            });
-
-            // Physical tactile click feedback for mobile
-            if (typeof HapticsService !== 'undefined') {
-                HapticsService.impact('LIGHT');
-            }
-
-            // Decluttering: Show global telemetry hero only on Cockpit (Beranda) and Telemetri
-            const heroHeader = document.getElementById('global-telemetry-hero');
-            if (heroHeader) {
-                if (tabName === 'cockpit' || tabName === 'telemetry') {
-                    heroHeader.classList.remove('hidden');
-                } else {
-                    heroHeader.classList.add('hidden');
-                }
+            // Modern Same-Document View Transitions (Progressive Enhancement)
+            if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.startViewTransition(() => updateTabDOM());
+            } else {
+                updateTabDOM();
             }
 
             if (tabName === 'cockpit') {

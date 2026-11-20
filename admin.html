@@ -37,6 +37,8 @@
             try {
                 var s = localStorage.getItem('theme');
                 var d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var meta = document.querySelector('meta[name="color-scheme"]');
+                if (meta) meta.content = s || 'light dark';
                 if (s === 'dark' || (!s && d)) {
                     document.documentElement.classList.add('dark');
                     document.documentElement.classList.remove('light');
@@ -1108,14 +1110,17 @@
                     });
                 }
             });
-            modals.forEach(({ id, close }) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('click', (e) => {
-                        if (e.target === el) close();
-                    });
-                }
-            });
+            // Progressive enhancement fallback for browsers without closedby support
+            if (!('closedBy' in HTMLDialogElement.prototype)) {
+                modals.forEach(({ id, close }) => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.addEventListener('click', (e) => {
+                            if (e.target === el) close();
+                        });
+                    }
+                });
+            }
             updateModalBodyLock();
         }
 
@@ -1320,7 +1325,7 @@
         function renderServicesStatus(services) {
             const grid = document.getElementById('services-grid');
             if (!grid || !services) return;
-            grid.innerHTML = '';
+            grid.replaceChildren();
 
             const list = Array.isArray(services) ? services : Object.values(services);
             list.forEach(s => {
@@ -1855,6 +1860,8 @@
             const html = document.documentElement;
             const sunIcon = document.getElementById('theme-sun-icon');
             const moonIcon = document.getElementById('theme-moon-icon');
+            const meta = document.querySelector('meta[name="color-scheme"]');
+            if (meta) meta.content = theme;
             if (theme === 'dark') {
                 html.classList.add('dark');
                 if (sunIcon) sunIcon.classList.remove('hidden');

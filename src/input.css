@@ -18,20 +18,31 @@
     font-feature-settings: 'tnum' 1, 'cv01' 1;
   }
 
-  /* Sleek Minimalist Scrollbars (Linear / Vercel style) */
-  *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  /* Modern CSS scrollbar-color and scrollbar-width (Baseline) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(140, 140, 140, 0.22) transparent;
   }
-  *::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  *::-webkit-scrollbar-thumb {
-    background: rgba(140, 140, 140, 0.22);
-    border-radius: 9999px;
-  }
-  *::-webkit-scrollbar-thumb:hover {
-    background: rgba(140, 140, 140, 0.42);
+
+  /* Legacy fallback for WebKit/Blink browsers */
+  @supports not (scrollbar-color: auto) {
+    * {
+      scrollbar-width: auto;
+    }
+    *::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    *::-webkit-scrollbar-thumb {
+      background: rgba(140, 140, 140, 0.22);
+      border-radius: 9999px;
+    }
+    *::-webkit-scrollbar-thumb:hover {
+      background: rgba(140, 140, 140, 0.42);
+    }
   }
 
   /* WCAG 2.1 AA: Accessible Keyboard Navigation Focus Indicator (focus-visible:ring-2) */
@@ -186,12 +197,28 @@
     }
   }
 
-  /* Ignara Staggered List Entrance */
-  .stagger-group > *:nth-child(1) { animation-delay: 20ms; }
-  .stagger-group > *:nth-child(2) { animation-delay: 40ms; }
-  .stagger-group > *:nth-child(3) { animation-delay: 60ms; }
-  .stagger-group > *:nth-child(4) { animation-delay: 80ms; }
-  .stagger-group > *:nth-child(5) { animation-delay: 100ms; }
+  /* Ignara Staggered List Entrance (sibling-index with fallback) */
+  @supports (animation-delay: calc(sibling-index() * 0.1s)) {
+    .stagger-group > * {
+      animation-delay: calc(sibling-index() * 20ms);
+    }
+  }
+  @supports not (animation-delay: calc(sibling-index() * 0.1s)) {
+    .stagger-group > *:nth-child(1) { animation-delay: 20ms; }
+    .stagger-group > *:nth-child(2) { animation-delay: 40ms; }
+    .stagger-group > *:nth-child(3) { animation-delay: 60ms; }
+    .stagger-group > *:nth-child(4) { animation-delay: 80ms; }
+    .stagger-group > *:nth-child(5) { animation-delay: 100ms; }
+  }
+
+  /* View Transitions reduced motion accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
 
   /* Ignara Snappy Tactile Press */
   .ignara-press {
